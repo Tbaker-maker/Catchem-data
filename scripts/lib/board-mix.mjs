@@ -28,6 +28,7 @@ import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripRea
 import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
+import { dropThinReads, listingAnnotate, loadListingIndex, releaseEra } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
@@ -50,11 +51,9 @@ export function addDays(iso, n) {
   return d.toISOString().slice(0, 10);
 }
 
-// Era is the TCGplayer group prefix (SWSH07: Evolving Skies -> SWSH).
+// Era is the set release prefix (SWSH07: Evolving Skies -> SWSH, EX Hidden Legends -> EX).
 export function eraOf(groupName) {
-  const g = String(groupName || "");
-  const m = g.match(/^(SWSH|SV|SM|ME|XY|BW|HGSS|DP|EX|POP)\s?\d*[A-Za-z.]*\s?[:-]/i) || g.match(/^(SWSH|SV|SM|ME|XY|BW|HGSS|DP)\b/i);
-  return m ? m[1].toUpperCase() : "";
+  return releaseEra(groupName);
 }
 
 const ERA_NAME = { SWSH: "Sword & Shield", SV: "Scarlet & Violet", SM: "Sun & Moon", ME: "Mega Evolution", XY: "XY", BW: "Black & White", HGSS: "HeartGold SoulSilver", DP: "Diamond & Pearl", EX: "EX" };
@@ -717,8 +716,10 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
 
   if (!on) {
     const kept = unstickFamilies(dropHeldReads(base, heldIds));
-    await writeFile(readsPath, JSON.stringify({ ...doc, reads: kept, count: kept.length }, null, 1) + "\n");
-    return { on, price: kept.length, fresh: 0 };
+    const listingIndex = await loadListingIndex(root);
+    const gated = await dropThinReads(kept, root, end, listingAnnotate(listingIndex));
+    await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");
+    return { on, price: gated.length, fresh: 0 };
   }
   const releases = await readJson(join(pub, "releases.json"));
   const news = await readJson(join(root, "research/digests/news.json"));
@@ -789,6 +790,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       ...chaseLists(histCards, tagsOf, { asOf: end, max: 20 }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
     );
     deepSlump = slumpWatch(histCards, tagsOf, { asOf: end, max: 10, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
+    deepSlump = await dropThinReads(deepSlump, root, end);
     // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
     // They compare prices, so they ride a price lane and count toward the price share.
     const rating = await readJson(join(pub, "feed/card-rating.json"), {});
@@ -801,6 +803,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
+    deepRecovery = await dropThinReads(deepRecovery, root, end);
     deepGap = sealedGapDeep(sealedProducts, histories, histCards, raw?.products, { asOf: end }).map((r) => ({ ...r, priceRead: true }));
   } catch (err) { console.error("deep reads skipped:", err.message); }
   if (Array.isArray(spanReads) && spanReads.length) {
@@ -906,10 +909,12 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const fitted = fitBoard(priceDedup.filter(onePage), freshOne);
   const mixed = unstickFamilies(dropHeldReads(mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 }), heldIds));
   for (const r of mixed) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
-  await writeFile(readsPath, JSON.stringify({ ...doc, reads: mixed, count: mixed.length }, null, 1) + "\n");
+  const listingIndex = await loadListingIndex(root);
+  const gated = await dropThinReads(mixed, root, end, listingAnnotate(listingIndex));
+  await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");
   const byKind = {};
-  for (const r of mixed) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
-  return { on, history: hist.counts, price: mixed.filter(isPriceRead).length, fresh: mixed.length - mixed.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
+  for (const r of gated) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
+  return { on, history: hist.counts, price: gated.filter(isPriceRead).length, fresh: gated.length - gated.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
 }
 
 export async function freshListings(root, pubDoc) {

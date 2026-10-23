@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { readSignals } from "./lib/signal-chips.mjs";
 import { dropHeldChips, loadHeldIds, mentionsHeld } from "./lib/price-hold-skip.mjs";
+import { loadListingIndex, loadReadThinData, thinReadBlock, writeReadFlags } from "./lib/read-thin-data.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC = join(ROOT, "research/assets/public");
@@ -272,7 +273,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const entry = { name: read.name || "", sku, signals: built.signals, blurb: built.blurb || "" };
     if (built.tiles) entry.tiles = built.tiles;
     if (built.strength) entry.strength = built.strength;
-    return { sku, entry, built };
+    return { sku, entry, built, points };
   };
   // bySku points at a byId key, so each entry is written once.
   const keep = (read, sku, entry) => {
@@ -284,16 +285,57 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[key] = read.id;
     }
   };
-  for (const read of reads) {
-    if (!read || !read.id) continue;
-    const made = build(read);
+  const thinCfg = await loadReadThinData(root);
+  const listingIndex = thinCfg ? await loadListingIndex(root) : new Map();
+  const heldBack = [];
+  const blockedIds = new Set();
+  const thinView = (read, made) => {
+    const sku = made.sku;
+    const listed = listingIndex.get(String(read?.sku || "")) || listingIndex.get(sku) || listingIndex.get(String(read?.id || ""));
+    const sealedRow = listingsFor(read, byId, byName);
+    const count = listed && Number.isFinite(listed.n) ? listed.n : (Number.isFinite(Number(sealedRow?.n)) ? Number(sealedRow.n) : null);
+    const setRow = setFor(read, sets);
+    const claim = read?.deep === "slump" || read?.deep === "recovery";
+    const view = {
+      id: read.id,
+      name: read.name || "",
+      headline: read.headline || "",
+      path: read.path || "",
+      set: read.set || setRow?.name || "",
+      sku: read.sku || sku || "",
+      price: read.price,
+      changePct: read.changePct,
+      deep: read.deep || "",
+      lane: read.lane || "",
+      readKind: read.readKind || read.kind || "",
+      kind: read.kind || "",
+      receipt: read.receipt,
+      asOf: read.asOf || asOf,
+      endDate: read.endDate || "",
+      signals: made.built?.signals || [],
+      tiles: made.built?.tiles || null,
+    };
+    if (claim && Array.isArray(made.points) && made.points.length) view.chart = { points: made.points };
+    if (count != null) view.thin = { listingsCounted: count };
+    return view;
+  };
+  const consider = (read, made) => {
+    if (!read?.id) return false;
+    if (thinCfg && !made) return false;
+    const block = thinReadBlock(thinCfg && made ? thinView(read, made) : read, thinCfg);
+    if (!block) return false;
+    blockedIds.add(read.id);
+    heldBack.push({ read, made, block });
+    return true;
+  };
+  const publishRead = (read, made) => {
     if (!made || !made.built.signals.length) {
       delete read.signals;
       delete read.blurb;
       if (made?.built?.tiles) read.tiles = made.built.tiles;
       else delete read.tiles;
       if (made) keep(read, made.sku, made.entry);
-      continue;
+      return false;
     }
     const { sku, entry, built } = made;
     keep(read, sku, entry);
@@ -304,16 +346,60 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     else delete read.strength;
     if (built.tiles) read.tiles = built.tiles;
     else delete read.tiles;
-    count += 1;
+    return true;
+  };
+  for (const read of reads) {
+    if (!read || !read.id) continue;
+    const made = build(read);
+    if (consider(read, made)) continue;
+    if (publishRead(read, made)) count += 1;
   }
   // Feed rows (today, up, down, watch, cook, cool, heat) get the same chips and tiles,
   // keyed by id and sku. The feed files themselves are not rewritten.
   for (const read of feedRows) {
-    if (!read || !read.id || byRead[read.id]) continue;
+    if (!read || !read.id || byRead[read.id] || blockedIds.has(read.id)) continue;
     const made = build(read);
+    if (consider(read, made)) continue;
     if (!made) continue;
-    keep(read, made.sku, made.entry);
+    publishRead(read, made);
     feedCount += 1;
+  }
+  let dropIds = new Set();
+  if (heldBack.length) {
+    const flags = heldBack.map(({ read, block }) => ({
+      id: read.id || "",
+      name: read.name || "",
+      rule: block.rule,
+      reason: block.reason,
+      read: {
+        id: read.id || "",
+        name: read.name || "",
+        headline: read.headline || "",
+        set: read.set || "",
+        sku: read.sku || "",
+        readKind: read.readKind || read.kind || "",
+        deep: read.deep || "",
+      },
+    }));
+    try {
+      const wrote = await writeReadFlags(root, asOf, flags);
+      if (wrote) dropIds = new Set(heldBack.map((row) => row.read.id));
+    } catch { /* no flag file, so the read stays */ }
+  }
+  if (!dropIds.size) {
+    for (const { read, made } of heldBack) {
+      if (!read?.id || byRead[read.id]) continue;
+      const onBoard = reads.some((row) => row && row.id === read.id);
+      if (onBoard) {
+        if (publishRead(read, made)) count += 1;
+      } else {
+        publishRead(read, made);
+        feedCount += 1;
+      }
+    }
+  } else if (writeReads) {
+    bundle.reads = reads.filter((row) => row && !dropIds.has(row.id));
+    bundle.count = bundle.reads.length;
   }
   const samples = [];
   const take = (pred) => {

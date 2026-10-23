@@ -24,6 +24,7 @@ import { restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 import { buildBrowse } from "../lib/extra-reads.mjs";
 import { updateVolumeFile } from "../compute-tcgplayer-volume.mjs";
 import { writeFeedExtras } from "../build-extra-reads.mjs";
+import { clearReadThinCache } from "../lib/read-thin-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PRICE_KEYS = /"(tcgMarket|unopenedPrice|pptMarket|market|marketPrice|price)"\s*:/;
@@ -164,6 +165,9 @@ export async function run() {
   t("Volume filter lists the reads when counts exist", browse.filters.volume.items.length === 1 && browse.filters.volume.readKind === "volume");
 
   // ── compute script + nightly feed path on a fixture root ──
+  const prevThin = process.env.READ_THIN_DATA_FILE;
+  process.env.READ_THIN_DATA_FILE = fileURLToPath(new URL("./fixtures/read-thin-limits.json", import.meta.url));
+  clearReadThinCache();
   const root = await mkdtemp(join(tmpdir(), "tcg-volume-"));
   try {
     await put(root, "data/catalog/tcgcsv-latest.json", { asOf: SCRAPE, items: CATALOG });
@@ -226,6 +230,9 @@ export async function run() {
     const br2 = await get(root, "research/assets/public/feed/browse.json");
     t("no derived file: no volume read and no Volume filter", empty.volume === 0 && !lead2.some((x) => x.readKind === "volume") && !br2.filters.volume);
   } finally {
+    if (prevThin == null) delete process.env.READ_THIN_DATA_FILE;
+    else process.env.READ_THIN_DATA_FILE = prevThin;
+    clearReadThinCache();
     await rm(root, { recursive: true, force: true });
   }
 

@@ -314,12 +314,27 @@ export function attachListingsFacts(reads, doc) {
     if (!fact || !copyOk(fact)) continue;
     const blob = [r.headline, ...(r.lines || []), r.why].join(" ");
     if (/listings counted/i.test(blob)) continue;
+    let added = false;
     if (Array.isArray(r.lines)) {
       if (r.lines.length >= 6) continue;
       r.lines.push(fact);
+      added = true;
     } else if (r.readKind !== "deep") {
       r.lines = [fact];
+      added = true;
     }
+    if (!added || typeof r.thin === "boolean") continue;
+    const lc = product.listingsCounted || {};
+    const priceDate = String(r.receipt?.to || r.endDate || r.asOf || doc?.asOf || "").slice(0, 10);
+    const listingsDate = String(lc.date || "").slice(0, 10);
+    const prior = r.thin && typeof r.thin === "object" ? r.thin : {};
+    r.thin = {
+      ...prior,
+      listingsCounted: lc.n,
+      ...(listingsDate ? { listingsDate } : {}),
+      ...(/^\d{4}-\d{2}-\d{2}$/.test(priceDate) ? { priceDate } : {}),
+      sealed: true,
+    };
   }
   return reads;
 }

@@ -357,6 +357,19 @@ function marketByDate(points) {
   return map;
 }
 
+// A heat row that repeats the row before it (same ask, same listings counted)
+// was carried forward, not captured again. The ask is dated by the first row
+// of that run, the day it was really captured.
+export function askCaptureDay(heat, day) {
+  if (!heat || !heat.has(day)) return "";
+  const days = [...heat.keys()].sort();
+  let i = days.indexOf(day);
+  const same = (a, b) => Math.round(Number(a?.price) * 100) === Math.round(Number(b?.price) * 100)
+    && a?.listingCount != null && Number(a.listingCount) === Number(b?.listingCount);
+  while (i > 0 && same(heat.get(days[i]), heat.get(days[i - 1]))) i -= 1;
+  return days[i];
+}
+
 /** Last two shared dates. Ask from heat-history, market from the TCGplayer file, same product id. */
 export function gapRead(productId, heatRows, marketDoc, mappingRow) {
   if (!productId || !marketDoc || marketDoc.id !== productId) return null;
@@ -367,8 +380,9 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
   if (!heat || !markets) return null;
   const shared = [...heat.keys()].filter((day) => markets.has(day)).sort();
   if (shared.length < 2) return null;
-  const from = shared[shared.length - 2];
   const to = shared[shared.length - 1];
+  const from = askCaptureDay(heat, shared[shared.length - 2]);
+  if (!from || !markets.has(from)) return null;
   const askFrom = Number(heat.get(from).price);
   const askTo = Number(heat.get(to).price);
   const mktFrom = markets.get(from);

@@ -6,6 +6,7 @@ import {
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
+import { gateReads, loadReadThinData, writeReadFlags } from "./read-thin-data.mjs";
 
 const JUNK = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
 
@@ -662,6 +663,40 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   const priceBySku = prices || new Map(items.map((item) => [item.id, Number(item.price)]));
   const freshIds = new Set(Object.values(cards).map((card) => `${card.asOf}_${card.sku}_${card.pattern}`));
   const tracked = trackedRows(prior, priceBySku).filter((row) => !freshIds.has(row.call_id));
+  if (root) {
+    const thinCfg = await loadReadThinData(root);
+    const views = Object.values(cards).map((card) => {
+      const view = {
+        id: card.id,
+        name: card.name,
+        headline: card.headline,
+        path: card.path,
+        set: card.set,
+        sku: card.sku,
+        price: card.price,
+        changePct: card.changePct,
+        readKind: card.kind,
+        lane: card.kind === "sealed" ? "sealed" : "",
+      };
+      const n = card.listings;
+      if (Number.isInteger(n)) view.thin = { listingsCounted: n };
+      return view;
+    });
+    const gated = gateReads(views, thinCfg);
+    if (gated.flags.length) {
+      let wrote = null;
+      try { wrote = await writeReadFlags(root, asOf, gated.flags); } catch { wrote = null; }
+      if (wrote) {
+        const ban = new Set(gated.flags.map((row) => row.id));
+        for (const id of ban) delete cards[id];
+        for (const key of Object.keys(lists)) {
+          if (Array.isArray(lists[key])) lists[key] = lists[key].filter((id) => !ban.has(id));
+        }
+        const liveSku = new Set(Object.values(cards).map((card) => card.sku));
+        for (const sku of Object.keys(facts)) if (!liveSku.has(sku)) delete facts[sku];
+      }
+    }
+  }
   const sets = new Map();
   for (const card of Object.values(cards)) sets.set(card.set, (sets.get(card.set) || 0) + 1);
   const catalogue = {

@@ -58,7 +58,7 @@ export async function run() {
     if (label !== "verified" && label !== "confirmed") return true;
     return canConfirm(row);
   }));
-  t("Aura Seeker is unconfirmed and off the public radar", committed.upcoming.some((row) => /Aura Seeker/.test(row.name) && row.confidence === "unconfirmed") && !upcomingRadar(committed, "2026-10-07", { verifiedOnly: true }).some((row) => /Aura Seeker/.test(row.name)));
+  t("Aura Seeker is verified from its pokemon-card.com page and on the public radar", committed.upcoming.some((row) => /^JP: Aura Seeker/.test(row.name) && row.confidence === "verified" && canConfirm(row)) && upcomingRadar(committed, "2026-10-07", { verifiedOnly: true }).some((row) => /^JP: Aura Seeker/.test(row.name)));
   const src = async (rel) => readFile(join(ROOT, rel), "utf-8");
   for (const rel of ["scripts/generate-pulse.mjs", "scripts/generate-post-ideas.mjs"]) {
     const s = await src(rel);
