@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { validSynth, loadContext, synthesizeReads, openingKey, isItemRead } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -92,5 +92,25 @@ for (const r of done) {
 t(`dated prices match the source files (${checked} checked)`, checked > 0 && bad.length === 0);
 if (bad.length) console.error(bad.slice(0, 5));
 await rm(root, { recursive: true, force: true });
+
+// Wording: "in line" only for a small set gap, and a one day spike is not a peak.
+{
+  const W = { ...CFG, peerInlineMaxPts: 2, spikeRatio: 1.6 };
+  const day = (n) => addDays("2026-10-23", -n);
+  const series = (fn) => { const pts = []; for (let n = 400; n >= 0; n -= 1) pts.push([day(n), fn(n)]); return pts; };
+  const item = (pts) => ({ id: "x", pts, title: "Test Card", asOf: "2026-10-23", set: "Test Set", setSlug: "ts" });
+  const ctx = { peers: new Map([["ts", { n: 40, median: -1.6 }]]), market: { n: 9000, median: 0.4 } };
+  const shorts = (pts) => findings(item(pts), ctx, W).map((f) => f.short || "").join(" ");
+  const down4 = series((n) => (n > 20 ? 15.27 : 14.66));
+  t("a 2.4 point set gap is not called in line", !/in line/.test(shorts(down4)) && /trailing a -1\.6% median/.test(shorts(down4)));
+  const down2 = series((n) => (n > 20 ? 10 : 9.8));
+  t("a small set gap is still in line", /in line with a -1\.6% median/.test(shorts(down2)));
+  const spiky = series((n) => (n === 200 ? 80 : n > 30 ? 6 : 5.5));
+  const fs = findings(item(spiky), ctx, W);
+  t("a one day spike is not used as the peak", !fs.some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
+  const real = series((n) => (n > 150 && n < 220 ? 80 : n > 30 ? 6 : 5.5));
+  t("a peak that held for weeks still counts", findings(item(real), ctx, W).some((f) => f.type === "drawdown" && /\$80\.00/.test(f.text)));
+  t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
+}
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }

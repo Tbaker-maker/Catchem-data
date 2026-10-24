@@ -37,6 +37,7 @@ export function validSynth(cfg) {
     if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
     out.trendMinPct[w] = a; out.slackDays[w] = b;
   }
+  for (const k of ["peerInlineMaxPts", "spikeRatio"]) { const n = Number(cfg[k]); if (cfg[k] != null && Number.isFinite(n)) out[k] = n; }
   return out;
 }
 
@@ -116,7 +117,13 @@ export function findings(item, ctx, cfg) {
   const prior = pts.slice(0, -1);
   // Range
   if (prior.length && span >= cfg.longMinDays) {
-    const hi = prior.reduce((m, p) => (p[1] > m[1] ? p : m));
+    // A one day spike (a single point far above both neighbours) is not a real peak.
+    const spikeRatio = Number(cfg.spikeRatio) > 1 ? Number(cfg.spikeRatio) : Infinity;
+    const peakable = prior.filter((p, i) => {
+      const a = prior[i - 1]?.[1]; const b = prior[i + 1]?.[1] ?? last[1];
+      return !(a != null && b != null && p[1] > spikeRatio * Math.max(a, b));
+    });
+    const hi = (peakable.length ? peakable : prior).reduce((m, p) => (p[1] > m[1] ? p : m));
     const lo = prior.reduce((m, p) => (p[1] < m[1] ? p : m));
     if (last[1] > hi[1]) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last }, text: `Highest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price on file, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
     else if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` });
@@ -168,7 +175,12 @@ export function findings(item, ctx, cfg) {
     if (Math.abs(gap) >= cfg.peerMinGapPts) out.push({ tag: "peers", type: gap > 0 ? "peersAhead" : "peersBehind", score: cfg.weights.peers * (Math.abs(gap) / cfg.peerMinGapPts), nums: { peer, market: ctx.market, own: ch[30] },
       text: `${gap > 0 ? "Ahead of" : "Behind"} its set: ${title} is ${own} over 30 days against a ${base}.`,
       short: `That ${gap > 0 ? "beats" : "trails"} its set over 30 days: ${own} against a ${base}.` });
-    else out.push({ tag: "peers", type: "peersInline", score: 0, nums: { peer, market: ctx.market, own: ch[30] }, short: `Over 30 days it is ${own}, in line with a ${base}.` });
+    else {
+      // "In line" only for a small gap. A wider one says which side it is on, without leading the read.
+      const inlineMax = Number.isFinite(Number(cfg.peerInlineMaxPts)) ? Number(cfg.peerInlineMaxPts) : cfg.peerMinGapPts;
+      const short = Math.abs(gap) <= inlineMax ? `Over 30 days it is ${own}, in line with a ${base}.` : `Over 30 days it is ${own}, ${gap > 0 ? "ahead of" : "trailing"} a ${base}.`;
+      out.push({ tag: "peers", type: "peersInline", score: 0, nums: { peer, market: ctx.market, own: ch[30] }, short });
+    }
   }
   // Supply and eBay asks (sealed)
   const lc = ctx.listings?.get(item.id);
