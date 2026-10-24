@@ -385,6 +385,15 @@ jobs:
           SIGNAL_STAMP_READS: "1"
         run: node scripts/stamp-signal-chips.mjs
 
+      - name: Synthesize item reads
+        # Each read about one product becomes a 2 to 3 sentence summary of every
+        # signal on file for it, led by its most notable finding. Before the guard,
+        # so the guard checks the new copy. Limits and weights stay in
+        # catchem-data-private. Without them the reads are left as they were.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/synthesize-reads.mjs
+
       - name: Guard the public reads
         # Leaves out reads built on a one night jump, a there and back flip, or a
         # price that sat exactly still, plus listings reads with no change. Fixes
