@@ -331,17 +331,28 @@ export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf 
   return { keep: spaceFamilies(keep), flags, fixes };
 }
 
-// Leaving a read out can put two of the same family side by side. Take the
-// next read of another family instead, keeping the order as close as it was.
+// Leaving a read out, or appending extras, can put two of the same family
+// side by side. Take the next read of another family, keeping the order as
+// close as it was. When one family holds more than half of what is left it
+// must go now, or it would run out of others to sit between. That keeps the
+// board free of neighbours whenever any such order exists.
 export function spaceFamilies(reads) {
-  const fam = (r) => r?.family || r?.readKind || "";
-  const left = reads.slice();
+  const fam = (r) => String(r?.family || r?.readKind || "");
+  const left = (reads || []).slice();
+  const counts = new Map();
+  for (const r of left) counts.set(fam(r), (counts.get(fam(r)) || 0) + 1);
   const out = [];
   while (left.length) {
     const last = out.length ? fam(out[out.length - 1]) : null;
-    let i = left.findIndex((r) => fam(r) !== last);
+    let must = null;
+    for (const [f, n] of counts) if (f !== last && n * 2 > left.length) must = f;
+    let i = must !== null ? left.findIndex((r) => fam(r) === must) : left.findIndex((r) => fam(r) !== last);
     if (i < 0) i = 0;
-    out.push(left.splice(i, 1)[0]);
+    const row = left.splice(i, 1)[0];
+    const f = fam(row);
+    counts.set(f, counts.get(f) - 1);
+    if (!counts.get(f)) counts.delete(f);
+    out.push(row);
   }
   return out;
 }
