@@ -1,25 +1,25 @@
 {
- "asOf": "2026-10-23",
- "generatedAt": "2026-10-24T10:26:21.197Z",
+ "asOf": "2026-10-24",
+ "generatedAt": "2026-10-24T16:58:15.061Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
    "date": "2026-10-24",
-   "ok": false,
-   "detail": "dated 2026-10-24"
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
    "date": "2026-10-24",
-   "ok": false,
-   "detail": "dated 2026-10-24"
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "reads",
    "path": "research/assets/public/reads.json",
-   "date": "2026-10-23",
+   "date": "2026-10-24",
    "ok": true,
    "detail": "fresh"
   },
@@ -32,8 +32,6 @@
   }
  ],
  "failures": [
-  "price-day",
-  "listings-counted",
   "scanner"
  ],
  "alerts": [],
