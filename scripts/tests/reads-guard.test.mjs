@@ -137,3 +137,8 @@ t("no limits, nothing skipped", guardSkip({ sets: [{ prices: [{ id: "tcgcsv-9124
 
 if (fail) { console.error(`reads guard: ${fail} failed`); process.exit(1); }
 console.log("reads guard: all passed");
+
+const crowded = spaceFamilies([{ id: 1, family: "b" }, { id: 2, family: "a" }, { id: 3, family: "a" }, { id: 4, family: "a" }, { id: 5, family: "c" }]);
+t("a crowded family is spread before it runs out of gaps", crowded.every((r, i) => i === 0 || r.family !== crowded[i - 1].family));
+const tail = spaceFamilies([1, 2, 3, 4, 5, 6].map((id) => ({ id, family: id <= 3 ? `x${id}` : "dive" })));
+t("extras of one family at the end get spread through the board", tail.every((r, i) => i === 0 || r.family !== tail[i - 1].family));

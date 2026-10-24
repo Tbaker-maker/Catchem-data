@@ -1,3 +1,4 @@
+import { spaceFamilies } from "./reads-guard.mjs";
 // Flagged-price and dive-teaser reads. Every number comes from a file already
 // on disk. No sold counts. No invented prices.
 
@@ -228,5 +229,5 @@ export function interleaveExtraKinds(lead, extras, { every = 2 } = {}) {
     if ((i + 1) % step === 0 && ei < extras.length) mixed.push(extras[ei++]);
   }
   while (ei < extras.length) mixed.push(extras[ei++]);
-  return mixed;
+  return spaceFamilies(mixed);
 }
