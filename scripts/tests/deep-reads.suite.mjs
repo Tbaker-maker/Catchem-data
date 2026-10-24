@@ -84,7 +84,9 @@ export async function run() {
   t("year-range, year-ago, and season reads are on the board", ["year-range", "year-ago", "season"].every((k) => rows.some((r) => r.readKind === k)));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
-  t("no same family side by side", rows.every((r, i) => i === 0 || (r.family || r.readKind) !== (rows[i - 1].family || rows[i - 1].readKind)));
+  const stuck = rows.map((r, i) => (i > 0 && (r.family || r.readKind) === (rows[i - 1].family || rows[i - 1].readKind) ? `${rows[i - 1].id} + ${r.id} (${r.family || r.readKind})` : null)).filter(Boolean);
+  if (stuck.length) console.log(`  side by side: ${stuck.slice(0, 5).join("; ")}`);
+  t("no same family side by side", stuck.length === 0);
   return fail;
 }
 

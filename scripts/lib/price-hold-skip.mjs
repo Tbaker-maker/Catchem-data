@@ -1,3 +1,4 @@
+import { spaceFamilies } from "./reads-guard.mjs";
 // Cards whose headline price is held, or flagged unverified, stay out of reads.
 import { readFile, readdir, writeFile, unlink } from "node:fs/promises";
 import { join } from "node:path";
@@ -47,16 +48,7 @@ export function dropHeldReads(reads, held) {
 // Dropping rows can leave two of the same family touching. The board rule is
 // that neighbors differ. Keep the original order as far as that rule allows.
 export function unstickFamilies(reads) {
-  const pending = (reads || []).slice();
-  const out = [];
-  const key = (row) => String(row?.family || row?.readKind || "");
-  while (pending.length) {
-    const prev = key(out[out.length - 1]);
-    let idx = pending.findIndex((row) => key(row) !== prev);
-    if (idx < 0) idx = 0;
-    out.push(pending.splice(idx, 1)[0]);
-  }
-  return out;
+  return spaceFamilies(reads);
 }
 
 async function readJson(path) {
@@ -75,7 +67,8 @@ export async function scrubHeldOutputs(root) {
   if (readsDoc && Array.isArray(readsDoc.reads)) {
     const next = unstickFamilies(dropHeldReads(readsDoc.reads, held));
     for (const row of readsDoc.reads) if (row?.id && !next.includes(row)) dropped.push(row.id);
-    if (next.length !== readsDoc.reads.length) {
+    // Always respaced: earlier steps can leave two of a family side by side too.
+    if (next.length !== readsDoc.reads.length || next.some((row, i) => row !== readsDoc.reads[i])) {
       readsDoc.reads = next;
       readsDoc.count = next.length;
       if (Array.isArray(readsDoc.priceStaleIds)) readsDoc.priceStaleIds = readsDoc.priceStaleIds.filter((id) => !held.has(cardIdOf(id)));
