@@ -121,7 +121,9 @@ export function findings(item, ctx, cfg) {
     const spikeRatio = Number(cfg.spikeRatio) > 1 ? Number(cfg.spikeRatio) : Infinity;
     const peakable = prior.filter((p, i) => {
       const a = prior[i - 1]?.[1]; const b = prior[i + 1]?.[1] ?? last[1];
-      return !(a != null && b != null && p[1] > spikeRatio * Math.max(a, b));
+      // The first point on file has one neighbour, so it is judged against that one.
+      const near = [a, b].filter((x) => x != null);
+      return !(near.length && p[1] > spikeRatio * Math.max(...near));
     });
     const hi = (peakable.length ? peakable : prior).reduce((m, p) => (p[1] > m[1] ? p : m));
     const lo = prior.reduce((m, p) => (p[1] < m[1] ? p : m));

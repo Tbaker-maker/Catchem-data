@@ -110,6 +110,8 @@ await rm(root, { recursive: true, force: true });
   t("a one day spike is not used as the peak", !fs.some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
   const real = series((n) => (n > 150 && n < 220 ? 80 : n > 30 ? 6 : 5.5));
   t("a peak that held for weeks still counts", findings(item(real), ctx, W).some((f) => f.type === "drawdown" && /\$80\.00/.test(f.text)));
+  const launch = series((n) => (n === 400 ? 80 : n > 30 ? 6 : 5.5));
+  t("a launch day price far above the next point is not the peak", !findings(item(launch), ctx, W).some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
 }
 
