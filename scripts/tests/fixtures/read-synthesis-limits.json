@@ -1,0 +1,43 @@
+{
+ "note": "Fixture limits for tests only. The live limits stay in catchem-data-private config/read-synthesis.json.",
+ "maxOpeningShare": 0.2,
+ "minSignals": 2,
+ "ebayMinListings": 8,
+ "listingsMinN": 8,
+ "listingsMinChangePct": 12,
+ "spreadMinPct": 15,
+ "peerMinN": 8,
+ "peerMinGapPts": 8,
+ "nearHighPct": 3,
+ "drawdownMinPct": 35,
+ "streakMinWeeks": 4,
+ "divergenceMinPct": 6,
+ "longMinDays": 180,
+ "minTrendUsd": 1,
+ "trendMinPct": {
+  "7": 5,
+  "30": 10,
+  "90": 15,
+  "365": 25
+ },
+ "slackDays": {
+  "7": 2,
+  "30": 4,
+  "90": 7,
+  "365": 10
+ },
+ "weights": {
+  "high": 9,
+  "low": 8,
+  "nearHigh": 5,
+  "drawdown": 6,
+  "trend": 3,
+  "divergence": 7,
+  "streak": 1.2,
+  "peers": 3,
+  "listings": 4,
+  "spread": 3.5,
+  "kind": 4
+ },
+ "peerMinPrice": 5
+}
