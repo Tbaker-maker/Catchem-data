@@ -161,8 +161,27 @@ export function selectRealListings(items, opts = {}) {
 
 // The labeled eBay median is the middle of the real listings.
 // The older robust median is only a fallback when that set is empty.
-export function medianFacts(real, agg) {
-  if (real && real.count > 0 && real.median > 0) {
+// Oct 23: sv3pt5-upc showed $185 from 3 "real" asks (wrong 151 products that
+// passed the seller gate) against a $950 robust median of 133 asks. A small
+// real set whose median sits far from the robust median, or from the TCGplayer
+// listed median, is not this product: the robust median is used instead.
+// Limits come from the private real-listing config (drift.low, drift.high, drift.maxCount).
+export const DEFAULT_DRIFT = { low: 0.5, high: 2, maxCount: 10 };
+export function realMedianDrifts(real, agg, opts = {}) {
+  const drift = { ...DEFAULT_DRIFT, ...(opts.drift || {}) };
+  const m = Number(real?.median);
+  if (!(m > 0)) return "";
+  if (Number(real?.count) > drift.maxCount) return "";
+  const robust = Number(agg?.askMedian) > 0 && Number(agg?.askRobustCount) > Number(real?.count) ? Number(agg.askMedian) : null;
+  const tcg = Number(opts.tcgListed) > 0 ? Number(opts.tcgListed) : null;
+  for (const [name, ref] of [["robust", robust], ["tcg", tcg]]) {
+    if (ref && (m < ref * drift.low || m > ref * drift.high)) return name;
+  }
+  return "";
+}
+
+export function medianFacts(real, agg, opts = {}) {
+  if (real && real.count > 0 && real.median > 0 && !realMedianDrifts(real, agg, opts)) {
     return { ebayMedianAsk: real.median, ebayMedianCount: real.count };
   }
   const ebayMedianAsk = (Number(agg?.askMedian) > 0 ? Number(agg.askMedian) : null)
@@ -282,7 +301,12 @@ export async function loadSellerMin(root) {
       const minFeedbackScore = Number(cfg.minFeedbackScore);
       const minPositivePercent = Number(cfg.minPositivePercent);
       if (minFeedbackScore >= 0 && minPositivePercent > 0 && minPositivePercent <= 100) {
-        return { minFeedbackScore, minPositivePercent };
+        const d = cfg.drift || {};
+        const drift = {};
+        if (Number(d.low) > 0 && Number(d.low) < 1) drift.low = Number(d.low);
+        if (Number(d.high) > 1) drift.high = Number(d.high);
+        if (Number(d.maxCount) >= 1) drift.maxCount = Number(d.maxCount);
+        return { minFeedbackScore, minPositivePercent, drift };
       }
     } catch { /* next location */ }
   }

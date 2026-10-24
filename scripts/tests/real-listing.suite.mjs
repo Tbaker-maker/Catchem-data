@@ -42,6 +42,17 @@ export async function run() {
   }
   t("a sound floor stays", floorDropReason(8.99, 12, 15.99, 5) === "" && floorDropReason(null, 0, 10, 5) === "");
   t("the labeled median is the real listing set", labeled.ebayMedianAsk === 849.99 && labeled.ebayMedianCount === 1);
+  {
+    // Oct 23 sv3pt5-upc: 3 wrong 151 products ($185) beat a $950 robust median of 133 asks.
+    const wrong = medianFacts({ count: 3, median: 185 }, { askMedian: 949.99, askRobustCount: 133 });
+    t("a small real set far under the robust median falls back to it", wrong.ebayMedianAsk === 949.99 && wrong.ebayMedianCount === 133);
+    const vsTcg = medianFacts({ count: 2, median: 185 }, {}, { tcgListed: 1100 });
+    t("a small real set far from the TCGplayer listed median is not used", vsTcg.ebayMedianAsk !== 185);
+    const big = medianFacts({ count: 40, median: 185 }, { askMedian: 949.99, askRobustCount: 133 });
+    t("a large real set is trusted as is", big.ebayMedianAsk === 185);
+    const tight = medianFacts({ count: 3, median: 600 }, { askMedian: 949.99, askRobustCount: 133 }, { drift: { low: 0.7 } });
+    t("private drift limits apply", tight.ebayMedianAsk === 949.99);
+  }
   const gated = gateSealedProduct({
     id: "sv3pt5-upc",
     askMedian: 936.99,
