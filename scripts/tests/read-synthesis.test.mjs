@@ -112,6 +112,18 @@ await rm(root, { recursive: true, force: true });
   t("a peak that held for weeks still counts", findings(item(real), ctx, W).some((f) => f.type === "drawdown" && /\$80\.00/.test(f.text)));
   const launch = series((n) => (n === 400 ? 80 : n > 30 ? 6 : 5.5));
   t("a launch day price far above the next point is not the peak", !findings(item(launch), ctx, W).some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
+  // Launch weeks: prices in the first weeks after release are not the peak.
+  const L = { ...W, launchSkipDays: 42 };
+  const rel = day(390);
+  const hype = series((n) => (n > 380 ? 30 : n > 200 ? 12 : 5.5));
+  const relItem = { ...item(hype), release: rel };
+  t("a launch week price is not used as the peak", !findings(relItem, ctx, L).some((f) => /\$30\.00/.test((f.text || "") + (f.short || ""))));
+  t("the peak comes from after the launch weeks", findings(relItem, ctx, L).some((f) => f.type === "drawdown" && /\$12\.00/.test(f.text)));
+  t("pre release prices are not the peak either", !findings({ ...relItem, release: day(385) }, ctx, L).some((f) => /\$30\.00/.test((f.text || "") + (f.short || ""))));
+  t("without a release date the launch limit changes nothing", findings(item(hype), ctx, L).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text)));
+  t("without the launch limit nothing changes", findings(relItem, ctx, W).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text)));
+  const young = series((n) => (n > 380 ? 30 : n > 30 ? 6 : 5.5));
+  t("no peak is claimed when every earlier point is in the launch weeks", !findings({ ...item(young), release: day(395) }, ctx, { ...L, launchSkipDays: 500 }).some((f) => ["high", "nearHigh", "drawdown"].includes(f.type)));
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
 }
 

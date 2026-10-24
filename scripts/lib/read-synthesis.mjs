@@ -37,7 +37,7 @@ export function validSynth(cfg) {
     if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
     out.trendMinPct[w] = a; out.slackDays[w] = b;
   }
-  for (const k of ["peerInlineMaxPts", "spikeRatio"]) { const n = Number(cfg[k]); if (cfg[k] != null && Number.isFinite(n)) out[k] = n; }
+  for (const k of ["peerInlineMaxPts", "spikeRatio", "launchSkipDays"]) { const n = Number(cfg[k]); if (cfg[k] != null && Number.isFinite(n)) out[k] = n; }
   return out;
 }
 
@@ -125,9 +125,16 @@ export function findings(item, ctx, cfg) {
       const near = [a, b].filter((x) => x != null);
       return !(near.length && p[1] > spikeRatio * Math.max(...near));
     });
-    const hi = (peakable.length ? peakable : prior).reduce((m, p) => (p[1] > m[1] ? p : m));
+    // Launch week prices are not a peak either: points before release plus launchSkipDays are left out.
+    // With no release date or no limit on file nothing changes. If every earlier point is in that window, no peak is claimed.
+    const skip = Number(cfg.launchSkipDays);
+    const rel = /^\d{4}-\d{2}-\d{2}$/.test(String(item.release || "")) ? item.release : "";
+    const settled = rel && skip > 0 ? addDays(rel, skip) : "";
+    const pool = (peakable.length ? peakable : prior).filter((p) => !settled || p[0] >= settled);
+    const hi = pool.length ? pool.reduce((m, p) => (p[1] > m[1] ? p : m)) : null;
     const lo = prior.reduce((m, p) => (p[1] < m[1] ? p : m));
-    if (last[1] > hi[1]) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last }, text: `Highest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price on file, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
+    if (!hi) { if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` }); }
+    else if (last[1] > hi[1]) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last }, text: `Highest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price on file, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
     else if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` });
     else {
       const off = (1 - last[1] / hi[1]) * 100;
