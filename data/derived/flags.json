@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-23",
- "generatedAt": "2026-10-23T10:48:47.972Z",
+ "asOf": "2026-10-24",
+ "generatedAt": "2026-10-24T08:58:05.615Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -25,30 +25,29 @@
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
    "ODD_PRICE": 94,
-   "READ_TYPE_EMPTY": 2,
-   "YOUTUBE_LEAD": 9,
-   "HYPE_EFFECT": 1
+   "READ_TYPE_EMPTY": 5,
+   "YOUTUBE_LEAD": 7
   },
   "bySeverity": {
-   "high": 4,
-   "medium": 15,
-   "low": 100
+   "high": 5,
+   "medium": 11,
+   "low": 103
   }
  },
- "newTonight": 41,
+ "newTonight": 0,
  "flags": [
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:89167:2026-10-23",
-   "line": "Shining Mewtwo (Neo Destiny): $3000.00 (2026-10-22) to $577.00 (2026-10-23) on TCGplayer market, down 81%.",
+   "key": "move:102803:2026-10-24",
+   "line": "Gyarados - XY60 (Prerelease) [Staff] (XY Promos): $600.00 (2026-10-23) to $2000.00 (2026-10-24) on TCGplayer market, up 233%.",
    "data": {
-    "id": "tcgcsv-89167",
-    "from": 3000,
-    "to": 577,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": -80.8,
+    "id": "tcgcsv-102803",
+    "from": 600,
+    "to": 2000,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": 233.3,
     "kind": "single"
    },
    "new": false
@@ -56,15 +55,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:86684:2026-10-23",
-   "line": "Leafeon LV.X (Majestic Dawn): $200.00 (2026-10-22) to $525.00 (2026-10-23) on TCGplayer market, up 163%.",
+   "key": "move:89165:2026-10-24",
+   "line": "Shining Kabutops (Neo Destiny): $1399.95 (2026-10-23) to $382.44 (2026-10-24) on TCGplayer market, down 73%.",
    "data": {
-    "id": "tcgcsv-86684",
-    "from": 200,
-    "to": 525,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 162.5,
+    "id": "tcgcsv-89165",
+    "from": 1399.95,
+    "to": 382.44,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": -72.7,
     "kind": "single"
    },
    "new": false
@@ -72,31 +71,47 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:98542:2026-10-23",
-   "line": "Rising Rivals Booster Pack (Rising Rivals): $400.00 (2026-10-22) to $700.00 (2026-10-23) on TCGplayer market, up 75%.",
+   "key": "move:87695:2026-10-24",
+   "line": "Nidoking (150) (Aquapolis): $1200.00 (2026-10-23) to $500.00 (2026-10-24) on TCGplayer market, down 58%.",
    "data": {
-    "id": "tcgcsv-98542",
-    "from": 400,
-    "to": 700,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 75,
-    "kind": "sealed"
+    "id": "tcgcsv-87695",
+    "from": 1200,
+    "to": 500,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": -58.3,
+    "kind": "single"
    },
    "new": false
   },
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:88794:2026-10-23",
-   "line": "Rocket's Sneasel ex (EX Team Rocket Returns): $250.00 (2026-10-22) to $386.33 (2026-10-23) on TCGplayer market, up 55%.",
+   "key": "move:84610:2026-10-24",
+   "line": "Dark Houndoom (Neo Destiny): $299.99 (2026-10-23) to $47.01 (2026-10-24) on TCGplayer market, down 84%.",
    "data": {
-    "id": "tcgcsv-88794",
-    "from": 250,
-    "to": 386.33,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 54.5,
+    "id": "tcgcsv-84610",
+    "from": 299.99,
+    "to": 47.01,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": -84.3,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:83524:2026-10-24",
+   "line": "Altaria ex (EX Emerald): $299.99 (2026-10-23) to $80.00 (2026-10-24) on TCGplayer market, down 73%.",
+   "data": {
+    "id": "tcgcsv-83524",
+    "from": 299.99,
+    "to": 80,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": -73.3,
     "kind": "single"
    },
    "new": false
@@ -104,15 +119,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:108421:2026-10-23",
-   "line": "Genesect - BW101 (Black and White Promos): $59.51 (2026-10-22) to $100.00 (2026-10-23) on TCGplayer market, up 68%.",
+   "key": "move:84611:2026-10-24",
+   "line": "Dark Houndoom - 005/109 (EX Team Rocket Returns): $50.00 (2026-10-23) to $99.03 (2026-10-24) on TCGplayer market, up 98%.",
    "data": {
-    "id": "tcgcsv-108421",
-    "from": 59.51,
-    "to": 100,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 68,
+    "id": "tcgcsv-84611",
+    "from": 50,
+    "to": 99.03,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": 98.1,
     "kind": "single"
    },
    "new": false
@@ -120,31 +135,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:90557:2026-10-23",
-   "line": "Weezing (32) (Expedition): $45.80 (2026-10-22) to $74.11 (2026-10-23) on TCGplayer market, up 62%.",
+   "key": "move:123454:2026-10-24",
+   "line": "Pikachu EX - XY174 (XY Promos): $33.04 (2026-10-23) to $55.29 (2026-10-24) on TCGplayer market, up 67%.",
    "data": {
-    "id": "tcgcsv-90557",
-    "from": 45.8,
-    "to": 74.11,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 61.8,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:480030:2026-10-23",
-   "line": "Dragonite FB - 2010 (Yuta Komatsuda) (World Championship Decks): $29.99 (2026-10-22) to $45.00 (2026-10-23) on TCGplayer market, up 50%.",
-   "data": {
-    "id": "tcgcsv-480030",
-    "from": 29.99,
-    "to": 45,
-    "fromDay": "2026-10-22",
-    "toDay": "2026-10-23",
-    "pct": 50.1,
+    "id": "tcgcsv-123454",
+    "from": 33.04,
+    "to": 55.29,
+    "fromDay": "2026-10-23",
+    "toDay": "2026-10-24",
+    "pct": 67.3,
     "kind": "single"
    },
    "new": false
@@ -442,7 +441,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -574,7 +573,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -586,7 +585,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -598,7 +597,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -610,7 +609,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -622,7 +621,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -634,7 +633,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -646,7 +645,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -658,7 +657,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -670,7 +669,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -682,7 +681,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -694,7 +693,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -706,7 +705,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -718,7 +717,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -730,7 +729,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -742,7 +741,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -754,7 +753,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -766,7 +765,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -778,7 +777,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -790,7 +789,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -802,7 +801,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -814,7 +813,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -826,7 +825,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -838,7 +837,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -850,7 +849,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -862,7 +861,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -874,7 +873,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -886,7 +885,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -898,7 +897,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -910,7 +909,7 @@
     "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -922,7 +921,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -934,7 +933,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -946,7 +945,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -958,7 +957,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -970,7 +969,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -982,7 +981,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -994,7 +993,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1006,7 +1005,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1018,7 +1017,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1030,7 +1029,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1406,129 +1405,128 @@
    "new": false
   },
   {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-10-23",
-   "line": "Print runs: 7 creator videos on 6 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:setheat",
+   "line": "Read type \"setheat\" produced nothing tonight.",
    "data": {
-    "kind": "print_run",
-    "ref": null,
-    "label": "Print runs",
-    "channels": 6,
-    "videos": 7,
-    "weighted": 6.5,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
+    "kind": "setheat",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:listings",
+   "line": "Read type \"listings\" produced nothing tonight.",
+   "data": {
+    "kind": "listings",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:sealedchase",
+   "line": "Read type \"sealedchase\" produced nothing tonight.",
+   "data": {
+    "kind": "sealedchase",
+    "lastNight": 0
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-10-23",
-   "line": "ME: 30th Celebration: 5 creator videos on 3 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-10-24",
+   "line": "Print runs: 9 creator videos on 7 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
+   "data": {
+    "kind": "print_run",
+    "ref": null,
+    "label": "Print runs",
+    "channels": 7,
+    "videos": 9,
+    "weighted": 8.5,
+    "from": "2026-10-18",
+    "to": "2026-10-24"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:23821:2026-10-24",
+   "line": "SV: Prismatic Evolutions: 7 creator videos on 5 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23821,
+    "label": "SV: Prismatic Evolutions",
+    "channels": 5,
+    "videos": 7,
+    "weighted": 5,
+    "from": "2026-10-18",
+    "to": "2026-10-24"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24722:2026-10-24",
+   "line": "ME: 30th Celebration: 6 creator videos on 3 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
     "channels": 3,
-    "videos": 5,
+    "videos": 6,
     "weighted": 3,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
+    "from": "2026-10-18",
+    "to": "2026-10-24"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-23",
-   "line": "SV: Prismatic Evolutions: 5 creator videos on 3 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 23821,
-    "label": "SV: Prismatic Evolutions",
-    "channels": 3,
-    "videos": 5,
-    "weighted": 3,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24380:2026-10-23",
-   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24380,
-    "label": "ME01: Mega Evolution",
-    "channels": 2,
-    "videos": 5,
-    "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24831:2026-10-23",
-   "line": "ME06: Delta Reign: 3 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-10-24",
+   "line": "ME06: Delta Reign: 4 creator videos on 2 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
     "label": "ME06: Delta Reign",
     "channels": 2,
+    "videos": 4,
+    "weighted": 2,
+    "from": "2026-10-18",
+    "to": "2026-10-24"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:2848:2026-10-24",
+   "line": "SWSH07: Evolving Skies: 3 creator videos on 2 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 2848,
+    "label": "SWSH07: Evolving Skies",
+    "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
+    "from": "2026-10-18",
+    "to": "2026-10-24"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24587:2026-10-23",
-   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24587,
-    "label": "ME03: Perfect Order",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24655:2026-10-23",
-   "line": "ME04: Chaos Rising: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24655,
-    "label": "ME04: Chaos Rising",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23473:2026-10-23",
-   "line": "SV06: Twilight Masquerade: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "key": "yt:set_attention:23473:2026-10-24",
+   "line": "SV06: Twilight Masquerade: 2 creator videos on 2 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23473,
@@ -1536,16 +1534,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
+    "from": "2026-10-18",
+    "to": "2026-10-24"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:17688:2026-10-23",
-   "line": "SWSH: Crown Zenith: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "key": "yt:set_attention:17688:2026-10-24",
+   "line": "SWSH: Crown Zenith: 2 creator videos on 2 channels, 2026-10-18 to 2026-10-24 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 17688,
@@ -1553,27 +1551,10 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-17",
-    "to": "2026-10-23"
+    "from": "2026-10-18",
+    "to": "2026-10-24"
    },
    "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24722:2026-10-23",
-   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.2% over 30 days (n=23, 2026-04-27 to 2026-09-19).",
-   "data": {
-    "level": "set",
-    "label": "30th Celebration",
-    "n": 23,
-    "medianPct": -4.2,
-    "from": "2026-04-27",
-    "to": "2026-09-19",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
   }
  ]
 }
