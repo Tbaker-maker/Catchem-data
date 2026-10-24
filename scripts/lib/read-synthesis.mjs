@@ -55,6 +55,22 @@ export async function loadSynth(root) {
   } catch { return null; }
 }
 
+// The full receipt for each rewritten read (every fact and its numbers) goes to a
+// side file, feed/read-synth.json, so reads.json stays small. reads.json keeps the
+// lead, title, signals and the closing point, and names the side file.
+export const SYNTH_FILE = "feed/read-synth.json";
+export function splitReceipts(reads, asOf) {
+  const receipts = {};
+  const out = reads.map((r) => {
+    const full = r?.receipt?.synth;
+    if (!full || typeof full !== "object" || !r.id) return r;
+    receipts[r.id] = full;
+    const { lead, title, signals, now } = full;
+    return { ...r, receipt: { ...r.receipt, synth: { lead, title, signals, now, facts: SYNTH_FILE } } };
+  });
+  return { reads: out, side: { asOf, note: "Every fact and number behind each synthesized read in reads.json, by read id.", receipts } };
+}
+
 export function isItemRead(r) {
   if (!r || !/^tcgcsv-\d+$/.test(String(r.sku || ""))) return false;
   const kind = String(r.readKind || r.kind || "");
