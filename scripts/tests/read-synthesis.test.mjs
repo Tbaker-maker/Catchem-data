@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -132,6 +132,17 @@ await rm(root, { recursive: true, force: true });
   const launch = series((n) => (n === 400 ? 80 : n > 30 ? 6 : 5.5));
   t("a launch day price far above the next point is not the peak", !findings(item(launch), ctx, W).some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
+}
+
+// Receipts: the full facts move to the side file, reads.json keeps a short pointer.
+{
+  const big = { id: "r1", sku: "tcgcsv-1", headline: "x", receipt: { from: 1, synth: { lead: "high", title: "T", signals: ["range", "trend"], now: ["2026-10-23", 5], facts: [{ tag: "range", type: "high", nums: { hi: ["2026-01-01", 4], now: ["2026-10-23", 5] } }], sources: ["a", "b"] } } };
+  const plain = { id: "r2", sku: "tcgcsv-2", headline: "y", receipt: { from: 2 } };
+  const { reads, side } = splitReceipts([big, plain], "2026-10-23");
+  t("the full receipt is kept in the side file by read id", JSON.stringify(side.receipts.r1) === JSON.stringify(big.receipt.synth) && side.asOf === "2026-10-23" && !side.receipts.r2);
+  t("reads.json keeps lead, title, signals and the closing point", reads[0].receipt.synth.lead === "high" && reads[0].receipt.synth.title === "T" && reads[0].receipt.synth.signals.length === 2 && reads[0].receipt.synth.now[1] === 5 && reads[0].receipt.synth.facts === SYNTH_FILE && reads[0].receipt.from === 1);
+  t("reads without a synthesized receipt are untouched", reads[1] === plain);
+  t("the pointer is smaller than the full receipt", JSON.stringify(reads[0]).length < JSON.stringify(big).length);
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
