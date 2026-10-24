@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-24T09:42:33.072Z",
+  "generatedAt": "2026-10-24T16:19:14.945Z",
   "asOf": "2026-10-24",
   "source": {
     "heatHistory": "data/heat-history.json",
     "sealedPrices": "data/sealed-prices.json",
     "buyoutTape": "data/buyout-tape.json",
     "tcgplayer": "TCGplayer market for the same id only (crosscheck history or data/history/tcgplayer-market). A held id is not used.",
-    "sealedPricesUpdatedAt": "2026-10-24T09:17:45.715Z"
+    "sealedPricesUpdatedAt": "2026-10-24T16:09:12.205Z"
   },
   "rule": {
     "highGap": 0.5,
@@ -23,34 +23,34 @@
   "high": [],
   "soft": [
     {
-      "id": "xy12-etb",
-      "name": "Evolutions Elite Trainer Box",
+      "id": "swsh1-etb",
+      "name": "Sword & Shield Base Elite Trainer Box",
       "subtype": "etb",
       "severity": "soft",
-      "direction": "low",
+      "direction": "high",
       "todayDate": "2026-10-24",
-      "todayPrice": 402.98,
-      "referencePrice": 735.84,
+      "todayPrice": 255,
+      "referencePrice": 175,
       "referenceWindow": {
         "priorCount": 7,
         "from": "2026-10-15",
         "to": "2026-10-23",
         "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
       },
-      "pctGap": -45.2,
-      "listingCount": 23,
-      "listingCountPrior": 23,
+      "pctGap": 45.7,
+      "listingCount": 4,
+      "listingCountPrior": 6,
       "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
-      "browseTotal": 2554,
-      "browseTotalPrior": 2549,
-      "tcgNow": 868.87,
-      "tcgReference": 868.87,
-      "tcgPct": 0,
+      "browseTotal": 23,
+      "browseTotalPrior": 23,
+      "tcgNow": 177.72,
+      "tcgReference": 174.89,
+      "tcgPct": 1.6,
       "tcgAsOf": "2026-10-24",
       "provisionalLabel": "likely bad listing",
       "evidence": [
-        "eBay ask vs its recent median -45.2%",
-        "TCGplayer 868.87 → 868.87 (0%)",
+        "eBay ask vs its recent median +45.7%",
+        "TCGplayer 174.89 → 177.72 (+1.6%)",
         "TCGplayer price stayed flat while the eBay median jumped"
       ],
       "conflict": false

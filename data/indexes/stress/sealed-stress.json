@@ -32,8 +32,8 @@
     "extra": 5
   },
   "lines": {
-    "equal": 101.7,
-    "capped": 100.5,
+    "equal": 101.1,
+    "capped": 99.2,
     "median": 100.7,
     "capAppliedDays": 31,
     "capInfeasibleDays": 0
@@ -349,8 +349,8 @@
     {
       "date": "2026-10-24",
       "from": "2026-10-23",
-      "equal": 101.7,
-      "capped": 100.5,
+      "equal": 101.1,
+      "capped": 99.2,
       "median": 100.7,
       "matched": 158,
       "capApplied": true,
@@ -359,9 +359,9 @@
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 1.2,
+    "maxGap": 1.9,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 1.2 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 1.9 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
@@ -635,8 +635,8 @@
       "n": 37,
       "start": "2026-08-18",
       "levels": {
-        "equal": 100,
-        "capped": 101.3,
+        "equal": 99.2,
+        "capped": 99.9,
         "median": 99.9
       },
       "matchedLast": 34,
@@ -647,8 +647,8 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 99.3,
-        "capped": 97.4,
+        "equal": 98.6,
+        "capped": 96.9,
         "median": 102.8
       },
       "matchedLast": 25,
@@ -659,7 +659,7 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 103.6,
+        "equal": 103.2,
         "capped": 97.4,
         "median": 107.4
       },
@@ -671,8 +671,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 106,
-        "capped": 99.1,
+        "equal": 106.2,
+        "capped": 99.4,
         "median": 99.7
       },
       "matchedLast": 37,
@@ -683,8 +683,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 109.8,
-        "capped": 101.4,
+        "equal": 108.7,
+        "capped": 100.4,
         "median": 110.3
       },
       "matchedLast": 33,
@@ -695,8 +695,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 98.1,
-        "capped": 96.4,
+        "equal": 97.8,
+        "capped": 96.2,
         "median": 100
       },
       "matchedLast": 29,
@@ -936,7 +936,7 @@
       "observations": 32,
       "first": "2026-08-18",
       "last": "2026-10-24",
-      "maxAbsReturn": 0.052
+      "maxAbsReturn": 0.0524
     },
     {
       "id": "me3-pack",
@@ -1312,7 +1312,7 @@
       "observations": 32,
       "first": "2026-08-18",
       "last": "2026-10-24",
-      "maxAbsReturn": 0.0477
+      "maxAbsReturn": 0.0526
     },
     {
       "id": "sv10-etb",
@@ -2207,7 +2207,7 @@
       "observations": 31,
       "first": "2026-08-19",
       "last": "2026-10-24",
-      "maxAbsReturn": 0.0332
+      "maxAbsReturn": 0.0545
     },
     {
       "id": "swsh45-pack",
@@ -2339,7 +2339,7 @@
       "observations": 31,
       "first": "2026-08-19",
       "last": "2026-10-24",
-      "maxAbsReturn": 0.0563
+      "maxAbsReturn": 0.0584
     },
     {
       "id": "swsh8-etb",
