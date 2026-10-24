@@ -554,11 +554,11 @@ export function robustAskRange(sortedPrices) {
 // priceFloorClean is that set's low, never the raw minimum ask.
 function askFactsFromKept(product, kept, agg, sellerMin, tcgMids) {
   const real = selectRealListings(kept || [], { isPack: product?.subtype === "booster-pack", market: "US", sellerMin });
-  const labeled = medianFacts(real, agg);
-  const ebayMedianAsk = labeled.ebayMedianAsk;
-  const ebayMedianCount = labeled.ebayMedianCount;
   const pid = Number(product?.tcgPlayerId);
   const tcgListedMedian = pid > 0 && tcgMids?.has(pid) ? tcgMids.get(pid) : null;
+  const labeled = medianFacts(real, agg, { drift: sellerMin?.drift, tcgListed: tcgListedMedian });
+  const ebayMedianAsk = labeled.ebayMedianAsk;
+  const ebayMedianCount = labeled.ebayMedianCount;
   let cheapestReal = real.cheapest || null;
   if (cheapestReal && floorBad(cheapestReal.price, ebayMedianAsk)) cheapestReal = null;
   // A floor above the published median is a contradiction (Oct 23: 35 rows, mostly a
