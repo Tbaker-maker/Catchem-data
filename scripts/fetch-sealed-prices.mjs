@@ -556,7 +556,7 @@ function askFactsFromKept(product, kept, agg, sellerMin, tcgMids) {
   const real = selectRealListings(kept || [], { isPack: product?.subtype === "booster-pack", market: "US", sellerMin });
   const pid = Number(product?.tcgPlayerId);
   const tcgListedMedian = pid > 0 && tcgMids?.has(pid) ? tcgMids.get(pid) : null;
-  const labeled = medianFacts(real, agg, { drift: sellerMin?.drift, tcgListed: tcgListedMedian });
+  const labeled = medianFacts(real, agg, { drift: sellerMin?.drift, tcgListed: tcgListedMedian, minCount: ROBUST_MIN });
   const ebayMedianAsk = labeled.ebayMedianAsk;
   const ebayMedianCount = labeled.ebayMedianCount;
   let cheapestReal = real.cheapest || null;

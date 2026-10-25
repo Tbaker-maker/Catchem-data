@@ -1,6 +1,6 @@
 // sv3pt5-upc: junk floor, opened, and damaged lose. A clean listing wins.
 // A $12 history point is under 0.3x the robust median and is dropped.
-import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, medianFacts, floorAboveMedianOf, floorDropReason, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
+import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, medianFacts, realTitleBad, floorAboveMedianOf, floorDropReason, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
 import { scoreAskFacts, scoreItems } from "../lib/tracker.mjs";
 
 const item = (title, price, extra = {}) => ({
@@ -41,7 +41,16 @@ export async function run() {
     t("each dropped floor is logged in the flag file", f.length === 1 && f[0].key === "floor-dropped:sv6-pack" && f[0].type === "ODD_PRICE");
   }
   t("a sound floor stays", floorDropReason(8.99, 12, 15.99, 5) === "" && floorDropReason(null, 0, 10, 5) === "");
-  t("the labeled median is the real listing set", labeled.ebayMedianAsk === 849.99 && labeled.ebayMedianCount === 1);
+  t("a one-listing real set does not beat 133 robust asks", labeled.ebayMedianAsk === 936.99 && labeled.ebayMedianCount === 133);
+  {
+    const solid = medianFacts({ count: 12, median: 849.99 }, { askMedian: 936.99, askRobustCount: 133 });
+    t("a real set at the proven minimum is the labeled median", solid.ebayMedianAsk === 849.99 && solid.ebayMedianCount === 12);
+    const alone = medianFacts({ count: 4, median: 1541 }, { askRobustCount: 4 });
+    t("a thin real set stays when nothing larger exists", alone.ebayMedianAsk === 1541);
+    const sv3 = medianFacts({ count: 1, median: 7 }, { askMedian: 14, askRobustCount: 33 }, { tcgListed: 12.99 });
+    t("Oct 24 sv3-pack: one $7 non-pack listing falls back to $14 of 33", sv3.ebayMedianAsk === 14 && sv3.ebayMedianCount === 33);
+    t("a title saying without the product is not a real copy", realTitleBad("Mini Portfolio without Obsidian Flames Booster Pack", { isPack: true }) === "title");
+  }
   {
     // Oct 23 sv3pt5-upc: 3 wrong 151 products ($185) beat a $950 robust median of 133 asks.
     const wrong = medianFacts({ count: 3, median: 185 }, { askMedian: 949.99, askRobustCount: 133 });
