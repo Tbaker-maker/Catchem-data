@@ -33,6 +33,8 @@ t("an empty file is refused", checkBuild({ files: files(3, DAY, { "feed/x.json":
 const missing = files(3); missing.delete("counts.json");
 t("a missing required file is refused", checkBuild({ files: missing, before: null, cfg: CFG, today: DAY }).some((p) => /counts.json is missing/.test(p)));
 t("many vanished files are refused", checkBuild({ files: files(3), before: ["a", "b", "reads.json"], cfg: CFG, today: DAY }).some((p) => /disappear/.test(p)));
+t("rotating read files may vanish", checkBuild({ files: files(3), before: ["feed/facts/a.json", "feed/facts/b.json", "feed/item-reads/03.json", "reads.json"], cfg: CFG, today: DAY }).length === 0);
+t("stable files still count when read files rotate", checkBuild({ files: files(3), before: ["feed/facts/a.json", "a", "b", "reads.json"], cfg: CFG, today: DAY }).some((p) => /2 files would disappear/.test(p)));
 t("one vanished file is allowed", checkBuild({ files: files(3), before: ["a", "reads.json"], cfg: CFG, today: DAY }).length === 0);
 
 const fake = (tipSha, asOf, status = 200) => async (url) => {

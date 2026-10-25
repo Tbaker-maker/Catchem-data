@@ -148,7 +148,7 @@ if (isMain()) {
     const { writeFileSync, mkdirSync } = await import("node:fs");
     const cfg = await loadChecks(cwd);
     const smoke = async () => {
-      try { execFileSync("node", ["scripts/smoke-test.mjs"], { cwd, stdio: "inherit" }); return ""; } catch { return "smoke test failed"; }
+      try { execFileSync("node", ["scripts/smoke-test.mjs"], { cwd, stdio: "inherit", env: { ...process.env, SMOKE_PREPUBLISH: "1" } }); return ""; } catch { return "smoke test failed"; }
     };
     const out = await guardedPublish({
       cwd,
