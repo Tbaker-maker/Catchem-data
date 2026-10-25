@@ -21,6 +21,7 @@ function git(cwd, args, input) {
     cwd,
     input,
     encoding: "utf8",
+    maxBuffer: 256 * 1024 * 1024, // Oct 24: a public file passed the 1 MB default and cat-file died with ENOBUFS
     env: { ...process.env, ...AUTHOR },
   }).trim();
 }
