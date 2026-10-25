@@ -336,7 +336,7 @@ export function synthesizeReads(reads, ctx, cfg) {
     report.rewritten += 1;
     const lead = got.lead;
     // A lead price read keeps its TCGplayer market headline; the summary is its lead line.
-    const leadPrice = (r.board !== "v3" && r.readKind === "price") || r.kind === "single" || r.kind === "sealed";
+    const leadPrice = ((r.board !== "v3" && r.readKind === "price") || r.kind === "single" || r.kind === "sealed") && /\bon TCGplayer market\b/.test(String(r.headline || ""));
     const next = { ...r, headline: leadPrice && r.headline ? r.headline : got.text, path: got.text, variants: [got.text], synth: true,
       receipt: { ...(r.receipt || {}), synth: { lead: lead.type, title: item.title, signals: got.pick.map((p) => p.tag), facts: got.pick.map((p) => ({ tag: p.tag, type: p.type, nums: p.nums || null })), now: item.pts[item.pts.length - 1], sources: ["research/assets/public/hist-long", "research/assets/public/buckets", "research/assets/public/listings-counted.json", "data/sealed-prices.json", "research/assets/public/set-value", "research/assets/public/rotation-status.json"] } } };
     if (lead.window) next.windowDays = lead.window;
