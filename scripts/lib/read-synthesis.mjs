@@ -133,8 +133,8 @@ export function findings(item, ctx, cfg) {
       const off = (1 - last[1] / hi[1]) * 100;
       const level = Math.round(hi[1] * 100) === Math.round(last[1] * 100);
       if (off <= cfg.nearHighPct) out.push({ tag: "range", type: "nearHigh", score: cfg.weights.nearHigh, nums: { hi, now: last },
-        text: level ? `Level with its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, the same as on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `Within ${Math.max(1, r0(off))}% of its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, against a peak of ${at(hi, asOf)}.`,
-        short: level ? `It is level with its highest price on file, first reached on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `It sits within ${Math.max(1, r0(off))}% of its highest price on file, ${at(hi, asOf)}.` });
+        text: level ? `Level with its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, the same as on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `About ${Math.max(1, r0(off))}% under its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, against a peak of ${at(hi, asOf)}.`,
+        short: level ? `It is level with its highest price on file, first reached on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `It sits about ${Math.max(1, r0(off))}% under its highest price on file, ${at(hi, asOf)}.` });
       else if (off >= cfg.drawdownMinPct) out.push({ tag: "range", type: "drawdown", score: cfg.weights.drawdown * (off / 100), nums: { hi, now: last }, text: `Still ${r0(off)}% under its peak of ${at(hi, asOf)}: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}.`, short: `It is still ${r0(off)}% under its peak of ${at(hi, asOf)}.` });
     }
   }
@@ -335,7 +335,9 @@ export function synthesizeReads(reads, ctx, cfg) {
     if (!got) { report.kept += 1; return r; }
     report.rewritten += 1;
     const lead = got.lead;
-    const next = { ...r, headline: got.text, path: got.text, variants: [got.text], synth: true,
+    // A lead price read keeps its TCGplayer market headline; the summary is its lead line.
+    const leadPrice = (r.board !== "v3" && r.readKind === "price") || r.kind === "single" || r.kind === "sealed";
+    const next = { ...r, headline: leadPrice && r.headline ? r.headline : got.text, path: got.text, variants: [got.text], synth: true,
       receipt: { ...(r.receipt || {}), synth: { lead: lead.type, title: item.title, signals: got.pick.map((p) => p.tag), facts: got.pick.map((p) => ({ tag: p.tag, type: p.type, nums: p.nums || null })), now: item.pts[item.pts.length - 1], sources: ["research/assets/public/hist-long", "research/assets/public/buckets", "research/assets/public/listings-counted.json", "data/sealed-prices.json", "research/assets/public/set-value", "research/assets/public/rotation-status.json"] } } };
     if (lead.window) next.windowDays = lead.window;
     return next;

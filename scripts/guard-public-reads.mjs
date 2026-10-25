@@ -4,6 +4,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { finishBoard } from "./lib/board-mix.mjs";
 import { guardChipDoc, guardReads, loadDaily, loadGuard } from "./lib/reads-guard.mjs";
 import { writeReadFlags } from "./lib/read-thin-data.mjs";
 
@@ -32,8 +33,9 @@ if (flags.length) {
     process.exit(0);
   }
 }
-bundle.reads = keep;
-if (typeof bundle.count === "number") bundle.count = keep.length;
+const kept = finishBoard(keep);
+bundle.reads = kept;
+if (typeof bundle.count === "number") bundle.count = kept.length;
 await writeFile(path, `${JSON.stringify(bundle, null, 1)}\n`);
 const chipPath = join(ROOT, "research/assets/public/signal-chips.json");
 try {
@@ -41,6 +43,6 @@ try {
   // Every read left out today, by this step or an earlier one, loses its chips.
   let dayFlags = flags;
   try { dayFlags = [...flags, ...(JSON.parse(await readFile(join(ROOT, `data/derived/read-flags/${String(bundle.asOf).slice(0, 10)}.json`), "utf8")).flags || [])]; } catch { /* only tonight's */ }
-  await writeFile(chipPath, `${JSON.stringify(guardChipDoc(chips, keep, dayFlags, cfg))}\n`);
+  await writeFile(chipPath, `${JSON.stringify(guardChipDoc(chips, kept, dayFlags, cfg))}\n`);
 } catch { console.warn("reads guard: signal-chips.json not rewritten"); }
 console.log(JSON.stringify({ before, after: keep.length, blocked: flags.map((f) => `${f.id}:${f.rule}`), fixes: fixes.length }));

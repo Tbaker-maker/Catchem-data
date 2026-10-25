@@ -28,6 +28,7 @@ import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripRea
 import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
+import { spaceFamilies } from "./reads-guard.mjs";
 import { dropThinReads, listingAnnotate, loadListingIndex, releaseEra } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
@@ -910,7 +911,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const mixed = unstickFamilies(dropHeldReads(mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 }), heldIds));
   for (const r of mixed) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
   const listingIndex = await loadListingIndex(root);
-  const gated = await dropThinReads(mixed, root, end, listingAnnotate(listingIndex));
+  const gated = finishBoard(await dropThinReads(mixed, root, end, listingAnnotate(listingIndex)));
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of gated) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
@@ -927,4 +928,25 @@ export async function freshListings(root, pubDoc) {
     if (!built.products?.length) return pubDoc;
     return { asOf, source: "data/sealed-prices.json", parentsFile: "data/sealed-products.json", skippedParents: built.skipped, products: built.products };
   } catch { return pubDoc; }
+}
+
+// Last pass on the published board, after every step that can drop a read.
+// Price reads (isPriceRead) stay at most one third of the board: price rows are
+// trimmed from the back, history rows first and deep dives last, never invented.
+// Then no two of a family sit side by side.
+export function finishBoard(rows, { maxShare = PRICE_SHARE_MAX } = {}) {
+  const list = (rows || []).slice();
+  const nFresh = list.filter((r) => !isPriceRead(r)).length;
+  const priceIdx = list.map((r, i) => (isPriceRead(r) ? i : -1)).filter((i) => i >= 0);
+  const cap = maxShare < 1 ? Math.floor((maxShare * nFresh) / (1 - maxShare)) : priceIdx.length;
+  let extra = priceIdx.length - cap;
+  const drop = new Set();
+  const rank = (r) => (r.board === "hist" ? 0 : r.readKind === "deep" ? 2 : 1);
+  for (const tier of [0, 1, 2]) {
+    for (let k = priceIdx.length - 1; k >= 0 && extra > 0; k -= 1) {
+      const i = priceIdx[k];
+      if (!drop.has(i) && rank(list[i]) === tier) { drop.add(i); extra -= 1; }
+    }
+  }
+  return spaceFamilies(list.filter((_, i) => !drop.has(i)));
 }

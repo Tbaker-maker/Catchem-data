@@ -1,5 +1,6 @@
 // node scripts/publish-gate.mjs [--check]   (--check reports only, never writes)
 import { readFile, writeFile } from "node:fs/promises";
+import { finishBoard } from "./lib/board-mix.mjs";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -154,7 +155,8 @@ if (premiumDoc && Array.isArray(productList)) {
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
 if (!check) {
   if (previewBad) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");
-  await writeFile(readsPath, JSON.stringify({ ...doc, reads: res.kept, count: res.kept.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
+  const board = finishBoard(res.kept);
+  await writeFile(readsPath, JSON.stringify({ ...doc, reads: board, count: board.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
   for (const [f, kept] of writes) await writeFile(f, JSON.stringify(kept) + "\n");
   const ids = leadIds(res.kept, floor, 8);
   await writeFile(join(PUB, "feed/lead-order.json"), JSON.stringify({ asOf: asOf || "", ids }, null, 1) + "\n");
