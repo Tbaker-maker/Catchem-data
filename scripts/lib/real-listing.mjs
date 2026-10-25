@@ -40,6 +40,7 @@ const JUNK = [
   /\bno packs\b/i,
   /\bpartial(?:ly)?\b/i,
   /\bmissing\b/i,
+  /\bwithout\b/i,
   /\bread description\b/i,
   /\bas is\b/i,
   /\blots?\b/i,
@@ -180,8 +181,20 @@ export function realMedianDrifts(real, agg, opts = {}) {
   return "";
 }
 
+// Oct 24: after the drift guard, 63 of 210 products still published a "median"
+// of 1 to 4 real listings while dozens of robust asks existed (sv3-pack $7 was a
+// mini portfolio "without" a pack; sv3pt5-upc $700 was one listing vs $950 of 133).
+// A real set under the proven minimum (the same one the floor uses) is not a
+// median when a larger robust set exists; the robust median is used instead.
+export const DEFAULT_MEDIAN_MIN = 5;
+export function realSetTooThin(real, agg, opts = {}) {
+  const min = Number(opts.minCount) > 0 ? Number(opts.minCount) : DEFAULT_MEDIAN_MIN;
+  if (Number(real?.count) >= min) return false;
+  return Number(agg?.askMedian) > 0 && Number(agg?.askRobustCount) > Number(real?.count || 0);
+}
+
 export function medianFacts(real, agg, opts = {}) {
-  if (real && real.count > 0 && real.median > 0 && !realMedianDrifts(real, agg, opts)) {
+  if (real && real.count > 0 && real.median > 0 && !realSetTooThin(real, agg, opts) && !realMedianDrifts(real, agg, opts)) {
     return { ebayMedianAsk: real.median, ebayMedianCount: real.count };
   }
   const ebayMedianAsk = (Number(agg?.askMedian) > 0 ? Number(agg.askMedian) : null)
