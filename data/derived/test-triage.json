@@ -2,31 +2,9 @@
   "mode": "nightly",
   "finished": true,
   "blocked": [],
-  "withheld": [
-    {
-      "key": "set-value",
-      "label": "set value pages",
-      "paths": [
-        "research/assets/public/feed/set-value.json",
-        "research/assets/public/set-value"
-      ],
-      "tests": [
-        {
-          "name": "feature-data.suite.mjs",
-          "detail": "1 failed",
-          "section": "feature suites",
-          "inner": [
-            "set value counts match priced singles"
-          ]
-        }
-      ]
-    }
-  ],
+  "withheld": [],
   "monitor": [],
-  "paths": [
-    "research/assets/public/feed/set-value.json",
-    "research/assets/public/set-value"
-  ],
-  "summary": "Prices fetch, commit and publish tonight.\nWithheld: set value pages. The site keeps the last good copy of research/assets/public/feed/set-value.json, research/assets/public/set-value. Failing tests:\n- feature-data.suite.mjs (set value counts match priced singles)",
-  "at": "2026-10-26T08:08:13.028Z"
+  "paths": [],
+  "summary": "Prices fetch, commit and publish tonight.\nEvery test passed. Nothing withheld.",
+  "at": "2026-10-26T10:35:23.137Z"
 }
