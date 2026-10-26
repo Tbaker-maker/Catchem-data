@@ -1,5 +1,5 @@
 {
- "nightlyDay": "2026-10-25",
+ "nightlyDay": "2026-10-26",
  "note": "A live file with a date more than 2 days behind nightlyDay fails the nightly check. Files with no date say so in note.",
  "files": [
   {
@@ -22,7 +22,7 @@
    "live": false,
    "dateRequired": true,
    "note": "Per printing, per condition. Empty until a TCGplayer row names the condition.",
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/movers.json",
@@ -33,7 +33,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/accuracy.json",
@@ -44,7 +44,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/counts.json",
@@ -54,7 +54,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/sets.json",
@@ -64,7 +64,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/artists.json",
@@ -74,7 +74,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/indexes.json",
@@ -84,7 +84,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/receipts.json",
@@ -94,7 +94,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/track-record.json",
@@ -104,7 +104,7 @@
    "writer": "scripts/write-track-record.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-24"
+   "asOf": "2026-10-25"
   },
   {
    "file": "research/assets/public/today.json",
@@ -114,7 +114,7 @@
    "writer": "scripts/write-morning-card.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/public/feed/supply-lead.json",
@@ -207,7 +207,7 @@
    "writer": "scripts/fetch-sealed-prices.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "data/derived/weekly-read.json",
@@ -217,7 +217,7 @@
    "writer": "scripts/compute-weekly-read.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/assets/the-pulse.html",
@@ -237,7 +237,7 @@
    "writer": "scripts/write-run-report.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-25"
+   "asOf": "2026-10-26"
   },
   {
    "file": "research/pulse/pulse-feed.json",
