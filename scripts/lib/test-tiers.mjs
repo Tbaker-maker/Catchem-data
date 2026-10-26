@@ -29,7 +29,7 @@ export const GROUPS = [
   {
     key: "set-value",
     label: "set value pages",
-    match: /^(feature-data|set-value|set-master)\.suite\.mjs$/,
+    match: /^(feature-data|set-value|set-master)\.suite\.mjs$|^rebuild: write-feature-data\.mjs$/,
     paths: [PUB + "feed/set-value.json", PUB + "set-value"],
   },
   {
@@ -41,7 +41,7 @@ export const GROUPS = [
   {
     key: "condition-ladder",
     label: "loose card condition prices",
-    match: /^condition-ladder\.suite\.mjs$/,
+    match: /^condition-ladder\.suite\.mjs$|^rebuild: build-condition-ladder\.mjs$/,
     paths: [PUB + "condition-prices.json"],
   },
   {
@@ -71,7 +71,7 @@ export const GROUPS = [
   {
     key: "reads",
     label: "reads",
-    match: /(^|-)reads?(-|\.)|^(board-v3|board-determinism|deep-reads|rd6|rd7|takes|morning-card|signal-chips|phase2-reads|fact-reads|held-reads|feed-rank|feed-sections|feed-extras-nightly|read-library|read-quality|read-scorer|second-library|trend-context|weekly-movers|weekly-read|path-tags|shape-reads|span-reads|rich-reads|history-reads|outlier-dive-reads|research-reads|extra-reads|editor-copy|pattern-lab|call-patterns|proven-signal|hype-crowd|face-stamp-subject|seller-stage)\.suite\.mjs$|^(feed lead rank suite|custom reads suites|face stamp subject suite|signal chips suite|seller tag and run stage suite|reads subprocess: .*)$/,
+    match: /(^|-)reads?(-|\.)|^(board-v3|board-determinism|deep-reads|rd6|rd7|takes|morning-card|signal-chips|phase2-reads|fact-reads|held-reads|feed-rank|feed-sections|feed-extras-nightly|read-library|read-quality|read-scorer|second-library|trend-context|weekly-movers|weekly-read|path-tags|shape-reads|span-reads|rich-reads|history-reads|outlier-dive-reads|research-reads|extra-reads|editor-copy|pattern-lab|call-patterns|proven-signal|hype-crowd|face-stamp-subject|seller-stage)\.suite\.mjs$|^(feed lead rank suite|custom reads suites|face stamp subject suite|signal chips suite|seller tag and run stage suite|reads subprocess: .*|rebuild: (build-feed|check-board-sync|write-morning-card)\.mjs)$/,
     paths: [
       PUB + "reads.json", PUB + "today.json", PUB + "reads-preview.json", PUB + "signal-chips.json",
       PUB + "feed/item-reads", PUB + "feed/read-synth.json", PUB + "feed/extra-reads.json",
@@ -131,6 +131,7 @@ export function tierOf(failure) {
  * request must be fully green on its own code, and main's staleness is not its code.
  */
 export function triage(text, mode = "nightly") {
+  if (Array.isArray(text)) return mergeTriage(text.map((x) => triage(x, mode)), mode);
   const { failures, finished } = parseLog(text);
   const out = { mode, finished, blocked: [], withheld: [], monitor: [], paths: [] };
   if (!finished) {
@@ -171,4 +172,20 @@ export function describe(result) {
   for (const f of result.monitor) lines.push(`Freshness only, not blocking: ${names(f)}`);
   if (!result.blocked.length && !result.withheld.length && !result.monitor.length) lines.push("Every test passed. Nothing withheld.");
   return lines.join("\n");
+}
+
+function mergeTriage(parts, mode) {
+  const out = { mode, finished: parts.every((p) => p.finished), blocked: [], withheld: [], monitor: [], paths: [] };
+  const byGroup = new Map();
+  for (const p of parts) {
+    out.blocked.push(...p.blocked);
+    out.monitor.push(...p.monitor);
+    for (const g of p.withheld) {
+      if (!byGroup.has(g.key)) byGroup.set(g.key, { ...g, tests: [] });
+      byGroup.get(g.key).tests.push(...g.tests);
+    }
+  }
+  out.withheld = [...byGroup.values()];
+  out.paths = [...new Set(out.withheld.flatMap((g) => g.paths))];
+  return out;
 }

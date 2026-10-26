@@ -49,6 +49,12 @@ export async function run() {
   const sv = triage(log("── feature suites ──", "  FAIL set value counts match priced singles", "  ✗ feature-data.suite.mjs — 1 failed"));
   t("a set value failure withholds only set value files", sv.blocked.length === 0 && sv.paths.every((p) => /set-value/.test(p)));
 
+  const rb = (line) => ["── rebuild ──", line, "", "9 passed · 1 failed"].join("\n");
+  const two = triage([log("── price trust ──", "  ✓ ok"), rb("  ✗ rebuild: build-feed.mjs")]);
+  t("a feed builder failure withholds reads, prices still publish", two.blocked.length === 0 && two.withheld[0]?.key === "reads");
+  t("a price page builder failure blocks", triage([log(), rb("  ✗ rebuild: build-public-bundle.mjs")]).blocked.length === 1);
+  t("a missing rebuild log blocks", triage([log(), ""]).blocked.length === 1);
+
   // The workflow wiring: tests are triaged, withheld files are put back before
   // the feed commit, and one issue is opened or updated.
   const wf = await readFile(new URL("../../.github/workflows/update-sealed-prices.yml", import.meta.url), "utf8");
@@ -59,7 +65,7 @@ export async function run() {
   t("a failed or degraded nightly updates one issue", at("scripts/nightly-issue.mjs") > 0);
   const pr = await readFile(new URL("../../.github/workflows/pr-tests.yml", import.meta.url), "utf8");
   t("PR CI triages in pr mode", /triage-tests\.mjs[^\n]*--mode pr/.test(pr));
-  t("main's artifact freshness runs only on main, not on PRs", /Artifact freshness[\s\S]{0,200}github\.event_name != 'pull_request'/.test(pr));
+  t("main's artifact freshness runs only on main, not on PRs", /Artifact freshness[\s\S]{0,500}github\.event_name != 'pull_request'/.test(pr));
   return fail;
 }
 
