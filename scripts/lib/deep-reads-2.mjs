@@ -10,6 +10,7 @@ import { jumpyQuote } from "./jumpy-price.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { row, valueOn, sparkOf } from "./deep-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
+import { assessThin } from "./thin-trading.mjs";
 
 const usd = (n) => tcgAmount(n, money);
 
@@ -46,6 +47,30 @@ function quoted(r, asOf, jumpy) {
   return { ...r, z: q.price, quote: text, jumpy: !!q.jumpy };
 }
 
+// Unbacked thin trading cannot lead. A backed thin card can, and carries the line.
+function thinOf(c, asOf, price, seriesOf, lowOf) {
+  const supplied = typeof seriesOf === "function" ? seriesOf(c) : null;
+  const series = Array.isArray(supplied) && supplied.length ? supplied : (c.pts || []);
+  let low = null;
+  if (typeof lowOf === "function") {
+    const n = Number(lowOf(c));
+    if (n > 0) low = n;
+  } else if (Number(c.low) > 0) low = Number(c.low);
+  return assessThin(series, asOf, { market: price, low });
+}
+
+function keepLead(r, asOf, seriesOf, lowOf) {
+  const thin = thinOf(r.c, asOf, r.z, seriesOf, lowOf);
+  if (thin.thin && !thin.backed) return null;
+  return { ...r, thin };
+}
+
+function prepare(r, asOf, jumpy, seriesOf, lowOf) {
+  const q = quoted(r, asOf, jumpy);
+  if (!q) return null;
+  return keepLead(q, asOf, seriesOf, lowOf);
+}
+
 function labelled(cards, tagsOf, asOf, minPrice = 1) {
   const out = [];
   for (const c of cards) {
@@ -59,15 +84,15 @@ function labelled(cards, tagsOf, asOf, minPrice = 1) {
 }
 
 // Every printing of one Pokémon, each with its own label, tonight's price first.
-export function everyPrinting(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
+export function everyPrinting(cards, tagsOf, { asOf, max = 12, jumpy = null, seriesOf = null, lowOf = null } = {}) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 2)) {
     const t = speciesToken(r.c.name);
     if (!t || t.length < 3) continue;
-    const q = quoted(r, asOf, jumpy);
-    if (!q) continue;
+    const kept = prepare(r, asOf, jumpy, seriesOf, lowOf);
+    if (!kept) continue;
     if (!by.has(t)) by.set(t, []);
-    by.get(t).push(q);
+    by.get(t).push(kept);
   }
   const groups = [...by.entries()].filter(([, rs]) => rs.length >= 6).map(([t, rs]) => ({ t, rs: rs.sort((a, b) => b.z - a.z), total: rs.reduce((s, r) => s + r.z, 0) }));
   groups.sort((a, b) => b.total - a.total);
@@ -78,8 +103,12 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
     const mix = [...labels.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
     const top = g.rs.slice(0, 4);
     const topWord = (g.rs[0].jumpy || g.rs.at(-1).jumpy) ? "" : " tonight";
+    const leadNote = top[0]?.thin?.line || "";
+    const shown = leadNote ? top.slice(0, 3) : top;
+    const cardLines = shown.map((r) => `${cardTitle(r.c)}, ${r.label}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`);
+    if (leadNote) cardLines.splice(1, 0, leadNote);
     const rr = row("printings", g.t, g.t, `Every ${g.t} card we price: ${g.rs.length} cards, from ${usd(g.rs.at(-1).z)} to ${usd(g.rs[0].z)}${topWord}.`, [
-      ...top.map((r) => `${cardTitle(r.c)}, ${r.label}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`),
+      ...cardLines,
       `Most common labels: ${mix}.`,
       `TCGplayer market, ${monthDay(asOf)}. Each label is the card's own rarity in its set.`,
     ], asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(g.t)}`, chart: { label: `Top ${g.t} cards, $`, bars: g.rs.slice(0, 6).map((r) => [`${short(r.c.set)}`.slice(0, 16), Math.round(r.z)]) }, weight: g.total });
@@ -91,17 +120,17 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
 const CHASE_LABELS = ["Special Illustration Rare", "Illustration Rare", "Alternate Art", "Tag Team (Alternate Art)", "Trainer Gallery", "Galarian Gallery", "Secret Rare", "Hyper Rare", "Ultra Rare"];
 
 // One Pokémon, one label, across sets: e.g. every Charizard Special Illustration Rare.
-export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
+export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12, jumpy = null, seriesOf = null, lowOf = null } = {}) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 3)) {
     if (!CHASE_LABELS.includes(r.label)) continue;
     const t = speciesToken(r.c.name);
     if (!t || t.length < 3) continue;
-    const q = quoted(r, asOf, jumpy);
-    if (!q) continue;
+    const kept = prepare(r, asOf, jumpy, seriesOf, lowOf);
+    if (!kept) continue;
     const k = `${t}|${r.label}`;
     if (!by.has(k)) by.set(k, []);
-    by.get(k).push(q);
+    by.get(k).push(kept);
   }
   const groups = [];
   for (const [k, rs] of by) {
@@ -114,9 +143,15 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12, jumpy = nul
   const out = [];
   for (const g of groups.slice(0, max)) {
     const top = g.rs.slice(0, 4);
-    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${g.rs[0].quote}.`, [
-      ...top.map((r) => `${cardTitle(r.c)}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`),
-      `Lowest: ${short(g.rs.at(-1).c.set)} at ${g.rs.at(-1).quote}.`,
+    const leadNote = top[0]?.thin?.line || "";
+    const shown = leadNote ? top.slice(0, 3) : top;
+    const cardLines = shown.map((r) => `${cardTitle(r.c)}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`);
+    if (leadNote) cardLines.splice(1, 0, leadNote);
+    const leadQuote = g.rs[0].quote || usd(g.rs[0].z);
+    const lowQuote = g.rs.at(-1).quote || usd(g.rs.at(-1).z);
+    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${leadQuote}.`, [
+      ...cardLines,
+      `Lowest: ${short(g.rs.at(-1).c.set)} at ${lowQuote}.`,
       `TCGplayer market, ${monthDay(asOf)}. Only cards whose own rarity is ${g.label}.`,
     ].slice(0, 6), asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(`${g.t} ${g.label}`)}`, chart: { label: `${g.t} ${g.label} by set, $`, bars: g.rs.slice(0, 6).map((r) => [short(r.c.set).slice(0, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);
@@ -125,14 +160,14 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12, jumpy = nul
 }
 
 // Chase list per set: the top 5 singles tonight with their price a year ago.
-export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null }) {
+export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null, seriesOf = null, lowOf = null } = {}) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 5)) {
     if (LOW.has(r.c.rarity)) continue;
-    const q = quoted(r, asOf, jumpy);
-    if (!q) continue;
+    const kept = prepare(r, asOf, jumpy, seriesOf, lowOf);
+    if (!kept) continue;
     if (!by.has(r.c.set)) by.set(r.c.set, []);
-    by.get(r.c.set).push(q);
+    by.get(r.c.set).push(kept);
   }
   const groups = [...by.entries()].filter(([, rs]) => rs.length >= 5).map(([set, rs]) => ({ set, rs: rs.sort((a, b) => b.z - a.z).slice(0, 5) }));
   for (const g of groups) g.total = g.rs.reduce((s, r) => s + r.z, 0);
@@ -144,8 +179,16 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null }) {
     const head = withYear.length === 5
       ? `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together, ${sgn(((z - a) / a) * 100)} from a year ago.`
       : `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together tonight.`;
+    const body = [];
+    for (const r of g.rs) {
+      if (body.length >= 5) break;
+      const y = r.jumpy ? null : yearAgo(r.c, asOf);
+      const priceBit = r.quote || usd(r.z);
+      body.push(`${cardTitle(r.c)}, ${r.label}: ${priceBit}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.`);
+      if (r.thin?.line && body.length < 5) body.push(r.thin.line);
+    }
     const rr = row("chase", g.set, short(g.set), head, [
-      ...g.rs.map((r) => { const y = yearAgo(r.c, asOf); return `${cardTitle(r.c)}, ${r.label}: ${usd(r.z)}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.`; }),
+      ...body,
       `TCGplayer market, ${monthDay(asOf)}.`,
     ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);

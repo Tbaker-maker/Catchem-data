@@ -52,7 +52,7 @@ export async function run() {
   t("never defaults to Watch", takeCode({ from: 4.41, to: 4.76 }) !== "watch" && takeCode({ listings: upListings, from: 10, to: 10 }) !== "watch");
 
   const up = takeLayout({ from: 10, to: 12, start: "2026-10-03", end: "2026-10-10", sixMonthHigh: false, source: "TCGplayer market", sourceDate: "2026-10-10" });
-  t("layout is label, prices, why, wrong, source, footer", up && up.lines[0] === "Looks like a buy" && up.lines[1] === "TCGplayer market: $12.00 (Oct 10), from $10.00 (Oct 3). Up $2.00, 20%." && up.why === "Up $2.00 on those two dates." && up.wrong === "Wrong if either date has a different market price." && up.source === "TCGplayer market, Oct 10." && up.lines.at(-1) === TAKE_FOOTER && up.code === "up");
+  t("layout is label, prices, why, wrong, source, footer", up && up.lines[0] === "Looks like a buy" && up.lines[1] === "TCGplayer market: $12.00 (Oct 10), from $10.00 (Oct 3). Up $2.00, 20%." && up.why === "Up $2.00 from Oct 3 to Oct 10." && up.wrong === "Wrong if either date has a different market price." && up.source === "TCGplayer market, Oct 10." && up.lines.at(-1) === TAKE_FOOTER && up.code === "up");
   const avoid = takeLayout({ from: 10, to: 9, start: "2026-10-03", end: "2026-10-10", listings: upListings });
   t("avoid keeps its label and does not say because", avoid && avoid.code === "avoid" && avoid.label === "Avoid for now" && avoid.lines.includes("Avoid for now") && !/\bbecause\b/i.test(avoid.lines.join(" ")));
   const opposite = takeLayout({ from: 10, to: 12, start: "2026-10-03", end: "2026-10-10", listings: downListings });

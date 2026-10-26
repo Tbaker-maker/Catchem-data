@@ -72,10 +72,23 @@ export function priceForm({ name, set, num, to, from, end, start, pct }) {
   return `${who}${tail}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(end, end)}), from ${tcgAmount(from, money)} (${speakDay(start, end)}). ${dir} ${delta}, ${p}%.`;
 }
 
-export function whyPlain(from, to) {
+const MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function monthDay(iso) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ""))) return "";
+  const month = MONTH_SHORT[Number(String(iso).slice(5, 7)) - 1];
+  if (!month) return "";
+  return `${month} ${Number(String(iso).slice(8, 10))}`;
+}
+
+export function whyPlain(from, to, start, end) {
   const delta = (centsOf(to) - centsOf(from)) / 100;
   const dir = delta >= 0 ? "Up" : "Down";
-  return `${dir} ${money(Math.abs(delta))} on those two dates.`;
+  const amount = money(Math.abs(delta));
+  const a = monthDay(start);
+  const b = monthDay(end);
+  if (a && b) return `${dir} ${amount} from ${a} to ${b}.`;
+  return `${dir} ${amount} on those two dates.`;
 }
 
 export function whyLeak(text) {

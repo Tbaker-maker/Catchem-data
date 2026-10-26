@@ -15,6 +15,7 @@ import { speakDates } from "./read-quality.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
 import { storyUnstable } from "./read-stability.mjs";
+import { assessThin } from "./thin-trading.mjs";
 
 const usd = (n) => tcgAmount(n, money);
 
@@ -69,8 +70,8 @@ function basketValue(cards, days) {
 // value tonight. Otherwise the window is left out.
 export const CHASE_N = 15;
 export const MATCH_SHARE = 0.8;
-export function chaseBasket(list, asOf, { stale = [], n = CHASE_N } = {}) {
-  const fresh = list.filter((c) => !LOW.has(c.rarity) && c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] > 0);
+export function chaseBasket(list, asOf, { stale = [], n = CHASE_N, leadOk = null } = {}) {
+  const fresh = list.filter((c) => !LOW.has(c.rarity) && c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] > 0 && (!leadOk || leadOk(c)));
   const chase = fresh.slice().sort((a, z) => z.pts.at(-1)[1] - a.pts.at(-1)[1]).slice(0, n);
   const floor = chase.length ? chase.at(-1).pts.at(-1)[1] : Infinity;
   // A pricier card in the same set without a fresh price means the top is not fully covered.
@@ -91,15 +92,22 @@ export function windowMove(chase, from, asOf, share = MATCH_SHARE) {
   return { from: a, to: z, n, ch: pctOf(a, z) };
 }
 
-export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
+export function setDeepDives(cards, { asOf, sets, rotation, max = 25, seriesOf = null, lowOf = null } = {}) {
   const meta = new Map((sets?.sets || []).map((s) => [s.slug, s]));
   const rot = new Map((rotation?.sets || []).map((s) => [s.slug, s]));
   const bySet = new Map();
   for (const c of cards) if (c.setSlug) { if (!bySet.has(c.setSlug)) bySet.set(c.setSlug, []); bySet.get(c.setSlug).push(c); }
   const days = [addDays(asOf, -365), addDays(asOf, -90), addDays(asOf, -30), asOf];
+  const thinFor = (c) => {
+    const now = c.pts.at(-1)?.[1];
+    const supplied = typeof seriesOf === "function" ? seriesOf(c) : null;
+    const series = Array.isArray(supplied) && supplied.length ? supplied : c.pts;
+    const low = typeof lowOf === "function" ? lowOf(c) : c.low;
+    return assessThin(series, asOf, { market: now, low });
+  };
   const out = [];
   for (const [slug, all] of bySet) {
-    const bk = chaseBasket(all, asOf, { stale: all });
+    const bk = chaseBasket(all, asOf, { stale: all, leadOk: (c) => thinFor(c).canLead });
     if (bk.chase.length < 10 || !(bk.now > 0)) continue;
     const { chase, now } = bk;
     const yr = windowMove(chase, days[0], asOf), qt = windowMove(chase, days[1], asOf), mo = windowMove(chase, days[2], asOf);
@@ -131,6 +139,7 @@ export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
     const lines = [
       `Top ${n} by TCGplayer market price tonight (${monthDay(asOf)}), each with a price dated ${monthDay(asOf)}: ${usd(now)} together.`,
       `Top cards tonight: ${chase.slice(0, 3).map((c) => `${cardTitle(c)} ${usd(c.pts.at(-1)[1])}`).join(", ")}.`,
+      thinFor(chase[0]).line,
       leadW ? `Same cards on both dates only: ${leadW.label}.` : `Not enough of these cards have a price a year ago to compare.`,
       bk.complete ? "" : `${bk.missing.length} pricier card${bk.missing.length === 1 ? "" : "s"} in this set ${bk.missing.length === 1 ? "has" : "have"} no fresh price tonight and ${bk.missing.length === 1 ? "is" : "are"} left out.`,
       lead ? `Leading tier over ${windowWord}: ${lead.k}, ${sgn(lead.ch)} across ${lead.n} cards.` : "",
@@ -204,7 +213,7 @@ export function scrubCutoff(text) {
     .replace(/no bigger than 3% either way/g, "near the earlier price");
 }
 
-export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability = null } = {}) {
+export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability = null, seriesOf = null, lowOf = null } = {}) {
   const live = cards.filter((c) => c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] >= 50 && !LOW.has(c.rarity) && dayNum(asOf) - dayNum(c.pts[0][0]) >= 365 && !skip.has(c.id));
   const bySpecies = new Map();
   for (const c of cards) { const t = speciesToken(c.name); if (!t || c.pts.at(-1)?.[0] !== asOf) continue; if (!bySpecies.has(t)) bySpecies.set(t, []); bySpecies.get(t).push(c); }
@@ -213,6 +222,11 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability
   const out = [];
   for (const c of live.sort((a, z) => z.pts.at(-1)[1] - a.pts.at(-1)[1]).slice(0, max * 2)) {
     const now = c.pts.at(-1);
+    const supplied = typeof seriesOf === "function" ? seriesOf(c) : null;
+    const series = Array.isArray(supplied) && supplied.length ? supplied : c.pts;
+    const listed = typeof lowOf === "function" ? lowOf(c) : c.low;
+    const thin = assessThin(series, asOf, { market: now[1], low: listed });
+    if (thin.thin && !thin.canLead) continue;
     const peak = c.pts.reduce((m, p) => (p[1] > m[1] ? p : m));
     const low = c.pts.reduce((m, p) => (p[1] < m[1] ? p : m));
     if (storyUnstable(c.pts.length, peak[1], low[1], stability)) continue;
@@ -230,6 +244,7 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability
       `On file since ${monthYear(c.pts[0][0])}: ${c.pts.length} TCGplayer market points for this card (${c.printing || "default"}).`,
       `Peak ${usd(peak[1])} on ${dateLabel(peak[0], asOf)}. Low ${usd(low[1])} on ${dateLabel(low[0], asOf)}.`,
       `Past year range: ${usd(yLo)} to ${usd(yHi)}. Tonight (${monthDay(asOf)}): ${usd(now[1])}.`,
+      thin.line,
       sp.length > 1 && spRank ? `Number ${spRank} of ${sp.length} ${speciesToken(c.name)} cards we price tonight.` : "",
       setRank && peers.length > 1 ? `Number ${setRank} of ${peers.length} priced cards in ${short(c.set)}.` : "",
     ];
