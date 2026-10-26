@@ -24,33 +24,29 @@ jobs:
       - name: Install
         run: npm install --no-audit --no-fund
       - name: Same data tests, dry
+        # Same tiers as the nightly (scripts/lib/test-tiers.mjs): only what would
+        # stop tonight's prices fails this check. Withheld groups and main's own
+        # freshness are reported in the summary and the one nightly issue.
         id: tests
         run: |
           set +e
+          mkdir -p data/derived
           node scripts/patch-guard-audit-ci.mjs > /tmp/precheck.log 2>&1
           node scripts/guard-audit.mjs >> /tmp/precheck.log 2>&1
-          node scripts/artifact-freshness.mjs >> /tmp/precheck.log 2>&1
-          node scripts/tests/run-tests.mjs >> /tmp/precheck.log 2>&1
+          guard=$?
+          node scripts/artifact-freshness.mjs >> /tmp/precheck.log 2>&1 || echo "::notice::main's artifacts are stale; tonight's nightly refreshes them."
+          node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1
+          node scripts/triage-tests.mjs /tmp/tests.log --mode nightly --out data/derived/test-triage.json
           code=$?
+          [ "$guard" != 0 ] && code=1
           echo "exit=$code" >> "$GITHUB_OUTPUT"
-          tail -50 /tmp/precheck.log
+          tail -50 /tmp/tests.log
           exit 0
-      - name: Open issue on failure
-        if: steps.tests.outputs.exit != '0'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const log = fs.readFileSync('/tmp/precheck.log', 'utf8');
-            const line = log.split('\n').find((row) => /\bFAIL\b/.test(row)) || 'data tests';
-            const named = (line.match(/FAIL\s+(.+)/) || [null, 'data tests'])[1].replace(/\s+/g, ' ').slice(0, 80);
-            const tail = log.slice(-3500);
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: 'Nightly will fail: ' + named,
-              body: 'Pre-check ran the data tests on a dry rebuild and did not publish.\n\n```\n' + tail + '\n```\n\nThe 04:00 UTC nightly still runs its tests. This job does not skip them.',
-            });
-      - name: Fail when the dry run failed
+      - name: Open or update the nightly test issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/nightly-issue.mjs data/derived/test-triage.json
+      - name: Fail when the dry run would block tonight's prices
         if: steps.tests.outputs.exit != '0'
         run: exit 1

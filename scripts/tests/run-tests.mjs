@@ -20,17 +20,12 @@ import "./singles-index.test.mjs";
 import "./price-sanity.test.mjs";
 import "./index-baskets.test.mjs";
 import "./tcgcsv-day-guard.test.mjs";
-import "./read-facts.test.mjs";
-import "./item-reads.test.mjs";
 import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import "./collector-search.test.mjs";
 import "./costco-exclusives.test.mjs";
 import "./premium-ratio.test.mjs";
 import "./premium-history.test.mjs";
-import "./read-thin-data.test.mjs";
-import "./reads-guard.test.mjs";
-import "./read-synthesis.test.mjs";
 import "./publish-checks.test.mjs";
 import "./ebay-nonblocking.test.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
@@ -51,6 +46,20 @@ const t = (name, cond, detail = "") => {
   if (cond) { pass++; console.log(`  ✓ ${name}`); }
   else { fail++; console.error(`  ✗ ${name}${detail ? " — " + detail : ""}`); }
 };
+
+// Reads tests run in their own process. They used to be bare imports, so one
+// failing reads test exited the whole runner before any summary line, and the
+// nightly could not tell a reads failure from a price failure (Oct 23 to 26).
+console.log("── reads subprocess ──");
+{
+  const { spawnSync } = await import("node:child_process");
+  for (const f of ["read-facts", "item-reads", "read-thin-data", "reads-guard", "read-synthesis"]) {
+    const r = spawnSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), `${f}.test.mjs`)], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+    const out = `${r.stdout || ""}${r.stderr || ""}`;
+    for (const line of out.split("\n")) if (/FAIL|✗/.test(line)) console.error(`    ${line.trim()}`);
+    t(`reads subprocess: ${f}.test.mjs`, r.status === 0, r.status === 0 ? "" : `exit ${r.status}`);
+  }
+}
 
 console.log("── price trust ──");
 {

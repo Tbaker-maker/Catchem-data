@@ -25,9 +25,24 @@ jobs:
       - name: Guard audit
         run: node scripts/guard-audit.mjs
       - name: Artifact freshness
+        # Main's data age is not a pull request's code. When the nightly is late,
+        # this went red on every crew PR at once (Oct 23 to 26). It runs on main only;
+        # the nightly issue and the watchdog report a stale main.
+        if: github.event_name != 'pull_request'
         run: node scripts/artifact-freshness.mjs
       - name: Full test suite
-        run: node scripts/tests/run-tests.mjs
+        # Every failing test blocks a PR except main's own freshness checks
+        # (scripts/lib/test-tiers.mjs, pr mode).
+        run: |
+          mkdir -p data/derived
+          set +e
+          node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1
+          code=$?
+          tail -40 /tmp/tests.log
+          grep -E "✗|FAIL" /tmp/tests.log | head -40
+          set -e
+          if [ "$code" = 0 ]; then exit 0; fi
+          node scripts/triage-tests.mjs /tmp/tests.log --mode pr --out /tmp/test-triage.json
       - name: Publish gate (report only)
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}

@@ -25,7 +25,12 @@ jobs:
       issues: write # A refused or rolled back publish opens an issue
     steps:
       - name: Checkout
+        # The branch tip at checkout time, not the commit the run was queued on.
+        # A queued or rerun nightly used to test the code from before the fix
+        # that was merged while it waited (Oct 23 to 26).
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
@@ -84,47 +89,63 @@ jobs:
         # The tests compare committed outputs against the newest TCGCSV day,
         # which the step above just wrote. Rebuild them first so a new day does
         # not turn main red (2026-10-13). The same scripts run again below.
+        # Every builder runs even when one fails, and each failure is written to
+        # /tmp/rebuild.log in the test log format. The triage below decides:
+        # a price page builder blocks, a reads or feature builder withholds its
+        # files (docs/nightly-failures-2026-10.md).
         run: |
-          node scripts/build-tcgcsv-catalogue-map.mjs
-          node scripts/build-premium-ratio.mjs
-          node scripts/build-public-bundle.mjs
+          : > /tmp/rebuild.log
+          echo "── rebuild ──" >> /tmp/rebuild.log
+          ok=0; bad=0
+          step() {
+            if node "scripts/$1" > /tmp/rebuild-step.log 2>&1; then ok=$((ok+1)); echo "  ✓ rebuild: $1" >> /tmp/rebuild.log
+            else bad=$((bad+1)); tail -20 /tmp/rebuild-step.log; grep -E "Error|FAIL" /tmp/rebuild-step.log | head -5 | sed 's/^/    FAIL /' >> /tmp/rebuild.log; echo "  ✗ rebuild: $1" >> /tmp/rebuild.log; fi
+          }
+          step build-tcgcsv-catalogue-map.mjs
+          step build-premium-ratio.mjs
+          step build-public-bundle.mjs
           # Long index history after the bundle rewrites indexes.json. Guard values
           # and the full series stay in catchem-data-private.
-          node scripts/build-index-history.mjs
-          node scripts/build-condition-ladder.mjs
-          node scripts/build-feed.mjs
+          step build-index-history.mjs
+          step build-condition-ladder.mjs
+          step build-feed.mjs
           # The first feed after a new price day still carries the previous board.
           # A second pass settles it, which is what the determinism test rebuilds.
-          node scripts/build-feed.mjs
-          node scripts/check-board-sync.mjs
-          node scripts/write-morning-card.mjs
-          node scripts/write-feature-data.mjs
+          step build-feed.mjs
+          step check-board-sync.mjs
+          step write-morning-card.mjs
+          step write-feature-data.mjs
+          echo "" >> /tmp/rebuild.log
+          echo "$ok passed · $bad failed" >> /tmp/rebuild.log
+          cat /tmp/rebuild.log
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
       - name: Unit tests (fail-fast)
-        # Pure-math tests on scripts/lib + contract checks on yesterday's
-        # committed artifacts. A regressed engine kills the run HERE, before
-        # any eBay/PPT quota burns.
-        # One retry tells a flaky test from a real regression. Both tries red
-        # still kills the run before any quota burns.
+        # Pure-math tests on scripts/lib + contract checks on tonight's rebuilt
+        # artifacts. One retry tells a flaky test from a real regression.
+        # Then scripts/triage-tests.mjs sorts what is still red
+        # (scripts/lib/test-tiers.mjs):
+        #   price safety (prices, copy rules, sealed condition labels, private
+        #   values, and any test in no group) kills the run HERE, before quota burns;
+        #   a reads or feature test only withholds that group's public files,
+        #   and prices still fetch, commit and publish;
+        #   main's own freshness is reported, never blocking (the nightly is the fix).
+        id: tests
         env:
           FEED_FRESHNESS_WARN_ONLY: "1" # staleness is checked strict after the refresh
         run: |
-          if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then tail -5 /tmp/tests-1.log; exit 0; fi
-          echo "::warning::Unit tests failed once; retrying to rule out a flake."
-          grep -E "✗|FAIL" /tmp/tests-1.log | head -20 || true
-          if node scripts/tests/run-tests.mjs > /tmp/tests-2.log 2>&1; then
-            echo "### Unit tests passed on retry (flaky first try)" >> "$GITHUB_STEP_SUMMARY"
-            grep -E "✗|FAIL" /tmp/tests-1.log | head -20 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
-            exit 0
+          mkdir -p data/derived
+          if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then
+            tail -5 /tmp/tests-1.log; cp /tmp/tests-1.log /tmp/tests.log
+          else
+            echo "::warning::Unit tests failed once; retrying to rule out a flake."
+            grep -E "✗|FAIL" /tmp/tests-1.log | head -20 || true
+            node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1 || cat /tmp/tests.log
           fi
-          cat /tmp/tests-2.log
-          echo "### Unit tests failed twice" >> "$GITHUB_STEP_SUMMARY"
-          grep -E "✗|FAIL" /tmp/tests-2.log | head -30 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
-          exit 1
+          node scripts/triage-tests.mjs /tmp/tests.log /tmp/rebuild.log --mode nightly --out data/derived/test-triage.json
 
       - name: Note PPT run start
         continue-on-error: true
@@ -322,10 +343,12 @@ jobs:
         run: node scripts/build-post-office-catalogue.mjs || true
 
       - name: Rebuild the public feed
-        # After the price commit, not before. A failed feed build fails the job.
-        # The catalog day stays the full TCGCSV day. A later partial file is
-        # used only for a product that has that print.
-        run: node scripts/build-feed.mjs
+        # After the price commit, not before. The catalog day stays the full
+        # TCGCSV day. A later partial file is used only for a product that has
+        # that print. A feed build that crashes withholds the reads group (its
+        # files go back to the last committed copy) instead of stopping the
+        # publish of tonight's prices.
+        run: node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
@@ -435,6 +458,13 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-gate.mjs
 
+      - name: Withhold files whose tests failed tonight
+        # Puts each withheld group's public files back to the last committed copy
+        # (or leaves out a new one), so the feed commit and the publish never
+        # carry a file that failed its own test. Prices are not in any group.
+        if: always() && steps.tests.outcome == 'success'
+        run: node scripts/withhold-artifacts.mjs data/derived/test-triage.json
+
       - name: Commit the rebuilt feed
         run: |
           git config user.name "catchem-bot"
@@ -497,6 +527,14 @@ jobs:
           gh issue create --title "public-data publish refused or rolled back ($(date -u +%F))" --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
           $body" || echo "issue not opened"
+
+      - name: Open or update the nightly test issue
+        # One issue, updated every red or degraded night with the failing test
+        # names, closed on the first clean night. Also when the tests blocked.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/nightly-issue.mjs data/derived/test-triage.json
 
       - name: Fail if reads, search, or the index wrote nothing
         # Reads, search, and the public index may fail without dropping the
