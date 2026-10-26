@@ -63,6 +63,10 @@ export async function run() {
   t("withheld files are put back before the feed commit", at("scripts/withhold-artifacts.mjs") > 0 && at("scripts/withhold-artifacts.mjs") < at("- name: Commit the rebuilt feed"));
   t("withheld files are put back before the publish", at("scripts/withhold-artifacts.mjs") < at("publish-public-data.mjs --push"));
   t("a failed or degraded nightly updates one issue", at("scripts/nightly-issue.mjs") > 0);
+  t("the nightly checks out the branch tip, not the queued commit", /uses: actions\/checkout@v4\n\s+with:\n\s+ref: \$\{\{ github\.ref_name \}\}/.test(wf));
+  t("a later feed crash withholds reads instead of stopping the publish", /build-feed\.mjs \|\| node scripts\/withhold-group\.mjs reads/.test(wf));
+  const pre = await readFile(new URL("../../.github/workflows/nightly-precheck.yml", import.meta.url), "utf8");
+  t("the pre-check uses the same tiers", /triage-tests\.mjs[^\n]*--mode nightly/.test(pre));
   const pr = await readFile(new URL("../../.github/workflows/pr-tests.yml", import.meta.url), "utf8");
   t("PR CI triages in pr mode", /triage-tests\.mjs[^\n]*--mode pr/.test(pr));
   t("main's artifact freshness runs only on main, not on PRs", /Artifact freshness[\s\S]{0,500}github\.event_name != 'pull_request'/.test(pr));

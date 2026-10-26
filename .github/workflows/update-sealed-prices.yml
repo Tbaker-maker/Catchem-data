@@ -25,7 +25,12 @@ jobs:
       issues: write # A refused or rolled back publish opens an issue
     steps:
       - name: Checkout
+        # The branch tip at checkout time, not the commit the run was queued on.
+        # A queued or rerun nightly used to test the code from before the fix
+        # that was merged while it waited (Oct 23 to 26).
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
@@ -338,10 +343,12 @@ jobs:
         run: node scripts/build-post-office-catalogue.mjs || true
 
       - name: Rebuild the public feed
-        # After the price commit, not before. A failed feed build fails the job.
-        # The catalog day stays the full TCGCSV day. A later partial file is
-        # used only for a product that has that print.
-        run: node scripts/build-feed.mjs
+        # After the price commit, not before. The catalog day stays the full
+        # TCGCSV day. A later partial file is used only for a product that has
+        # that print. A feed build that crashes withholds the reads group (its
+        # files go back to the last committed copy) instead of stopping the
+        # publish of tonight's prices.
+        run: node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
