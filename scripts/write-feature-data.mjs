@@ -22,7 +22,15 @@ let pricedCards = 0;
 let unpricedCards = 0;
 let baseValue = null;
 let shadowValue = null;
-if (shouldWrite("set-value", { date, prices: map.size })) {
+// Held ids include cards the card rating flags with "check". The rating build
+// runs at the end of this script and rewrites feed/rating/NN.json, so set value
+// is written again below when that changes the held set (2026-10-25 nightly).
+async function writeSetValues(skipIds) {
+  pricedCards = 0;
+  unpricedCards = 0;
+  baseValue = null;
+  shadowValue = null;
+  if (!shouldWrite("set-value", { date, prices: map.size })) return;
   await mkdir(valueDir, { recursive: true });
   const baseIds = idsForCatalogSet(items, "Base Set");
   const shadowIds = idsForCatalogSet(items, "Base Set (Shadowless)");
@@ -51,6 +59,7 @@ if (shouldWrite("set-value", { date, prices: map.size })) {
     wrote.setValue = true;
   }
 }
+await writeSetValues(skipIds);
 
 const logos = JSON.parse(await readFile(join(pub, "set-logos.json"), "utf8")).logos || {};
 const official = JSON.parse(await readFile(join(ROOT, "data/set-logos.json"), "utf8")).sets || {};
@@ -123,3 +132,12 @@ await import("./build-ir-cycle.mjs");
 await import("./build-card-rating.mjs");
 // Sealed Rating (feed/sealed-rating.json). Same keep-last rule.
 await import("./build-sealed-rating.mjs");
+
+// The rating build can change which cards are held. Rebuild set value from the
+// final held set so it matches what the tests and the site read.
+const heldAfter = await loadHeldIds(ROOT);
+const sameHeld = heldAfter.size === skipIds.size && [...heldAfter].every((id) => skipIds.has(id));
+if (!sameHeld) {
+  await writeSetValues(heldAfter);
+  console.log(JSON.stringify({ setValueRebuilt: { heldBefore: skipIds.size, heldAfter: heldAfter.size, pricedCards, unpricedCards } }));
+}

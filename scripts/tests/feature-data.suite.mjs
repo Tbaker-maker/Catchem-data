@@ -88,6 +88,8 @@ export async function run() {
   }
   t("set value dates are the daily file date", badDate === 0);
   t("set value counts match priced singles", badCount === 0);
+  const writer = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
+  t("set value is rebuilt from held ids read after the rating build", writer.lastIndexOf("loadHeldIds(ROOT)") > writer.indexOf("build-card-rating.mjs") && writer.lastIndexOf("writeSetValues(") > writer.lastIndexOf("loadHeldIds(ROOT)"));
   t("top 10 prices are today's market and nothing is invented", badPrice === 0 && invented === 0);
 
   const baseValue = JSON.parse(await readFile(join(PUB, "set-value", "base-set.json"), "utf8"));
