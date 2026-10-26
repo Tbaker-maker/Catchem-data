@@ -99,6 +99,7 @@
   .seg button.on, .chip.on { background: var(--chip-on); color: var(--chip-on-ink); }
   .grow { flex: 1; }
   .note { color: var(--faint); font-size: 12px; margin: 12px 0 0; }
+  .about { color: var(--muted); font-size: 13px; line-height: 1.45; margin: 12px 0 0; }
   .heat-scroll { overflow-x: auto; margin-top: 14px; border-radius: 16px; }
   .heat {
     display: grid;
@@ -208,7 +209,7 @@
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="kicker"><span class="pill">Private</span><span class="pill">Flag off</span><span id="built"></span></div>
+      <div class="kicker"><span class="pill">Private</span><span class="pill" id="flag-pill">Flag off</span><span id="built"></span></div>
       <h1>Sealed Market Pulse</h1>
       <p class="sub">Month-end TCGplayer market. A month with no price stays blank. It is never shown as 0%.</p>
     </div>
@@ -230,6 +231,7 @@
       </div>
       <div class="heat-scroll" id="heat-scroll"><div class="heat" id="heat-grid"></div></div>
       <p class="note" id="heat-note"></p>
+      <p class="about" id="about-heat"></p>
     </div>
   </section>
 
@@ -259,6 +261,7 @@
       </div>
       <div class="banner" id="what"></div>
       <p class="note" id="prev-note"></p>
+      <p class="about" id="about-breadth"></p>
     </div>
   </section>
 
@@ -281,6 +284,7 @@
         <div class="stack" id="stats-3"></div>
       </div>
       <div class="banner" id="lead-3"></div>
+      <p class="about" id="about-singles"></p>
     </div>
   </section>
 
@@ -292,6 +296,7 @@
       <svg class="chart" id="chart-4" viewBox="0 0 720 260"></svg>
       <div class="cards-2" id="product-cards"></div>
       <div class="banner" id="lead-4"></div>
+      <p class="about" id="about-chase"></p>
     </div>
   </section>
 </div>
@@ -405,7 +410,14 @@ function renderHeat() {
   });
   const end = months[months.length - 1];
   const med = DATA.marketMedian[end];
-  document.getElementById("heat-note").textContent = "Tint uses each product's own z-score. One change month is not enough, so the tint stays off. Seasonality: no earlier year is on file for these sealed products. " + (med == null ? "The sealed market median is missing for " + monthLabel(end) + "." : monthLabel(end) + " sealed market median " + pctText(med) + ", across every tracked sealed product with a change.");
+  const tintOn = rows.some((r) => r.cells.some((c) => c.color));
+  const tintLine = tintOn
+    ? "Tint is the z-score against each product's own months, not the raw percent."
+    : "Tint uses each product's own z-score. There are not enough months yet, so the tint stays off.";
+  document.getElementById("heat-note").textContent = tintLine + " " + (med == null ? "The sealed market median is missing for " + monthLabel(end) + "." : monthLabel(end) + " sealed market median " + pctText(med) + ", across every tracked sealed product with a change.");
+  const bare = DATA.rows.filter((r) => !r.usedMirror).length;
+  const withArc = DATA.rows.filter((r) => r.usedMirror).length;
+  document.getElementById("about-heat").textContent = "About this chart. " + (DATA.about || "") + " " + withArc + " products include that history. " + bare + " products use our own prices only, with no filled months.";
 }
 
 function donut(block) {
@@ -466,6 +478,13 @@ function renderBreadth() {
   document.getElementById("prev-note").textContent = prev.withPrice
     ? "Last month, " + monthLabel(prev.month) + ": " + prev.green + " of " + prev.total + " up. Average " + (pctText(prev.average) || "missing") + ". Median " + (pctText(prev.median) || "missing") + "."
     : monthLabel(prev.month) + " is missing. There is no prior month price on file, so last month is not 0 of " + prev.total + ".";
+  const basket = block.basket;
+  let basketLine = "";
+  if (basket && basket.pct != null) {
+    const leftOut = basket.excluded && basket.excluded.length ? " Not in the sum: " + basket.excluded.join(", ") + ". A missing month is left out, not filled." : "";
+    basketLine = " Box basket " + monthLabel(basket.from) + " to " + monthLabel(basket.to) + ": " + pctText(basket.pct) + ". " + basket.method + ", " + basket.products + " boxes." + leftOut;
+  }
+  document.getElementById("about-breadth").textContent = "About this chart. " + (DATA.about || "") + basketLine;
 }
 
 function pair() {
@@ -578,12 +597,14 @@ function renderPairs() {
   document.getElementById("stats-3").innerHTML = [
     ["Singles, from the shared start", singlesEnd == null ? "Missing" : pctText(singlesEnd)],
     ["Sealed, from the shared start", sealedEnd == null ? "Missing" : pctText(sealedEnd)],
+    ["Sealed, same day one year earlier", p.year && p.year.pct != null ? pctText(p.year.pct) + " (" + pretty(p.year.priorDate) + ")" : "Missing"],
     ["This month", cell && pctText(cell.pct) ? pctText(cell.pct) : "Missing"],
     ["Current streak", row.streak ? pctText(row.streak.totalPct) + " · " + row.streak.months + " month " + row.streak.direction : "Missing"],
   ].map(([k, v]) => `<div class="stat"><div class="k">${esc(k)}</div><div class="v num">${esc(v)}</div></div>`).join("")
     + `<div class="stat"><div class="k">From the high on file</div><div class="v" style="font-size:14px;font-weight:560">${esc(highCopy)}</div></div>`;
   const defaultStart = state.start === p.line.baseMonth;
   document.getElementById("lead-3").textContent = defaultStart ? p.singlesLead : lead("Singles", singlesEnd, "the sealed product", sealedEnd);
+  document.getElementById("about-singles").textContent = "About this chart. " + (row.about || DATA.about || "") + " Singles on this chart are our own card prices.";
 
   const chasePts = (p.chase && p.chase.spark ? p.chase.spark : []).map((s) => ({ month: s.month, price: s.price }));
   const sealedPts = (p.sealedSeries || []).map((s) => ({ month: s.month, price: s.price }));
@@ -599,6 +620,7 @@ function renderPairs() {
   const cEnd = lastY(chaseLine);
   const sEnd = lastY(sealedLine);
   document.getElementById("lead-4").textContent = defaultStart ? p.chaseLead : lead("The chase card", cEnd, "the sealed product", sEnd);
+  document.getElementById("about-chase").textContent = "About this chart. " + (row.about || DATA.about || "") + " The chase card uses our own card prices. NM is only on that card.";
   document.getElementById("product-cards").innerHTML = productCard(row, p.sealedCard, false) + chaseCard(p.chase);
 }
 
@@ -721,6 +743,7 @@ async function main() {
   const res = await fetch(new URL("../../../data/sealed-market-pulse.json", location.href));
   DATA = await res.json();
   document.getElementById("built").textContent = "Built " + pretty(DATA.built);
+  document.getElementById("flag-pill").textContent = DATA.flag === "on" ? "Flag on" : "Flag off";
   const eras = ["All", ...new Set(DATA.rows.map((r) => r.era).filter(Boolean))];
   document.getElementById("eras").innerHTML = eras.map((e) => `<button type="button" data-era="${esc(e)}" class="${e === state.era ? "on" : ""}">${esc(e)}</button>`).join("");
   const types = ["All", ...new Set(DATA.rows.map((r) => r.type))];
