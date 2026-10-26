@@ -75,7 +75,12 @@ try {
   if ((f.products || []).length < 150) bad("feed product count", String(f.products?.length));
   else ok(`feed carries ${f.products.length} products`);
   const age = (Date.now() - Date.parse(f.generatedAt)) / 3600000;
-  if (!(age < 48)) bad("feed freshness", `${Math.round(age)}h old`);
+  // Before the publish, the pulse feed is still last night's: Generate Morning
+  // Pulse runs after the publish. Oct 25: one failed publish left it over 48h
+  // old, so this check refused every later publish and nothing could refresh
+  // it. The full smoke step after the publish still enforces freshness.
+  if (process.env.SMOKE_PREPUBLISH === "1" && !(age < 48)) ok(`feed freshness not checked before publish (${Math.round(age)}h old; checked after)`);
+  else if (!(age < 48)) bad("feed freshness", `${Math.round(age)}h old`);
   else ok(`feed fresh (${age.toFixed(1)}h)`);
 
   // VALUES, not just SHAPE. Everything above passes on a feed that parses, has

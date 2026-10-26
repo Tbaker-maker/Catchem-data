@@ -8,6 +8,10 @@ const KEYS = ["maxDroppedFiles", "minReads", "maxReads", "maxAgeDays", "liveWait
 // Files the site cannot work without. Each must be present and not empty.
 export const REQUIRED = ["reads.json", "counts.json", "today.json", "movers.json", "signal-chips.json", "releases.json"];
 // Files whose day must be fresh, and where the day is kept.
+// Folders rebuilt from scratch every night, one file per read or per shard.
+// Reads rotate nightly, so their files come and go by design; minReads and
+// maxReads guard their volume. They do not count toward maxDroppedFiles.
+export const ROTATING = ["feed/facts/", "feed/item-reads/"];
 const DATED = { "reads.json": "asOf", "counts.json": "asOf", "today.json": "asOf", "movers.json": "asOf" };
 
 export function validChecks(cfg) {
@@ -54,7 +58,7 @@ export function checkBuild({ files, before, cfg, today }) {
   for (const [name, f] of files) if (!(f.size > 0)) problems.push(`${name} is empty`);
   if (Array.isArray(before) && before.length) {
     const now = new Set(files.keys());
-    const gone = before.filter((n) => !now.has(n));
+    const gone = before.filter((n) => !now.has(n) && !ROTATING.some((d) => n.startsWith(d)));
     if (gone.length > cfg.maxDroppedFiles) problems.push(`${gone.length} files would disappear from the site`);
   }
   for (const [name, key] of Object.entries(DATED)) {
