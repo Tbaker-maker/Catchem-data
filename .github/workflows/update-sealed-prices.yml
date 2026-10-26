@@ -348,7 +348,8 @@ jobs:
         # that print. A feed build that crashes withholds the reads group (its
         # files go back to the last committed copy) instead of stopping the
         # publish of tonight's prices.
-        run: node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
+        run: |
+          node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
