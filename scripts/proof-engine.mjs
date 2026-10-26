@@ -514,9 +514,9 @@ function addDaysSafe(iso, days) {
 
 function loadRestocks() {
   const paths = [
+    join(ROOT, "data/private/restocks/events.json"),
     join(ROOT, "..", "catchem-data-private", "data/private/restocks/events.json"),
     join(ROOT, "..", "pulse-limits", "data/private/restocks/events.json"),
-    "/tmp/prem/pulse-limits/data/private/restocks/events.json",
   ];
   for (const path of paths) {
     if (!existsSync(path)) continue;
