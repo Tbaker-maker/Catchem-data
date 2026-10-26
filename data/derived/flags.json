@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-26",
- "generatedAt": "2026-10-26T10:22:24.537Z",
+ "generatedAt": "2026-10-26T18:47:02.005Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -1279,7 +1279,7 @@
    "data": {
     "id": "tcgcsv-106999",
     "group": "wotc-holo",
-    "ratio": 14.11,
+    "ratio": 14,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1366,6 +1366,23 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
+   "key": "yt:set_attention:23821:2026-10-26",
+   "line": "SV: Prismatic Evolutions: 8 creator videos on 5 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23821,
+    "label": "SV: Prismatic Evolutions",
+    "channels": 5,
+    "videos": 8,
+    "weighted": 5,
+    "from": "2026-10-20",
+    "to": "2026-10-26"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
    "key": "yt:print_run:Print runs:2026-10-26",
    "line": "Print runs: 7 creator videos on 5 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
    "data": {
@@ -1383,31 +1400,14 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-26",
-   "line": "SV: Prismatic Evolutions: 7 creator videos on 5 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 23821,
-    "label": "SV: Prismatic Evolutions",
-    "channels": 5,
-    "videos": 7,
-    "weighted": 5,
-    "from": "2026-10-20",
-    "to": "2026-10-26"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
    "key": "yt:set_attention:24722:2026-10-26",
-   "line": "ME: 30th Celebration: 6 creator videos on 4 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
+   "line": "ME: 30th Celebration: 7 creator videos on 4 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
     "channels": 4,
-    "videos": 6,
+    "videos": 7,
     "weighted": 4,
     "from": "2026-10-20",
     "to": "2026-10-26"
@@ -1434,32 +1434,15 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:604:2026-10-26",
-   "line": "Base Set: 2 creator videos on 2 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 604,
-    "label": "Base Set",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-20",
-    "to": "2026-10-26"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
    "key": "yt:set_attention:24541:2026-10-26",
-   "line": "ME: Ascended Heroes: 2 creator videos on 2 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
+   "line": "ME: Ascended Heroes: 3 creator videos on 3 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
     "label": "ME: Ascended Heroes",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
     "from": "2026-10-20",
     "to": "2026-10-26"
    },
@@ -1469,11 +1452,28 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24269:2026-10-26",
-   "line": "SV10: Destined Rivals: 2 creator videos on 2 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
+   "line": "SV10: Destined Rivals: 3 creator videos on 3 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24269,
     "label": "SV10: Destined Rivals",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
+    "from": "2026-10-20",
+    "to": "2026-10-26"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:604:2026-10-26",
+   "line": "Base Set: 2 creator videos on 2 channels, 2026-10-20 to 2026-10-26 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 604,
+    "label": "Base Set",
     "channels": 2,
     "videos": 2,
     "weighted": 2,
