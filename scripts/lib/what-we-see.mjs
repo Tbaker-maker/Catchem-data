@@ -55,9 +55,15 @@ function collectSignals(f) {
   const rip = f.rip;
   const span = spanDays(r);
 
-  // At high.
+  // At high. The history line and the range chip share one window when both name the same high.
   if (r && span >= 90 && r.daysSinceHigh === 0 && r.high?.date && r.high.date !== r.low?.date && day(r.from)) {
-    const phrases = [
+    const same = r.window && r.window.place === "upper part" && Number.isFinite(Number(r.window.days)) && Number.isFinite(Number(r.window.high)) && Math.round(Number(r.window.high) * 100) === Math.round(Number(r.high.price) * 100);
+    const phrases = same ? [
+      `At its highest price in the ${r.window.days} day range, and in our history, which starts ${day(r.from)}.`,
+      `New high on file: ${money(r.high.price)} on ${day(r.high.date)}, the top of the ${r.window.days} day range. History starts ${day(r.from)}.`,
+      `Tonight matches the high on file (${money(r.high.price)}) across the ${r.window.days} day range, first reached ${day(r.high.date)}. History starts ${day(r.from)}.`,
+      `Sitting at the high of ${money(r.high.price)} in the ${r.window.days} day range. History on file starts ${day(r.from)}.`,
+    ] : [
       `At its highest price in our history, which starts ${day(r.from)}.`,
       `New high on file: ${money(r.high.price)} on ${day(r.high.date)}, the top mark since ${day(r.from)}.`,
       `Tonight matches the high on file (${money(r.high.price)}), first reached ${day(r.high.date)}.`,

@@ -6,6 +6,7 @@
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
 import { addDays, dateLabel } from "./history-reads.mjs";
+import { jumpyQuote } from "./jumpy-price.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { row, valueOn, sparkOf } from "./deep-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
@@ -37,6 +38,14 @@ const now = (c, asOf) => (c.pts.at(-1)?.[0] === asOf ? c.pts.at(-1)[1] : null);
 const yearAgo = (c, asOf) => valueOn(c.pts, addDays(asOf, -365));
 const yrLine = (c, asOf) => { const a = yearAgo(c, asOf), z = now(c, asOf); const ch = a && z ? ((z - a) / a) * 100 : null; return ch != null && Math.abs(ch) <= 500 ? `, ${sgn(ch)} in a year` : ""; };
 
+// Tonight's price, unless it is jumpy. Then the steady print, or null when held.
+function quoted(r, asOf, jumpy) {
+  const q = jumpyQuote(r.c.pts, asOf, jumpy);
+  if (!q || q.held || !(q.price > 0)) return null;
+  const text = q.jumpy ? `${usd(q.price)} on ${dateLabel(q.date, asOf)}` : usd(q.price);
+  return { ...r, z: q.price, quote: text, jumpy: !!q.jumpy };
+}
+
 function labelled(cards, tagsOf, asOf, minPrice = 1) {
   const out = [];
   for (const c of cards) {
@@ -50,13 +59,15 @@ function labelled(cards, tagsOf, asOf, minPrice = 1) {
 }
 
 // Every printing of one Pokémon, each with its own label, tonight's price first.
-export function everyPrinting(cards, tagsOf, { asOf, max = 12 }) {
+export function everyPrinting(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 2)) {
     const t = speciesToken(r.c.name);
     if (!t || t.length < 3) continue;
+    const q = quoted(r, asOf, jumpy);
+    if (!q) continue;
     if (!by.has(t)) by.set(t, []);
-    by.get(t).push(r);
+    by.get(t).push(q);
   }
   const groups = [...by.entries()].filter(([, rs]) => rs.length >= 6).map(([t, rs]) => ({ t, rs: rs.sort((a, b) => b.z - a.z), total: rs.reduce((s, r) => s + r.z, 0) }));
   groups.sort((a, b) => b.total - a.total);
@@ -66,11 +77,12 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12 }) {
     for (const r of g.rs) labels.set(r.label, (labels.get(r.label) || 0) + 1);
     const mix = [...labels.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
     const top = g.rs.slice(0, 4);
-    const rr = row("printings", g.t, g.t, `Every ${g.t} card we price: ${g.rs.length} cards, from ${usd(g.rs.at(-1).z)} to ${usd(g.rs[0].z)} tonight.`, [
-      ...top.map((r) => `${cardTitle(r.c)}, ${r.label}: ${usd(r.z)}${yrLine(r.c, asOf)}.`),
+    const topWord = (g.rs[0].jumpy || g.rs.at(-1).jumpy) ? "" : " tonight";
+    const rr = row("printings", g.t, g.t, `Every ${g.t} card we price: ${g.rs.length} cards, from ${usd(g.rs.at(-1).z)} to ${usd(g.rs[0].z)}${topWord}.`, [
+      ...top.map((r) => `${cardTitle(r.c)}, ${r.label}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`),
       `Most common labels: ${mix}.`,
       `TCGplayer market, ${monthDay(asOf)}. Each label is the card's own rarity in its set.`,
-    ], asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(g.t)}`, chart: { label: `Top ${g.t} cards tonight, $`, bars: g.rs.slice(0, 6).map((r) => [`${short(r.c.set)}`.slice(0, 16), Math.round(r.z)]) }, weight: g.total });
+    ], asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(g.t)}`, chart: { label: `Top ${g.t} cards, $`, bars: g.rs.slice(0, 6).map((r) => [`${short(r.c.set)}`.slice(0, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);
   }
   return out;
@@ -79,15 +91,17 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12 }) {
 const CHASE_LABELS = ["Special Illustration Rare", "Illustration Rare", "Alternate Art", "Tag Team (Alternate Art)", "Trainer Gallery", "Galarian Gallery", "Secret Rare", "Hyper Rare", "Ultra Rare"];
 
 // One Pokémon, one label, across sets: e.g. every Charizard Special Illustration Rare.
-export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12 }) {
+export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12, jumpy = null }) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 3)) {
     if (!CHASE_LABELS.includes(r.label)) continue;
     const t = speciesToken(r.c.name);
     if (!t || t.length < 3) continue;
+    const q = quoted(r, asOf, jumpy);
+    if (!q) continue;
     const k = `${t}|${r.label}`;
     if (!by.has(k)) by.set(k, []);
-    by.get(k).push(r);
+    by.get(k).push(q);
   }
   const groups = [];
   for (const [k, rs] of by) {
@@ -100,9 +114,9 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12 }) {
   const out = [];
   for (const g of groups.slice(0, max)) {
     const top = g.rs.slice(0, 4);
-    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${usd(g.rs[0].z)}.`, [
-      ...top.map((r) => `${cardTitle(r.c)}: ${usd(r.z)}${yrLine(r.c, asOf)}.`),
-      `Lowest: ${short(g.rs.at(-1).c.set)} at ${usd(g.rs.at(-1).z)}.`,
+    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${g.rs[0].quote}.`, [
+      ...top.map((r) => `${cardTitle(r.c)}: ${r.quote}${r.jumpy ? "" : yrLine(r.c, asOf)}.`),
+      `Lowest: ${short(g.rs.at(-1).c.set)} at ${g.rs.at(-1).quote}.`,
       `TCGplayer market, ${monthDay(asOf)}. Only cards whose own rarity is ${g.label}.`,
     ].slice(0, 6), asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(`${g.t} ${g.label}`)}`, chart: { label: `${g.t} ${g.label} by set, $`, bars: g.rs.slice(0, 6).map((r) => [short(r.c.set).slice(0, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);
@@ -111,12 +125,14 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12 }) {
 }
 
 // Chase list per set: the top 5 singles tonight with their price a year ago.
-export function chaseLists(cards, tagsOf, { asOf, max = 15 }) {
+export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null }) {
   const by = new Map();
   for (const r of labelled(cards, tagsOf, asOf, 5)) {
     if (LOW.has(r.c.rarity)) continue;
+    const q = quoted(r, asOf, jumpy);
+    if (!q) continue;
     if (!by.has(r.c.set)) by.set(r.c.set, []);
-    by.get(r.c.set).push(r);
+    by.get(r.c.set).push(q);
   }
   const groups = [...by.entries()].filter(([, rs]) => rs.length >= 5).map(([set, rs]) => ({ set, rs: rs.sort((a, b) => b.z - a.z).slice(0, 5) }));
   for (const g of groups) g.total = g.rs.reduce((s, r) => s + r.z, 0);

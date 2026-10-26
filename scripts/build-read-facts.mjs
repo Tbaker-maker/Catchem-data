@@ -7,6 +7,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildBreakdown } from "./lib/what-we-see.mjs";
 import { unpackLong, mergeHistory, changeOver, highLow, band, indexChange, listingsFact, matchPattern, itemKeys, similar, gapFact } from "./lib/read-facts.mjs";
+import { priceRange } from "./lib/signal-chips.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -116,7 +117,11 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
       for (const [k, n] of [["d7", 7], ["d30", 30], ["d90", 90], ["y1", 365]]) { const c = changeOver(hist, n, asOf); if (c) ch[k] = c; }
       if (Object.keys(ch).length) f.change = ch;
       const hl = highLow(hist, asOf);
-      if (hl) f.range = hl;
+      if (hl) {
+        const shared = priceRange(hist, asOf, { minDays: 1, slackDays: 0 });
+        if (shared && Math.round(shared.high * 100) === Math.round(hl.high.price * 100)) hl.window = { days: shared.days, high: shared.high, highOn: shared.highOn, place: shared.place };
+        f.range = hl;
+      }
       if (row.kind === "single" && row.rank > 0 && row.of > 1) f.rank = { rank: row.rank, of: row.of, set: row.set, asOf: row.asOf || asOf };
       const prints = (row.printings || []).filter((p) => p && p.name && p.price > 0);
       if (prints.length >= 2) f.variants = prints.map((p) => ({ name: p.name, price: p.price, asOf: p.asOf || row.asOf }));

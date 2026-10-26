@@ -14,7 +14,7 @@ import { money } from "./public-bundle.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
 import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards } from "./history-reads.mjs";
-import { eraTagOf } from "./signal-chips.mjs";
+import { eraTagOf, priceRange } from "./signal-chips.mjs";
 
 const BANNED = banGuard("read synthesis");
 const DASH = /[\u2014\u2013]/;
@@ -177,15 +177,20 @@ export function findings(item, ctx, cfg) {
     const pool = (peakable.length ? peakable : prior).filter((p) => !settled || p[0] >= settled);
     const hi = pool.length ? pool.reduce((m, p) => (p[1] > m[1] ? p : m)) : null;
     const lo = prior.reduce((m, p) => (p[1] < m[1] ? p : m));
+    // The high sentence and the range chip share one window on these same points.
+    // A "highest" or "level" line is not used when today is not the high of that window.
+    const shared = priceRange(pts, asOf, { minDays: 1, slackDays: 0 });
+    const atSharedHigh = !!(shared && shared.place === "upper part" && Math.round(shared.high * 100) === Math.round(last[1] * 100));
     if (!hi) { if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` }); }
-    else if (last[1] > hi[1]) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last }, text: `Highest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price on file, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
+    else if (last[1] > hi[1] && atSharedHigh) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last, window: shared }, text: `Highest price in the ${shared.days} day range for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price in the ${shared.days} day range, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
     else if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` });
-    else {
+    else if (hi) {
       const off = (1 - last[1] / hi[1]) * 100;
       const level = Math.round(hi[1] * 100) === Math.round(last[1] * 100);
-      if (off <= cfg.nearHighPct) out.push({ tag: "range", type: "nearHigh", score: cfg.weights.nearHigh, nums: { hi, now: last },
-        text: level ? `Level with its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, the same as on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `About ${Math.max(1, r0(off))}% under its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, against a peak of ${at(hi, asOf)}.`,
-        short: level ? `It is level with its highest price on file, first reached on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `It sits about ${Math.max(1, r0(off))}% under its highest price on file, ${at(hi, asOf)}.` });
+      if (level && !atSharedHigh) { /* the chip window does not call this a high, so the headline does not either */ }
+      else if (off <= cfg.nearHighPct) out.push({ tag: "range", type: "nearHigh", score: cfg.weights.nearHigh, nums: { hi, now: last, window: shared },
+        text: level ? `Level with its highest price in the ${shared.days} day range: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, the same as on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `About ${Math.max(1, r0(off))}% under its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, against a peak of ${at(hi, asOf)}.`,
+        short: level ? `It is level with its highest price in the ${shared.days} day range, first reached on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `It sits about ${Math.max(1, r0(off))}% under its highest price on file, ${at(hi, asOf)}.` });
       else if (off >= cfg.drawdownMinPct) out.push({ tag: "range", type: "drawdown", score: cfg.weights.drawdown * (off / 100), nums: { hi, now: last }, text: `Still ${r0(off)}% under its peak of ${at(hi, asOf)}: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}.`, short: `It is still ${r0(off)}% under its peak of ${at(hi, asOf)}.` });
     }
   }
