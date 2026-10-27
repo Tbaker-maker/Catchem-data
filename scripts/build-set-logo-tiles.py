@@ -1,4 +1,4 @@
-# Official pokemon.com logos are trimmed to the artwork, the same crop as ME01.
+# Logos come from images.pokemontcg.io only (scripts/fetch-set-logo-files.mjs).
 # A set with no series logo gets a rounded Catch'em tile: the set name, not fan art.
 # Ids are the catalogue set id when one exists. Otherwise the site slug with
 # hyphens removed, which is the path /img/<id>/logo.png.
@@ -16,17 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "research/assets/img"
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_SM = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-ME06 = "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me06/me06_logo_169_en.png"
 
-# Slugs whose official series logo is already in the catalogue, or is ME06.
-OFFICIAL = {
-    "me-30th-celebration": "me55",
-    "me-ascended-heroes": "me2pt5",
-    "me03-perfect-order": "me3",
-    "me04-chaos-rising": "me4",
-    "me05-pitch-black": "me5",
-    "me06-delta-reign": "me6",
-}
+# Slugs with an allowed-host logo file. None of the ME sets have one yet.
+OFFICIAL = {}
 FORCE_ID = {"mee-mega-evolution-energies": "mee"}
 
 
@@ -99,7 +91,7 @@ def main():
     sets = json.loads((ROOT / "research/assets/public/sets.json").read_text())["sets"]
     by_slug = {row["slug"]: row["name"] for row in sets}
     report = json.loads((IMG / "set-logo-files.json").read_text())
-    # Official pokemon.com crops only. Tile folders are not collisions.
+    # Allowed-host logo files only. Tile folders are not collisions.
     used = {row["id"] for row in report["present"]}
     tile_doc = json.loads((IMG / "set-logo-tiles.json").read_text())
     filled_path = IMG / "set-logo-filled.json"
@@ -117,28 +109,6 @@ def main():
         seen.add(slug)
         work.append({"slug": slug, "name": by_slug.get(slug) or row["name"]})
 
-    raw = fetch(ME06)
-    crop, png, raw_bytes, raw_size = trim(raw)
-    dest = IMG / "me6" / "logo.png"
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(png)
-    present = {
-        "id": "me6",
-        "file": "research/assets/img/me6/logo.png",
-        "source": ME06,
-        "rawBytes": raw_bytes,
-        "rawWidth": raw_size[0],
-        "rawHeight": raw_size[1],
-        "bytes": len(png),
-        "width": crop.size[0],
-        "height": crop.size[1],
-        "sha256": sha(png),
-    }
-    report["present"] = [row for row in report["present"] if row["id"] != "me6"] + [present]
-    report["present"].sort(key=lambda row: row["id"])
-    if "me6" not in report["listed"]:
-        report["listed"].append("me6")
-        report["listed"].sort()
     report["missing"] = [row for row in report["missing"] if row["id"] != "mee"]
 
     tiles = []
@@ -167,7 +137,7 @@ def main():
     tiles.extend(kept)
     tiles.sort(key=lambda row: row["slug"])
     tile_doc = {
-        "rule": "A branded tile is the set name on a rounded Catch'em plate. It is used only when pokemon.com has no series logo for that set. It is not an official logo and not fan art.",
+        "rule": "A branded tile is the set name on a rounded Catch'em plate. It is used only when no allowed image host (images.pokemontcg.io) has a logo for that set. It is not an official logo and not fan art.",
         "tiles": tiles,
     }
     (IMG / "set-logo-tiles.json").write_text(json.dumps(tile_doc, indent=2) + "\n")
@@ -179,7 +149,7 @@ def main():
                 child.unlink()
             path.rmdir()
             removed += 1
-    print(f"me6 {crop.size[0]}x{crop.size[1]} {present['bytes']} tiles {len(tiles)} removed {removed}")
+    print(f"tiles {len(tiles)} removed {removed}")
     for row in tiles:
         if row["id"].startswith("tile"):
             raise SystemExit(f"prefixed id left {row['id']}")
