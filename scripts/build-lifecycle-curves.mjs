@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { joinSeries, productRow, eraPaths, banned } from "./lib/lifecycle-curves.mjs";
+import { joinSeries, productRow, eraPaths, assertPublicCopy } from "./lib/lifecycle-curves.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -150,11 +150,7 @@ export function buildLifecycle(root = ROOT) {
     eras,
   };
   const blob = JSON.stringify(doc);
-  if (banned(blob)) {
-    const err = new Error("lifecycle text failed the copy check");
-    err.code = "BANNED";
-    throw err;
-  }
+  assertPublicCopy(doc, "lifecycle");
   const dest = join(root, "research/assets/public/sealed-era-paths.json");
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, blob);

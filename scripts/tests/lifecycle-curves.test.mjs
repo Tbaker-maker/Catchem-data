@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildLifecycle } from "../build-lifecycle-curves.mjs";
 import {
-  joinSeries, weekIndex, weeklyPoints, median, round4, vsRetail, banned, isFilled, FILLED_BEFORE,
+  joinSeries, weekIndex, weeklyPoints, median, round4, vsRetail, banned, adviceFlags, isFilled, FILLED_BEFORE,
 } from "../lib/lifecycle-curves.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -15,6 +15,8 @@ function t(name, cond) {
 }
 
 t("missing retail ratio is null", vsRetail(10, null) === null && vsRetail(10, 0) === null);
+t("plain Buy Sell Shop and price target stay allowed", banned("Buy") === false && banned("Sell") === false && banned("Shop") === false && banned("price target") === false);
+t("buy now names the line and the reason", adviceFlags("buy now", "about", "sample").some((f) => f.line === "buy now" && f.reason));
 t("filled before Sep 25", isFilled("2026-09-24", "tcgcsv-daily") === true && isFilled("2026-09-25", "tcgcsv-daily") === false);
 t("archive stays filled", isFilled("2026-10-01", "archived-market") === true);
 t("cutoff date is the archive line", FILLED_BEFORE === "2026-09-25");
