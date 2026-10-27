@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { pointsOf, scoredRow, readRow, safeClaim, banned } from "./lib/read-ledger.mjs";
+import { pointsOf, scoredRow, readRow, safeClaim, assertPublicCopy } from "./lib/read-ledger.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -92,11 +92,7 @@ export function buildReadLedger(root = ROOT) {
     rows,
   };
   const blob = JSON.stringify(doc);
-  if (banned(blob)) {
-    const err = new Error("read ledger text failed the copy check");
-    err.code = "BANNED";
-    throw err;
-  }
+  assertPublicCopy(doc, "read ledger");
   const dest = join(root, "research/assets/public/read-ledger.json");
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, blob);

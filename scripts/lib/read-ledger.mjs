@@ -1,10 +1,39 @@
 // Every past read, with a later price and an outcome when our files have both ends.
 // A missing price is null, never 0. Misses stay in the list.
+import { flagLine, formatFlag, reportFlags } from "./copy-rules.mjs";
 
-const BANNED = /(\bsold\b|\bsales?\b|\bbuy\b|\bsell\b|\bshould\b|\binvest\w*|\brecommend\w*|\bcollectr\b|\bpokeviz\b|–|—)/i;
+const COPY_VISIBLE = new Set(["about", "claim", "name", "headline", "title", "source", "retailNote"]);
+
+export function adviceFlags(text, field = "", id = "") {
+  return flagLine(text, { field, id, house: false });
+}
 
 export function banned(text) {
-  return BANNED.test(String(text || ""));
+  return adviceFlags(text).length > 0;
+}
+
+export function publicFlags(doc) {
+  const flags = [];
+  const walk = (node, id, field) => {
+    if (Array.isArray(node)) { for (const v of node) walk(v, id, field); return; }
+    if (node && typeof node === "object") {
+      const ownId = String(node.id || id || "");
+      for (const [k, v] of Object.entries(node)) walk(v, ownId, k);
+      return;
+    }
+    if (typeof node === "string" && field && COPY_VISIBLE.has(field)) flags.push(...adviceFlags(node, field, id));
+  };
+  walk(doc, "", null);
+  return flags;
+}
+
+export function assertPublicCopy(doc, label) {
+  const flags = publicFlags(doc);
+  if (!flags.length) return doc;
+  reportFlags(flags, label);
+  const err = new Error(`${label} broke a copy rule: ${flags.slice(0, 5).map(formatFlag).join("; ")}`);
+  err.code = "BANNED";
+  throw err;
 }
 
 export function emptyReceipt() {
@@ -24,8 +53,6 @@ export function numberField(n, rec) {
 
 export function cleanClaim(text) {
   return String(text || "")
-    .replace(/\s*A listing is not a sale\.?/gi, "")
-    .replace(/[–—]/g, "-")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -100,8 +127,7 @@ export function readRow(read, market) {
 }
 
 export function safeClaim(row) {
-  if (!banned(row.claim)) return row;
-  const name = cleanClaim(row.name || "");
-  const claim = name && !banned(name) ? name : "Read on file";
-  return { ...row, claim };
+  const flags = adviceFlags(row?.claim || "", "claim", row?.id || "");
+  if (flags.length) reportFlags(flags, "read ledger");
+  return row;
 }

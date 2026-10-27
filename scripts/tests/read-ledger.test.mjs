@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildReadLedger } from "../build-read-ledger.mjs";
-import { outcomeOf, banned, cleanClaim } from "../lib/read-ledger.mjs";
+import { outcomeOf, banned, cleanClaim, adviceFlags, safeClaim } from "../lib/read-ledger.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 let failed = 0;
@@ -17,7 +17,11 @@ t("flat into the write stays null", outcomeOf({ price: 5 }, { price: 5 }, { pric
 t("same way is a hit", outcomeOf({ price: 1 }, { price: 2 }, { price: 3 }) === "hit");
 t("other way is a miss", outcomeOf({ price: 1 }, { price: 2 }, { price: 1 }) === "miss");
 t("unchanged later is a miss", outcomeOf({ price: 2 }, { price: 1 }, { price: 1 }) === "miss");
-t("sale sentence is removed", !banned(cleanClaim("25 listings counted. A listing is not a sale.")));
+const sale = "25 listings counted. A listing is not a sale.";
+t("sale sentence is kept", cleanClaim(sale) === sale);
+t("sale sentence is not money advice", adviceFlags(sale).length === 0);
+t("plain Buy Sell Shop and price target stay allowed", banned("Buy") === false && banned("Sell") === false && banned("Shop") === false && banned("price target") === false);
+t("safeClaim does not rewrite", safeClaim({ id: "x", claim: "You should sell this.", name: "Lugia" }).claim === "You should sell this.");
 
 const reads = JSON.parse(readFileSync(join(ROOT, "research/assets/public/reads.json"), "utf8"));
 const { doc } = buildReadLedger(ROOT);
