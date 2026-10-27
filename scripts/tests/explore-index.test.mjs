@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync, gunzipSync } from "node:zlib";
 import { buildExplore } from "../build-explore-index.mjs";
-import { pctChange, banned, GZIP_LIMIT, newsId } from "../lib/explore-index.mjs";
+import { pctChange, banned, adviceFlags, GZIP_LIMIT, newsId } from "../lib/explore-index.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 let failed = 0;
@@ -14,6 +14,8 @@ function t(name, cond) {
 }
 
 t("no divide by zero", pctChange(0, 10) === null);
+t("plain Buy Sell Shop and price target stay allowed", banned("Buy") === false && banned("Sell") === false && banned("Shop") === false && banned("price target") === false);
+t("buy now names the line and the reason", adviceFlags("buy now", "title", "sample").some((f) => f.line === "buy now" && f.reason));
 t("a real change", pctChange(100, 110) === 10);
 t("news id is stable", newsId("https://example.test/a", "A") === newsId("https://example.test/a", "A"));
 

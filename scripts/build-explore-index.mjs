@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync, gunzipSync } from "node:zlib";
 import {
-  banned, newsId, links, exploreRow, interestingIds, priceField, countField, pctChange, GZIP_LIMIT, cleanImage,
+  dropIfAdvice, newsId, links, exploreRow, interestingIds, priceField, countField, pctChange, GZIP_LIMIT, cleanImage, assertPublicCopy,
 } from "./lib/explore-index.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -173,7 +173,7 @@ export function buildExplore(root = ROOT) {
   for (const row of newsSorted) {
     if (newsRows.length >= 160) break;
     const title = String(row.title || "").trim();
-    if (!title || banned(title) || banned(row.source || "")) continue;
+    if (!title || dropIfAdvice(title, "title", newsId(row.url, title)) || dropIfAdvice(row.source || "", "source", newsId(row.url, title))) continue;
     let id = newsId(row.url, title);
     while (seenNews.has(id)) id += "x";
     seenNews.add(id);
@@ -193,8 +193,8 @@ export function buildExplore(root = ROOT) {
 
   const readRows = [];
   for (const read of reads) {
-    const claim = String(read.headline || read.name || "").replace(/[–—]/g, "-");
-    if (banned(claim) || banned(read.name || "")) continue;
+    const claim = String(read.headline || read.name || "");
+    if (dropIfAdvice(claim, "headline", read.id) || dropIfAdvice(read.name || "", "name", read.id)) continue;
     const sku = String(read.sku || "");
     const got = sku ? singlePrice(sku) : { price: null, change: null, date: null };
     const setSlug = byName.get(String(read.set || "").toLowerCase()) || byName.get(String(read.set || "").split(":").pop().trim().toLowerCase()) || null;
@@ -403,11 +403,7 @@ export function buildExplore(root = ROOT) {
 
   for (const doc of Object.values(docs)) {
     const blob = JSON.stringify(doc);
-    if (banned(blob)) {
-      const err = new Error(`explore ${doc.tab} failed the copy check`);
-      err.code = "BANNED";
-      throw err;
-    }
+    assertPublicCopy(doc, `explore ${doc.tab}`);
     if (gzipSync(blob).length >= GZIP_LIMIT) {
       const err = new Error(`explore ${doc.tab} is over 300 KB gzip`);
       err.code = "GZIP";
