@@ -55,8 +55,8 @@ export async function run() {
   t("an outlier high is not a spread", spreadRead({ id: "me2pt5-pc-etb", name: "AH PC ETB", dataStatus: "live", priceLow: 255.65, priceHigh: 800, priceMedian: 400, listingCount: 94, lastSeen: "2026-10-10" }) == null);
   t("under 5 asks is not a spread", spreadRead({ id: "x", name: "X", dataStatus: "live", priceLow: 70, priceHigh: 90, priceMedian: 80, listingCount: 4, lastSeen: "2026-10-06" }) == null);
   const robust = spreadRead({ id: "x", name: "X", dataStatus: "live", priceLow: 10, priceHigh: 800, priceMedian: 400, listingCount: 94, askP10: 330, askP90: 480, askMedian: 400, askRobustCount: 90, lastSeen: "2026-10-10" });
-  t("a robust spread uses p10 to p90 and shows the median", robust && robust.path.includes("$330.00") && robust.path.includes("$480.00") && robust.path.includes("Median ask $400.00 across 90 eBay listings") && !/sale|sold/i.test(robust.path));
-  t("an asking spread uses both ends", spread.path.includes("$70.00") && spread.path.includes("$90.00") && spread.why.includes(SPREAD_CLAUSE) && !spread.path.includes(SPREAD_CLAUSE));
+  // eBay ask reads are retired (2026-10-27): eBay is listings counted only.
+  t("ask spread reads are off", robust == null && spread == null);
   t("a missing high is not a spread", spreadRead({ id: "me5-etb", name: "Pitch Black ETB", dataStatus: "live", priceLow: 70, lastSeen: "2026-10-06" }) == null);
 
   const heat = [
@@ -70,9 +70,9 @@ export async function run() {
   const market = { id: "me5-etb", name: "Pitch Black ETB", tcgplayerProductId: 5, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 40 }] };
   const moved = heat.map((row, i) => ({ ...row, price: i ? 88 : 80 }));
   const ask = gapRead("me5-etb", moved, market, { id: "me5-etb", tcgplayerProductId: 5 });
-  t("the ask clause is used only when the market price stayed", ask.readKind === "askmove" && ask.why.includes(ASK_CLAUSE) && !ask.path.includes(ASK_CLAUSE) && ask.path.includes("$40.00"));
+  t("ask vs market read is off", ask == null);
   const reverse = gapRead("me5-etb", heat, { ...market, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 44 }] }, { id: "me5-etb", tcgplayerProductId: 5 });
-  t("the reverse names the market move and the still ask", reverse.readKind === "mktmove" && reverse.why.includes(MKT_CLAUSE) && !reverse.path.includes(MKT_CLAUSE));
+  t("market vs ask read is off", reverse == null);
   t("a different product id is not a pair", gapRead("me5-etb", moved, market, { id: "other", tcgplayerProductId: 5 }) == null);
 
   const clean = [];

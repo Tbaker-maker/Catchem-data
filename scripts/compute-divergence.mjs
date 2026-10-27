@@ -78,7 +78,11 @@ const q = await loadBlocked();
 // signal, and see the report's fork recommendation before promoting this
 // instrument back to a headline.
 const rows = [], skipped = [];
+// Sealed prices are TCGplayer market (2026-10-27). There is no eBay price to
+// compare, so no divergence row is built from an eBay ask.
+const NO_EBAY_PRICE = (ebay.priceSource || "") === "TCGplayer market";
 for (const p of ebay.products || []) {
+  if (NO_EBAY_PRICE || p.priceSource === "TCGplayer market") { skipped.push({ id: p.id, reason: "eBay is listings counted, not a price" }); continue; }
   const t = tcgById.get(p.id);
   if (!t || t.dataStatus !== "live" || p.dataStatus !== "live" || !p.priceMedian || !t.tcgMarket) {
     skipped.push({ id: p.id, reason: !t ? "no tcg row" : `status ebay:${p.dataStatus}/tcg:${t?.dataStatus}` });

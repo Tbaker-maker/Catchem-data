@@ -109,7 +109,7 @@ for (const row of sealed?.products || []) {
     rarity: null,
     subtype: subtypeOf(row),
     price,
-    source: price != null ? "eBay asking prices" : null,
+    source: price != null ? "TCGplayer market" : null,
     asOf: price != null ? sealedAsOf : null,
     history: `data/sealed-prices.json#${row.id}`,
   });

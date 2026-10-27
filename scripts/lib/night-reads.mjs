@@ -296,7 +296,11 @@ export function spreadRange(product) {
   return { low, high, median, count, basis: "min-max" };
 }
 
+// eBay asks are listings counted, not prices (2026-10-27). No ask range read.
+export const ASK_READS_ON = false;
+
 export function spreadRead(product) {
+  if (!ASK_READS_ON) return null;
   const range = spreadRange(product);
   const name = String(product?.name || "").trim();
   const day = String(product?.lastSeen || "").slice(0, 10);
@@ -372,6 +376,7 @@ export function askCaptureDay(heat, day) {
 
 /** Last two shared dates. Ask from heat-history, market from the TCGplayer file, same product id. */
 export function gapRead(productId, heatRows, marketDoc, mappingRow) {
+  if (!ASK_READS_ON) return null;
   if (!productId || !marketDoc || marketDoc.id !== productId) return null;
   if (!mappingRow || mappingRow.id !== productId) return null;
   if (Number(mappingRow.tcgplayerProductId) !== Number(marketDoc.tcgplayerProductId)) return null;

@@ -14,12 +14,13 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { loadSealedTcgMarket } from "./lib/sealed-tcg-price.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "data");
 
 // ── Config ───────────────────────────────────────────────────────────────────
-const FIX_DEPLOY_DATE = "2026-08-19"; // pricing v2 (BIN-only, delivered, bounds) shipped fab1702 — WoW reads are pure-v2 from here
+const FIX_DEPLOY_DATE = "2026-09-25"; // TCGplayer market days on file start here (sealed prices are TCGplayer from 2026-10-27).
 const KNOWN_CONTAMINATED = ["sv9-booster-box", "sv9-etb", "swsh7-booster-box"]; // pre-fix poisoned history (swsh7: published $144 vs real ~$2900)
 const PRICE_UP_STRONG = 0.06;   // +6% WoW
 const PRICE_DOWN_STRONG = -0.06;
@@ -32,7 +33,8 @@ const pct = (now, then) => (then > 0 ? (now - then) / then : null);
 const round = n => (n == null ? null : Math.round(n * 1000) / 1000);
 
 function priceWoW(history, cutoff) {
-  const usable = cutoff ? history.filter(h => h.date >= cutoff) : history;
+  const priced = history.filter(h => Number(h.price) > 0);
+  const usable = cutoff ? priced.filter(h => h.date >= cutoff) : priced;
   if (usable.length < MIN_HISTORY_DAYS) return { wow: null, days: usable.length };
   const now = usable[usable.length - 1].price;
   const then = usable[usable.length - 8].price; // 7 days back
@@ -83,6 +85,16 @@ async function main() {
       snapshots.push({ date: today, id: p.id, price: p.priceMedian, listingCount: p.listingCount });
     }
   }
+  // Every snapshot price is TCGplayer market on that exact date, or the
+  // snapshot carries no price. eBay is listings counted only (2026-10-27).
+  // The eBay raw nights stay in data/raw/ebay-sealed; they are not a price.
+  const tcg = await loadSealedTcgMarket(join(DATA, ".."));
+  const pidOf = new Map((prices.products || []).map((p) => [p.id, Number(p.tcgPlayerId)]));
+  snapshots = snapshots.map((s) => {
+    const { price, ...rest } = s;
+    const hit = tcg.get(pidOf.get(s.id))?.get(s.date);
+    return hit ? { ...rest, price: hit.market } : rest;
+  });
   // Keep every night forever (~1.7 MB/year). Our own listing-count history
   // must never depend on a provider; readers pick their own windows.
 
