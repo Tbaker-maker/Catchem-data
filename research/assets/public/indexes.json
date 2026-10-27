@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-26",
- "updatedAt": "2026-10-26T19:21:33.418Z",
+ "asOf": "2026-10-27",
+ "updatedAt": "2026-10-27T12:39:12.453Z",
  "source": "TCGplayer market, daily",
  "note": "Chain-linked value-weighted index: each day is the sum of today's prices over the sum of the same cards' prices on the last real day. Singles and sealed are separate. Two days is not a month.",
  "singles": [
@@ -114,13 +114,13 @@
   },
   {
    "d": "2026-10-17",
-   "v": 99.3,
-   "n": 25916
+   "v": 99.4,
+   "n": 25920
   },
   {
    "d": "2026-10-18",
    "v": 99.5,
-   "n": 25921
+   "n": 25937
   },
   {
    "d": "2026-10-19",
@@ -130,37 +130,42 @@
   {
    "d": "2026-10-20",
    "v": 99.4,
-   "n": 25896
+   "n": 25906
   },
   {
    "d": "2026-10-21",
    "v": 99.8,
-   "n": 25856
+   "n": 25862
   },
   {
    "d": "2026-10-22",
    "v": 99.8,
-   "n": 25823
+   "n": 25825
   },
   {
    "d": "2026-10-23",
-   "v": 99.7,
-   "n": 25793
+   "v": 99.8,
+   "n": 25790
   },
   {
    "d": "2026-10-24",
-   "v": 99.7,
-   "n": 25829
+   "v": 99.8,
+   "n": 25813
   },
   {
    "d": "2026-10-25",
-   "v": 99.8,
-   "n": 25842
+   "v": 99.9,
+   "n": 25855
   },
   {
    "d": "2026-10-26",
-   "v": 99.8,
-   "n": 25903
+   "v": 99.9,
+   "n": 25897
+  },
+  {
+   "d": "2026-10-27",
+   "v": 99.9,
+   "n": 25932
   }
  ],
  "sealed": [
@@ -326,6 +331,11 @@
    "d": "2026-10-26",
    "v": 100.9,
    "n": 1509
+  },
+  {
+   "d": "2026-10-27",
+   "v": 101,
+   "n": 1505
   }
  ],
  "history": {
@@ -1949,7 +1959,7 @@
    ],
    [
     "2026-10-17",
-    99.3,
+    99.4,
     "n"
    ],
    [
@@ -1979,29 +1989,34 @@
    ],
    [
     "2026-10-23",
-    99.7,
+    99.8,
     "n"
    ],
    [
     "2026-10-24",
-    99.7,
+    99.8,
     "n"
    ],
    [
     "2026-10-25",
-    99.8,
+    99.9,
     "n"
    ],
    [
     "2026-10-26",
-    99.8,
+    99.9,
+    "n"
+   ],
+   [
+    "2026-10-27",
+    99.9,
     "n"
    ]
   ],
   "singlesAbout": [
    "TCGplayer market price via the tcgcsv daily archive: weekly from Feb 8, 2024 to Mar 5, 2026, then daily to Sep 15, 2026.",
    "Public fan-site data (PokeVizInvestor, TCGplayer market), Sep 16, 2026 to Sep 25, 2026. These days are the soft line.",
-   "TCGplayer market price via tcgcsv, our nightly pull, Sep 26, 2026 to Oct 26, 2026.",
+   "TCGplayer market price via tcgcsv, our nightly pull, Sep 26, 2026 to Oct 27, 2026.",
    "5 days with no price file hold the last level and show as the soft line.",
    "Level 100 is Sep 26, 2026, our first nightly day."
   ],
@@ -3240,11 +3255,16 @@
     "2026-10-26",
     100.9,
     "n"
+   ],
+   [
+    "2026-10-27",
+    101,
+    "n"
    ]
   ],
   "sealedAbout": [
    "Public fan-site data (PokeVizInvestor, TCGplayer market), Oct 2, 2025 to Sep 24, 2026. These days are the soft line.",
-   "TCGplayer market price via tcgcsv, our nightly pull, Sep 25, 2026 to Oct 26, 2026.",
+   "TCGplayer market price via tcgcsv, our nightly pull, Sep 25, 2026 to Oct 27, 2026.",
    "5 days with no price file hold the last level and show as the soft line.",
    "Level 100 is Sep 25, 2026, our first nightly day."
   ]
