@@ -1,0 +1,25 @@
+{
+  "note": "Fake limits for tests. Not the live pulse limits. archiveNoteDate is the first own day.",
+  "flatAbsPct": 40,
+  "minMonthsForZ": 3,
+  "zQuiet": 9,
+  "zMid": 12,
+  "zCap": 20,
+  "colorMax": 0.5,
+  "minMonthsToInclude": 1,
+  "heatmapMonths": 12,
+  "ownMonthsBeforeCutover": 3,
+  "mirrorGapPct": 5,
+  "archiveNoteDate": "2099-01-02",
+  "productOrder": [
+    "booster-box",
+    "etb",
+    "pc-etb"
+  ],
+  "productTieBreak": "id",
+  "chase": {
+    "pick": "highest-market",
+    "condition": "NM",
+    "tieBreak": "id"
+  }
+}
