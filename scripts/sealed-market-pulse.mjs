@@ -402,7 +402,7 @@ function main() {
     months: out.months,
     marketMedian: out.marketMedian,
     rows: pubRows,
-    note: "Month end is the last dated price in that calendar month. A blank month says No reading. Listings counted, not sold. Mirrored history is labeled on each cell.",
+    note: "Month end is the last dated price in that calendar month. A blank month says No reading. Each figure is listings counted. Mirrored history is labeled on each cell.",
   };
   const pubDest = join(ROOT, "research/assets/public/sealed-market-pulse.json");
   mkdirSync(dirname(pubDest), { recursive: true });
