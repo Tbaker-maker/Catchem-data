@@ -433,7 +433,8 @@ for (const item of items) {
       const tags = variantTags({ ...item, set: set.name }, { subtypes: subtypesById.get(item.id) });
       const cx = costcoById.get(item.id);
       if (cx && !tags.includes("Costco exclusive")) tags.push("Costco exclusive");
-      const ask = cx && !(money(item.price)) ? ebayMedian.get(item.id) || null : null;
+      // eBay asks are never shown as a price. A Costco item with no TCGplayer price says checking.
+      const ask = null;
       return {
         ...(tags.length ? { tags } : {}),
         ...(cx ? { exclusive: "Costco", region: cx.region || "US", contents: cx.contents || "" } : {}),

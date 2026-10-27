@@ -225,6 +225,13 @@ console.log("── stale data never blocks the refresh ──");
   t("stale never blocks suite", n === 0, `${n} failed`);
 }
 
+console.log("── sealed prices are TCGplayer market ──");
+{
+  const { run } = await import("./sealed-tcg-price.suite.mjs");
+  const n = await run();
+  t("sealed TCGplayer price suite", n === 0, `${n} failed`);
+}
+
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");

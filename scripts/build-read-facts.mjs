@@ -206,7 +206,7 @@ export async function writeReadFacts(root = ROOT) {
   for (const [slug, map] of items) {
     // One item per line, so a page can slice its row out of the text without parsing the shard.
     const lines = Object.entries(map).map(([id, f]) => `${JSON.stringify(id)}:${JSON.stringify(f)}`);
-    const body = `{"asOf":${JSON.stringify(asOf)},"set":${JSON.stringify(slug)},"source":"Our published files. TCGplayer market (NM for singles), eBay asks and listings counted, dated per field.","items":{\n${lines.join(",\n")}\n}}\n`;
+    const body = `{"asOf":${JSON.stringify(asOf)},"set":${JSON.stringify(slug)},"source":"Our published files. TCGplayer market (NM for singles) and eBay listings counted, dated per field.","items":{\n${lines.join(",\n")}\n}}\n`;
     bytes += body.length; itemCount += Object.keys(map).length;
     await writeFile(join(itemDir, factFileName(slug)), body);
   }

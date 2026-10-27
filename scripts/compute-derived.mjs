@@ -315,9 +315,13 @@ for (const p of liveList) {
   const g = spreadById.get(p.id);
   if (g != null) eraBuckets[e].gaps.push(g);
 }
-const BASE_DATE = "2026-08-19";
-let eiHist = { note: "era index history; baseline 100 = " + BASE_DATE + " (first clean pricing-v2 day)", entries: [] };
-try { eiHist = await J("data/era-index-history.json"); } catch {}
+// Sealed prices became TCGplayer market on 2026-10-27. The older eBay ask
+// series is a different measure, so the era index starts a new series and
+// its baseline is that series' first day. The old file is left as it was.
+const ERA_HIST = "data/era-index-history-tcg.json";
+let eiHist = { note: "era index history, TCGplayer market; baseline 100 = first day in this file", entries: [] };
+try { eiHist = await J(ERA_HIST); } catch {}
+const BASE_DATE = (eiHist.entries || []).map((e) => e.date).sort()[0] || null;
 const today = new Date().toISOString().slice(0,10);
 const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b])=>{
   const ps = [...b.prices].sort((x,y)=>x-y);
@@ -325,28 +329,24 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const avgGap = b.gaps.length ? Math.round(b.gaps.reduce((a,c)=>a+c,0)/b.gaps.length*10)/10 : null;
   const lpp = Math.round(b.listings / b.n);
   const eraRows = (eiHist.entries||[]).filter(e=>e.era===era).sort((a,b)=>a.date<b.date?-1:1);
-  const baseRow = eraRows.find(e=>e.date===BASE_DATE) || eraRows[0] || null;
+  const baseRow = (BASE_DATE && eraRows.find(e=>e.date===BASE_DATE)) || eraRows[0] || null;
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
   const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
-  if (offTcg) read = "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only.";
-  else if (avgGap == null) read = "cross-market read still pending — not enough matched data yet to say anything";
-  else if (avgGap >= 15) read = "eBay normally runs a little higher because photos show the exact item. Asks here sit well past that, which typically points to demand.";
-  else if (avgGap >= 6) read = "The gap sits inside the range photos usually explain, so nothing here is signalling on its own.";
-  else if (avgGap >= 0) read = "The two venues typically drift a little, and right now they barely do.";
-  else read = "eBay asks under TCGplayer usually means motivated sellers across the era. Worth watching, not acting on.";
+  // Prices are TCGplayer market. eBay is listings counted, so there is no venue gap read.
+  read = `TCGplayer market median across ${b.n} products. ${b.listings} eBay listings counted.`;
   const bx = (eraBoxes[era]||[]).sort((x,y)=>x-y);
   const boxMedian = bx.length ? bx[Math.floor(bx.length/2)] : null;
   // Sandbox Rule: every instrument ships a plain-words version one tap away.
   // The Improver caught all five era indexes shipping without one, and partial
   // compliance is the same as none for whoever lands on the one that lacks it.
   const simple = `Think of each era as its own shelf in the shop. This is what a typical box from the ${era} shelf costs right now, across the ${b.n} products we price from it. It is not what the whole era is worth — it is what one box from that shelf costs today.`;
-  return { era, products: b.n, level, boxMedian, simple, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
+  return { era, products: b.n, level, boxMedian, simple, index: idx100, avgGapPct: null, venueClass: "tcgplayer", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
 }).sort((a,b)=>b.level-a.level);
 // persist today (merge-by-date+era — pathogen-proof)
 eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);
 for (const r of eraIndexes) eiHist.entries.push({ date: today, era: r.era, level: r.level, avgGapPct: r.avgGapPct, listings: r.totalListings });
-await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON.stringify(eiHist,null,1));
+await writeFile(new URL("../" + ERA_HIST, import.meta.url), JSON.stringify(eiHist,null,1));
 
 
 // ── (h) THE CATCH'EM SEALED INDEX — chain-linked ────────────────────────
@@ -398,7 +398,7 @@ const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   seasoningBench: liveList.filter(p => !seasoned(p)).length,
   medianProductUsd: (() => { const a = liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian).sort((x,y)=>x-y); return a.length ? a[Math.floor(a.length/2)] : null; })(),
   baseline: "chain-linked from 100.0; each day's move is the average return of products present on both days",
-  breadth, source: "eBay asking prices", methodologyUrl: "/methodology.html",
+  breadth, source: "TCGplayer market", methodologyUrl: "/methodology.html",
   simple: `One number for the whole sealed market. It starts at 100 and moves by the average daily change of the products we track — only products we could price on both days count toward a move, so adding or removing products never shifts it.` };
 {
   ixh.entries = (ixh.entries || []).filter(e => e.date !== todayIx);
@@ -432,7 +432,7 @@ const rawIndex = rawRatios.length
       level: Math.round(rawRatios.reduce((a, b) => a + b, 0) / rawRatios.length * 1000) / 10,
       constituents: rawRatios.length,
       baselineDate: [...new Set(sgh.entries.map(e => e.date))].sort()[0] ?? todayS,
-      source: "eBay asking prices",
+      source: "TCGplayer market",
       note: "confirmed chase singles, each against its own first clean price" }
   : { name: "Raw Chase Index", hidden: true, constituents: 0, note: "No chase singles with a price, so this index is not published." };
 const gradedIndex = { available: false, note: "same equation, graded shelf — waiting on a licensed daily graded-price feed" };
@@ -463,7 +463,7 @@ const valueWeighted = vwLevel == null ? null : {
   vsEqualWeight: Math.round((vwLevel - idxLevel) * 10) / 10,
   simple: "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
   method: "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
-  source: "eBay asking prices" };
+  source: "TCGplayer market" };
 
 
 
@@ -531,13 +531,13 @@ const rohPool = liveList
     && !blockedIds.has(p.id))
   .sort((a, b) => (b.listingCount ?? 0) - (a.listingCount ?? 0))
   .slice(0, 25)
-  .map(p => ({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian }));
+  .map(p => ({ id: p.id, name: p.name, price: p.priceMedian }));
 const rohPick = rotate(rohPool) || null;
-const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick.ebayAskMedian,
-  question: `${rohPick.name} at $${rohPick.ebayAskMedian} — rip it or hold it sealed?`,
+const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick.price, priceSource: "TCGplayer market",
+  question: `${rohPick.name} at $${rohPick.price} TCGplayer market. Rip it or keep it sealed?`,
   note: "one-tap daily vote; results revisited next morning" } : null;
 const notification = { title: `Catchem Sealed Index ${sealedIndex.level}${sealedIndex.ddPct!=null?` (${sealedIndex.ddPct>0?"+":""}${sealedIndex.ddPct}%)`:""}`,
-  body: rohPick ? `Today: ${rohPick.name} — eBay asks ${Math.abs(rohPick.spreadPct)}% ${rohPick.spreadPct>0?"more":"less"} than TCGplayer.` : "The Morning Pulse is out." };
+  body: "The Morning Pulse is out." };
 
 
 // Listing/price pairs for the last two days, independent of the index.
@@ -724,7 +724,7 @@ try {
     sealedIndex.level = last.equal;
     sealedIndex.ddPct = last.equalMovePct ?? null;
     sealedIndex.matchedSample = last.matched ?? sealedIndex.matchedSample;
-    sealedIndex.source = "eBay asking prices";
+    sealedIndex.source = "TCGplayer market";
     sealedIndex.baseline = chartSealed.method;
     if (valueWeighted && last.value != null) {
       valueWeighted.level = last.value;

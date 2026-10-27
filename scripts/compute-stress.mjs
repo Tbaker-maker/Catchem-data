@@ -73,7 +73,7 @@ async function stressSealed(today) {
   const asOf = [...dates].sort().at(-1) || dayOf(prices.updatedAt);
   return buildStressReport({
     kind: "sealed",
-    source: "eBay asking prices",
+    source: "TCGplayer market",
     sourceFile: "data/heat-history.json",
     asOf,
     today,

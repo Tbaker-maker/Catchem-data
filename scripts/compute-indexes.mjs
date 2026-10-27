@@ -125,10 +125,11 @@ export async function publishChartIndexes() {
         anchorUsed: live.points[0]?.date || null,
         anchorLevel: 100,
         anchorReason: "No eBay asking prices before the first day in heat history. Level 100 starts on that day. March 31 was not invented.",
-        available: !stale && live.points.length > 0,
-        withheld: stale ? `Newest sealed price file is ${newest}, more than 2 days before ${today}. This index is not published.` : null,
+        // eBay asks are listings counted, not prices (2026-10-27). The TCGplayer series above is the index.
+        available: false,
+        withheld: "eBay asking prices are not a price. Catch'em counts eBay listings only. The TCGplayer market series is the index.",
         base: 100,
-        points: stale ? [] : live.points.map(({ basket, ...p }) => p),
+        points: [],
         gaps: live.gaps,
       },
       break: "The TCGplayer series and the eBay series are separate. They are not spliced into one line.",
@@ -174,7 +175,8 @@ export async function publishChartIndexes() {
   }
   await writeFile(join(OUT, "manifest.json"), JSON.stringify({
     asOf: newest, stale,
-    sourceLive: "eBay asking prices",
+    sourceLive: null,
+    sourceLiveNote: "Withheld. eBay is listings counted only.",
     sourceBackfill: "TCGplayer market price (TCGCSV daily files from 2026-09-25; PokemonPriceTracker history stays private)",
     backfillCoverage,
     rawChase: { hidden: true, products: 0, reason: "No licensed daily chase-single history before our own TCGCSV days (the rarebox archive is personal-use only and lives in the private repo). The Raw Chase Index is not published." },

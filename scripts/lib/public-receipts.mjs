@@ -74,11 +74,11 @@ export function scoreWatch({ entries, heat, sealedNow }) {
 }
 
 export function receiptSource(row) {
-  return row.kind === "sealed" ? "eBay asking prices" : "TCGplayer market";
+  return "TCGplayer market";
 }
 
 export function receiptWhy(row) {
-  const one = row.kind === "sealed" ? "eBay asking price" : "TCGplayer market price";
+  const one = "TCGplayer market price";
   if (row.result === "hit" || row.result === "miss") {
     const way = row.direction === "up" ? "after a lower one" : "after a higher one";
     const end = row.result === "hit" ? "Same way." : "The other way.";
