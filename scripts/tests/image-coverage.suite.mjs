@@ -38,14 +38,15 @@ export async function run() {
   t("a sealed row with no picture is listed", coverage.sealed.length === 1 && coverage.sealed[0].id === "tcgcsv-2");
   t("an empty logo is missing and a tile is listed apart", coverage.setsMissing.length === 1 && coverage.setsMissing[0].slug === "blank" && coverage.setsTile.length === 1 && coverage.setsTile[0].setId === "mee");
 
-  const denied = await probeLogo(WATCH[0], async () => new Response("no", { status: 403 }));
+  const sample = { id: "probe", slug: "probe", url: "https://images.pokemontcg.io/base1/logo.png" };
+  const denied = await probeLogo(sample, async () => new Response("no", { status: 403 }));
   t("a refused logo is not a png", denied.status === 403 && denied.png === false);
   t("a tile is not filled from a refusal", shouldFill({ kind: "tile", logo: "/img/mee/logo.png" }, denied) === false);
   t("an official file is never replaced", shouldFill({ logo: "/img/base1/logo.png" }, { status: 200, png: true }) === false);
   t("a tile can be replaced when a png arrives", shouldFill({ kind: "tile", logo: "/img/mee/logo.png" }, { status: 200, png: true }) === true);
   t("an empty logo can be filled", shouldFill(null, { status: 200, png: true }) === true);
   const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]);
-  const ok = await probeLogo(WATCH[0], async () => new Response(png, { status: 200 }));
+  const ok = await probeLogo(sample, async () => new Response(png, { status: 200 }));
   t("png bytes count as a logo", ok.png === true && ok.status === 200);
 
   const missing = await assertEverySetLogo(ROOT);
@@ -53,7 +54,7 @@ export async function run() {
 
   const yml = await readFile(join(ROOT, ".github/workflows/image-coverage.yml"), "utf8");
   t("the weekly workflow does not git add", yml.includes("cron:") && yml.includes("image-coverage.mjs") && !/git add/.test(yml));
-  t("the watch list names the mee series logo only", WATCH.length === 1 && WATCH[0].id === "mee" && WATCH[0].url.endsWith("/mee/mee_logo_169_en.png"));
+  t("the watch list is empty: logos come from images.pokemontcg.io only", WATCH.length === 0 && !WATCH.some((w) => /pokemon\.com/i.test(String(w?.url || ""))));
 
   return fail;
 }

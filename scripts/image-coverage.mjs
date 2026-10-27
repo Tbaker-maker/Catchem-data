@@ -110,6 +110,7 @@ export async function assertEverySetLogo(root) {
 }
 
 export async function probeLogo(row, fetchImpl = globalThis.fetch) {
+  if (!row || !row.url) throw new Error("probeLogo needs a row with a url");
   const res = await fetchImpl(row.url, {
     signal: AbortSignal.timeout(20000),
     headers: { "user-agent": "Catchem-data" },
