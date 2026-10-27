@@ -1,5 +1,5 @@
 import { tcgPricedRow, tcgPointFor, SEALED_PRICE_SOURCE } from "../lib/sealed-tcg-price.mjs";
-import { spreadRead, gapRead } from "../lib/night-reads.mjs";
+import { spreadRead, gapRead, marketMoveRead } from "../lib/night-reads.mjs";
 import { receiptSource } from "../lib/public-receipts.mjs";
 
 export async function run() {
@@ -32,6 +32,13 @@ export async function run() {
   t("no TCGplayer id means no price, not an eBay ask", noPid.priceUsd === null && noPid.priceMedian === null && noPid.listingCount === 41);
   t("ask range read is off", spreadRead({ ...ebayRow, priceLow: 2000, priceHigh: 3000, priceMedian: 2500, listingCount: 40 }) === null);
   t("ask vs market read is off", gapRead("evolving-skies-box", [], {}, {}) === null);
+  const mktDoc = { id: "evolving-skies-box", name: "Evolving Skies Booster Box", tcgplayerProductId: 242436, points: [
+    { date: "2026-10-25", market: 2200 }, { date: "2026-10-27", market: 2178.94 },
+  ]};
+  const mktMap = { id: "evolving-skies-box", tcgplayerProductId: 242436 };
+  const moved = marketMoveRead("evolving-skies-box", mktDoc, mktMap);
+  t("TCGplayer-only market move ships without an ask", moved && moved.readKind === "mktmove" && moved.receipt.marketFrom === 2200 && moved.receipt.marketTo === 2178.94 && !("ask" in moved.receipt) && /TCGplayer market/.test(moved.path) && !/eBay ask/.test(moved.path));
+  t("flat market is not a move", marketMoveRead("evolving-skies-box", { ...mktDoc, points: [{ date: "2026-10-25", market: 2200 }, { date: "2026-10-27", market: 2200 }] }, mktMap) === null);
   t("sealed receipts say TCGplayer market", receiptSource({ kind: "sealed" }) === "TCGplayer market");
   return fail;
 }
