@@ -31,7 +31,7 @@ export async function run() {
 
   t("xy12 Charizard art mapped", byId.get("xy12-etb-mega-charizard-y")?.tcgPlayerId === "123447" && mapIds.has("xy12-etb-mega-charizard-y"));
   t("sv1 pc arts mapped", mapIds.has("sv1-pc-etb-miraidon") && mapIds.has("sv1-pc-etb-koraidon"));
-  t("mega forces set of 3 mapped", mapIds.has("mega-forces-tin-set-of-3") && byId.get("mega-forces-tin-set-of-3")?.tcgPlayerId === "702508");
+  t("mega forces set of 3 mapped", mapIds.has("tcgcsv-702508") && byId.get("tcgcsv-702508")?.tcgPlayerId === "702508" && byId.get("tcgcsv-702508")?.browse === false);
   t("crown zenith premium mapped", byId.get("swsh12pt5-premium")?.tcgPlayerId === "505916");
   t("base1 unlimited mapped with edition", byId.get("base1-booster-box")?.tcgPlayerId === "185731" && byId.get("base1-booster-box")?.edition === "Revised Unlimited");
   t("jungle fossil neo stay unmapped", !byId.get("base2-booster-box")?.tcgPlayerId && !byId.get("base3-booster-box")?.tcgPlayerId && !byId.get("neo1-booster-box")?.tcgPlayerId);
