@@ -1,5 +1,5 @@
 {
- "asOf": "2026-10-26",
+ "asOf": "2026-10-27",
  "source": "year-patterns",
  "alerts": false,
  "ownDataOnly": true,
@@ -12,10 +12,57 @@
     "set_age=under_1y",
     "path=dip"
    ],
-   "testN": 56,
-   "testRate": 0.2857,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where set_age under_1y and path dip, 28.6% of 56 windows moved and finished above the median (7-day window)."
+   "testN": 496,
+   "testRate": 0.498,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age under_1y and path dip, 49.8% of 496 windows moved and finished above the median (7-day window)."
+  },
+  {
+   "id": "yp:7d:rotation_stage=previous+path=dip",
+   "horizon": 7,
+   "keys": [
+    "rotation_stage=previous",
+    "path=dip"
+   ],
+   "testN": 962,
+   "testRate": 0.4252,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where rotation_stage previous and path dip, 42.5% of 962 windows moved and finished above the median (7-day window)."
+  },
+  {
+   "id": "yp:7d:set_age=1_to_3y+path=dip",
+   "horizon": 7,
+   "keys": [
+    "set_age=1_to_3y",
+    "path=dip"
+   ],
+   "testN": 1179,
+   "testRate": 0.4114,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age 1_to_3y and path dip, 41.1% of 1179 windows moved and finished above the median (7-day window)."
+  },
+  {
+   "id": "yp:7d:path=dip",
+   "horizon": 7,
+   "keys": [
+    "path=dip"
+   ],
+   "testN": 4255,
+   "testRate": 0.3998,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where path dip, 40% of 4255 windows moved and finished above the median (7-day window)."
+  },
+  {
+   "id": "yp:7d:rotation_stage=current+path=dip",
+   "horizon": 7,
+   "keys": [
+    "rotation_stage=current",
+    "path=dip"
+   ],
+   "testN": 798,
+   "testRate": 0.4486,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where rotation_stage current and path dip, 44.9% of 798 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:set_age=under_1y+rotation_stage=current",
@@ -24,10 +71,10 @@
     "set_age=under_1y",
     "rotation_stage=current"
    ],
-   "testN": 2258,
-   "testRate": 0.3202,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where set_age under_1y and rotation_stage current, 32% of 2258 windows moved and finished above the median (7-day window)."
+   "testN": 3463,
+   "testRate": 0.339,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age under_1y and rotation_stage current, 33.9% of 3463 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:set_age=under_1y",
@@ -35,22 +82,22 @@
    "keys": [
     "set_age=under_1y"
    ],
-   "testN": 2258,
-   "testRate": 0.3202,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where set_age under_1y, 32% of 2258 windows moved and finished above the median (7-day window)."
+   "testN": 3463,
+   "testRate": 0.339,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age under_1y, 33.9% of 3463 windows moved and finished above the median (7-day window)."
   },
   {
-   "id": "yp:7d:rotation_stage=rotated+path=dip",
+   "id": "yp:7d:set_age=under_90d+path=dip",
    "horizon": 7,
    "keys": [
-    "rotation_stage=rotated",
+    "set_age=under_90d",
     "path=dip"
    ],
-   "testN": 74,
-   "testRate": 0.2162,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where rotation_stage rotated and path dip, 21.6% of 74 windows moved and finished above the median (7-day window)."
+   "testN": 176,
+   "testRate": 0.2841,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age under_90d and path dip, 28.4% of 176 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:rotation_stage=previous",
@@ -58,10 +105,10 @@
    "keys": [
     "rotation_stage=previous"
    ],
-   "testN": 7273,
-   "testRate": 0.2643,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where rotation_stage previous, 26.4% of 7273 windows moved and finished above the median (7-day window)."
+   "testN": 10627,
+   "testRate": 0.274,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where rotation_stage previous, 27.4% of 10627 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:set_age=1_to_3y+rotation_stage=previous",
@@ -70,21 +117,10 @@
     "set_age=1_to_3y",
     "rotation_stage=previous"
    ],
-   "testN": 6438,
-   "testRate": 0.2672,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where set_age 1_to_3y and rotation_stage previous, 26.7% of 6438 windows moved and finished above the median (7-day window)."
-  },
-  {
-   "id": "yp:7d:rotation_stage=rotated",
-   "horizon": 7,
-   "keys": [
-    "rotation_stage=rotated"
-   ],
-   "testN": 5558,
-   "testRate": 0.2774,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where rotation_stage rotated, 27.7% of 5558 windows moved and finished above the median (7-day window)."
+   "testN": 9376,
+   "testRate": 0.2765,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age 1_to_3y and rotation_stage previous, 27.7% of 9376 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:set_age=1_to_3y",
@@ -92,10 +128,10 @@
    "keys": [
     "set_age=1_to_3y"
    ],
-   "testN": 8495,
-   "testRate": 0.2642,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where set_age 1_to_3y, 26.4% of 8495 windows moved and finished above the median (7-day window)."
+   "testN": 12371,
+   "testRate": 0.2718,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where set_age 1_to_3y, 27.2% of 12371 windows moved and finished above the median (7-day window)."
   },
   {
    "id": "yp:7d:rotation_stage=current",
@@ -103,10 +139,10 @@
    "keys": [
     "rotation_stage=current"
    ],
-   "testN": 7041,
-   "testRate": 0.2375,
-   "baseRate": 0.2084,
-   "line": "On later own-day windows where rotation_stage current, 23.8% of 7041 windows moved and finished above the median (7-day window)."
+   "testN": 10483,
+   "testRate": 0.2457,
+   "baseRate": 0.2134,
+   "line": "On later own-day windows where rotation_stage current, 24.6% of 10483 windows moved and finished above the median (7-day window)."
   }
  ],
  "lines": []

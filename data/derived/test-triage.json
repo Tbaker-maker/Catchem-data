@@ -2,51 +2,9 @@
   "mode": "nightly",
   "finished": true,
   "blocked": [],
-  "withheld": [
-    {
-      "key": "reads",
-      "label": "reads",
-      "paths": [
-        "research/assets/public/reads.json",
-        "research/assets/public/today.json",
-        "research/assets/public/reads-preview.json",
-        "research/assets/public/signal-chips.json",
-        "research/assets/public/feed/item-reads",
-        "research/assets/public/feed/read-synth.json",
-        "research/assets/public/feed/extra-reads.json",
-        "research/assets/public/feed/read-library.json",
-        "research/assets/public/feed/lead-order.json",
-        "research/assets/public/feed/facts",
-        "research/assets/public/feed/facts.json",
-        "research/assets/public/feed/today"
-      ],
-      "tests": [
-        {
-          "name": "read-quality.suite.mjs",
-          "detail": "1 failed",
-          "section": "feature suites",
-          "inner": [
-            "release shows the verified non-jp row seven days out, with no MSRP"
-          ]
-        }
-      ]
-    }
-  ],
+  "withheld": [],
   "monitor": [],
-  "paths": [
-    "research/assets/public/reads.json",
-    "research/assets/public/today.json",
-    "research/assets/public/reads-preview.json",
-    "research/assets/public/signal-chips.json",
-    "research/assets/public/feed/item-reads",
-    "research/assets/public/feed/read-synth.json",
-    "research/assets/public/feed/extra-reads.json",
-    "research/assets/public/feed/read-library.json",
-    "research/assets/public/feed/lead-order.json",
-    "research/assets/public/feed/facts",
-    "research/assets/public/feed/facts.json",
-    "research/assets/public/feed/today"
-  ],
-  "summary": "Prices fetch, commit and publish tonight.\nWithheld: reads. The site keeps the last good copy of research/assets/public/reads.json, research/assets/public/today.json, research/assets/public/reads-preview.json, research/assets/public/signal-chips.json, research/assets/public/feed/item-reads, research/assets/public/feed/read-synth.json, research/assets/public/feed/extra-reads.json, research/assets/public/feed/read-library.json, research/assets/public/feed/lead-order.json, research/assets/public/feed/facts, research/assets/public/feed/facts.json, research/assets/public/feed/today. Failing tests:\n- read-quality.suite.mjs (release shows the verified non-jp row seven days out, with no MSRP)",
-  "at": "2026-10-26T19:11:08.076Z"
+  "paths": [],
+  "summary": "Prices fetch, commit and publish tonight.\nEvery test passed. Nothing withheld.",
+  "at": "2026-10-27T12:07:45.712Z"
 }
