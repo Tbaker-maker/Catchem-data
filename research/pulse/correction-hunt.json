@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-23T11:14:04.242Z",
- "date": "2026-10-23",
- "mood": "Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.",
+ "generatedAt": "2026-10-27T18:01:35.263Z",
+ "date": "2026-10-27",
+ "mood": "A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.",
  "confidence": "MEASURED",
  "note": "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
  "window": "40% inside 3 days",
@@ -76,6 +76,18 @@
    "movePct": 81,
    "published": true,
    "read": "A 81% move over 2 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
+   "id": "cel25-bb",
+   "name": "Celebrations Booster Bundle",
+   "from": "2026-10-24",
+   "to": "2026-10-25",
+   "was": 67,
+   "became": 120,
+   "movePct": 79.1,
+   "published": true,
+   "read": "A 79% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
    "action": "verify against listings; if the earlier figure was an artefact, file a correction"
   },
   {
@@ -182,6 +194,18 @@
    "was": 775,
    "became": 449.99,
    "movePct": -41.9,
+   "published": true,
+   "read": "A 42% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
+   "id": "cel25-bb",
+   "name": "Celebrations Booster Bundle",
+   "from": "2026-10-25",
+   "to": "2026-10-26",
+   "was": 120,
+   "became": 70,
+   "movePct": -41.7,
    "published": true,
    "read": "A 42% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
    "action": "verify against listings; if the earlier figure was an artefact, file a correction"
@@ -325,6 +349,11 @@
   {
    "name": "Umbreon VMAX",
    "featuredOn": "2026-10-19",
+   "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
+  },
+  {
+   "name": "Umbreon VMAX",
+   "featuredOn": "2026-10-23",
    "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
   }
  ],

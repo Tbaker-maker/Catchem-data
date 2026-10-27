@@ -1,21 +1,21 @@
-# What the machines noticed — 2026-10-23
+# What the machines noticed — 2026-10-27
 
-Read it with coffee. Anything urgent says so in capitals.
+The overnight shift's notes. Short on purpose.
 
 ## Our own claims
-A lot of honest shrugs on this run. The tape is young; the tests are patient.
+Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
 3 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.
+A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
 
-**NEEDS A HUMAN — 17 figure(s) moved faster than a market can:
+**NEEDS A HUMAN — 19 figure(s) moved faster than a market can:
 - Celebrations Elite Trainer Box: $140 → $325 in 2026-10-18→2026-10-19 (+132.1%)
 - Celebrations Elite Trainer Box: $160 → $335 in 2026-10-12→2026-10-13 (+109.4%)
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
 
-23 product(s) we featured and can no longer price:
+24 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -59,10 +59,10 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (6):**
+**NEEDS A HUMAN — Tyler (7):**
+- **[ACT NOW 76]** Sword & Shield Base Elite Trainer Box moved 14.3% — about 13.7× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[ACT NOW 76]** Scarlet & Violet Booster Pack moved 41.1% — about 3.9× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[ACT NOW 76]** Shining Legends Elite Trainer Box moved 19.9% — about 3055.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[ACT NOW 76]** Lost Thunder Booster Box moved 52.5% — about 7.9× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[ACT NOW 76]** Paradox Rift Pokemon Center Elite Trainer Box moved 10.0% — about 3.6× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 
 **CC (9):**
@@ -73,7 +73,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 10 ACT NOW, 9 QUEUE, 8 WATCH, 32 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 11 ACT NOW, 9 QUEUE, 8 WATCH, 31 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -81,23 +81,20 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Sword & Shield Base Elite Trainer Box moved 14.3% — about 13.7× its own typical daily swing. *Measured against its own 29 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Scarlet & Violet Booster Pack moved 41.1% — about 3.9× its own typical daily swing. *Measured against its own 22 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Shining Legends Elite Trainer Box moved 19.9% — about 3055.3× its own typical daily swing. *Measured against its own 28 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Paradox Rift Pokemon Center Elite Trainer Box moved 10.0% — about 3.6× its own typical daily swing. *Measured against its own 28 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Guardians Rising Booster Box moved 25.9% — about 6.8× its own typical daily swing. *Measured against its own 32 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Paldean Fates listings moved 240% while its print window closes."
-- **YouTube** — Unbroken Bonds Booster Box — "Works out to $97.64 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.6."
+- **X** — "Paradox Rift listings moved -66.7% while its print window closes."
+- **YouTube** — Cosmic Eclipse Booster Box — "Works out to $152.78 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 8 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 94 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-- **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 66 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 66 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -106,10 +103,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-35 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 163 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 95% rejection rate (8/150) — *largest bucket: set = 63. A single over-broad term can eat a market.*
-- 151 Booster Pack: 83% rejection rate (25/150) — *largest bucket: type = 73. A single over-broad term can eat a market.*
+56 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 362 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 71% rejection rate (44/150) — *largest bucket: exclude = 61. A single over-broad term can eat a market.*
+- Fusion Strike Booster Pack: 71% rejection rate (43/150) — *largest bucket: type = 53. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
