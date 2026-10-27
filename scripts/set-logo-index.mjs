@@ -371,7 +371,7 @@ export async function buildSetLogoIndex(root = ROOT) {
   const withLogo = new Set(entries.map((entry) => entry.slug)).size;
   return {
     index: {
-      source: "Catalogue logos by set id. A published logo is /img/{setId}/logo.png when that file is the images.pokemontcg.io logo for the same id. A set with no official logo uses a branded tile at its own path. A remote URL is not published. Gallery subsets use the parent path. A name is not a match.",
+      source: "Catalogue logos by set id. A published logo is /img/{setId}/logo.png when that file is the official logo for the same id. A set with no official logo uses a branded tile at its own path. A remote URL is not published. Gallery subsets use the parent path. A name is not a match.",
       read: "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
       rejectSha256: REJECT_SHA256,
       universe: names.length + 1,
