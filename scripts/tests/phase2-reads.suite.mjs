@@ -170,14 +170,35 @@ export async function run() {
   t("switch on leaves the same library", JSON.stringify(opened.lib) === JSON.stringify(via.lib));
   t("switch on can browse a qualified read without padding the board", opened.browse.length === 1 && opened.lib.board.length === via.lib.board.length);
 
+  // Picture stamp must not depend on tonight's extra mix. After sealed prices
+  // became TCGplayer market, ask/spread extras can be empty on a real night,
+  // and an empty board makes "still gets a picture" a false alarm. Seed one
+  // mktmove row so the stamp path is what we lock.
+  const stampExtra = {
+    ...extra,
+    lag: { reads: [] },
+    group: { reads: [] },
+    reads: [
+      {
+        id: "mktmove-tcgcsv-242436",
+        sku: "tcgcsv-242436",
+        readKind: "mktmove",
+        kind: "mktmove",
+        name: "Evolving Skies Booster Box",
+        headline: "Evolving Skies Booster Box market moved.",
+        path: "Evolving Skies Booster Box market moved.",
+        receipt: { marketFrom: 2200, marketTo: 2178.94 },
+      },
+    ],
+  };
   const stampDir = await mkdtemp(join(tmpdir(), "stamp-"));
   const stampFiles = new Set();
-  const stampCtx = { catalogue, extra, series: new Map(), dailyFiles: stampFiles };
+  const stampCtx = { catalogue, extra: stampExtra, series: new Map(), dailyFiles: stampFiles };
   const stampReg = runRegistry(stampCtx, { switchOn: false });
   const stamped = await writeReadLibrary({
     root: stampDir,
     catalogue,
-    extra,
+    extra: stampExtra,
     series: new Map(),
     dailyFiles: stampFiles,
     library: false,
