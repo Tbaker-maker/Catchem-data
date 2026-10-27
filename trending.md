@@ -1,7 +1,7 @@
 # Catch'Em Trending — 2026-10-27
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-10-27T15:30:00Z
+asOf: 2026-10-27T15:37:00Z
 
 **First play:** none. No Fill. Destined Rivals box still in play at 11/day. Perfect Order still flowing ~20/day carried. Evolving Skies ~6% above low.
 
@@ -13,16 +13,16 @@ asOf: 2026-10-27T15:30:00Z
 - Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
 - No FORCE in this run. No Fill locked.
 
-Markets and 3-month snapshots from public TCGPlayer product pages 2026-10-27. Unopened English. Infinite-api not directly accessible this run. No solds invented. Junk $3.01 ignored. Carried prior solds where page failed.
+Markets from public TCGPlayer product pages 2026-10-27. Unopened English. Infinite-api not accessible this run. Page 3-month snapshots returned 0 solds. No solds invented. Junk $3.01 ignored. Carried prior solds.
 
 ## Board
 
 **Destined Rivals Booster Box** — Wait
-Market $387.66. Quarter sold 1001, 11/day, low $244.99. Not a new cut in the last 3 days. About 58% above the low. Still in play.
+Market $387.66. Quarter sold carried 1001, 11/day, low $244.99. Not a new cut in the last 3 days. About 58% above the low. Still in play.
 Turns into Fill if: set leaves play, the $244.99 low stops cutting and holds, solds exhaust, market within 8%.
 
 **Destined Rivals ETB** — Wait
-Market $106.21. Quarter sold 5351, 58/day, low $93.98. About 13% above. Still in play.
+Market $106.73. Quarter sold carried 5351, 58/day, low $93.98. About 14% above. Still in play.
 Turns into Fill if: left-play + higher-low 8+ days + solds exhaust + within 8%.
 
 **Destined Rivals Bundle** — Wait
