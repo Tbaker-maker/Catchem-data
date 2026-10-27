@@ -13,6 +13,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const IMG = join(ROOT, "research/assets/img");
 export const ALLOWED_LOGO_HOSTS = ["images.pokemontcg.io"];
 const PACE_MS = 400;
+// Generic images.pokemontcg.io art (the Pokémon TCG logo, the promo star) is not a set logo.
+const GENERIC_SHA = ["d2055b7a", "31c11685"];
 
 export function allowedLogoUrl(url) {
   try {
@@ -59,6 +61,10 @@ async function main() {
       continue;
     }
     const { png, rawWidth, rawHeight, width, height } = await trimPng(raw);
+    if (GENERIC_SHA.some((s) => sha(png).startsWith(s))) {
+      missing.push({ id, reason: "images.pokemontcg.io returns the generic Pokémon TCG or promo star logo for this id, not a set logo. Left on the tile." });
+      continue;
+    }
     const file = `research/assets/img/${id}/logo.png`;
     await mkdir(join(IMG, id), { recursive: true });
     await writeFile(join(ROOT, file), png);
