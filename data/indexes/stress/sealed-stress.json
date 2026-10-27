@@ -29,11 +29,11 @@
     "basket": 161,
     "observedDays": 35,
     "withTwoPrices": 164,
-    "extra": 6
+    "extra": 5
   },
   "lines": {
     "equal": 102.1,
-    "capped": 100.6,
+    "capped": 100.7,
     "median": 100.7,
     "capAppliedDays": 34,
     "capInfeasibleDays": 0
@@ -380,7 +380,7 @@
       "date": "2026-10-27",
       "from": "2026-10-26",
       "equal": 102.1,
-      "capped": 100.6,
+      "capped": 100.7,
       "median": 100.7,
       "matched": 157,
       "capApplied": true,
@@ -389,9 +389,9 @@
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 1.5,
+    "maxGap": 1.4,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 1.5 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 1.4 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
@@ -683,8 +683,8 @@
       "n": 37,
       "start": "2026-08-18",
       "levels": {
-        "equal": 100.1,
-        "capped": 101.1,
+        "equal": 100.2,
+        "capped": 101.3,
         "median": 99.9
       },
       "matchedLast": 34,
@@ -697,17 +697,17 @@
       "levels": {
         "equal": 101.6,
         "capped": 99.3,
-        "median": 102.7
+        "median": 102.8
       },
       "matchedLast": 24,
       "outsideHeadline": false
     },
     {
       "type": "collection",
-      "n": 6,
+      "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 102.4,
+        "equal": 102.9,
         "capped": 97.5,
         "median": 107.4
       },
@@ -719,8 +719,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 106.5,
-        "capped": 100.6,
+        "equal": 106.6,
+        "capped": 100.7,
         "median": 99.7
       },
       "matchedLast": 37,
@@ -731,8 +731,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 109.8,
-        "capped": 101.4,
+        "equal": 109.9,
+        "capped": 101.3,
         "median": 110.3
       },
       "matchedLast": 33,
@@ -743,8 +743,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 97.5,
-        "capped": 95.8,
+        "equal": 97.4,
+        "capped": 95.7,
         "median": 99.9
       },
       "matchedLast": 29,
@@ -756,7 +756,7 @@
     "stale": 5,
     "gappy": 8,
     "spiky": 11,
-    "late": 4
+    "late": 3
   },
   "items": [
     {
@@ -1110,18 +1110,6 @@
       "maxAbsReturn": 0.037
     },
     {
-      "id": "mega-forces-tin",
-      "name": "Mega Forces Tin",
-      "type": "collection",
-      "flags": [
-        "late"
-      ],
-      "observations": 1,
-      "first": "2026-10-27",
-      "last": "2026-10-27",
-      "maxAbsReturn": 0
-    },
-    {
       "id": "rsv10pt5-bundle",
       "name": "White Flare Booster Bundle",
       "type": "bundle",
@@ -1453,7 +1441,7 @@
       "observations": 35,
       "first": "2026-08-18",
       "last": "2026-10-27",
-      "maxAbsReturn": 0.0435
+      "maxAbsReturn": 0.0779
     },
     {
       "id": "sv3-bundle",
@@ -2341,7 +2329,7 @@
       "observations": 34,
       "first": "2026-08-19",
       "last": "2026-10-27",
-      "maxAbsReturn": 0.1317
+      "maxAbsReturn": 0.1308
     },
     {
       "id": "swsh6-pc-etb",
@@ -2743,21 +2731,6 @@
     },
     {
       "rank": 16,
-      "id": "mega-forces-tin",
-      "name": "Mega Forces Tin",
-      "type": "collection",
-      "flags": [
-        "late"
-      ],
-      "reasons": [
-        "First price is more than 3 days after the series starts.",
-        "Not in the current quarter basket, so it does not move this line."
-      ],
-      "influence": null,
-      "recommendation": "Review only. This product was not removed."
-    },
-    {
-      "rank": 17,
       "id": "sv6pt5-pack",
       "name": "Shrouded Fable Booster Pack",
       "type": "pack",
@@ -2771,7 +2744,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 18,
+      "rank": 17,
       "id": "swsh45-pack",
       "name": "Shining Fates Booster Pack",
       "type": "pack",
@@ -2785,7 +2758,7 @@
       "recommendation": "Review only. This product was not removed."
     }
   ],
-  "weedOutCount": 18,
+  "weedOutCount": 17,
   "gaps": [
     {
       "from": "2026-08-22",
@@ -2824,5 +2797,5 @@
       "note": "No price was invented for the days in between."
     }
   ],
-  "note": "18 of 18 flagged products are listed, ranked. None were removed."
+  "note": "17 of 17 flagged products are listed, ranked. None were removed."
 }
