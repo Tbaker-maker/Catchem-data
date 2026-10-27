@@ -44,8 +44,34 @@ for (const row of rows) {
     t(`${row.id} stays off the matched sku list`, live.ebay === false && !live.searchQuery);
   }
 }
-t("priced from the catalog", priced === 15);
-t("no catalog price yet", checking === 3);
+// TCGplayer adds and drops market prices day to day (2026-10-27 dropped
+// Galar Pals 551456), so a fixed 15/3 split turns a real upstream change into
+// a failed night. Check each product against the TCGCSV day file instead: a
+// catalog price must be that day's market price exactly, and a product with no
+// market price that day must carry no price at all.
+const dayCache = new Map();
+const dayMarket = async (date) => {
+  if (!dayCache.has(date)) {
+    const day = JSON.parse(await readFile(join(ROOT, `data/history/tcgcsv-daily/${date}.json`), "utf8"));
+    const map = new Map();
+    for (const p of day.prices || []) if (Number(p.market) > 0 && !map.has(Number(p.id))) map.set(Number(p.id), Math.round(Number(p.market) * 100) / 100);
+    dayCache.set(date, map);
+  }
+  return dayCache.get(date);
+};
+for (const row of rows) {
+  const cat = catById.get(row.id);
+  const pid = Number(cat?.tcgplayerProductId);
+  if (Number(cat?.price) > 0) {
+    const market = (await dayMarket(cat.asOf)).get(pid);
+    t(`${row.id} catalog price is the TCGCSV market price on ${cat.asOf}`, market === cat.price);
+  } else {
+    t(`${row.id} has no price because TCGCSV has none on ${catalog.asOf}`, !(await dayMarket(catalog.asOf)).has(pid) && cat?.price == null);
+  }
+}
+t("priced from the catalog", priced > 0);
+t("every product is priced or checking", priced + checking === rows.length);
+console.log(`  priced ${priced}, checking ${checking}`);
 
 const top = (q) => rankCatalog(q, lite, 1)[0];
 const name = (row) => String(row?.[1] || "").toLowerCase();

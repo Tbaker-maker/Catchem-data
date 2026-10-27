@@ -271,7 +271,19 @@ export async function run() {
   t("sealed week caps at one and skips art parents", sealedRows.length === 1 && sealedRows[0].sku === "box-b" && !sealedOn.board.some((row) => /Art /.test(row.name)));
   t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (2026-10-08), from $50.00 (2026-10-01). Up $20.00.") && !/\bNM\b/.test(sealedRows[0].headline) && sealedRows[0].whyItMatters === "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.");
 
-  const radar = JSON.parse(await readFile(join(ROOT, "data/release-radar.json"), "utf8"));
+  // The live radar drops a row once it has released (the 10-26 digest dropped
+  // Deck Crafter's Collection), so the release-day check pins its own rows on
+  // top of the live file: one verified English row and one verified JP row,
+  // both dated seven days after 2026-10-16. Only the English row may board.
+  const liveRadar = JSON.parse(await readFile(join(ROOT, "data/release-radar.json"), "utf8"));
+  const radar = {
+    ...liveRadar,
+    upcoming: [
+      ...(liveRadar.upcoming || []).filter((row) => row.date !== "2026-10-23"),
+      { name: "Deck Crafter's Collection", type: "product", date: "2026-10-23", confidence: "verified", note: "$9.99 MSRP. Fixture row pinned for the release-day read test." },
+      { name: "JP: Fixture Expansion Pack", type: "jp-set", date: "2026-10-23", confidence: "verified", note: "Fixture JP row. Must never board." },
+    ],
+  };
   const releaseOff = libOf({ cards: {}, library: false, radar });
   t("release stays off while the switch is off", !releaseOff.board.some((row) => row.signal === "release"));
   const releaseDay = buildReadLibrary({
