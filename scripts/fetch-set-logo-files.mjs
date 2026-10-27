@@ -51,7 +51,7 @@ async function main() {
     await sleep(PACE_MS);
     let raw;
     try {
-      const res = await fetch(src, { headers: { "user-agent": "catchem-data set logos (polite, paced)" } });
+      const res = await fetch(src, { signal: AbortSignal.timeout(30000), headers: { "user-agent": "catchem-data set logos (polite, paced)" } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       raw = Buffer.from(await res.arrayBuffer());
     } catch (err) {
