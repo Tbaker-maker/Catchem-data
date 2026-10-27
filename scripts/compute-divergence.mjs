@@ -37,6 +37,7 @@ import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 // qa-gate hasn't run yet at this point in the pipeline — read the durable
 // file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
 import { loadBlocked } from "./lib/publish-guard.mjs";
+import { isSpreadHeld, heldDivergenceReport } from "./lib/spread-held.mjs";
 
 // THE SPREAD IS HELD FROM PUBLICATION (2026-08-23). Two independent reasons,
 // either sufficient on its own:
@@ -78,11 +79,17 @@ const q = await loadBlocked();
 // signal, and see the report's fork recommendation before promoting this
 // instrument back to a headline.
 const rows = [], skipped = [];
-// Sealed prices are TCGplayer market (2026-10-27). There is no eBay price to
-// compare, so no divergence row is built from an eBay ask.
-const NO_EBAY_PRICE = (ebay.priceSource || "") === "TCGplayer market";
+// Sealed prices are TCGplayer market (2026-10-27, Tyler). eBay is listings
+// counted only. The Spread compared eBay asks to TCGplayer market. With no
+// eBay price left, that instrument is held: write an empty held report, do
+// not keep yesterday's ask-based rows, and do not pretend a comparison ran.
+if (isSpreadHeld(ebay)) {
+  const held = heldDivergenceReport(ebay);
+  await writeFile(join(DATA, "divergence-report.json"), JSON.stringify(held, null, 2) + "\n");
+  console.log(`· The Spread: held (TCGplayer market prices; eBay is listings counted). ${held.skipped.length} products noted, 0 compared.`);
+  process.exit(0);
+}
 for (const p of ebay.products || []) {
-  if (NO_EBAY_PRICE || p.priceSource === "TCGplayer market") { skipped.push({ id: p.id, reason: "eBay is listings counted, not a price" }); continue; }
   const t = tcgById.get(p.id);
   if (!t || t.dataStatus !== "live" || p.dataStatus !== "live" || !p.priceMedian || !t.tcgMarket) {
     skipped.push({ id: p.id, reason: !t ? "no tcg row" : `status ebay:${p.dataStatus}/tcg:${t?.dataStatus}` });

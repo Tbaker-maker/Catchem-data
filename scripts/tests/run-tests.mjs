@@ -232,6 +232,13 @@ console.log("── sealed prices are TCGplayer market ──");
   t("sealed TCGplayer price suite", n === 0, `${n} failed`);
 }
 
+console.log("── The Spread held when eBay is listings counted ──");
+{
+  const { run } = await import("./spread-held.suite.mjs");
+  const n = await run();
+  t("spread held suite", n === 0, `${n} failed`);
+}
+
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");

@@ -177,7 +177,7 @@ const upcoming = upcomingRadar(radar, today, { limit: 4, verifiedOnly: true })
 const escRadar = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
 let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${writtenAt}. Every number below is live production data.*\n\n`;
-md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
+md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.dataStatus === "held" ? "held (eBay is listings counted; sealed prices are TCGplayer market)" : `${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons`}\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay delivered asks vs TCGplayer market — recent sales + est. shipping)\n`;
   for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings), **${r.spreadPct>0?"+":""}${r.spreadPct}%** vs the other market — ${r.read}\n`;
