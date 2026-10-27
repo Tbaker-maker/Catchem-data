@@ -35,7 +35,7 @@ export const EMPTY_COPY = {
   setshare: "No set share is on file.",
   spread: "No asking spread is on file.",
   askmove: "No ask move with a still market price is on file.",
-  mktmove: "No market move with a still ask is on file.",
+  mktmove: "No TCGplayer market move is on file.",
   still: "No unchanged ask is on file.",
   listing: "No 7-night Browse total is on file.",
 };
@@ -452,6 +452,55 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
   };
 }
 
+
+// TCGplayer market move for sealed when eBay asks are not prices.
+// Uses the last two market points on file. No ask comparison.
+export function marketMoveRead(productId, marketDoc, mappingRow) {
+  if (!productId || !marketDoc || marketDoc.id !== productId) return null;
+  if (!mappingRow || mappingRow.id !== productId) return null;
+  if (Number(mappingRow.tcgplayerProductId) !== Number(marketDoc.tcgplayerProductId)) return null;
+  const markets = marketByDate(marketDoc.points);
+  if (!markets || markets.size < 2) return null;
+  const days = [...markets.keys()].sort();
+  const to = days[days.length - 1];
+  const from = days[days.length - 2];
+  const mktFrom = markets.get(from);
+  const mktTo = markets.get(to);
+  if (!(mktFrom > 0) || !(mktTo > 0)) return null;
+  if (Math.round(mktFrom * 100) === Math.round(mktTo * 100)) return null;
+  const deltaCents = Math.abs(Math.round(mktTo * 100) - Math.round(mktFrom * 100));
+  if (deltaCents < 100) return null;
+  const name = String(marketDoc.name || productId).trim();
+  const when = range(from, to);
+  if (!name || !when) return null;
+  const mktA = money(mktFrom);
+  const mktB = money(mktTo);
+  if (!mktA || !mktB) return null;
+  const phrases = [
+    `${name}: the TCGplayer market price went from ${mktA} to ${mktB} over ${when}.`,
+    `The TCGplayer market price for ${name} went from ${mktA} to ${mktB} over ${when}.`,
+    `${name} over ${when}: TCGplayer market price ${mktA} to ${mktB}.`,
+  ];
+  const path = pickPhrase(phrases, `${to}|mktmove|${productId}`);
+  if (!path) return null;
+  const why = "The market price changed on TCGplayer. Listings counted stay separate.";
+  return {
+    id: `mktmove-${productId}`,
+    sku: productId,
+    readKind: "mktmove",
+    kind: "mktmove",
+    name,
+    set: "",
+    path,
+    headline: path,
+    why: `${path} ${why}`,
+    asOf: to,
+    href: `/p/${encodeURIComponent(productId)}`,
+    lane: "sealed",
+    receipt: { from, to, marketFrom: mktFrom, marketTo: mktTo },
+  };
+}
+
 export function stillRead(productId, heatRows, name, setName) {
   const heat = byDate(heatRows, productId);
   if (!heat) return null;
@@ -623,7 +672,9 @@ export async function loadShapeCandidates(root, asOf) {
   } catch { /* no market history */ }
   for (const name of names) {
     const doc = await readJson(join(root, "data/history/tcgplayer-market", name), null);
-    const read = gapRead(doc?.id, heatById.get(doc?.id) || [], doc, mapById.get(doc?.id));
+    const read = ASK_READS_ON
+      ? gapRead(doc?.id, heatById.get(doc?.id) || [], doc, mapById.get(doc?.id))
+      : marketMoveRead(doc?.id, doc, mapById.get(doc?.id));
     if (read) out.push(read);
   }
   return out;
