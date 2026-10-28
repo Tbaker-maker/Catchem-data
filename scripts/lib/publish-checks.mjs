@@ -9,9 +9,9 @@ const KEYS = ["maxDroppedFiles", "minReads", "maxReads", "maxAgeDays", "liveWait
 export const REQUIRED = ["reads.json", "counts.json", "today.json", "movers.json", "signal-chips.json", "releases.json"];
 // Files whose day must be fresh, and where the day is kept.
 // Folders rebuilt from scratch every night, one file per read or per shard.
-// Reads rotate nightly, so their files come and go by design; minReads and
-// maxReads guard their volume. They do not count toward maxDroppedFiles.
-export const ROTATING = ["feed/facts/", "feed/item-reads/"];
+// Reads and watch/cool/heat shards rotate nightly; minReads and maxReads guard
+// volume. They do not count toward maxDroppedFiles.
+export const ROTATING = ["feed/facts/", "feed/item-reads/", "feed/watch/", "feed/cool/", "feed/heat/"];
 const DATED = { "reads.json": "asOf", "counts.json": "asOf", "today.json": "asOf", "movers.json": "asOf" };
 
 export function validChecks(cfg) {
