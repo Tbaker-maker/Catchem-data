@@ -380,6 +380,14 @@ console.log("── ppt paths ──");
   t("ppt path suite", n === 0, `${n} failed`);
 }
 
+
+console.log("── sealed cutouts ──");
+{
+  const { run } = await import("./sealed-cutouts.suite.mjs");
+  const n = await run();
+  t("sealed cutouts suite", n === 0, `${n} failed`);
+}
+
 console.log("── feature suites ──");
 {
   const { readdir } = await import("node:fs/promises");
