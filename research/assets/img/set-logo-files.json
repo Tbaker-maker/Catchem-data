@@ -1,5 +1,5 @@
 {
-  "rule": "A Post Office catalogue logo is research/assets/img/{setId}/logo.png. The file is an official pokemon.com set logo, trimmed to the artwork. The same trim on the Mega Evolution logo matches the catalogue logo pixel for pixel. A set with no allowed logo file is listed under missing and is left on the tile.",
+  "rule": "A Post Office catalogue logo is research/assets/img/{setId}/logo.png. The file is the images.pokemontcg.io logo for that set id, trimmed to the artwork. No pokemon.com file is used. A set with no allowed logo file is listed under missing and is left on the tile.",
   "listed": [
     "base1",
     "base2",
@@ -22,6 +22,7 @@
     "bw9",
     "bwp",
     "cel25",
+    "cel25c",
     "col1",
     "dc1",
     "det1",
@@ -53,6 +54,7 @@
     "ex7",
     "ex8",
     "ex9",
+    "fut20",
     "g1",
     "gym1",
     "gym2",
@@ -85,6 +87,7 @@
     "neo2",
     "neo3",
     "neo4",
+    "np",
     "pgo",
     "pl1",
     "pl2",
@@ -117,6 +120,7 @@
     "sm75",
     "sm8",
     "sm9",
+    "sma",
     "smp",
     "sv1",
     "sv10",
@@ -136,20 +140,30 @@
     "svp",
     "swsh1",
     "swsh10",
+    "swsh10tg",
     "swsh11",
+    "swsh11tg",
     "swsh12",
     "swsh12pt5",
+    "swsh12pt5gg",
+    "swsh12tg",
     "swsh2",
     "swsh3",
     "swsh35",
     "swsh4",
     "swsh45",
+    "swsh45sv",
     "swsh5",
     "swsh6",
     "swsh7",
     "swsh8",
     "swsh9",
+    "swsh9tg",
     "swshp",
+    "tk1a",
+    "tk1b",
+    "tk2a",
+    "tk2b",
     "xy0",
     "xy1",
     "xy10",
@@ -168,1378 +182,1962 @@
   ],
   "present": [
     {
+      "id": "base2",
+      "file": "research/assets/img/base2/logo.png",
+      "source": "https://images.pokemontcg.io/base2/logo.png",
+      "rawBytes": 37210,
+      "rawWidth": 160,
+      "rawHeight": 111,
+      "bytes": 21250,
+      "width": 160,
+      "height": 111,
+      "sha256": "7f95e20df7e3ece193752b7ed8ab0a82296d7eccbbee8c33b5f8538dcbdee590"
+    },
+    {
+      "id": "base3",
+      "file": "research/assets/img/base3/logo.png",
+      "source": "https://images.pokemontcg.io/base3/logo.png",
+      "rawBytes": 25104,
+      "rawWidth": 200,
+      "rawHeight": 174,
+      "bytes": 21208,
+      "width": 200,
+      "height": 174,
+      "sha256": "b9fa11e01e01c33fcafcc99ebc6ad826b4b0df4a7dcb299025ba2d54af889f90"
+    },
+    {
+      "id": "base4",
+      "file": "research/assets/img/base4/logo.png",
+      "source": "https://images.pokemontcg.io/base4/logo.png",
+      "rawBytes": 21901,
+      "rawWidth": 180,
+      "rawHeight": 134,
+      "bytes": 15678,
+      "width": 118,
+      "height": 128,
+      "sha256": "3bd5786307e077a0d7abdf047cc70981c275072332baf7bd60e9e4d7b9ed1932"
+    },
+    {
+      "id": "base5",
+      "file": "research/assets/img/base5/logo.png",
+      "source": "https://images.pokemontcg.io/base5/logo.png",
+      "rawBytes": 31302,
+      "rawWidth": 400,
+      "rawHeight": 137,
+      "bytes": 24095,
+      "width": 400,
+      "height": 137,
+      "sha256": "023fe970aaddb85d129b8aea289097efc4520ee22667248e25ced9a78d4e02dc"
+    },
+    {
+      "id": "base6",
+      "file": "research/assets/img/base6/logo.png",
+      "source": "https://images.pokemontcg.io/base6/logo.png",
+      "rawBytes": 6008,
+      "rawWidth": 198,
+      "rawHeight": 74,
+      "bytes": 7067,
+      "width": 198,
+      "height": 74,
+      "sha256": "fd6fd573723f829815c693a033c1b09b26d1eb466bbdf0bff69599f7fbf068cd"
+    },
+    {
+      "id": "bp",
+      "file": "research/assets/img/bp/logo.png",
+      "source": "https://images.pokemontcg.io/bp/logo.png",
+      "rawBytes": 168967,
+      "rawWidth": 1200,
+      "rawHeight": 615,
+      "bytes": 134473,
+      "width": 1200,
+      "height": 614,
+      "sha256": "12e645de1a4cfedeae6a0395dacacbb0f3ab1a858dfe248e7bb79f8abadfb5ef"
+    },
+    {
       "id": "bw1",
       "file": "research/assets/img/bw1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw01/bw01_logo_169_en.png",
-      "rawBytes": 39038,
+      "source": "https://images.pokemontcg.io/bw1/logo.png",
+      "rawBytes": 34474,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 45392,
+      "rawHeight": 62,
+      "bytes": 33139,
       "width": 588,
-      "height": 64,
-      "sha256": "8c2db5575aad133db288534a47db3533ff2f923cdd0cca75ecbe2ad1d45eebd0"
+      "height": 62,
+      "sha256": "2e5cf45f9a4c0b6900f964d3b57d5c885257635f7c653ce21c5838caf0200503"
     },
     {
       "id": "bw10",
       "file": "research/assets/img/bw10/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw10/bw10_logo_169_en.png",
-      "rawBytes": 52704,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 54057,
-      "width": 583,
-      "height": 156,
-      "sha256": "e88b18f1e91204990c80aea75d27bf5bb866ad58029a385a580fa52a0b57e92b"
+      "source": "https://images.pokemontcg.io/bw10/logo.png",
+      "rawBytes": 47377,
+      "rawWidth": 581,
+      "rawHeight": 154,
+      "bytes": 42340,
+      "width": 581,
+      "height": 154,
+      "sha256": "16575e4578592d127074a51c3a6f0e3c180071accb86639c2687ae73452d06d1"
     },
     {
       "id": "bw11",
       "file": "research/assets/img/bw11/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw11/bw11_logo_169_en.png",
-      "rawBytes": 96968,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 101331,
-      "width": 588,
+      "source": "https://images.pokemontcg.io/bw11/logo.png",
+      "rawBytes": 95663,
+      "rawWidth": 586,
+      "rawHeight": 166,
+      "bytes": 92483,
+      "width": 586,
       "height": 166,
-      "sha256": "544c643d355ae6e1cea0e4306737335a5b4c7eded8d0f1a5286f4a13408751b5"
+      "sha256": "7e7f6d46f42220b274d164724434fe279bd78965f303ba0dbd4dcd7faf52bf40"
     },
     {
       "id": "bw2",
       "file": "research/assets/img/bw2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw02/bw02_logo_169_en.png",
-      "rawBytes": 93415,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 101596,
-      "width": 588,
+      "source": "https://images.pokemontcg.io/bw2/logo.png",
+      "rawBytes": 102311,
+      "rawWidth": 586,
+      "rawHeight": 140,
+      "bytes": 98106,
+      "width": 586,
       "height": 140,
-      "sha256": "9aa02b4b770a77f196de36bb41e278deee2f9660fd00d0e8417f85832e864a0f"
+      "sha256": "e764a5894b4c1650993250d48832bd84f28e56f8b2f98021d47a43fa9b8925b9"
     },
     {
       "id": "bw3",
       "file": "research/assets/img/bw3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw03/bw03_logo_169_en.png",
-      "rawBytes": 99456,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 106351,
-      "width": 588,
-      "height": 142,
-      "sha256": "893fcb56496ca0a92a4f45f8f12e45a864143e32fcc0a750c9c2f38688418ec7"
+      "source": "https://images.pokemontcg.io/bw3/logo.png",
+      "rawBytes": 108413,
+      "rawWidth": 586,
+      "rawHeight": 140,
+      "bytes": 104460,
+      "width": 586,
+      "height": 140,
+      "sha256": "e9c3df6f32ac9dadba08cc125a5e69caff5c419af5910d1440a544f715186b3b"
     },
     {
       "id": "bw4",
       "file": "research/assets/img/bw4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw04/bw04_logo_169_en.png",
-      "rawBytes": 146896,
+      "source": "https://images.pokemontcg.io/bw4/logo.png",
+      "rawBytes": 162149,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 154142,
+      "rawHeight": 197,
+      "bytes": 156869,
       "width": 588,
       "height": 197,
-      "sha256": "c06923020417ca8e5a110c0657847b6b728ec4417c2dfb3bb5a793ffad9a0015"
+      "sha256": "1f4e81a9e93b3561631c72c227323378d99309bc53ecc650a108da92c08c1491"
     },
     {
       "id": "bw5",
       "file": "research/assets/img/bw5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw05/bw05_logo_169_en.png",
-      "rawBytes": 102370,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 105722,
-      "width": 588,
-      "height": 169,
-      "sha256": "8570ca5be987591340f6228c2d2d7792d1777acd3b33cb9546dfe552c3db643a"
+      "source": "https://images.pokemontcg.io/bw5/logo.png",
+      "rawBytes": 100512,
+      "rawWidth": 586,
+      "rawHeight": 167,
+      "bytes": 95449,
+      "width": 586,
+      "height": 167,
+      "sha256": "f0345fc0b83696d7a8c48b3e02d4279246a03e71aa252df4898e1362075fc96e"
     },
     {
       "id": "bw6",
       "file": "research/assets/img/bw6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw06/bw06_logo_169_en.png",
-      "rawBytes": 98213,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 98455,
-      "width": 554,
-      "height": 171,
-      "sha256": "4ff48c426ea5b3b9c192c75f52ffca6d065d53364b9da3683b4f8a797ec28dad"
+      "source": "https://images.pokemontcg.io/bw6/logo.png",
+      "rawBytes": 103608,
+      "rawWidth": 554,
+      "rawHeight": 169,
+      "bytes": 100539,
+      "width": 550,
+      "height": 169,
+      "sha256": "927122bf39da7d4ffe00496fa375274bd92f3581c2d9dbaa749f812d7335cdeb"
     },
     {
       "id": "bw7",
       "file": "research/assets/img/bw7/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw07/bw07_logo_169_en.png",
-      "rawBytes": 156238,
+      "source": "https://images.pokemontcg.io/bw7/logo.png",
+      "rawBytes": 179954,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 155384,
-      "width": 588,
-      "height": 221,
-      "sha256": "1b855774d92b935dabd42ce1fb184a77104296fb130c77413a855a6bdf5e7c28"
+      "rawHeight": 220,
+      "bytes": 174485,
+      "width": 586,
+      "height": 220,
+      "sha256": "bdb484ccb22201924498b3d5dc023732ba85ddb684a90c0992eee4856908fb43"
     },
     {
       "id": "bw8",
       "file": "research/assets/img/bw8/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw08/bw08_logo_169_en.png",
-      "rawBytes": 76262,
+      "source": "https://images.pokemontcg.io/bw8/logo.png",
+      "rawBytes": 90112,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 76810,
+      "rawHeight": 134,
+      "bytes": 87121,
       "width": 588,
       "height": 134,
-      "sha256": "5ec70784227b300e237c35c0b338ef5c120cad2515e804cf1f20b8e2fcb622d4"
+      "sha256": "391829146e449d00d737cea6ee034c4f0993caf498af2e91f8f14e2832c455b1"
     },
     {
       "id": "bw9",
       "file": "research/assets/img/bw9/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/bw_series/bw09/bw09_logo_169_en.png",
-      "rawBytes": 65160,
+      "source": "https://images.pokemontcg.io/bw9/logo.png",
+      "rawBytes": 62946,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 64623,
+      "rawHeight": 147,
+      "bytes": 58795,
       "width": 588,
       "height": 147,
-      "sha256": "d77fb036434f6f3b3a683c84a07ee92ae043d22de4e8a8717a16cc1857321f49"
+      "sha256": "7597f571beece623e16ea5b3c34e92758f39bbb898210baa41938ce15a7aefc1"
     },
     {
       "id": "cel25",
       "file": "research/assets/img/cel25/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/25th/25th_logo_169_en.png",
-      "rawBytes": 76667,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 74523,
-      "width": 557,
-      "height": 130,
-      "sha256": "a3eec9dbba1ab5868160b3afc7093e66cd3c455fa9f866014fe878842e78ce1e"
+      "source": "https://images.pokemontcg.io/cel25/logo.png",
+      "rawBytes": 242485,
+      "rawWidth": 1368,
+      "rawHeight": 330,
+      "bytes": 226615,
+      "width": 1367,
+      "height": 320,
+      "sha256": "380539ae8bac57ff902da4b493a020e66dbd6404e9ec299759d3a35a092e715d"
+    },
+    {
+      "id": "cel25c",
+      "file": "research/assets/img/cel25c/logo.png",
+      "source": "https://images.pokemontcg.io/cel25c/logo.png",
+      "rawBytes": 242485,
+      "rawWidth": 1368,
+      "rawHeight": 330,
+      "bytes": 226615,
+      "width": 1367,
+      "height": 320,
+      "sha256": "380539ae8bac57ff902da4b493a020e66dbd6404e9ec299759d3a35a092e715d"
+    },
+    {
+      "id": "col1",
+      "file": "research/assets/img/col1/logo.png",
+      "source": "https://images.pokemontcg.io/col1/logo.png",
+      "rawBytes": 79509,
+      "rawWidth": 586,
+      "rawHeight": 138,
+      "bytes": 75475,
+      "width": 586,
+      "height": 138,
+      "sha256": "b4d38a0c602362b348fe344a2b253e549d45ae80ac51b2f5cf64fba03ba812f7"
+    },
+    {
+      "id": "dc1",
+      "file": "research/assets/img/dc1/logo.png",
+      "source": "https://images.pokemontcg.io/dc1/logo.png",
+      "rawBytes": 38513,
+      "rawWidth": 574,
+      "rawHeight": 254,
+      "bytes": 34499,
+      "width": 574,
+      "height": 253,
+      "sha256": "d1495c4aaa0a1706a8c6bcd0350ec1178783e5e531b9d2f09eabb28a9dcbe981"
+    },
+    {
+      "id": "det1",
+      "file": "research/assets/img/det1/logo.png",
+      "source": "https://images.pokemontcg.io/det1/logo.png",
+      "rawBytes": 29335,
+      "rawWidth": 430,
+      "rawHeight": 212,
+      "bytes": 41584,
+      "width": 428,
+      "height": 210,
+      "sha256": "d078486e970bfe7faa7180fe96bc7a2c12ff1f4b3802e5de7c5f3a56371cd4cc"
     },
     {
       "id": "dp1",
       "file": "research/assets/img/dp1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp01/dp01_logo_169_en.png",
-      "rawBytes": 13835,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 13182,
-      "width": 581,
-      "height": 91,
-      "sha256": "f2896576bf7b35cc883a566e7498cc7d87c433be903bbab2ffc420a659d84589"
+      "source": "https://images.pokemontcg.io/dp1/logo.png",
+      "rawBytes": 11750,
+      "rawWidth": 579,
+      "rawHeight": 89,
+      "bytes": 9793,
+      "width": 579,
+      "height": 89,
+      "sha256": "46a429fc938fc9affd41cc1f3b1a2e8f4f5b4aee39ab05f7a14ffde63dc6ce34"
     },
     {
       "id": "dp2",
       "file": "research/assets/img/dp2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp02/dp02_logo_169_en.png",
-      "rawBytes": 28530,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 29333,
+      "source": "https://images.pokemontcg.io/dp2/logo.png",
+      "rawBytes": 23117,
+      "rawWidth": 581,
+      "rawHeight": 150,
+      "bytes": 19862,
       "width": 581,
-      "height": 152,
-      "sha256": "7054cbd18f9fb35acd159ea984ea4776d852b0e226fd4e8cb122c3c2580de85f"
+      "height": 150,
+      "sha256": "64bd9a1f26cc0b03d3046795898f6cf9edf1d1ecbad35a5d50381cf947699ebc"
     },
     {
       "id": "dp3",
       "file": "research/assets/img/dp3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp03/dp03_logo_169_en.png",
-      "rawBytes": 22068,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 21991,
-      "width": 575,
+      "source": "https://images.pokemontcg.io/dp3/logo.png",
+      "rawBytes": 19512,
+      "rawWidth": 573,
+      "rawHeight": 159,
+      "bytes": 16240,
+      "width": 573,
       "height": 159,
-      "sha256": "48ebc4b153e756c785af700dc79eeb90763fcb14fcf8b5831ff9fc9249505748"
+      "sha256": "92f06f9af99cd9c97b1520a15d4f9b6499a9940478a9b53de97a7499bcee7c05"
     },
     {
       "id": "dp4",
       "file": "research/assets/img/dp4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp04/dp04_logo_169_en.png",
-      "rawBytes": 24434,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 23964,
-      "width": 582,
+      "source": "https://images.pokemontcg.io/dp4/logo.png",
+      "rawBytes": 19786,
+      "rawWidth": 580,
+      "rawHeight": 130,
+      "bytes": 16641,
+      "width": 580,
       "height": 130,
-      "sha256": "fde8df9dd22aa6e4969812096e80dbac9b82157dfb22b69da6c2fba3fb5c02e2"
+      "sha256": "90fa0af461d444d0c1a98311baf8541c1280fa4d6c03161acd41d1600b636157"
     },
     {
       "id": "dp5",
       "file": "research/assets/img/dp5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp05/dp05_logo_169_en.png",
-      "rawBytes": 30338,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 30077,
-      "width": 577,
+      "source": "https://images.pokemontcg.io/dp5/logo.png",
+      "rawBytes": 27152,
+      "rawWidth": 575,
+      "rawHeight": 147,
+      "bytes": 21981,
+      "width": 575,
       "height": 147,
-      "sha256": "e5a0f1f37fd532f31832c190158fbd4a60ccd566960752051fdf2baf4f5699dd"
+      "sha256": "c8f00909bfd4acc7f168ea393efd6d5e0fe24d6e842e0b9c1da27003cf69c388"
     },
     {
       "id": "dp6",
       "file": "research/assets/img/dp6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp06/dp06_logo_169_en.png",
-      "rawBytes": 55416,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 57521,
-      "width": 573,
-      "height": 144,
-      "sha256": "dc73e9059b3800998597e7273a0ecdb9f0b1daf95d2fbb7eb71dc7d7db29e225"
+      "source": "https://images.pokemontcg.io/dp6/logo.png",
+      "rawBytes": 48173,
+      "rawWidth": 571,
+      "rawHeight": 142,
+      "bytes": 45027,
+      "width": 571,
+      "height": 142,
+      "sha256": "8d79d4a2ca7c661281df6a1cac93a397955a3d6db9c4df0e15d3a825a211a342"
     },
     {
       "id": "dp7",
       "file": "research/assets/img/dp7/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/dp_series/dp07/dp07_logo_169_en.png",
-      "rawBytes": 48831,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 50597,
-      "width": 573,
-      "height": 174,
-      "sha256": "b1d02fdbde3e67ac122724efd862534aee6c5d70b986cc3852554877189c6078"
+      "source": "https://images.pokemontcg.io/dp7/logo.png",
+      "rawBytes": 37619,
+      "rawWidth": 571,
+      "rawHeight": 172,
+      "bytes": 32834,
+      "width": 571,
+      "height": 172,
+      "sha256": "c0c85bca7ad4eef34b3518eab3e5b834b8604641db7ae41bf434521babc7de91"
+    },
+    {
+      "id": "dv1",
+      "file": "research/assets/img/dv1/logo.png",
+      "source": "https://images.pokemontcg.io/dv1/logo.png",
+      "rawBytes": 40958,
+      "rawWidth": 325,
+      "rawHeight": 82,
+      "bytes": 40125,
+      "width": 325,
+      "height": 82,
+      "sha256": "9833a27d61c7304798341613c102efdc5e9e0b93228a11d56ceccce19cfcca57"
+    },
+    {
+      "id": "ecard1",
+      "file": "research/assets/img/ecard1/logo.png",
+      "source": "https://images.pokemontcg.io/ecard1/logo.png",
+      "rawBytes": 66364,
+      "rawWidth": 1080,
+      "rawHeight": 247,
+      "bytes": 55137,
+      "width": 1080,
+      "height": 247,
+      "sha256": "5a434263d9f10955229d7423806e735f49086f775a0334462a4e7fe6f81d2b23"
+    },
+    {
+      "id": "ecard2",
+      "file": "research/assets/img/ecard2/logo.png",
+      "source": "https://images.pokemontcg.io/ecard2/logo.png",
+      "rawBytes": 3499,
+      "rawWidth": 182,
+      "rawHeight": 38,
+      "bytes": 3083,
+      "width": 182,
+      "height": 38,
+      "sha256": "29696d5e822c679ebb237f5eeb3b9b6ef96c7516e1874900e8c3ecbd651f348a"
+    },
+    {
+      "id": "ecard3",
+      "file": "research/assets/img/ecard3/logo.png",
+      "source": "https://images.pokemontcg.io/ecard3/logo.png",
+      "rawBytes": 2656,
+      "rawWidth": 210,
+      "rawHeight": 65,
+      "bytes": 3519,
+      "width": 208,
+      "height": 64,
+      "sha256": "34a18757799e6f0f117f6d4383baaaaf9d5eba6fccf12a5a6c210e8a669983ea"
     },
     {
       "id": "ex1",
       "file": "research/assets/img/ex1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex01/ex01_logo_169_en.png",
-      "rawBytes": 52574,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 53971,
-      "width": 581,
-      "height": 85,
-      "sha256": "32817dc088c62b476af9635f8bac73fe7f5384c56362babd8e6732758af25094"
+      "source": "https://images.pokemontcg.io/ex1/logo.png",
+      "rawBytes": 57203,
+      "rawWidth": 574,
+      "rawHeight": 72,
+      "bytes": 55927,
+      "width": 574,
+      "height": 72,
+      "sha256": "186832341ac838db092eb08560d26885a625201ba4e6d0b10219b6de1044554a"
     },
     {
       "id": "ex10",
       "file": "research/assets/img/ex10/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex10/ex10_logo_169_en.png",
-      "rawBytes": 189714,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 185074,
+      "source": "https://images.pokemontcg.io/ex10/logo.png",
+      "rawBytes": 258535,
+      "rawWidth": 571,
+      "rawHeight": 214,
+      "bytes": 248143,
       "width": 571,
-      "height": 215,
-      "sha256": "1c531bd1863d617b02e218d540fc4a3d3a34385a060308ba932c509d3f49183f"
+      "height": 214,
+      "sha256": "4b28cc480aae5109ad0b763dd1c72c8e9471b7f99f5dc8b9c94c8f40f3775b77"
     },
     {
       "id": "ex11",
       "file": "research/assets/img/ex11/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex11/ex11_logo_169_en.png",
-      "rawBytes": 64690,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 68169,
+      "source": "https://images.pokemontcg.io/ex11/logo.png",
+      "rawBytes": 71374,
+      "rawWidth": 568,
+      "rawHeight": 144,
+      "bytes": 67906,
       "width": 568,
       "height": 144,
-      "sha256": "bfdb841cbaa1a83558d258d746b727cc0badcd42eda187bf42e52f0ca92c876f"
+      "sha256": "9fe9e2c0275dbd156edf49b9dc1219e72ec41dace81e4d593ac881fcfb9a337f"
     },
     {
       "id": "ex12",
       "file": "research/assets/img/ex12/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex12/ex12_logo_169_en.png",
-      "rawBytes": 140283,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 138523,
+      "source": "https://images.pokemontcg.io/ex12/logo.png",
+      "rawBytes": 158613,
+      "rawWidth": 578,
+      "rawHeight": 208,
+      "bytes": 147932,
       "width": 578,
-      "height": 210,
-      "sha256": "dbc2cbbbaccb02a7cc6d880f433de79a9a354d272a86de9be5720b568c313706"
+      "height": 208,
+      "sha256": "de89a6c1ad4e238f62c1d5baa46cc6961cb09025a87fdc365b961201d0578050"
+    },
+    {
+      "id": "ex13",
+      "file": "research/assets/img/ex13/logo.png",
+      "source": "https://images.pokemontcg.io/ex13/logo.png",
+      "rawBytes": 47343,
+      "rawWidth": 195,
+      "rawHeight": 98,
+      "bytes": 46565,
+      "width": 195,
+      "height": 98,
+      "sha256": "740f13af584a7cc8c9db0710fc9ce62a0d8445c6009acc4eacc132169e8200a3"
+    },
+    {
+      "id": "ex14",
+      "file": "research/assets/img/ex14/logo.png",
+      "source": "https://images.pokemontcg.io/ex14/logo.png",
+      "rawBytes": 55287,
+      "rawWidth": 203,
+      "rawHeight": 97,
+      "bytes": 54074,
+      "width": 203,
+      "height": 97,
+      "sha256": "de0a1116488cfdfbf91b8d2cbe826313691919af2bd7acc7e8a1af2d40fc7f06"
     },
     {
       "id": "ex15",
       "file": "research/assets/img/ex15/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex15/ex15_logo_169_en.png",
-      "rawBytes": 33496,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 31793,
+      "source": "https://images.pokemontcg.io/ex15/logo.png",
+      "rawBytes": 36650,
+      "rawWidth": 572,
+      "rawHeight": 148,
+      "bytes": 30124,
       "width": 572,
-      "height": 151,
-      "sha256": "5eff83e533c4deb40f27ae6dfbdab220c88e60896adfd3b5bbf75e903e079120"
+      "height": 148,
+      "sha256": "5ccea56c5fd90e3fab2b63b340a5de60463a3b177b815db3e27ac73c994649d5"
+    },
+    {
+      "id": "ex16",
+      "file": "research/assets/img/ex16/logo.png",
+      "source": "https://images.pokemontcg.io/ex16/logo.png",
+      "rawBytes": 47124,
+      "rawWidth": 206,
+      "rawHeight": 92,
+      "bytes": 46753,
+      "width": 206,
+      "height": 92,
+      "sha256": "7793e34cc7a79e0115afecae78bfe7f586a92f5e4e5b922a0256b477bfed9aa1"
     },
     {
       "id": "ex2",
       "file": "research/assets/img/ex2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex02/ex02_logo_169_en.png",
-      "rawBytes": 23272,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 21968,
+      "source": "https://images.pokemontcg.io/ex2/logo.png",
+      "rawBytes": 17098,
+      "rawWidth": 572,
+      "rawHeight": 76,
+      "bytes": 14504,
       "width": 572,
       "height": 76,
-      "sha256": "5e707bc823f7d6786a4a30cf8a4e723a7cc9d1ecd9dd5385a3715ad225371c31"
+      "sha256": "64c0b774b4f476686012a22d21bcc0c39888bb730ebb02701e07acf930e3fa8a"
     },
     {
       "id": "ex3",
       "file": "research/assets/img/ex3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex03/ex03_logo_169_en.png",
-      "rawBytes": 79434,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 75631,
-      "width": 562,
+      "source": "https://images.pokemontcg.io/ex3/logo.png",
+      "rawBytes": 82671,
+      "rawWidth": 562,
+      "rawHeight": 84,
+      "bytes": 79921,
+      "width": 561,
       "height": 84,
-      "sha256": "13e4614bbed89e9abe0560a8311c61cd7aef4feb730556a7afa4e099d4836aa6"
+      "sha256": "6ffe9bf3dd12eef3f08f42437f001a8c370b447e2a82eda5c13beae810c83224"
     },
     {
       "id": "ex4",
       "file": "research/assets/img/ex4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex04/ex04_logo_169_en.png",
-      "rawBytes": 52237,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 51805,
+      "source": "https://images.pokemontcg.io/ex4/logo.png",
+      "rawBytes": 59384,
+      "rawWidth": 578,
+      "rawHeight": 145,
+      "bytes": 54960,
       "width": 578,
       "height": 145,
-      "sha256": "bc1deb1ccfc740367440550a82a4e0ecec6ced9c8db548d14d2f21cd056e178e"
+      "sha256": "41047237278827a34bc8dbc5abc551039d3cee118a0f63c158fffd40b9acf614"
     },
     {
       "id": "ex5",
       "file": "research/assets/img/ex5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex05/ex05_logo_169_en.png",
-      "rawBytes": 74312,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 74936,
-      "width": 575,
-      "height": 305,
-      "sha256": "42a95f2a88d7d1ff4dd34c679f843ebe55f806997db916db3ede83a9437d6a6d"
+      "source": "https://images.pokemontcg.io/ex5/logo.png",
+      "rawBytes": 71085,
+      "rawWidth": 574,
+      "rawHeight": 303,
+      "bytes": 62756,
+      "width": 574,
+      "height": 303,
+      "sha256": "c8315ee875b7df1d70a7e349895d5862c4a26b016355818d77deb02588556536"
+    },
+    {
+      "id": "ex6",
+      "file": "research/assets/img/ex6/logo.png",
+      "source": "https://images.pokemontcg.io/ex6/logo.png",
+      "rawBytes": 43206,
+      "rawWidth": 186,
+      "rawHeight": 108,
+      "bytes": 42308,
+      "width": 186,
+      "height": 108,
+      "sha256": "00d73bb1aade1a5b2230f1b1a8d397b800bcb8691ec6a63a0a85ba66afefb1e7"
+    },
+    {
+      "id": "ex7",
+      "file": "research/assets/img/ex7/logo.png",
+      "source": "https://images.pokemontcg.io/ex7/logo.png",
+      "rawBytes": 25315,
+      "rawWidth": 192,
+      "rawHeight": 80,
+      "bytes": 25030,
+      "width": 192,
+      "height": 80,
+      "sha256": "eb199c8b1623700d188c1db91a8c4281a78869e4be4b27bb905e5b03c938cb44"
     },
     {
       "id": "ex8",
       "file": "research/assets/img/ex8/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/ex_series/ex08/ex08_logo_169_en.png",
-      "rawBytes": 113836,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 112965,
+      "source": "https://images.pokemontcg.io/ex8/logo.png",
+      "rawBytes": 124267,
+      "rawWidth": 573,
+      "rawHeight": 111,
+      "bytes": 120328,
       "width": 573,
-      "height": 132,
-      "sha256": "297ba864b2745c5d6032ece6d9e75c031f43ec993010a915b33cb8363be3ed66"
+      "height": 111,
+      "sha256": "62e7894708546f6fec90fc616b0f1238e6b0656d32e78cd71e0ce3c4153a15d2"
+    },
+    {
+      "id": "ex9",
+      "file": "research/assets/img/ex9/logo.png",
+      "source": "https://images.pokemontcg.io/ex9/logo.png",
+      "rawBytes": 7359,
+      "rawWidth": 210,
+      "rawHeight": 33,
+      "bytes": 7077,
+      "width": 210,
+      "height": 33,
+      "sha256": "c929887a65136d19f20b3d669db78b8a4007bfd90d7f82328bbca8663676533b"
+    },
+    {
+      "id": "fut20",
+      "file": "research/assets/img/fut20/logo.png",
+      "source": "https://images.pokemontcg.io/fut20/logo.png",
+      "rawBytes": 127908,
+      "rawWidth": 420,
+      "rawHeight": 530,
+      "bytes": 95327,
+      "width": 389,
+      "height": 519,
+      "sha256": "9405e858be962e80b8de69fe3a18ab7ac25fb5b53cc6fc89c72d42a20e2ddf0c"
+    },
+    {
+      "id": "g1",
+      "file": "research/assets/img/g1/logo.png",
+      "source": "https://images.pokemontcg.io/g1/logo.png",
+      "rawBytes": 51956,
+      "rawWidth": 578,
+      "rawHeight": 125,
+      "bytes": 49850,
+      "width": 578,
+      "height": 124,
+      "sha256": "cba17784b942620c1149189946e3bf61132dea2403a48138fcbc90ca3a8bbce9"
+    },
+    {
+      "id": "gym1",
+      "file": "research/assets/img/gym1/logo.png",
+      "source": "https://images.pokemontcg.io/gym1/logo.png",
+      "rawBytes": 16132,
+      "rawWidth": 250,
+      "rawHeight": 110,
+      "bytes": 12112,
+      "width": 250,
+      "height": 110,
+      "sha256": "b2a292eeaaf9e7bb369af32d26382b5c6520ea8e5b02a76765d3a67d1413a859"
+    },
+    {
+      "id": "gym2",
+      "file": "research/assets/img/gym2/logo.png",
+      "source": "https://images.pokemontcg.io/gym2/logo.png",
+      "rawBytes": 19185,
+      "rawWidth": 243,
+      "rawHeight": 112,
+      "bytes": 16586,
+      "width": 243,
+      "height": 112,
+      "sha256": "355d304c6369016fc3f6f9f14e37b98ef04174f958fcfd5eb64c93b68a82c4e5"
     },
     {
       "id": "hgss1",
       "file": "research/assets/img/hgss1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/hgss_series/hgss01/hgss01_logo_169_en.png",
-      "rawBytes": 124340,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 121418,
-      "width": 588,
+      "source": "https://images.pokemontcg.io/hgss1/logo.png",
+      "rawBytes": 182434,
+      "rawWidth": 586,
+      "rawHeight": 246,
+      "bytes": 176101,
+      "width": 585,
       "height": 246,
-      "sha256": "ea673de812d9d1d211d9325053aad52bba0c0a81601b293f3dc08c1bafdbab0d"
+      "sha256": "92166a65d79cb647a8a45a982a9d6c25921fca8d0960068acbac7512bbdfc5de"
     },
     {
       "id": "hgss2",
       "file": "research/assets/img/hgss2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/hgss_series/hgss02/hgss02_logo_169_en.png",
-      "rawBytes": 85945,
+      "source": "https://images.pokemontcg.io/hgss2/logo.png",
+      "rawBytes": 102473,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 80811,
+      "rawHeight": 133,
+      "bytes": 99484,
       "width": 588,
       "height": 133,
-      "sha256": "11c230880ffa0782a655d9c44f3e51409485d5f712ccb5b49180e2228b10ec87"
+      "sha256": "32e3473bbb119743c2cd4e2a0f7729cd766a1ab005157012e419cfb62cc1f39b"
     },
     {
       "id": "hgss3",
       "file": "research/assets/img/hgss3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/hgss_series/hgss03/hgss03_logo_169_en.png",
-      "rawBytes": 78352,
+      "source": "https://images.pokemontcg.io/hgss3/logo.png",
+      "rawBytes": 112928,
       "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 74285,
+      "rawHeight": 141,
+      "bytes": 109846,
       "width": 588,
       "height": 141,
-      "sha256": "7c2208c27003c4a748a539a67a01799bc7030c9f2873c220ef52dfc9c7fba3c9"
+      "sha256": "4a97e207197ef369573182017416881c7ca6d3b6fa2ec9362307b34099286df8"
     },
     {
       "id": "hgss4",
       "file": "research/assets/img/hgss4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/hgss_series/hgss04/hgss04_logo_169_en.png",
-      "rawBytes": 74331,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 69512,
-      "width": 588,
-      "height": 155,
-      "sha256": "c473a891fa99e8bca460d4c5923fabb1d7a81c9fa97d3e7147b77c8d639304a9"
+      "source": "https://images.pokemontcg.io/hgss4/logo.png",
+      "rawBytes": 88707,
+      "rawWidth": 587,
+      "rawHeight": 153,
+      "bytes": 84919,
+      "width": 587,
+      "height": 153,
+      "sha256": "ef44d2c257c9d92192b5b6e22da5101ee7c7f3c2af2156f0c6ee6e463e648e40"
+    },
+    {
+      "id": "mcd11",
+      "file": "research/assets/img/mcd11/logo.png",
+      "source": "https://images.pokemontcg.io/mcd11/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd12",
+      "file": "research/assets/img/mcd12/logo.png",
+      "source": "https://images.pokemontcg.io/mcd12/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd14",
+      "file": "research/assets/img/mcd14/logo.png",
+      "source": "https://images.pokemontcg.io/mcd14/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd15",
+      "file": "research/assets/img/mcd15/logo.png",
+      "source": "https://images.pokemontcg.io/mcd15/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd16",
+      "file": "research/assets/img/mcd16/logo.png",
+      "source": "https://images.pokemontcg.io/mcd16/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd17",
+      "file": "research/assets/img/mcd17/logo.png",
+      "source": "https://images.pokemontcg.io/mcd17/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd18",
+      "file": "research/assets/img/mcd18/logo.png",
+      "source": "https://images.pokemontcg.io/mcd18/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd19",
+      "file": "research/assets/img/mcd19/logo.png",
+      "source": "https://images.pokemontcg.io/mcd19/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd21",
+      "file": "research/assets/img/mcd21/logo.png",
+      "source": "https://images.pokemontcg.io/mcd21/logo.png",
+      "rawBytes": 76597,
+      "rawWidth": 1047,
+      "rawHeight": 1024,
+      "bytes": 67812,
+      "width": 1033,
+      "height": 1011,
+      "sha256": "49f59fc82aebfd9c14ce547179536686298bf5c16f391335bdb346947898987a"
+    },
+    {
+      "id": "mcd22",
+      "file": "research/assets/img/mcd22/logo.png",
+      "source": "https://images.pokemontcg.io/mcd22/logo.png",
+      "rawBytes": 113306,
+      "rawWidth": 1138,
+      "rawHeight": 390,
+      "bytes": 89923,
+      "width": 1138,
+      "height": 387,
+      "sha256": "c57b57175ae41a0349df775f97e6c61b12532c6dc0f0d6daa65f7c0aa360a6ad"
     },
     {
       "id": "me1",
       "file": "research/assets/img/me1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me01/me01_logo_169_en.png",
-      "rawBytes": 87489,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 82627,
+      "source": "https://images.pokemontcg.io/me1/logo.png",
+      "rawBytes": 86687,
+      "rawWidth": 543,
+      "rawHeight": 110,
+      "bytes": 98701,
       "width": 543,
       "height": 110,
-      "sha256": "73c71211b09f5c0c4f5b7e4720c9d06cbb10804c344cff5ea9d0e1953e284c93"
+      "sha256": "2f2e85de8501ccef259c66b819561351669d13454814c8535b715fb34e4bfa4b"
     },
     {
       "id": "me2",
       "file": "research/assets/img/me2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me02/me02_logo_169_en.png",
-      "rawBytes": 193156,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 183835,
-      "width": 511,
-      "height": 221,
-      "sha256": "7645e34473b9216035c4abec7bb9261db10c8666e016ff8a958d8e7fdd1750af"
+      "source": "https://images.pokemontcg.io/me2/logo.png",
+      "rawBytes": 108550,
+      "rawWidth": 347,
+      "rawHeight": 150,
+      "bytes": 131096,
+      "width": 347,
+      "height": 150,
+      "sha256": "c6ddfbe8c7400c43dd164ecec1d5290bb7c5753fe8370db960ec8a93f99a84f5"
     },
     {
-      "id": "me2pt5",
-      "file": "research/assets/img/me2pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me2pt5/me2pt5_logo_169_en.png",
-      "rawBytes": 153224,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 142180,
-      "width": 505,
-      "height": 254,
-      "sha256": "c87b4323e6657f37b7475ca734ffd688c813835434d87b0502506656c4ad08f6"
+      "id": "neo1",
+      "file": "research/assets/img/neo1/logo.png",
+      "source": "https://images.pokemontcg.io/neo1/logo.png",
+      "rawBytes": 253992,
+      "rawWidth": 1280,
+      "rawHeight": 422,
+      "bytes": 259026,
+      "width": 1280,
+      "height": 422,
+      "sha256": "a68ff5d6314227d728d948d608d958512473d043a1c2c5fe3e88b8f68b19de7a"
     },
     {
-      "id": "me3",
-      "file": "research/assets/img/me3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me03/me03_logo_169_en.png",
-      "rawBytes": 98605,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 91309,
-      "width": 458,
-      "height": 204,
-      "sha256": "cdac259a41476cfc64051772f3b4f4696515a847d77a7d05d9ff7593af4e1a5a"
+      "id": "neo2",
+      "file": "research/assets/img/neo2/logo.png",
+      "source": "https://images.pokemontcg.io/neo2/logo.png",
+      "rawBytes": 8795,
+      "rawWidth": 200,
+      "rawHeight": 90,
+      "bytes": 9965,
+      "width": 200,
+      "height": 90,
+      "sha256": "5e4eaa572f3bac6b4cf7db00f618a4ac8d3047e12d26c368ba0d1582c275ec57"
     },
     {
-      "id": "me4",
-      "file": "research/assets/img/me4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me04/me04_logo_169_en.png",
-      "rawBytes": 136718,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 127320,
-      "width": 549,
-      "height": 157,
-      "sha256": "32ce41eac17f95f19bcd52802ddc4bedf2648e61c4efd21c9bf59b0c4f059519"
+      "id": "neo3",
+      "file": "research/assets/img/neo3/logo.png",
+      "source": "https://images.pokemontcg.io/neo3/logo.png",
+      "rawBytes": 138804,
+      "rawWidth": 308,
+      "rawHeight": 230,
+      "bytes": 167908,
+      "width": 304,
+      "height": 225,
+      "sha256": "4b805aad6570951341741941435b5e10e96ab5a19a849d1172d4d1c128ac9997"
     },
     {
-      "id": "me5",
-      "file": "research/assets/img/me5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me05/me05_logo_169_en.png",
-      "rawBytes": 101987,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 95853,
-      "width": 555,
-      "height": 154,
-      "sha256": "e271a4b86a0c6e34f81174b364dd3dd81884ebeea4607d46c08ed5112e981268"
-    },
-    {
-      "id": "me55",
-      "file": "research/assets/img/me55/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/30th/30th_logo_169_en.png",
-      "rawBytes": 94152,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 85964,
-      "width": 409,
-      "height": 226,
-      "sha256": "d5cfd412787700016f043b6e3fd88b5b7e5b795576f8886053e8368ce9e736e4"
-    },
-    {
-      "id": "me6",
-      "file": "research/assets/img/me6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me06/me06_logo_169_en.png",
-      "rawBytes": 216528,
-      "rawWidth": 578,
-      "rawHeight": 325,
-      "bytes": 200039,
-      "width": 502,
-      "height": 239,
-      "sha256": "9e01a1200396d796c63f3f18964503a54224eaad3e3374052270d50e112135d1"
+      "id": "neo4",
+      "file": "research/assets/img/neo4/logo.png",
+      "source": "https://images.pokemontcg.io/neo4/logo.png",
+      "rawBytes": 18365,
+      "rawWidth": 200,
+      "rawHeight": 95,
+      "bytes": 11697,
+      "width": 200,
+      "height": 95,
+      "sha256": "0a41cb2f7c7727c6d022430a5f8a0deffd561bade1b09c12cb3070a1e90a3aea"
     },
     {
       "id": "pgo",
       "file": "research/assets/img/pgo/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/pgo/pgo_logo_169_en.png",
-      "rawBytes": 56940,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 54523,
-      "width": 518,
-      "height": 140,
-      "sha256": "c09af1f3339d116f3f1fb3b17d0512313f3a0a9566a2f2d819be05b4b8d8d186"
+      "source": "https://images.pokemontcg.io/pgo/logo.png",
+      "rawBytes": 42697,
+      "rawWidth": 220,
+      "rawHeight": 137,
+      "bytes": 44811,
+      "width": 220,
+      "height": 137,
+      "sha256": "b653e77b0330058518d5f15601161ca8e7bb12241decec8d3c387cc0dd0851d4"
     },
     {
       "id": "pl1",
       "file": "research/assets/img/pl1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/pl_series/pl01/pl01_logo_169_en.png",
-      "rawBytes": 9562,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 8833,
+      "source": "https://images.pokemontcg.io/pl1/logo.png",
+      "rawBytes": 8692,
+      "rawWidth": 581,
+      "rawHeight": 113,
+      "bytes": 6160,
       "width": 581,
       "height": 113,
-      "sha256": "ef9685380522ba3fe63d87f50b4934d216fc5a8cba2c61f9bc07eae312ee0710"
+      "sha256": "a15ea1c66cc34b2eafc29b313fcf1972dd2c3828982fb9cd428b6e5ace3c930e"
     },
     {
       "id": "pl2",
       "file": "research/assets/img/pl2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/pl_series/pl02/pl02_logo_169_en.png",
-      "rawBytes": 47141,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 45419,
-      "width": 577,
-      "height": 170,
-      "sha256": "6e09adb299b54e81aa48e26ec8776acf3a2f67d32c8ab039b93d79b4827ed06b"
+      "source": "https://images.pokemontcg.io/pl2/logo.png",
+      "rawBytes": 54546,
+      "rawWidth": 575,
+      "rawHeight": 170,
+      "bytes": 48216,
+      "width": 575,
+      "height": 169,
+      "sha256": "de65372b6a900592aec17f9d609c8806e984d871ae1e4fa6a26e10d5a248654e"
     },
     {
       "id": "pl3",
       "file": "research/assets/img/pl3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/pl_series/pl03/pl03_logo_169_en.png",
-      "rawBytes": 24935,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 25233,
+      "source": "https://images.pokemontcg.io/pl3/logo.png",
+      "rawBytes": 23108,
+      "rawWidth": 580,
+      "rawHeight": 164,
+      "bytes": 19101,
       "width": 580,
-      "height": 166,
-      "sha256": "06e1a93172ae9c5c2c339d734f8bc0b49d43e619e5265e16d89bbbe56b45f7e2"
+      "height": 164,
+      "sha256": "685b6675e39e8b5271e2448e3b24b196b9199d9949e8f8d243cc39c54756ed72"
     },
     {
       "id": "pl4",
       "file": "research/assets/img/pl4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/pl_series/pl04/pl04_logo_169_en.png",
-      "rawBytes": 22408,
-      "rawWidth": 588,
-      "rawHeight": 331,
-      "bytes": 22147,
+      "source": "https://images.pokemontcg.io/pl4/logo.png",
+      "rawBytes": 19930,
+      "rawWidth": 576,
+      "rawHeight": 168,
+      "bytes": 16382,
       "width": 576,
-      "height": 170,
-      "sha256": "43e70e51bd5a55c3f5969b3ef32f3d39a8a46fb7dad72a8475921d40040f606a"
+      "height": 168,
+      "sha256": "06c86b131a2097b2a74afa06762d477b24300e2623ffa5afe64ec569336fa67a"
+    },
+    {
+      "id": "pop1",
+      "file": "research/assets/img/pop1/logo.png",
+      "source": "https://images.pokemontcg.io/pop1/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop2",
+      "file": "research/assets/img/pop2/logo.png",
+      "source": "https://images.pokemontcg.io/pop2/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop3",
+      "file": "research/assets/img/pop3/logo.png",
+      "source": "https://images.pokemontcg.io/pop3/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop4",
+      "file": "research/assets/img/pop4/logo.png",
+      "source": "https://images.pokemontcg.io/pop4/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop5",
+      "file": "research/assets/img/pop5/logo.png",
+      "source": "https://images.pokemontcg.io/pop5/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop6",
+      "file": "research/assets/img/pop6/logo.png",
+      "source": "https://images.pokemontcg.io/pop6/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop7",
+      "file": "research/assets/img/pop7/logo.png",
+      "source": "https://images.pokemontcg.io/pop7/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop8",
+      "file": "research/assets/img/pop8/logo.png",
+      "source": "https://images.pokemontcg.io/pop8/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "pop9",
+      "file": "research/assets/img/pop9/logo.png",
+      "source": "https://images.pokemontcg.io/pop9/logo.png",
+      "rawBytes": 62724,
+      "rawWidth": 300,
+      "rawHeight": 367,
+      "bytes": 45424,
+      "width": 300,
+      "height": 367,
+      "sha256": "753fbe0ac7af33187e3026af56be21eff81838b0367e84928ae8adf99805285b"
+    },
+    {
+      "id": "rsv10pt5",
+      "file": "research/assets/img/rsv10pt5/logo.png",
+      "source": "https://images.pokemontcg.io/rsv10pt5/logo.png",
+      "rawBytes": 85142,
+      "rawWidth": 414,
+      "rawHeight": 252,
+      "bytes": 77341,
+      "width": 414,
+      "height": 252,
+      "sha256": "485187e6b363d3029d50fc74d4296433d18ccf77edfbf31fb3891b5ece0c5c9a"
+    },
+    {
+      "id": "ru1",
+      "file": "research/assets/img/ru1/logo.png",
+      "source": "https://images.pokemontcg.io/ru1/logo.png",
+      "rawBytes": 426917,
+      "rawWidth": 1200,
+      "rawHeight": 758,
+      "bytes": 388337,
+      "width": 1200,
+      "height": 758,
+      "sha256": "2b746ccbae4d28ac1f757cbb44343b2bc88615b1cb7d364b3378ffd0451aecbe"
+    },
+    {
+      "id": "si1",
+      "file": "research/assets/img/si1/logo.png",
+      "source": "https://images.pokemontcg.io/si1/logo.png",
+      "rawBytes": 620817,
+      "rawWidth": 1200,
+      "rawHeight": 479,
+      "bytes": 810600,
+      "width": 1198,
+      "height": 477,
+      "sha256": "a8eb1acc7905a098785f4042a07835f93966930d13269b075e284b5fb1949d55"
     },
     {
       "id": "sm1",
       "file": "research/assets/img/sm1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm01/sm01_logo_169_en.png",
-      "rawBytes": 55494,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 54227,
-      "width": 568,
-      "height": 130,
-      "sha256": "7d17c43f25dbe541d217a5af5bfb93fb3c3570fe4a38eb6d7b664bb77a326a82"
+      "source": "https://images.pokemontcg.io/sm1/logo.png",
+      "rawBytes": 47082,
+      "rawWidth": 567,
+      "rawHeight": 130,
+      "bytes": 44337,
+      "width": 567,
+      "height": 129,
+      "sha256": "1ec542093914ee59888b883cc4e9b61952e7802539ff64990101a1b129d11349"
     },
     {
       "id": "sm10",
       "file": "research/assets/img/sm10/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm10/sm10_logo_169_en.png",
-      "rawBytes": 106850,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 104131,
+      "source": "https://images.pokemontcg.io/sm10/logo.png",
+      "rawBytes": 117726,
+      "rawWidth": 575,
+      "rawHeight": 242,
+      "bytes": 117495,
       "width": 575,
       "height": 242,
-      "sha256": "c34be8309976ca71d222743271b5b977620b49ed50bce91226f61f1b684071e9"
+      "sha256": "93f0f5f244951867374fdf5260f7a8186005200769116e68fc8eef78246b6bc8"
     },
     {
       "id": "sm11",
       "file": "research/assets/img/sm11/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm11/sm11_logo_169_en.png",
-      "rawBytes": 181818,
+      "source": "https://images.pokemontcg.io/sm11/logo.png",
+      "rawBytes": 191341,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 174265,
+      "rawHeight": 269,
+      "bytes": 201682,
       "width": 578,
       "height": 269,
-      "sha256": "74aae325dc25f23e943eae1d984d0cd4daff9f446d8027c90bb7a43ca5d87427"
+      "sha256": "3837f1e60d5f74472fbbf500eb54ebb81f95b0bf6e1c153cafc597b298cf51f4"
     },
     {
       "id": "sm115",
       "file": "research/assets/img/sm115/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm115/sm115_logo_169_en.png",
-      "rawBytes": 133198,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 125865,
+      "source": "https://images.pokemontcg.io/sm115/logo.png",
+      "rawBytes": 141534,
+      "rawWidth": 554,
+      "rawHeight": 253,
+      "bytes": 177575,
       "width": 554,
       "height": 253,
-      "sha256": "156198ce8718fc8c4f069ae64c2db50c2faa96fef4843d0611522348b26cfd66"
+      "sha256": "1e5cc99306d5d58bbb2ef7429ad3fe9836da69d80bbaf5006f0882729b683063"
     },
     {
       "id": "sm12",
       "file": "research/assets/img/sm12/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm12/sm12_logo_169_en.png",
-      "rawBytes": 136533,
+      "source": "https://images.pokemontcg.io/sm12/logo.png",
+      "rawBytes": 152593,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 136815,
+      "rawHeight": 277,
+      "bytes": 148360,
       "width": 578,
       "height": 277,
-      "sha256": "c3f7b7f15d666e2e99f90a54f220455e0309277a8c96d1413eb697b484eb2535"
+      "sha256": "5974723cd0fd239ba8f5c680ce3075bd4fd008d1301398d6742fbd7e22f883f1"
     },
     {
       "id": "sm2",
       "file": "research/assets/img/sm2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm02/sm02_logo_169_en.png",
-      "rawBytes": 135452,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 132644,
-      "width": 578,
-      "height": 212,
-      "sha256": "1d86ac5406371b2899d984f1942ab39be3276ff0d5e3b4e4772fe0c014a8baf1"
+      "source": "https://images.pokemontcg.io/sm2/logo.png",
+      "rawBytes": 140664,
+      "rawWidth": 577,
+      "rawHeight": 203,
+      "bytes": 134234,
+      "width": 577,
+      "height": 202,
+      "sha256": "8bc3e1ca6e8434bd5011413ca2c2344556800012b0dc11e4ff58e9cc432df7cc"
     },
     {
       "id": "sm3",
       "file": "research/assets/img/sm3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm03/sm03_logo_169_en.png",
-      "rawBytes": 139527,
+      "source": "https://images.pokemontcg.io/sm3/logo.png",
+      "rawBytes": 139333,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 135643,
+      "rawHeight": 201,
+      "bytes": 134774,
       "width": 578,
-      "height": 202,
-      "sha256": "c845fd3f24ee93671bb192cdb6c78430aba17fb73da1031e17154376b7025e85"
+      "height": 200,
+      "sha256": "088bb297a8c9adc66e7e5613ba753829c4c22c5bf751773d62615e725061187a"
     },
     {
       "id": "sm35",
       "file": "research/assets/img/sm35/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm035/sm035_logo_169_en.png",
-      "rawBytes": 110111,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 106183,
-      "width": 578,
+      "source": "https://images.pokemontcg.io/sm35/logo.png",
+      "rawBytes": 139399,
+      "rawWidth": 577,
+      "rawHeight": 225,
+      "bytes": 132105,
+      "width": 576,
       "height": 225,
-      "sha256": "74979174edb81ae78b96e763d8c1c30c37f3ad63db463d5dd8e3aa5f077a59ee"
+      "sha256": "fab4553289d442fac897d24d8219125e4851977a5ed9db2e133b632efa36342c"
     },
     {
       "id": "sm4",
       "file": "research/assets/img/sm4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm04/sm04_logo_169_en.png",
-      "rawBytes": 145195,
+      "source": "https://images.pokemontcg.io/sm4/logo.png",
+      "rawBytes": 148675,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 144145,
+      "rawHeight": 226,
+      "bytes": 143140,
       "width": 578,
-      "height": 227,
-      "sha256": "3e21d8dcdc923aebe1e5f9df046117bd1fe61dd66f0e1a27140b3fe90d815193"
+      "height": 226,
+      "sha256": "3463bcaf6d66c2b555565015c007198890eeb75e2ab38c50773d2de0d34fa5da"
     },
     {
       "id": "sm5",
       "file": "research/assets/img/sm5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm05/sm05_logo_169_en.png",
-      "rawBytes": 84887,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 84785,
-      "width": 578,
-      "height": 243,
-      "sha256": "9ed3f255927190323a1184b588ddc8f0801be5d0a86bdcb09c25faa5e1f0a834"
+      "source": "https://images.pokemontcg.io/sm5/logo.png",
+      "rawBytes": 76480,
+      "rawWidth": 577,
+      "rawHeight": 242,
+      "bytes": 69215,
+      "width": 577,
+      "height": 242,
+      "sha256": "64bcf695716c7a53b54ffbd6e31cde29740eedc63611e385c1580d618a291c21"
     },
     {
       "id": "sm6",
       "file": "research/assets/img/sm6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm06/sm06_logo_169_en.png",
+      "source": "https://images.pokemontcg.io/sm6/logo.png",
       "rawBytes": 109686,
       "rawWidth": 578,
       "rawHeight": 327,
-      "bytes": 105958,
+      "bytes": 129536,
       "width": 578,
-      "height": 303,
-      "sha256": "c5d6e1f100385dac59d78bf9627d7d0aa8d68c7cdb2d2c0cbe357984252c0522"
+      "height": 302,
+      "sha256": "a553c5769e6cba3fc1ebdacf573cdd0f5a9d331e6bd3639b9e84e996f03fa00d"
     },
     {
       "id": "sm7",
       "file": "research/assets/img/sm7/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm07/sm07_logo_169_en.png",
+      "source": "https://images.pokemontcg.io/sm7/logo.png",
       "rawBytes": 202578,
       "rawWidth": 578,
       "rawHeight": 327,
-      "bytes": 191992,
+      "bytes": 216913,
       "width": 578,
       "height": 279,
-      "sha256": "5af573e59cc24ac8f127a98a847b0168d6e1db29f1b14c45351f1ffa201bd5d3"
+      "sha256": "80b997c5c67a3f83e2203b2116617268188e6f8f35ba506c8d4e8f31a7233db3"
     },
     {
       "id": "sm75",
       "file": "research/assets/img/sm75/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm075/sm075_logo_169_en.png",
+      "source": "https://images.pokemontcg.io/sm75/logo.png",
       "rawBytes": 130294,
       "rawWidth": 578,
       "rawHeight": 327,
-      "bytes": 128064,
+      "bytes": 163117,
       "width": 566,
       "height": 294,
-      "sha256": "e5afc0f0cff986f403a3a2d3ef20fa344700478096c4340ab1f0da18aeea2ccc"
+      "sha256": "293957f0f71ae8cb8b44259b192bce2c2770b3bb060a4e9258f395b0094fe9ef"
     },
     {
       "id": "sm8",
       "file": "research/assets/img/sm8/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm08/sm08_logo_169_en.png",
-      "rawBytes": 134911,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 128682,
+      "source": "https://images.pokemontcg.io/sm8/logo.png",
+      "rawBytes": 142659,
+      "rawWidth": 567,
+      "rawHeight": 183,
+      "bytes": 137787,
       "width": 567,
-      "height": 185,
-      "sha256": "13c247556ad28bf80d931483f67486a78613a1e463186b356def71f097f4672d"
+      "height": 182,
+      "sha256": "6bb18e7e039a54c24509b9feeff2d1c4082e3dccf68ebd1da5979af3171baa32"
     },
     {
       "id": "sm9",
       "file": "research/assets/img/sm9/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sm_series/sm09/sm09_logo_169_en.png",
-      "rawBytes": 90686,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 91297,
-      "width": 578,
-      "height": 213,
-      "sha256": "3c9317853b387bbf5b9fa198467a30aa62a17be8b99a73b5bbca30ff9f9ffa7a"
+      "source": "https://images.pokemontcg.io/sm9/logo.png",
+      "rawBytes": 219690,
+      "rawWidth": 1200,
+      "rawHeight": 443,
+      "bytes": 215709,
+      "width": 1200,
+      "height": 443,
+      "sha256": "286c61df6980ff37ace971151ce5e01a8808a4ac763ac4f243f7ffc19af9734c"
+    },
+    {
+      "id": "sma",
+      "file": "research/assets/img/sma/logo.png",
+      "source": "https://images.pokemontcg.io/sma/logo.png",
+      "rawBytes": 70470,
+      "rawWidth": 365,
+      "rawHeight": 167,
+      "bytes": 70370,
+      "width": 364,
+      "height": 167,
+      "sha256": "e43eac31b30c9db1c3e60007f11ad8a7a4366729a3d9e3f184488351db2fe1f7"
     },
     {
       "id": "sv1",
       "file": "research/assets/img/sv1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv01/sv01_logo_169_en.png",
-      "rawBytes": 142349,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 136836,
-      "width": 578,
-      "height": 165,
-      "sha256": "ddb98ba8d732dc72af3b8cdad9841295e2ccb99e8b716546d9f079cbdd93897d"
+      "source": "https://images.pokemontcg.io/sv1/logo.png",
+      "rawBytes": 220606,
+      "rawWidth": 898,
+      "rawHeight": 260,
+      "bytes": 292172,
+      "width": 897,
+      "height": 258,
+      "sha256": "1e49736cf969b0af87605f621249b4db0a7f496c2d06448cfc28de4f44d90b38"
     },
     {
       "id": "sv10",
       "file": "research/assets/img/sv10/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv10/sv10_logo_169_en.png",
-      "rawBytes": 126258,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 118413,
+      "source": "https://images.pokemontcg.io/sv10/logo.png",
+      "rawBytes": 117610,
+      "rawWidth": 517,
+      "rawHeight": 194,
+      "bytes": 130972,
       "width": 517,
       "height": 194,
-      "sha256": "b990f7afec357f0fe61b6b57f89dbef352b6c4d0b8f4263170c3c47604e90ad4"
+      "sha256": "706209a7b3df2c5c5fbcd8a591a6e9e860d5426cd827d232bc9aad3274c22f50"
     },
     {
       "id": "sv2",
       "file": "research/assets/img/sv2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv02/sv02_logo_169_en.png",
-      "rawBytes": 161322,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 157658,
-      "width": 534,
-      "height": 178,
-      "sha256": "544874cc0b036fc288392bb117f1c424915104f9d16d33148ef81ea656ab24ac"
+      "source": "https://images.pokemontcg.io/sv2/logo.png",
+      "rawBytes": 113089,
+      "rawWidth": 451,
+      "rawHeight": 147,
+      "bytes": 132972,
+      "width": 447,
+      "height": 147,
+      "sha256": "ecc951ffc0041bbd18eaae9308b9452861d048eb996d819e5ecdda6cc691e892"
     },
     {
       "id": "sv3",
       "file": "research/assets/img/sv3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv03/sv03_logo_169_en.png",
-      "rawBytes": 127121,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 122710,
-      "width": 544,
-      "height": 221,
-      "sha256": "3758b620a16da27769cb4bddd54a9780bef0e13c153af3f42b2de0e3f39d483c"
+      "source": "https://images.pokemontcg.io/sv3/logo.png",
+      "rawBytes": 81987,
+      "rawWidth": 451,
+      "rawHeight": 167,
+      "bytes": 95902,
+      "width": 402,
+      "height": 167,
+      "sha256": "3e3dd3cb8053c152737dd5cbf5c3d8161240540f896a7c8543b7a00105b2c8fb"
     },
     {
       "id": "sv3pt5",
       "file": "research/assets/img/sv3pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv035/sv035_logo_169_en.png",
-      "rawBytes": 95689,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 88554,
-      "width": 381,
-      "height": 289,
-      "sha256": "6ced99235841536e0e32fe77f66baba7621726f1046862bfb67f868b473c7465"
+      "source": "https://images.pokemontcg.io/sv3pt5/logo.png",
+      "rawBytes": 23755,
+      "rawWidth": 440,
+      "rawHeight": 334,
+      "bytes": 35457,
+      "width": 440,
+      "height": 334,
+      "sha256": "386846fd5d464f185bef12963b797b2928331e7e4edecbf47a6743791f42a44d"
     },
     {
       "id": "sv4",
       "file": "research/assets/img/sv4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv04/sv04_logo_169_en.png",
-      "rawBytes": 110842,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 99152,
-      "width": 483,
-      "height": 161,
-      "sha256": "716bde048877826bf54461c84a7ba232206f3c70a635a1aefc3bac71e415ea33"
+      "source": "https://images.pokemontcg.io/sv4/logo.png",
+      "rawBytes": 83391,
+      "rawWidth": 451,
+      "rawHeight": 167,
+      "bytes": 97707,
+      "width": 439,
+      "height": 146,
+      "sha256": "43630fa1210c43c64f33ee9a4330812b5bfbd31aa70427ceede6565013c49450"
     },
     {
       "id": "sv4pt5",
       "file": "research/assets/img/sv4pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv045/sv045_logo_169_en.png",
-      "rawBytes": 149216,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 143204,
+      "source": "https://images.pokemontcg.io/sv4pt5/logo.png",
+      "rawBytes": 147640,
+      "rawWidth": 467,
+      "rawHeight": 256,
+      "bytes": 177812,
       "width": 467,
       "height": 256,
-      "sha256": "4f3696927bc8fcd68505eb434967a8ffc41b131f4afcdfa0fb6c9d592feecdec"
+      "sha256": "c81bed56fee83e5c46870adba6433bd1947fa0a81c537d37ff81e863a6832bd2"
     },
     {
       "id": "sv5",
       "file": "research/assets/img/sv5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv05/sv05_logo_169_en.png",
-      "rawBytes": 141735,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 135648,
+      "source": "https://images.pokemontcg.io/sv5/logo.png",
+      "rawBytes": 138223,
+      "rawWidth": 575,
+      "rawHeight": 228,
+      "bytes": 168562,
       "width": 575,
       "height": 228,
-      "sha256": "3ec39f35fdac91c5f04944af8f7a2007382cfe331893ba9a727db6c9d1ff9132"
+      "sha256": "f87db269e5d3060fcfd16f5648fd454a1105dcbfb0045f1ebbf530a46eefc09d"
     },
     {
       "id": "sv6",
       "file": "research/assets/img/sv6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv06/sv06_logo_169_en.png",
-      "rawBytes": 185280,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 181566,
+      "source": "https://images.pokemontcg.io/sv6/logo.png",
+      "rawBytes": 182257,
+      "rawWidth": 529,
+      "rawHeight": 226,
+      "bytes": 232188,
       "width": 529,
       "height": 226,
-      "sha256": "58dc9e5cb99477d911b7e486c9de16bbb33fe355f25ef390c9acc65c6d976934"
+      "sha256": "fc82e4de07e9d1ac30ca084d0910ef242e5a7f10a1b0c2810b7f74730fff1ef4"
     },
     {
       "id": "sv6pt5",
       "file": "research/assets/img/sv6pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv6pt5/sv6pt5_logo_169_en.png",
-      "rawBytes": 160165,
+      "source": "https://images.pokemontcg.io/sv6pt5/logo.png",
+      "rawBytes": 159764,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 157552,
+      "rawHeight": 271,
+      "bytes": 171843,
       "width": 578,
       "height": 271,
-      "sha256": "3d814e0a0d0590c5fe97b6afb18c9e81d59e46e916cca83b1fc142bd8a4e60c6"
+      "sha256": "a3d124965e21006fd78e9412368997eed27b1f7fc9847440d743c296c45bc293"
     },
     {
       "id": "sv7",
       "file": "research/assets/img/sv7/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv07/sv07_logo_169_en.png",
-      "rawBytes": 183418,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 141842,
-      "width": 553,
-      "height": 205,
-      "sha256": "43b3435bdc804086746e56fe5a172fdd728ed266d739eb628dea3e3d9b31ce2e"
+      "source": "https://images.pokemontcg.io/sv7/logo.png",
+      "rawBytes": 86549,
+      "rawWidth": 448,
+      "rawHeight": 180,
+      "bytes": 91174,
+      "width": 445,
+      "height": 165,
+      "sha256": "4b73da5d98193ce415059d67ef3793318c4da2f1e87482318e6d3792b2d576e2"
     },
     {
       "id": "sv8",
       "file": "research/assets/img/sv8/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv08/sv08_logo_169_en.png",
-      "rawBytes": 218857,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 155878,
+      "source": "https://images.pokemontcg.io/sv8/logo.png",
+      "rawBytes": 156112,
+      "rawWidth": 474,
+      "rawHeight": 209,
+      "bytes": 188011,
       "width": 474,
-      "height": 210,
-      "sha256": "453634fa894052ed22d10d6320ca80b7a8bf392c616d317cf49468b346136b5c"
+      "height": 209,
+      "sha256": "64b97801c871696721e7f3293e21076a529aaa1c01e2806002717c1525e71474"
     },
     {
       "id": "sv8pt5",
       "file": "research/assets/img/sv8pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv8pt5/sv8pt5_logo_169_en.png",
-      "rawBytes": 162102,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 153302,
+      "source": "https://images.pokemontcg.io/sv8pt5/logo.png",
+      "rawBytes": 154424,
+      "rawWidth": 500,
+      "rawHeight": 232,
+      "bytes": 195208,
       "width": 500,
       "height": 232,
-      "sha256": "b8e3a2895a68ac4cc932048f02929f882a22e4a53530c0236b6b906035170365"
+      "sha256": "d624607e7fff13de8578f446db366d25daf79b14d88f10f79fbc31d139fc2623"
     },
     {
       "id": "sv9",
       "file": "research/assets/img/sv9/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/sv_series/sv09/sv09_logo_169_en.png",
-      "rawBytes": 103707,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 113369,
-      "width": 578,
-      "height": 327,
-      "sha256": "71fb2f21b51808b0350d60d8a859c2630e82ab1cd1182013b8005926d06a0662"
+      "source": "https://images.pokemontcg.io/sv9/logo.png",
+      "rawBytes": 82081,
+      "rawWidth": 445,
+      "rawHeight": 140,
+      "bytes": 78357,
+      "width": 445,
+      "height": 140,
+      "sha256": "282fa7ba7c2e587e981344cdfff881afd94ed248f251ab279ed7d9900c1f2647"
     },
     {
       "id": "swsh1",
       "file": "research/assets/img/swsh1/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh01/swsh01_logo_169_en.png",
-      "rawBytes": 116735,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 110615,
+      "source": "https://images.pokemontcg.io/swsh1/logo.png",
+      "rawBytes": 120370,
+      "rawWidth": 572,
+      "rawHeight": 112,
+      "bytes": 149029,
       "width": 572,
       "height": 112,
-      "sha256": "3b6db009045834e95253993e0daa241a953597b71e5f4cfec34c8d2c445b5b83"
+      "sha256": "17dc98ab06b18540835ee1bc1bce5001baaea0a09872ee0cd33c5ce90434a348"
     },
     {
       "id": "swsh10",
       "file": "research/assets/img/swsh10/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh10/swsh10_logo_169_en.png",
-      "rawBytes": 102134,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 98867,
-      "width": 562,
-      "height": 192,
-      "sha256": "d75bbd45d6729a84fb75bada812ba48f3eca86fa1775384ea8c2648115189276"
+      "source": "https://images.pokemontcg.io/swsh10/logo.png",
+      "rawBytes": 216558,
+      "rawWidth": 902,
+      "rawHeight": 334,
+      "bytes": 269042,
+      "width": 895,
+      "height": 330,
+      "sha256": "d29771d9d94df66962918e95aa4e399575d4a9fe54f04ac60051807b7ebfeecc"
+    },
+    {
+      "id": "swsh10tg",
+      "file": "research/assets/img/swsh10tg/logo.png",
+      "source": "https://images.pokemontcg.io/swsh10tg/logo.png",
+      "rawBytes": 216558,
+      "rawWidth": 902,
+      "rawHeight": 334,
+      "bytes": 269042,
+      "width": 895,
+      "height": 330,
+      "sha256": "d29771d9d94df66962918e95aa4e399575d4a9fe54f04ac60051807b7ebfeecc"
     },
     {
       "id": "swsh11",
       "file": "research/assets/img/swsh11/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh11/swsh11_logo_169_en.png",
-      "rawBytes": 121651,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 115989,
+      "source": "https://images.pokemontcg.io/swsh11/logo.png",
+      "rawBytes": 128410,
+      "rawWidth": 565,
+      "rawHeight": 218,
+      "bytes": 177848,
       "width": 565,
       "height": 218,
-      "sha256": "0e9832942c9e45fb49e0be7af94c56d89d7d3456acc2ced51ae75ee09fb47882"
+      "sha256": "268617fd1f7d008c3bea91c7b56b073a9a7d33e6464bbc04890e2227a890044f"
+    },
+    {
+      "id": "swsh11tg",
+      "file": "research/assets/img/swsh11tg/logo.png",
+      "source": "https://images.pokemontcg.io/swsh11tg/logo.png",
+      "rawBytes": 128410,
+      "rawWidth": 565,
+      "rawHeight": 218,
+      "bytes": 177848,
+      "width": 565,
+      "height": 218,
+      "sha256": "268617fd1f7d008c3bea91c7b56b073a9a7d33e6464bbc04890e2227a890044f"
     },
     {
       "id": "swsh12",
       "file": "research/assets/img/swsh12/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh12/swsh12_logo_169_en.png",
-      "rawBytes": 152325,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 148660,
-      "width": 554,
-      "height": 260,
-      "sha256": "2a3a999e85d293508a0685d8c3a0f16a8875262ac9fcb29e9b08f739e20bc796"
+      "source": "https://images.pokemontcg.io/swsh12/logo.png",
+      "rawBytes": 394850,
+      "rawWidth": 900,
+      "rawHeight": 422,
+      "bytes": 407987,
+      "width": 899,
+      "height": 422,
+      "sha256": "355e859a0c3f43a21eac0f15483659272d5c74ef61eebd4fe541888e6657beb7"
     },
     {
       "id": "swsh12pt5",
       "file": "research/assets/img/swsh12pt5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh125/swsh125_logo_169_en.png",
-      "rawBytes": 110710,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 105440,
+      "source": "https://images.pokemontcg.io/swsh12pt5/logo.png",
+      "rawBytes": 117516,
+      "rawWidth": 564,
+      "rawHeight": 213,
+      "bytes": 140434,
       "width": 564,
       "height": 213,
-      "sha256": "b2e8bc6f677bbf81463f1a51ae0b7ef1585507e0436ea5eef3a51afb444dc750"
+      "sha256": "62b6e9eb05e8cd5b35a299c39e25f306480489cab1500cb9d48e79f31538b6b3"
+    },
+    {
+      "id": "swsh12pt5gg",
+      "file": "research/assets/img/swsh12pt5gg/logo.png",
+      "source": "https://images.pokemontcg.io/swsh12pt5gg/logo.png",
+      "rawBytes": 117516,
+      "rawWidth": 564,
+      "rawHeight": 213,
+      "bytes": 140434,
+      "width": 564,
+      "height": 213,
+      "sha256": "62b6e9eb05e8cd5b35a299c39e25f306480489cab1500cb9d48e79f31538b6b3"
+    },
+    {
+      "id": "swsh12tg",
+      "file": "research/assets/img/swsh12tg/logo.png",
+      "source": "https://images.pokemontcg.io/swsh12tg/logo.png",
+      "rawBytes": 394850,
+      "rawWidth": 900,
+      "rawHeight": 422,
+      "bytes": 407987,
+      "width": 899,
+      "height": 422,
+      "sha256": "355e859a0c3f43a21eac0f15483659272d5c74ef61eebd4fe541888e6657beb7"
     },
     {
       "id": "swsh2",
       "file": "research/assets/img/swsh2/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh02/swsh02_logo_169_en.png",
-      "rawBytes": 102139,
+      "source": "https://images.pokemontcg.io/swsh2/logo.png",
+      "rawBytes": 104415,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 100788,
+      "rawHeight": 194,
+      "bytes": 102349,
       "width": 578,
-      "height": 195,
-      "sha256": "c272c5b758c39661dd58d7f083d56af1548719ad70b5bd2e5a165c308adeab05"
+      "height": 194,
+      "sha256": "56b37a374791c4d3629d53f44dcb0496a1e039655e0be162f27dfb4cca2d709c"
     },
     {
       "id": "swsh3",
       "file": "research/assets/img/swsh3/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh03/swsh03_logo_169_en.png",
-      "rawBytes": 67803,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 66335,
-      "width": 578,
-      "height": 327,
-      "sha256": "2df6d27ae444fa8f1271d2b094b8550e1a9d5a859f09f938bc8a26f8234991ce"
+      "source": "https://images.pokemontcg.io/swsh3/logo.png",
+      "rawBytes": 14066,
+      "rawWidth": 446,
+      "rawHeight": 120,
+      "bytes": 18865,
+      "width": 446,
+      "height": 120,
+      "sha256": "4c8de8aa76504117b6f3fbf2cd8bb433ccf5a5588743efbe62b7e727727357b9"
     },
     {
       "id": "swsh35",
       "file": "research/assets/img/swsh35/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh035/swsh035_logo_169_en.png",
-      "rawBytes": 138477,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 138986,
-      "width": 568,
-      "height": 206,
-      "sha256": "6d569f8a0b622aaa687042242a07a9d9246803af1334df950d9672dfc74bb463"
+      "source": "https://images.pokemontcg.io/swsh35/logo.png",
+      "rawBytes": 326510,
+      "rawWidth": 815,
+      "rawHeight": 298,
+      "bytes": 292231,
+      "width": 813,
+      "height": 298,
+      "sha256": "adcd0c0304278e2ddf2625a8bc9ed15a3ebda60c34b6326473ae371530f4baf3"
     },
     {
       "id": "swsh4",
       "file": "research/assets/img/swsh4/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh04/swsh04_logo_169_en.png",
-      "rawBytes": 132367,
-      "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 128038,
-      "width": 573,
-      "height": 229,
-      "sha256": "ce3e5ce7d28176f8eb384a2765521bba10e73d30b1d9b186244a94f88f8a5252"
+      "source": "https://images.pokemontcg.io/swsh4/logo.png",
+      "rawBytes": 24616,
+      "rawWidth": 473,
+      "rawHeight": 188,
+      "bytes": 33952,
+      "width": 471,
+      "height": 188,
+      "sha256": "2277e51c8c17d9e94b930717461ea97d1360cc39e126f2f4ee8a343ad9e0297b"
     },
     {
       "id": "swsh45",
       "file": "research/assets/img/swsh45/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh045/swsh045_logo_169_en.png",
-      "rawBytes": 145220,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 140604,
-      "width": 496,
-      "height": 244,
-      "sha256": "8554a01fc82e9a5ac37d9751607ec0f5f7a76d625100808cd5d171e3fc1a985a"
+      "source": "https://images.pokemontcg.io/swsh45/logo.png",
+      "rawBytes": 31376,
+      "rawWidth": 357,
+      "rawHeight": 177,
+      "bytes": 43987,
+      "width": 357,
+      "height": 177,
+      "sha256": "3e14a166d5c5872900eaf4aa110f1d59ace60a767136c6f0f3f57de5a60042ef"
+    },
+    {
+      "id": "swsh45sv",
+      "file": "research/assets/img/swsh45sv/logo.png",
+      "source": "https://images.pokemontcg.io/swsh45sv/logo.png",
+      "rawBytes": 31376,
+      "rawWidth": 357,
+      "rawHeight": 177,
+      "bytes": 43987,
+      "width": 357,
+      "height": 177,
+      "sha256": "3e14a166d5c5872900eaf4aa110f1d59ace60a767136c6f0f3f57de5a60042ef"
     },
     {
       "id": "swsh5",
       "file": "research/assets/img/swsh5/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh05/swsh05_logo_169_en.png",
-      "rawBytes": 132181,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 126180,
-      "width": 550,
-      "height": 182,
-      "sha256": "251723cd3b4518cb8096c5819ad34b6f821f65d376fbdaadc2ea8b593d8796de"
+      "source": "https://images.pokemontcg.io/swsh5/logo.png",
+      "rawBytes": 126767,
+      "rawWidth": 522,
+      "rawHeight": 172,
+      "bytes": 147589,
+      "width": 522,
+      "height": 172,
+      "sha256": "e7b81818ca82bd8266ada29110f52c58439a585241a487150ded73ed252b35ae"
     },
     {
       "id": "swsh6",
       "file": "research/assets/img/swsh6/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh06/swsh06_logo_169_en.png",
-      "rawBytes": 231373,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 221798,
-      "width": 504,
-      "height": 268,
-      "sha256": "db09eec90d13b4d0fff82dea1ee3722a8c06b25de4809dfc52effb80c6c95583"
+      "source": "https://images.pokemontcg.io/swsh6/logo.png",
+      "rawBytes": 131379,
+      "rawWidth": 411,
+      "rawHeight": 219,
+      "bytes": 180270,
+      "width": 411,
+      "height": 219,
+      "sha256": "d38b58e648b221ed73b6a321978293d3a85912681b755a044e55ab2c3084f6ee"
     },
     {
       "id": "swsh7",
       "file": "research/assets/img/swsh7/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh07/swsh07_logo_169_en.png",
-      "rawBytes": 209358,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 204172,
-      "width": 570,
-      "height": 228,
-      "sha256": "9a20090c6c0fed4763ecba2553aeee9b7bd6736a3c7591ed7a0361b29b42f1e7"
+      "source": "https://images.pokemontcg.io/swsh7/logo.png",
+      "rawBytes": 84121,
+      "rawWidth": 365,
+      "rawHeight": 146,
+      "bytes": 103144,
+      "width": 365,
+      "height": 146,
+      "sha256": "cd344a262eb814e236bcb4487130beb24345c489f6e6b59aa9f6561d70fc8f89"
     },
     {
       "id": "swsh8",
       "file": "research/assets/img/swsh8/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh08/swsh08_logo_169_en.png",
-      "rawBytes": 198898,
-      "rawWidth": 578,
-      "rawHeight": 360,
-      "bytes": 193835,
+      "source": "https://images.pokemontcg.io/swsh8/logo.png",
+      "rawBytes": 195670,
+      "rawWidth": 552,
+      "rawHeight": 224,
+      "bytes": 224081,
       "width": 552,
       "height": 224,
-      "sha256": "87336e06f378530624adc9e59f74abff3ecf5a4dc19c12d0de4fc18ffcfbee8f"
+      "sha256": "fd8f0f8bf23323ff44bf3bbe421d2f13bc8af908c1b0ff98ce8c4f0196eec80f"
     },
     {
       "id": "swsh9",
       "file": "research/assets/img/swsh9/logo.png",
-      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/swsh_series/swsh09/swsh09_logo_169_en.png",
-      "rawBytes": 188858,
+      "source": "https://images.pokemontcg.io/swsh9/logo.png",
+      "rawBytes": 193079,
       "rawWidth": 578,
-      "rawHeight": 327,
-      "bytes": 180756,
+      "rawHeight": 239,
+      "bytes": 221708,
       "width": 578,
       "height": 239,
-      "sha256": "8cc7e33243988811d94bb1596a7b4bd5c5b3142af0900e4576d20b52422eeea5"
+      "sha256": "73937f74fc2839164cf8be5ec05f334376380cf921eb29835f86556d7b6c30a4"
+    },
+    {
+      "id": "swsh9tg",
+      "file": "research/assets/img/swsh9tg/logo.png",
+      "source": "https://images.pokemontcg.io/swsh9tg/logo.png",
+      "rawBytes": 193079,
+      "rawWidth": 578,
+      "rawHeight": 239,
+      "bytes": 221708,
+      "width": 578,
+      "height": 239,
+      "sha256": "73937f74fc2839164cf8be5ec05f334376380cf921eb29835f86556d7b6c30a4"
+    },
+    {
+      "id": "tk1a",
+      "file": "research/assets/img/tk1a/logo.png",
+      "source": "https://images.pokemontcg.io/tk1a/logo.png",
+      "rawBytes": 61271,
+      "rawWidth": 2323,
+      "rawHeight": 208,
+      "bytes": 53051,
+      "width": 2323,
+      "height": 208,
+      "sha256": "502cb752ca2c9488078314e180aa057775fb8b403f8c1749cd64620e277b14b1"
+    },
+    {
+      "id": "tk1b",
+      "file": "research/assets/img/tk1b/logo.png",
+      "source": "https://images.pokemontcg.io/tk1b/logo.png",
+      "rawBytes": 61271,
+      "rawWidth": 2323,
+      "rawHeight": 208,
+      "bytes": 53051,
+      "width": 2323,
+      "height": 208,
+      "sha256": "502cb752ca2c9488078314e180aa057775fb8b403f8c1749cd64620e277b14b1"
+    },
+    {
+      "id": "tk2a",
+      "file": "research/assets/img/tk2a/logo.png",
+      "source": "https://images.pokemontcg.io/tk2a/logo.png",
+      "rawBytes": 61271,
+      "rawWidth": 2323,
+      "rawHeight": 208,
+      "bytes": 53051,
+      "width": 2323,
+      "height": 208,
+      "sha256": "502cb752ca2c9488078314e180aa057775fb8b403f8c1749cd64620e277b14b1"
+    },
+    {
+      "id": "tk2b",
+      "file": "research/assets/img/tk2b/logo.png",
+      "source": "https://images.pokemontcg.io/tk2b/logo.png",
+      "rawBytes": 61271,
+      "rawWidth": 2323,
+      "rawHeight": 208,
+      "bytes": 53051,
+      "width": 2323,
+      "height": 208,
+      "sha256": "502cb752ca2c9488078314e180aa057775fb8b403f8c1749cd64620e277b14b1"
+    },
+    {
+      "id": "xy0",
+      "file": "research/assets/img/xy0/logo.png",
+      "source": "https://images.pokemontcg.io/xy0/logo.png",
+      "rawBytes": 53668,
+      "rawWidth": 578,
+      "rawHeight": 197,
+      "bytes": 47453,
+      "width": 578,
+      "height": 197,
+      "sha256": "5a60bbe9362ea0dcb1825a256a231787ba5de80a94006fe13800f845c36f1405"
+    },
+    {
+      "id": "xy1",
+      "file": "research/assets/img/xy1/logo.png",
+      "source": "https://images.pokemontcg.io/xy1/logo.png",
+      "rawBytes": 43233,
+      "rawWidth": 582,
+      "rawHeight": 145,
+      "bytes": 38677,
+      "width": 582,
+      "height": 145,
+      "sha256": "ddb777eaaf7ba56860d65b89bdb8c1e6d9d1857e9a7b4585410576b925d2b09c"
+    },
+    {
+      "id": "xy10",
+      "file": "research/assets/img/xy10/logo.png",
+      "source": "https://images.pokemontcg.io/xy10/logo.png",
+      "rawBytes": 128944,
+      "rawWidth": 570,
+      "rawHeight": 167,
+      "bytes": 123465,
+      "width": 569,
+      "height": 167,
+      "sha256": "2c78bb4208e5c4283d8aa570cdd60365565ff26a14cedb04ab748f614062cd09"
+    },
+    {
+      "id": "xy11",
+      "file": "research/assets/img/xy11/logo.png",
+      "source": "https://images.pokemontcg.io/xy11/logo.png",
+      "rawBytes": 178414,
+      "rawWidth": 578,
+      "rawHeight": 192,
+      "bytes": 172782,
+      "width": 578,
+      "height": 192,
+      "sha256": "4f9a46c1dfb5bbd74a30d224ca1ee7568e5804f087b5948616311b224dbdfb02"
+    },
+    {
+      "id": "xy12",
+      "file": "research/assets/img/xy12/logo.png",
+      "source": "https://images.pokemontcg.io/xy12/logo.png",
+      "rawBytes": 72957,
+      "rawWidth": 573,
+      "rawHeight": 139,
+      "bytes": 68728,
+      "width": 573,
+      "height": 139,
+      "sha256": "5bca884cb6223d847844284da6d77567e8977e742480b851ffe7ef56d75ac9ce"
+    },
+    {
+      "id": "xy2",
+      "file": "research/assets/img/xy2/logo.png",
+      "source": "https://images.pokemontcg.io/xy2/logo.png",
+      "rawBytes": 172718,
+      "rawWidth": 573,
+      "rawHeight": 236,
+      "bytes": 163733,
+      "width": 573,
+      "height": 236,
+      "sha256": "66a9429e8f49fd6879a236b0b4b5fe57d8944af385dbbdef63049a4a40e30180"
+    },
+    {
+      "id": "xy3",
+      "file": "research/assets/img/xy3/logo.png",
+      "source": "https://images.pokemontcg.io/xy3/logo.png",
+      "rawBytes": 114327,
+      "rawWidth": 573,
+      "rawHeight": 226,
+      "bytes": 108917,
+      "width": 573,
+      "height": 226,
+      "sha256": "2ae7d1101697e72b400c57b8ce1a75b90d319c6c60905a00ce1329d42cdbe153"
+    },
+    {
+      "id": "xy4",
+      "file": "research/assets/img/xy4/logo.png",
+      "source": "https://images.pokemontcg.io/xy4/logo.png",
+      "rawBytes": 226571,
+      "rawWidth": 557,
+      "rawHeight": 267,
+      "bytes": 216620,
+      "width": 557,
+      "height": 267,
+      "sha256": "fc3c3762bbfcdcae552187d257f82319c9ea6a826fbd813fca2d748f311f37b4"
+    },
+    {
+      "id": "xy5",
+      "file": "research/assets/img/xy5/logo.png",
+      "source": "https://images.pokemontcg.io/xy5/logo.png",
+      "rawBytes": 76399,
+      "rawWidth": 575,
+      "rawHeight": 192,
+      "bytes": 71082,
+      "width": 575,
+      "height": 192,
+      "sha256": "440a6529231a2f1b007edffc8dedc568a7dce5f332c2786f529b8e0680f5f9d0"
+    },
+    {
+      "id": "xy6",
+      "file": "research/assets/img/xy6/logo.png",
+      "source": "https://images.pokemontcg.io/xy6/logo.png",
+      "rawBytes": 184977,
+      "rawWidth": 573,
+      "rawHeight": 260,
+      "bytes": 179730,
+      "width": 573,
+      "height": 260,
+      "sha256": "e8d536559cb5a07a15343644273fc9f74b5dc47d25b903f6a17e4c85d9c107d9"
+    },
+    {
+      "id": "xy7",
+      "file": "research/assets/img/xy7/logo.png",
+      "source": "https://images.pokemontcg.io/xy7/logo.png",
+      "rawBytes": 253248,
+      "rawWidth": 575,
+      "rawHeight": 243,
+      "bytes": 247181,
+      "width": 575,
+      "height": 242,
+      "sha256": "6959f722797656bd95a216d765b9d7f6380dd792438b6ffd4b4215f3232ede64"
+    },
+    {
+      "id": "xy8",
+      "file": "research/assets/img/xy8/logo.png",
+      "source": "https://images.pokemontcg.io/xy8/logo.png",
+      "rawBytes": 112683,
+      "rawWidth": 570,
+      "rawHeight": 197,
+      "bytes": 108115,
+      "width": 570,
+      "height": 197,
+      "sha256": "c8da720f18da82940b942bc3ba69aa089b5f29802093123689f6a78d4f0ce4fa"
+    },
+    {
+      "id": "xy9",
+      "file": "research/assets/img/xy9/logo.png",
+      "source": "https://images.pokemontcg.io/xy9/logo.png",
+      "rawBytes": 68194,
+      "rawWidth": 578,
+      "rawHeight": 122,
+      "bytes": 66201,
+      "width": 578,
+      "height": 121,
+      "sha256": "6367dc14d167cbbade00463a35229ffda862975f8407bede2a3cdb3d7a82f088"
+    },
+    {
+      "id": "zsv10pt5",
+      "file": "research/assets/img/zsv10pt5/logo.png",
+      "source": "https://images.pokemontcg.io/zsv10pt5/logo.png",
+      "rawBytes": 73485,
+      "rawWidth": 390,
+      "rawHeight": 245,
+      "bytes": 64551,
+      "width": 390,
+      "height": 245,
+      "sha256": "376c1f0458d6b585fc6d0e8d64088933dcab10c78830d96efd02bb258abbc3b5"
     }
   ],
   "missing": [
     {
       "id": "base1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "base2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "base3",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "base4",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "base5",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "base6",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     },
     {
       "id": "basep",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "bp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     },
     {
       "id": "bwp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "col1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "dc1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "det1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     },
     {
       "id": "dpp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "dv1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ecard1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ecard2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ecard3",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex13",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex14",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex16",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex6",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex7",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ex9",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "g1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "gym1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "gym2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     },
     {
       "id": "hsp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd11",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd12",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd14",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd15",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd16",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd17",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd18",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd19",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd21",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "mcd22",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "neo1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "neo2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "neo3",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "neo4",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop3",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop4",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop5",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop6",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop7",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop8",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "pop9",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "rsv10pt5",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "ru1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "si1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "smp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "sve",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "svp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "swshp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy0",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy1",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy10",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy11",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy12",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy2",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy3",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy4",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy5",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy6",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy7",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy8",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xy9",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "xyp",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
-    },
-    {
-      "id": "zsv10pt5",
-      "reason": "No official pokemon.com set logo at the series path for this id. Left on the tile."
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     },
     {
       "id": "me55c",
-      "reason": "me55c is a set id in data/set-logos.json. It has no separate official pokemon.com logo file. The parent file is research/assets/img/me55/logo.png."
+      "reason": "No logo on an allowed image host (images.pokemontcg.io) for this id. Left on the tile."
+    },
+    {
+      "id": "np",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
+    },
+    {
+      "id": "smp",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
+    },
+    {
+      "id": "sve",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
+    },
+    {
+      "id": "svp",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
+    },
+    {
+      "id": "swshp",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
+    },
+    {
+      "id": "xyp",
+      "reason": "images.pokemontcg.io returns the generic Pok\u00e9mon TCG or promo star logo for this id, not a set logo. Left on the tile."
     }
   ]
 }

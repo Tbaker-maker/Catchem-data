@@ -1,6 +1,6 @@
 // Weekly list of cards, sets, and sealed products missing a picture or logo.
-// The list goes to catchem-data-private. A tile logo is replaced only when an
-// explicit pokemon.com series logo returns a PNG. Official files stay put.
+// The list goes to catchem-data-private. A tile logo is replaced only when
+// images.pokemontcg.io has a logo for that set id. Official files stay put.
 import { spawn } from "node:child_process";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
@@ -14,13 +14,8 @@ const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
 const PRIVATE_REL = "data/image-coverage/latest.json";
 const LOCAL_REL = "data/private/image-coverage.json";
 
-export const WATCH = [
-  {
-    id: "mee",
-    slug: "mee-mega-evolution-energies",
-    url: "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/mee/mee_logo_169_en.png",
-  },
-];
+// No pokemon.com fetches (2026-10-27). Logos come from images.pokemontcg.io only.
+export const WATCH = [];
 
 function run(cmd, args, env) {
   return new Promise((resolve) => {
@@ -115,6 +110,7 @@ export async function assertEverySetLogo(root) {
 }
 
 export async function probeLogo(row, fetchImpl = globalThis.fetch) {
+  if (!row || !row.url) throw new Error("probeLogo needs a row with a url");
   const res = await fetchImpl(row.url, {
     signal: AbortSignal.timeout(20000),
     headers: { "user-agent": "Catchem-data" },

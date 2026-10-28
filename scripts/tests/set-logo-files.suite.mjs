@@ -28,7 +28,8 @@ export async function run() {
   const tiles = new Map((tileDoc.tiles || []).map((row) => [row.id, row]));
   const listed = new Set(report.listed || []);
   t("the original seven ids are still listed", ORIGINAL.every((id) => listed.has(id)));
-  t("me6 is an official file", present.has("me6") && listed.has("me6"));
+  t("me6 has no allowed-host logo yet, so it is a branded tile", tiles.has("me6") && !present.has("me6"));
+  t("no logo file comes from pokemon.com", (report.present || []).every((row) => String(row.source || "").startsWith("https://images.pokemontcg.io/")));
   t("me55c exists in data/set-logos.json", Boolean(official.sets && official.sets.me55c));
   t("mee is not a pokemontcg.io set id in data/set-logos.json", !(official.sets && official.sets.mee));
   const publishedIds = new Set();
@@ -60,7 +61,7 @@ export async function run() {
       const ok = Boolean(size) && size.width === row.width && size.height === row.height && buf.length === row.bytes && sha === row.sha256;
       if (!ok) t(`${id} file is the reported png`, false, sha.slice(0, 12));
       else matched += 1;
-      if (!String(row.source || "").startsWith("https://www.pokemon.com/")) t(`${id} source is pokemon.com`, false, row.source);
+      if (!String(row.source || "").startsWith("https://images.pokemontcg.io/")) t(`${id} source is images.pokemontcg.io`, false, row.source);
     } else if (tile) {
       const size = buf ? pngSize(buf) : null;
       const sha = buf ? createHash("sha256").update(buf).digest("hex") : "";
