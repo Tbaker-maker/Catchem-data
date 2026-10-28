@@ -855,9 +855,29 @@ const LENSES = [
     // Fresh first, ranked by novelty. If the cooldown empties the pool,
     // fall back to the least-recently-featured rather than publishing
     // nothing — a stale pick beats no edition, but only as a last resort.
+    // Depth fallback (2026-10-28): after TCGplayer-only sealed prices, every
+    // divergence row has signal=false and priceFloorClean is empty, so the
+    // room lens and signal fallbacks pick nothing. Same live depth pool as
+    // Rip-or-Hold — a headline with listings counted beats no Morning Pulse.
+    const depthRows = liveList
+      .filter(p => p.priceMedian && (p.listingCount ?? 0) >= 10
+        && ["booster-box", "etb", "pc-etb", "booster-bundle"].includes(p.subtype)
+        && !blockedIds.has(p.id) && !isRepeat(p.name))
+      .map(p => ({
+        id: p.id,
+        name: p.name,
+        setId: p.setId,
+        ebayAskMedian: p.priceMedian,
+        ebayListings: p.listingCount,
+        signal: false,
+        fromLiveMarket: true,
+      }))
+      .sort((a, b) => (b.ebayListings || 0) - (a.ebayListings || 0));
     let sealedPick = lensPick || (fresh.length ? [...fresh].sort((a, b) => noveltyScore(b) - noveltyScore(a))[0]
       : (screaming.length ? [...screaming].sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0]
-        : [...eligible].sort((a, b) => (featuredAgo.get(b.name) ?? 99) - (featuredAgo.get(a.name) ?? 99))[0] || null));
+        : [...eligible].sort((a, b) => (featuredAgo.get(b.name) ?? 99) - (featuredAgo.get(a.name) ?? 99))[0]
+          || depthRows[0]
+          || null));
     // A screaming deal outranks freshness — that is the whole point of the
     // exception. Label it so the repeat reads as deliberate, not lazy.
     const topScream = screaming.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0];
@@ -960,11 +980,20 @@ const LENSES = [
         // still headlining the Today screen after the hold shipped. The lens
         // now supplies whyChosen; explain carries the product's own measured
         // context instead of a cross-market comparison we cannot correct.
+        const live = sealedPick.fromLiveMarket === true;
+        if (live && !whyLine) {
+          whyLine = `Deepest eBay listing shelf among live sealed products with a TCGplayer market price - ${sealedPick.ebayListings} listings counted.`;
+          lensId = "depth";
+        }
         return {
-          whyChosen: whyLine, lens: lensId, asOf: today, source: "eBay live listings, delivered totals", name: sealedPick.name, ebay: sealedPick.ebayAskMedian,
+          whyChosen: whyLine, lens: lensId, asOf: today,
+          source: live ? "TCGplayer market" : "eBay live listings, delivered totals",
+          name: sealedPick.name, ebay: sealedPick.ebayAskMedian,
           listings: sealedPick.ebayListings, chip:"VERIFIED",
-          reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : "the day's clearest read on the sealed board",
-          explain: `Asking $${(sealedPick.ebayAskMedian||0).toLocaleString("en-US")} across ${sealedPick.ebayListings} live listings.${life}` };
+          reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : (live ? "deepest live sealed shelf" : "the day's clearest read on the sealed board"),
+          explain: live
+            ? `TCGplayer market $${(sealedPick.ebayAskMedian||0).toLocaleString("en-US")} with ${sealedPick.ebayListings} eBay listings counted.${life}`
+            : `Asking $${(sealedPick.ebayAskMedian||0).toLocaleString("en-US")} across ${sealedPick.ebayListings} live listings.${life}` };
       })(),
       graded: gradedPick, // null until Premium table exists — the slot says so honestly
       raw: rawPick,
