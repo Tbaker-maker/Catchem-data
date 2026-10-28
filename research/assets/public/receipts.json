@@ -1,11 +1,11 @@
 {
  "asOf": "2026-10-28",
- "updatedAt": "2026-10-28T00:54:22.584Z",
+ "updatedAt": "2026-10-28T03:39:45.328Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 17,
+ "scored": 18,
  "hits": 0,
- "misses": 17,
+ "misses": 18,
  "rows": [
   {
    "id": "receipt-2026-09-26-sealed-cel25-upc",
@@ -418,18 +418,62 @@
   {
    "id": "receipt-2026-10-27-sealed-sm12-booster-box",
    "type": "receipt",
-   "result": "open",
+   "result": "miss",
    "kind": "sealed",
    "name": "Cosmic Eclipse Booster Box",
-   "headline": "Cosmic Eclipse Booster Box. Open.",
-   "price": 5499.99,
+   "headline": "Cosmic Eclipse Booster Box. Miss.",
+   "price": 4216.67,
    "source": "TCGplayer market",
-   "asOf": "2026-10-27",
-   "why": "Written down October 27, 2026 at $5,499.99. No later TCGplayer market price is stored, so this stays open.",
+   "asOf": "2026-10-28",
+   "why": "Written down October 27, 2026 at $5,499.99, after a lower one. Next TCGplayer market price on October 28, 2026 was $4,216.67. The other way.",
    "hist": [
     [
      "2026-10-27",
      5499.99
+    ],
+    [
+     "2026-10-28",
+     4216.67
+    ]
+   ],
+   "href": "",
+   "changePct": -23.3
+  },
+  {
+   "id": "receipt-2026-10-19-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-19",
+   "why": "Written down October 19, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-19",
+     2283.14
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-23-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-23",
+   "why": "Written down October 23, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-23",
+     2283.14
     ]
    ],
    "href": "",
@@ -450,26 +494,6 @@
     [
      "2026-10-27",
      1412.72
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
-   "id": "receipt-2026-10-28-sealed-sv9-bb",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "Journey Together Booster Bundle",
-   "headline": "Journey Together Booster Bundle. Open.",
-   "price": 44.99,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-28",
-   "why": "Written down October 28, 2026 at $44.99. No later TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-28",
-     44.99
     ]
    ],
    "href": "",
