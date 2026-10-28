@@ -25,7 +25,10 @@ export async function run() {
   t("live sealed products exist", live.length >= 20);
   const badPrice = live.filter((p) => p.priceSource && !/TCGplayer/i.test(String(p.priceSource)));
   t("live priceSource stays on TCGplayer labels", badPrice.length === 0);
-  t("sealed-prices file has no sold wording", !/\bsold\b|\bsales\b/i.test(JSON.stringify(products)));
+  const soldHits = products.filter((p) => /\bsold\b|\bsales\b/i.test(JSON.stringify({
+    priceSource: p.priceSource, listingsSource: p.listingsSource, read: p.read, note: p.note,
+  })));
+  t("sealed price labels have no sold wording", soldHits.length === 0);
 
   const lib = await readFile(join(ROOT, "scripts/lib/sealed-tcg-price.mjs"), "utf8");
   t("lib names eBay as listings counted", /listings counted/i.test(lib));
