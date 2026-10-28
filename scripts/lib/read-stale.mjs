@@ -8,6 +8,10 @@ export function readEnd(read) {
   return DAY.test(day) ? day : "";
 }
 
+// Catalogue, news, and historical window reads are dated by their source, not
+// by tonight's board. Marking them stale just because asOf is older is noise.
+const FACT_STALE_SKIP = new Set(["pokemon", "newsline", "news", "season", "lag", "supply", "year", "year-ago", "year-range", "anniversary", "prerelease"]);
+
 export function stampStale(doc, boardDay = "") {
   const builtOn = DAY.test(String(boardDay || "").slice(0, 10))
     ? String(boardDay).slice(0, 10)
@@ -15,7 +19,10 @@ export function stampStale(doc, boardDay = "") {
   let stale = 0;
   for (const read of doc?.reads || []) {
     const end = readEnd(read);
-    const isStale = Boolean(builtOn && end && end < builtOn);
+    const kind = String(read?.readKind || read?.kind || "");
+    const deep = String(read?.deep || "");
+    const skip = FACT_STALE_SKIP.has(kind) || FACT_STALE_SKIP.has(deep);
+    const isStale = Boolean(!skip && builtOn && end && end < builtOn);
     read.stale = isStale;
     read.builtOn = builtOn;
     if (isStale) stale += 1;

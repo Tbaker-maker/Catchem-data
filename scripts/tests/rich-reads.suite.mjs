@@ -23,9 +23,11 @@ export async function run() {
     id: "tcgcsv-90", name: "Pikachu", artist: "Ken Sugimori", rarity: "Illustration Rare", set: "SV09: Journey Together", setSlug: "sv09-journey-together",
     pts: [["2025-10-13", 8], ["2026-10-06", 10], ["2026-10-13", 12]],
   };
-  const mixed = mixedReads({ cards: [yearCard], asOf, sealedPool: [{ id: "sv9-bb", name: "Journey Together Booster Box", from: 180, to: 191.93, group: "sv9" }], listings: { products: [{ id: "sv9-bb", listingsCounted: { n: 35, date: "2026-10-13", prev: { n: 48, date: "2026-09-29" } } }] }, asOfStart: asOf, start: "2026-10-06", end: asOf });
+  const mixed = mixedReads({ cards: [yearCard], asOf, sealedPool: [{ id: "sv9-bb", name: "Journey Together Booster Box", from: 180, to: 191.93, group: "sv9" }], listings: { products: [{ id: "sv9-bb", listingsCounted: { n: 35, date: "2026-10-13", prev: { n: 48, date: "2026-10-06" } } }] }, asOfStart: asOf, start: "2026-10-06", end: asOf });
   t("a mixed card states the week and the year", mixed.some((r) => r.id.startsWith("mixed-card") && /\$10\.00 on Oct 6 to \$12\.00 on Oct 13 \(\+20%\)/.test(r.headline) && /\$8\.00 on Oct 13, 2025/.test(r.headline)));
-  t("a mixed sealed line states listings counted beside the market price", mixed.some((r) => r.readKind === "mixed" && /Listings counted 48 on Sep 29 to 35 on Oct 13/.test(r.headline) && !/\bsupply\b/i.test(r.headline)));
+  t("a mixed sealed line states listings counted beside the market price", mixed.some((r) => r.readKind === "mixed" && /Listings counted 48 on Oct 6 to 35 on Oct 13/.test(r.headline) && !/\bsupply\b/i.test(r.headline)));
+  const staleMixed = mixedReads({ cards: [], asOf, sealedPool: [{ id: "sv9-bb", name: "Journey Together Booster Box", from: 180, to: 191.93, group: "sv9" }], listings: { products: [{ id: "sv9-bb", listingsCounted: { n: 35, date: "2026-10-01", prev: { n: 48, date: "2026-09-20" } } }] }, start: "2026-10-06", end: asOf });
+  t("a mixed sealed line with stale listings counted is skipped", !staleMixed.some((r) => r.id.startsWith("mixed-sealed")));
   const sets = { sets: [
     { slug: "sv09-journey-together", name: "Journey Together", era: "Scarlet & Violet", release: "2026-06-01" },
     { slug: "sv08", name: "Surging Sparks", era: "Scarlet & Violet", release: "2025-06-01" },

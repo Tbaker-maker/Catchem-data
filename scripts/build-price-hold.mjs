@@ -12,7 +12,12 @@ const PUB = join(ROOT, "research/assets/public");
 const SETS = join(PUB, "sets");
 
 const cfg = await loadPriceTrustConfig(ROOT);
-const asOf = "2026-10-17";
+let asOf = "";
+try { asOf = String(JSON.parse(await readFile(join(PUB, "sets.json"), "utf8"))?.asOf || "").slice(0, 10); } catch { /* next */ }
+if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) {
+  try { asOf = String(JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"))?.asOf || "").slice(0, 10); } catch { /* next */ }
+}
+if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) asOf = new Date().toISOString().slice(0, 10);
 
 const unverified = new Set();
 const ratingDir = join(PUB, "feed/rating");

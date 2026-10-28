@@ -173,29 +173,47 @@ function occurrences(text, pool) {
 
 const VARIANT = "(?:Special Illustration Rare|Illustration Rare|Tag Team \\(Alternate Art\\)|Alternate Art|Trainer Gallery|Galarian Gallery|Full Art|Secret Rare)";
 
-function placeNumbers(text, pool) {
+function isSpeciesCountLine(text) {
+  return /^Number\s+\d+\s+of\s+\d+\s+.+\s+cards we price/i.test(String(text || "").trim());
+}
+
+function placeNumbers(text, pool, prefer) {
   const body = String(text || "");
   if (!body || !pool.length) return { text: body, cards: [] };
+  // A species count line is about the group, not one printing. Stamping any
+  // collector number there (especially a different Umbreon) is wrong.
+  if (isSpeciesCountLine(body)) return { text: body, cards: [] };
   const hits = occurrences(body, pool).sort((a, b) => b.i - a.i);
   let out = body;
   const cards = [];
   for (const hit of hits) {
+    let card = hit.card;
+    // On a single-card read, never stamp a different printing's number.
+    if (prefer?.number && card.number && card.number !== prefer.number) {
+      const sameName = prefer.clean && card.clean && (
+        prefer.clean === card.clean
+        || prefer.clean.startsWith(card.clean)
+        || card.clean.startsWith(prefer.clean.split(" ")[0])
+      );
+      if (sameName) card = prefer;
+      else continue;
+    }
     const local = out.slice(hit.i, Math.min(out.length, hit.end + 64));
-    if (hasNumber(local, hit.card.number)) { cards.push(hit.card); continue; }
+    if (hasNumber(local, card.number)) { cards.push(card); continue; }
     let end = hit.end;
     const rest = out.slice(end);
     const m = rest.match(new RegExp(`^(?:\\s+${VARIANT})*(?:\\s*\\([^)]+\\))*`));
     if (m) end += m[0].length;
-    const next = `${out.slice(0, end)} ${hit.card.number}${out.slice(end)}`;
+    const next = `${out.slice(0, end)} ${card.number}${out.slice(end)}`;
     if (safeChange(out, next) !== next) continue;
     out = next;
-    cards.push(hit.card);
+    cards.push(card);
   }
   return { text: out, cards };
 }
 
-function faceText(text, pool) {
-  const placed = placeNumbers(text, pool);
+function faceText(text, pool, prefer) {
+  const placed = placeNumbers(text, pool, prefer);
   const priced = labelPrices(placed.text);
   return { text: safeChange(placed.text, priced), cards: placed.cards };
 }
@@ -249,15 +267,15 @@ export function stampRead(read, index, images) {
     if (typeof read[key] !== "string" || !read[key]) continue;
     const text = read[key];
     const next = subject && text.startsWith(subject)
-      ? subject + faceText(text.slice(subject.length), pool).text
-      : faceText(text, pool).text;
+      ? subject + faceText(text.slice(subject.length), pool, direct).text
+      : faceText(text, pool, direct).text;
     read[key] = safeChange(read[key], next);
   }
   if (Array.isArray(read.lines)) {
     const lineCards = [];
     read.lines = read.lines.map((line) => {
       if (typeof line !== "string") { lineCards.push({ text: line, cards: [] }); return line; }
-      const faced = faceText(line, pool);
+      const faced = faceText(line, pool, direct);
       const cards = [];
       const seen = new Set();
       for (const c of faced.cards) {
@@ -272,7 +290,7 @@ export function stampRead(read, index, images) {
     if (lineCards.some((row) => row.cards.length)) read.lineCards = lineCards;
   }
   if (Array.isArray(read.variants)) {
-    read.variants = read.variants.map((line) => (typeof line === "string" ? safeChange(line, faceText(line, pool).text) : line));
+    read.variants = read.variants.map((line) => (typeof line === "string" ? safeChange(line, faceText(line, pool, direct).text) : line));
   }
   const bars = read.chart?.bars;
   if (Array.isArray(bars)) {
