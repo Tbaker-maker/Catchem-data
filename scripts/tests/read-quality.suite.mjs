@@ -1,5 +1,5 @@
 // Read quality, from a user's eyes. Every case in the ruling.
-import { readFile, mkdtemp, writeFile, mkdir } from "node:fs/promises";
+import { readFile, readdir, mkdtemp, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -84,7 +84,19 @@ export async function run() {
 
   const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
   const duds = catalog.items.filter((item) => /dudunsparce/i.test(item.name || ""));
-  t("catalog has Dudunsparce rows and none is $1.11", duds.length >= 8 && duds.every((item) => item.price !== 1.11));
+  t("catalog has Dudunsparce rows", duds.length >= 8);
+  // Live market can return to $1.11 (it did on 2026-10-28). Guard that the catalog
+  // tracks the newest daily file, not that $1.11 is forever banned from the live catalog.
+  const dailyDir = join(ROOT, "data/history/tcgcsv-daily");
+  const dayFiles = (await readdir(dailyDir)).filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).sort();
+  const newestDay = dayFiles.at(-1);
+  const newestDoc = JSON.parse(await readFile(join(dailyDir, newestDay), "utf8"));
+  const liveDud = duds.find((item) => item.tcgplayerProductId === 623605);
+  const newestRow = newestDoc.prices.find((row) => row.id === 623605);
+  t(
+    "catalog Dudunsparce ex 623605 matches newest daily market",
+    Boolean(liveDud && newestRow && liveDud.price === newestRow.market),
+  );
   const dailyNames = ["2026-09-26", "2026-09-27", "2026-09-29", "2026-10-03", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10"];
   const docs = new Map();
   for (const day of dailyNames) docs.set(day, JSON.parse(await readFile(join(ROOT, `data/history/tcgcsv-daily/${day}.json`), "utf8")));
