@@ -43,14 +43,16 @@ for (let i = 0; i < ids.length; i += 1) {
   let code = 0;
   let xp = "";
   try {
-    const res = await fetch(`${base}/p/${id}?prewarm=html`, {
+    // Plain GET fills the edge Cache API (same key as user hits). ?prewarm=html also
+  // seeds prodrow but burns Worker CPU and storms under full-catalog pace.
+  const res = await fetch(`${base}/p/${id}`, {
       headers: { "user-agent": "catchem-prewarm-html/2" },
       signal: AbortSignal.timeout(FETCH_MS),
     });
     code = res.status;
-    xp = res.headers.get("x-prewarm") || "";
+    xp = res.headers.get("x-edge-cache") || res.headers.get("x-prewarm") || "";
     await res.arrayBuffer();
-    if (code === 200 && xp === "html-skip") skip += 1;
+    if (code === 200 && xp === "hit") skip += 1;
     else if (code === 200) ok += 1;
     else if (code === 503) { n503 += 1; err += 1; }
     else err += 1;
