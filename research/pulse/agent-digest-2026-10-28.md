@@ -28,10 +28,10 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 43 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 25 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- correction-hunter: OVER-BUDGET — 43 findings against a ceiling of 30. An unreadable list is an unread list.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
+- theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -56,19 +56,18 @@ Gaps in what we watch:
 
 ## Who needs to do what
 **NEEDS A HUMAN — Tyler (3):**
-- **[ACT NOW 76]** Guardians Rising Booster Box moved 25.9% — about 6.8× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 90]** RT-2 failed its own kill condition — *publish the amendment — we said in advance this would end the thesis*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
-**CC (9):**
-- **[ACT NOW 90]** Celebrations Elite Trainer Box moved 132.1% in 2026-10-18→2026-10-19 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Celebrations Elite Trainer Box moved 109.4% in 2026-10-12→2026-10-13 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Celebrations Elite Trainer Box moved 103.7% in 2026-10-06→2026-10-07 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
+**CC (3):**
+- **[QUEUE 58]** 5 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
+- **[QUEUE 58]** 31 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
+- **[WATCH 48]** 35 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 7 ACT NOW, 9 QUEUE, 8 WATCH, 33 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 1 ACT NOW, 9 QUEUE, 8 WATCH, 33 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -77,16 +76,16 @@ Gaps in what we watch:
 
 ## Where today's story goes
 - **X** — "Mega Evolution listings moved 193.3% while its print window closes."
-- **YouTube** — Shining Fates Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 138 listings counted."
+- **YouTube** — Lost Origin Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 137 listings counted."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.5."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 66 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 66 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -95,10 +94,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-62 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 356 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 73% rejection rate (41/150) — *largest bucket: type = 50. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 94% rejection rate (9/150) — *largest bucket: set = 52. A single over-broad term can eat a market.*
+59 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 362 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: exclude = 54. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 96% rejection rate (6/150) — *largest bucket: set = 58. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -121,13 +120,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 152 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 158 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-74 open — 55 need eyes on a rendered page, 19 need a decision.
+75 open — 56 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

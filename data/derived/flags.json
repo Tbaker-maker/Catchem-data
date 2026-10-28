@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-28",
- "generatedAt": "2026-10-28T17:48:18.751Z",
+ "generatedAt": "2026-10-28T19:25:18.553Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -27,15 +27,17 @@
    "ODD_PRICE": 94,
    "READ_TYPE_EMPTY": 7,
    "YOUTUBE_DISAGREE": 1,
-   "YOUTUBE_LEAD": 13
+   "YOUTUBE_LEAD": 13,
+   "HYPE_EFFECT": 2,
+   "CROWDED_CALL": 1
   },
   "bySeverity": {
    "high": 4,
-   "medium": 18,
-   "low": 107
+   "medium": 20,
+   "low": 108
   }
  },
- "newTonight": 1,
+ "newTonight": 3,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -1702,6 +1704,63 @@
     "weighted": 2,
     "from": "2026-10-22",
     "to": "2026-10-28"
+   },
+   "new": false
+  },
+  {
+   "type": "HYPE_EFFECT",
+   "severity": "medium",
+   "key": "hype:set:set:SV: Prismatic Evolutions:2026-10-28",
+   "line": "Heavy creator attention on Prismatic Evolutions this week. Past sets with this much attention moved -4.2% over 30 days (n=25, 2026-04-27 to 2026-09-26).",
+   "data": {
+    "level": "set",
+    "label": "Prismatic Evolutions",
+    "n": 25,
+    "medianPct": -4.2,
+    "from": "2026-04-27",
+    "to": "2026-09-26",
+    "surface": "set",
+    "source": "data/derived/hype-effect-set.json"
+   },
+   "new": true
+  },
+  {
+   "type": "HYPE_EFFECT",
+   "severity": "medium",
+   "key": "hype:set:group:24722:2026-10-28",
+   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.2% over 30 days (n=25, 2026-04-27 to 2026-09-26).",
+   "data": {
+    "level": "set",
+    "label": "30th Celebration",
+    "n": 25,
+    "medianPct": -4.2,
+    "from": "2026-04-27",
+    "to": "2026-09-26",
+    "surface": "set",
+    "source": "data/derived/hype-effect-set.json"
+   },
+   "new": true
+  },
+  {
+   "type": "CROWDED_CALL",
+   "severity": "low",
+   "key": "crowded:set:group:24722:down:2026-10-17",
+   "line": "Crowded down-direction attention on set 30th Celebration: 3 creators, 4 calls, 2026-10-17 to 2026-10-17. Past crowded calls moved -5.4% over 30 days (n=21, 2026-04-27 to 2026-09-26).",
+   "data": {
+    "level": "set",
+    "subjectKey": "group:24722",
+    "label": "30th Celebration",
+    "n": 21,
+    "medianPct": -5.4,
+    "from": "2026-04-27",
+    "to": "2026-09-26",
+    "creators": 3,
+    "calls": 4,
+    "direction": "down",
+    "windowFrom": "2026-10-17",
+    "windowTo": "2026-10-17",
+    "surface": "set",
+    "source": "data/derived/crowded-calls-set.json"
    },
    "new": true
   }
