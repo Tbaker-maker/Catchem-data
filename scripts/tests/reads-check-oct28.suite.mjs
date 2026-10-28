@@ -23,10 +23,14 @@ export async function run() {
   }
   t("three flat nights are trailingFlat", trailingFlat(fairyPts, "2026-10-28", 3, 0) === true);
   t("a still-moving stretch is not trailingFlat", trailingFlat(fairyPts, "2026-10-25", 3, 0) === false);
+  // Sparks omit quiet days. Two calendar nights at the same cent still settle.
+  t("flat calendar nights hold when a spark skips a quiet day", trailingFlat([
+    ["2026-10-21", 1.03], ["2026-10-23", 1.42], ["2026-10-27", 2.62], ["2026-10-28", 2.62],
+  ], "2026-10-28", 2, 0));
   const rules = {
     max: 4,
     move: { flatAbs: 1.5, preferDays: [7], slackDays: 2, minDays: 2 },
-    momentum: { risingMin: 3, coolingMax: -3, recentDays: 7, flatRecentDays: 3 },
+    momentum: { risingMin: 3, coolingMax: -3, recentDays: 7, flatRecentDays: 2 },
     range: { minDays: 7 },
     era: {},
     strength: { fallback: { move: [4, 6, 8, 16], momentum: [4, 6, 8, 16], range: [0.4, 0.7, 0.9, 1.01], era: { Modern: 1 } } },

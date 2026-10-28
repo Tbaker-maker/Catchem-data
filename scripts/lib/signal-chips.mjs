@@ -343,18 +343,31 @@ function rangeChip(points, asOf, rules) {
   };
 }
 
-// Last N priced nights at the same cent value. A window move that has already
-// settled is not Rising or Cooling momentum, and must not score loud dots.
+// Last N calendar nights at the same cent value. Sparks often skip quiet days,
+// so "3 flat nights" means asOf and the prior N-1 calendar days, each priced
+// at the same cent (nearest point that day, no slack into another night).
 export function trailingFlat(points, asOf, nights, slack) {
   const n = Math.round(Number(nights));
   if (!(n >= 2) || !points?.length) return false;
-  const end = nearest(points, asOf, Number.isFinite(slack) ? slack : 0);
-  if (!end) return false;
-  const upto = points.filter((p) => p[0] <= end[0]);
-  if (upto.length < n) return false;
-  const tail = upto.slice(-n);
-  const cents = Math.round(tail[0][1] * 100);
-  return tail.every((p) => Math.round(p[1] * 100) === cents);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return false;
+  const soft = Number.isFinite(slack) ? slack : 0;
+  const samples = [];
+  for (let i = 0; i < n; i += 1) {
+    const day = addDays(asOf, -i);
+    // Exact calendar night only. Soft slack would pull in an older jump and
+    // hide a real flat stretch that simply has no printed point that day.
+    let hit = nearest(points, day, 0);
+    if (!hit && soft > 0) {
+      // Carry-forward: if this calendar night has no print, use the prior
+      // night within soft days only when that prior print is still on or before day.
+      hit = nearest(points, day, soft);
+      if (hit && hit[0] > day) hit = null;
+    }
+    if (!hit) return false;
+    samples.push(hit);
+  }
+  const cents = Math.round(samples[0][1] * 100);
+  return samples.every((p) => Math.round(p[1] * 100) === cents);
 }
 
 function momentumChip(points, asOf, rules) {
@@ -368,7 +381,7 @@ function momentumChip(points, asOf, rules) {
   if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
   const pct = ((now[1] - then[1]) / then[1]) * 100;
   const flatN = num(m.flatRecentDays);
-  if (flatN >= 2 && trailingFlat(points, asOf, flatN, soft)) {
+  if (flatN >= 2 && trailingFlat(points, asOf, flatN, 0)) {
     return { kind: "momentum", word: "Flat", mag: 0, label: "Momentum Flat", settled: true };
   }
   const word = pct >= num(m.risingMin) ? "Rising" : pct <= num(m.coolingMax) ? "Cooling" : "Flat";
@@ -801,7 +814,7 @@ export function readSignals(read, ctx = {}, rules = {}) {
   const slack = num(rules?.move?.slackDays);
   const flatN = num(rules?.momentum?.flatRecentDays);
   const points = cleanPoints(ctx.points || []);
-  const settled = flatN >= 2 && trailingFlat(points, asOf, flatN, Number.isFinite(slack) ? slack : 0);
+  const settled = flatN >= 2 && trailingFlat(points, asOf, flatN, 0);
   const signals = pickChips(all, rules).map((chip) => {
     const internal = all.find((row) => (row.kind === "supply" ? "listings" : row.kind) === chip.kind);
     return withStrength(chip, internal, cohort, rules, settled);
