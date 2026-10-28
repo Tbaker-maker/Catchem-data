@@ -2785,7 +2785,10 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "qaWarn": [
+        "floor $2 is 3.3× under the median"
+      ]
     },
     {
       "id": "sv10-pack",
@@ -6357,7 +6360,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
+      ]
     },
     {
       "id": "me2pt5-tin",
@@ -7105,7 +7112,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
+      ]
     },
     {
       "id": "sm1-etb",
@@ -10443,7 +10454,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "only 4 listings — too thin to headline"
+      ]
     },
     {
       "id": "sm10-etb",
@@ -13136,7 +13151,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
+      ]
     },
     {
       "id": "swsh2-booster-box",
@@ -24193,7 +24212,10 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "qaWarn": [
+        "floor $5 is 7.6× under the median"
+      ]
     },
     {
       "id": "me4-pc-etb",
@@ -37617,7 +37639,11 @@
         }
       ],
       "priceSource": "TCGplayer market across 2 arts",
-      "priceDate": "2026-10-28"
+      "priceDate": "2026-10-28",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
+      ]
     },
     {
       "id": "sm12-etb",
@@ -47234,7 +47260,12 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-10-28",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5.",
+        "only 3 listings — too thin to headline"
+      ]
     },
     {
       "id": "swsh10-pack",

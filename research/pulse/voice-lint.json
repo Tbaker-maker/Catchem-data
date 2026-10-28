@@ -1,33 +1,61 @@
 {
- "generatedAt": "2026-10-27T18:01:31.518Z",
+ "generatedAt": "2026-10-28T08:33:51.802Z",
  "checked": "dailyThree, supplyShifts, eraIndexes, printWatch, depth, postBank, socialQueue",
  "blocks": 0,
- "warns": 14,
+ "warns": 15,
  "findings": [
+  {
+   "severity": "WARN",
+   "label": "eraIndex.Sun & Moon",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "TCGplayer market median across 17 products. 287 eBay listings counted."
+  },
   {
    "severity": "WARN",
    "label": "eraIndex.Sword & Shield",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "cross-market read still pending — not enough matched data yet to say anything"
+   "text": "TCGplayer market median across 54 products. 3028 eBay listings counted."
+  },
+  {
+   "severity": "WARN",
+   "label": "eraIndex.Vintage & other",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "TCGplayer market median across 7 products. 534 eBay listings counted."
   },
   {
    "severity": "WARN",
    "label": "eraIndex.Scarlet & Violet",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "cross-market read still pending — not enough matched data yet to say anything"
+   "text": "TCGplayer market median across 63 products. 3879 eBay listings counted."
   },
   {
    "severity": "WARN",
    "label": "eraIndex.Mega Evolution",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "cross-market read still pending — not enough matched data yet to say anything"
+   "text": "TCGplayer market median across 32 products. 2385 eBay listings counted."
+  },
+  {
+   "severity": "WARN",
+   "label": "depth.sv3pt5-upc",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "steady shelf — deep, flow flat"
   },
   {
    "severity": "WARN",
    "label": "depth.swsh45-etb",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "steady shelf — deep, flow flat"
+  },
+  {
+   "severity": "WARN",
+   "label": "depth.swsh11-etb",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
    "text": "steady shelf — deep, flow flat"
@@ -48,24 +76,10 @@
   },
   {
    "severity": "WARN",
-   "label": "depth.swsh11-etb",
+   "label": "depth.me1-enhanced-booster-box",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "steady shelf — deep, flow flat"
-  },
-  {
-   "severity": "WARN",
-   "label": "depth.sv3pt5-upc",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "steady shelf — deep, flow flat"
-  },
-  {
-   "severity": "WARN",
-   "label": "depth.me3-bb",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "steady shelf — deep, flow flat"
+   "text": "pile-up — supply outpacing demand est. (RT-3)"
   },
   {
    "severity": "WARN",
@@ -86,21 +100,14 @@
    "label": "socialQueue.morning",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 65. One number for the whole sealed market:\n\nCatch'em Sealed Index: 99.4 ▼ 0.1638%\n175 sealed products, each measure"
-  },
-  {
-   "severity": "WARN",
-   "label": "socialQueue.midday",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 65 of pack math nobody shows you.\nMost expensive rip today: Pokemon 151 Pokemon Center Elite Trainer Box — $164.7 pe"
+   "text": "Day 66 of tracking every sealed Pokémon product so you don't have to.\n\nCatch'em Sealed Index: 100.5 (flat)\n175 sealed pr"
   },
   {
    "severity": "WARN",
    "label": "socialQueue.evening",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 65. Rip or hold?\nLost Origin Elite Trainer Box at $235.04 — rip it or hold it sealed?\nVote's live in the Discord. Fr"
+   "text": "Day 66. Rip or hold?\nMega Evolution Enhanced Booster Box at $295.39 TCGplayer market. Rip it or keep it sealed?\nYesterda"
   }
  ]
 }
