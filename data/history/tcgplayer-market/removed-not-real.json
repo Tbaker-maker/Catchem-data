@@ -1,0 +1,205 @@
+{
+  "asOf": "2026-10-27",
+  "note": "Catalog SKUs checked against pokemon.com, Bulbapedia, retailer listings, and TCGCSV. Fake products removed from sealed-products.json and sealed-prices.json. Real Booster Bundles (Lost Origin, Silver Tempest) kept.",
+  "removed": [
+    {
+      "id": "det1-etb",
+      "name": "Detective Pikachu Elite Trainer Box",
+      "verdict": "remove",
+      "reason": "Not a real product. Detective Pikachu never had an Elite Trainer Box.",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Elite_Trainer_Box_(TCG) (special expansions lacking an ETB: Double Crisis and Detective Pikachu)",
+        "https://bulbapedia.bulbagarden.net/wiki/Detective_Pikachu_(TCG)",
+        "Tyler 2026-10-27: Detective Pikachu ETB is not a real product"
+      ]
+    },
+    {
+      "id": "cel25-bb",
+      "name": "Celebrations Booster Bundle",
+      "verdict": "remove",
+      "reason": "Not a real product. Celebrations booster packs were never released as a Booster Bundle; official lineup has ETB, UPC, collections, mini tins, collector chest. Booster Bundle as a product type started with Lost Origin and Scarlet and Violet.",
+      "sources": [
+        "https://press.pokemon.com/en/The-Pokemon-Company-International-Unveils-the-Pokemon-Trading-Card-Gam (Celebrations lineup, no Booster Bundle)",
+        "https://www.pokemon.com/us/pokemon-tcg/celebrations (packs not available separately)",
+        "https://tcgcsv.com/tcgplayer/3/2867/products (Celebrations group: ETBs only, no Booster Bundle)"
+      ]
+    },
+    {
+      "id": "swsh1-bundle",
+      "name": "Sword & Shield Booster Bundle",
+      "set": "Sword & Shield",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh2-bundle",
+      "name": "Rebel Clash Booster Bundle",
+      "set": "Rebel Clash",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh3-bundle",
+      "name": "Darkness Ablaze Booster Bundle",
+      "set": "Darkness Ablaze",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh35-bundle",
+      "name": "Champion's Path Booster Bundle",
+      "set": "Champion's Path",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh4-bundle",
+      "name": "Vivid Voltage Booster Bundle",
+      "set": "Vivid Voltage",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh45-bundle",
+      "name": "SWSH Promos Booster Bundle",
+      "set": "SWSH Promos",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh5-bundle",
+      "name": "Battle Styles Booster Bundle",
+      "set": "Battle Styles",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh6-bundle",
+      "name": "Chilling Reign Booster Bundle",
+      "set": "Chilling Reign",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh7-bundle",
+      "name": "Evolving Skies Booster Bundle",
+      "set": "Evolving Skies",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh8-bundle",
+      "name": "Fusion Strike Booster Bundle",
+      "set": "Fusion Strike",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh9-bundle",
+      "name": "Brilliant Stars Booster Bundle",
+      "set": "Brilliant Stars",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    },
+    {
+      "id": "swsh10-bundle",
+      "name": "Astral Radiance Booster Bundle",
+      "set": "Astral Radiance",
+      "verdict": "remove",
+      "reason": "Not a real product. The Booster Bundle (6 packs) was introduced with Lost Origin. This Sword and Shield set has no official Booster Bundle on pokemon.com, Bulbapedia, or TCGCSV (pack art bundles are a different product).",
+      "sources": [
+        "https://bulbapedia.bulbagarden.net/wiki/Booster_pack_(TCG) (Booster Bundle introduced during Scarlet and Violet Series)",
+        "https://bulbapedia.bulbagarden.net/wiki/Scarlet_%26_Violet_TCG_Series_merchandise (Scarlet and Violet Booster Bundle, 2023-03-31)",
+        "https://www.pittpokeresearch.com/pokemon-set/Evolving-Skies (first Booster Bundle set was Lost Origin)",
+        "tcgcsv.com group product files for this set: no Booster Bundle SKU"
+      ]
+    }
+  ],
+  "keptReal": [
+    {
+      "id": "swsh11-bundle",
+      "name": "Lost Origin Booster Bundle",
+      "verdict": "keep",
+      "reason": "Real product. Mapped to TCGplayer 278819. Prices from TCGplayer market.",
+      "sources": [
+        "https://www.pokemoncenter.com/product/182-85146/pokemon-tcg-sword-and-shield-lost-origin-booster-bundle-6-packs",
+        "https://tcgcsv.com/tcgplayer/3/3118/products productId 278819"
+      ]
+    },
+    {
+      "id": "swsh12-bundle",
+      "name": "Silver Tempest Booster Bundle",
+      "verdict": "keep",
+      "reason": "Real product. Mapped to TCGplayer 283396. Prices from TCGplayer market.",
+      "sources": [
+        "https://tcgcsv.com/tcgplayer/3/3170/products productId 283396"
+      ]
+    }
+  ]
+}

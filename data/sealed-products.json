@@ -272,21 +272,6 @@
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
   },
   {
-    "id": "det1-etb",
-    "name": "Detective Pikachu Elite Trainer Box",
-    "set": "Detective Pikachu",
-    "setId": "det1",
-    "subtype": "etb",
-    "searchQuery": "Pokemon Detective Pikachu Elite Trainer Box",
-    "image": "https://images.pokemontcg.io/det1/logo.png",
-    "vintage": false,
-    "priceFloor": 80,
-    "priceCeiling": 900,
-    "boundsNote": "Comps 2026-08-18: pittpokeresearch reports no market price (too few sales). LOW-CONF; J5 applies.",
-    "activeMarketThin": true,
-    "dataQualityNote": "J5 ruling 2026-08-18: 0 genuine active listings at validation — publishes no-active-market."
-  },
-  {
     "id": "xy12-booster-box",
     "name": "Evolutions Booster Box",
     "set": "Evolutions",
@@ -320,7 +305,8 @@
     "boundsNote": "Comps 2026-08-18: no liquid quote. LOW-CONF; J5 applies.",
     "combinedArts": true,
     "arts": [
-      "xy12-etb-mega-blastoise"
+      "xy12-etb-mega-blastoise",
+      "xy12-etb-mega-charizard-y"
     ],
     "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
   },
@@ -498,7 +484,14 @@
     "searchQuery": "Pokemon Mega Forces Tin",
     "image": "https://images.pokemontcg.io/me2pt5/logo.png",
     "vintage": false,
-    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Dragonite/Darkrai/Zeraora line as one SKU). NOT set-bound — anchored to me2pt5 era for grouping only (radar: distinct SKU from AH tins, same drop day). Added 2026-08-18 pre-release per Newsletter 002 constraint."
+    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Dragonite/Darkrai/Zeraora line as one SKU). NOT set-bound — anchored to me2pt5 era for grouping only (radar: distinct SKU from AH tins, same drop day). Added 2026-08-18 pre-release per Newsletter 002 constraint.",
+    "combinedArts": true,
+    "arts": [
+      "mega-forces-tin-mega-dragonite-ex",
+      "mega-forces-tin-mega-darkrai-ex",
+      "mega-forces-tin-mega-zeraora-ex"
+    ],
+    "artsNote": "All arts combined. Per-art TCGplayer prices live on the art rows. Hub price is the median across arts."
   },
   {
     "id": "sm1-booster-box",
@@ -1412,19 +1405,6 @@
     "boundsNote": "Comps 2026-08-18: no direct 2026 number (Zard-halo set). LOW-CONF.",
     "tcgPlayerId": "218791",
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
-  },
-  {
-    "id": "cel25-bb",
-    "name": "Celebrations Booster Bundle",
-    "set": "Celebrations",
-    "setId": "cel25",
-    "subtype": "booster-bundle",
-    "searchQuery": "Pokemon Celebrations Booster Bundle",
-    "image": "https://images.pokemontcg.io/cel25/logo.png",
-    "vintage": false,
-    "priceFloor": 20,
-    "priceCeiling": 400,
-    "boundsNote": "J4 probe RESOLVED 2026-08-18: bundle product verified real at validation (median $90 n=26)."
   },
   {
     "id": "swsh12pt5-bb",
@@ -2717,7 +2697,12 @@
     "subtype": "special-collection",
     "searchQuery": "Pokemon Crown Zenith Special Collection",
     "image": "https://images.pokemontcg.io/swsh12pt5/logo.png",
-    "vintage": false
+    "vintage": false,
+    "tcgPlayerId": "505916",
+    "tcgPlayerIdMethod": "tcgcsv-verified-by-id",
+    "groupId": 17688,
+    "tcgplayerName": "Crown Zenith Special Collection [Unown V & Lugia V]",
+    "idReason": "Only TCGplayer Special Collection SKU for this product family is productId 505916 Unown V and Lugia V (checked 2026-10-27 against https://tcgcsv.com/tcgplayer/3/17688/products)."
   },
   {
     "id": "swsh12-etb",
@@ -2926,7 +2911,12 @@
     "priceCeiling": 10000,
     "boundsNote": "Comps 2026-08-18: no 2026 comp surfaced; was vintage:false so modern $800 ceiling applied (class C). LOW-CONFIDENCE floor — title-validate.",
     "activeMarketThin": true,
-    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18."
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18.",
+    "tcgPlayerId": "98552",
+    "tcgPlayerIdMethod": "tcgcsv-verified-by-id",
+    "groupId": 1400,
+    "tcgplayerName": "Black and White Booster Box",
+    "idReason": "Single TCGplayer Booster Box for Black and White base is productId 98552 in group 1400. No edition split on file."
   },
   {
     "id": "hgss1-booster-box",
@@ -2941,7 +2931,12 @@
     "priceCeiling": 10000,
     "boundsNote": "Comps 2026-08-18: $6,550 NM Apr 2026 (pokemonwizard/banktcg).",
     "activeMarketThin": true,
-    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18."
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18.",
+    "tcgPlayerId": "98531",
+    "tcgPlayerIdMethod": "tcgcsv-verified-by-id",
+    "groupId": 1402,
+    "tcgplayerName": "HeartGold SoulSilver Booster Box",
+    "idReason": "Single TCGplayer Booster Box for HeartGold SoulSilver is productId 98531 in group 1402. No edition split on file."
   },
   {
     "id": "base1-booster-box",
@@ -2964,7 +2959,13 @@
     ],
     "boundsNote": "Comps 2026-08-18: Unlimited market $2,283, asks to $5k (PriceCharting). Tracking Unlimited only. XY/2014 excluded: a 2014 XY Base Set box at $4,499 passed the set gate (validated 2026-08-18).",
     "activeMarketThin": true,
-    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18."
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated (pre-fix pipeline). No genuine active listings; box market trades via auctions/sold comps; active-listing pricing suspended 2026-08-18.",
+    "tcgPlayerId": "185731",
+    "tcgPlayerIdMethod": "tcgcsv-verified-by-id",
+    "groupId": 604,
+    "edition": "Revised Unlimited",
+    "tcgplayerName": "Base Set Booster Box [Revised Unlimited Edition]",
+    "idReason": "Our name is Base Set Unlimited Booster Box. Mapped to Revised Unlimited Edition productId 185731 in group 604. Shadowless and 1st Edition stay excluded."
   },
   {
     "id": "base2-booster-box",
@@ -3420,24 +3421,6 @@
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
   },
   {
-    "id": "swsh1-bundle",
-    "name": "Sword & Shield Booster Bundle",
-    "set": "Sword & Shield",
-    "setId": "swsh1",
-    "subtype": "booster-bundle",
-    "searchQuery": "Sword & Shield booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null,
-    "eraBaseSet": true
-  },
-  {
     "id": "swsh10-pack",
     "name": "Astral Radiance Booster Pack",
     "set": "Astral Radiance",
@@ -3450,23 +3433,6 @@
     "boundsNote": "Loose-pack lane (spec 2026-08-18): street price of ONE sealed pack; powers sealedPremiumPct. Class bounds [2.50, 75].",
     "tcgPlayerId": "265521",
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
-  },
-  {
-    "id": "swsh10-bundle",
-    "name": "Astral Radiance Booster Bundle",
-    "set": "Astral Radiance",
-    "setId": "swsh10",
-    "subtype": "booster-bundle",
-    "searchQuery": "Astral Radiance booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
   },
   {
     "id": "swsh11-bundle",
@@ -3557,23 +3523,6 @@
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
   },
   {
-    "id": "swsh2-bundle",
-    "name": "Rebel Clash Booster Bundle",
-    "set": "Rebel Clash",
-    "setId": "swsh2",
-    "subtype": "booster-bundle",
-    "searchQuery": "Rebel Clash booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
     "id": "swsh3-pack",
     "name": "Darkness Ablaze Booster Pack",
     "set": "Darkness Ablaze",
@@ -3586,23 +3535,6 @@
     "boundsNote": "Loose-pack lane (spec 2026-08-18): street price of ONE sealed pack; powers sealedPremiumPct. Class bounds [2.50, 75].",
     "tcgPlayerId": "216852",
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
-  },
-  {
-    "id": "swsh3-bundle",
-    "name": "Darkness Ablaze Booster Bundle",
-    "set": "Darkness Ablaze",
-    "setId": "swsh3",
-    "subtype": "booster-bundle",
-    "searchQuery": "Darkness Ablaze booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
   },
   {
     "id": "swsh35-pack",
@@ -3620,23 +3552,6 @@
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
   },
   {
-    "id": "swsh35-bundle",
-    "name": "Champion's Path Booster Bundle",
-    "set": "Champion's Path",
-    "setId": "swsh35",
-    "subtype": "booster-bundle",
-    "searchQuery": "Champion's Path booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
     "id": "swsh4-pack",
     "name": "Vivid Voltage Booster Pack",
     "set": "Vivid Voltage",
@@ -3649,23 +3564,6 @@
     "boundsNote": "Loose-pack lane (spec 2026-08-18): street price of ONE sealed pack; powers sealedPremiumPct. Class bounds [2.50, 75].",
     "tcgPlayerId": "221312",
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
-  },
-  {
-    "id": "swsh4-bundle",
-    "name": "Vivid Voltage Booster Bundle",
-    "set": "Vivid Voltage",
-    "setId": "swsh4",
-    "subtype": "booster-bundle",
-    "searchQuery": "Vivid Voltage booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
   },
   {
     "id": "swsh45-pack",
@@ -3686,91 +3584,6 @@
     "idReason": "Checked one by one on 2026-10-10 against https://tcgcsv.com/tcgplayer/3/2754/products: productId 232636 \"Shining Fates Booster Pack\" is the only product of this exact type, set and art (no second art, not a case, display or set of several); TCGplayer market $17.27 on that day."
   },
   {
-    "id": "swsh45-bundle",
-    "name": "SWSH Promos Booster Bundle",
-    "set": "SWSH Promos",
-    "setId": "swsh45",
-    "subtype": "booster-bundle",
-    "searchQuery": "SWSH Promos booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
-    "id": "swsh5-bundle",
-    "name": "Battle Styles Booster Bundle",
-    "set": "Battle Styles",
-    "setId": "swsh5",
-    "subtype": "booster-bundle",
-    "searchQuery": "Battle Styles booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
-    "id": "swsh6-bundle",
-    "name": "Chilling Reign Booster Bundle",
-    "set": "Chilling Reign",
-    "setId": "swsh6",
-    "subtype": "booster-bundle",
-    "searchQuery": "Chilling Reign booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
-    "id": "swsh7-bundle",
-    "name": "Evolving Skies Booster Bundle",
-    "set": "Evolving Skies",
-    "setId": "swsh7",
-    "subtype": "booster-bundle",
-    "searchQuery": "Evolving Skies booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
-    "id": "swsh8-bundle",
-    "name": "Fusion Strike Booster Bundle",
-    "set": "Fusion Strike",
-    "setId": "swsh8",
-    "subtype": "booster-bundle",
-    "searchQuery": "Fusion Strike booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
-  },
-  {
     "id": "swsh9-pack",
     "name": "Brilliant Stars Booster Pack",
     "set": "Brilliant Stars",
@@ -3783,23 +3596,6 @@
     "boundsNote": "Loose-pack lane (spec 2026-08-18): street price of ONE sealed pack; powers sealedPremiumPct. Class bounds [2.50, 75].",
     "tcgPlayerId": "256124",
     "tcgPlayerIdMethod": "ppt-tcgplayer-id-reviewed"
-  },
-  {
-    "id": "swsh9-bundle",
-    "name": "Brilliant Stars Booster Bundle",
-    "set": "Brilliant Stars",
-    "setId": "swsh9",
-    "subtype": "booster-bundle",
-    "searchQuery": "Brilliant Stars booster bundle",
-    "image": null,
-    "vintage": false,
-    "priceFloor": 30,
-    "priceCeiling": 250,
-    "excludeExtra": [
-      "white flare"
-    ],
-    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself.",
-    "tcgPlayerId": null
   },
   {
     "id": "tcgcsv-91594",
@@ -5622,20 +5418,6 @@
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
   },
   {
-    "id": "tcgcsv-98531",
-    "name": "HeartGold SoulSilver Booster Box",
-    "set": "HeartGold SoulSilver",
-    "subtype": "booster-box",
-    "vintage": false,
-    "tcgPlayerId": "98531",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 1402,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/1402/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
     "id": "tcgcsv-98532",
     "name": "Dragon Frontiers Booster Box",
     "set": "EX Dragon Frontiers",
@@ -5912,20 +5694,6 @@
     "groupId": 1377,
     "ebay": false,
     "source": "https://tcgcsv.com/tcgplayer/3/1377/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
-    "id": "tcgcsv-98552",
-    "name": "Black and White Booster Box",
-    "set": "Black and White",
-    "subtype": "booster-box",
-    "vintage": false,
-    "tcgPlayerId": "98552",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 1400,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/1400/products",
     "sourceDate": "2026-10-10",
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
   },
@@ -9042,20 +8810,6 @@
     "groupId": 1815,
     "ebay": false,
     "source": "https://tcgcsv.com/tcgplayer/3/1815/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
-    "id": "tcgcsv-123447",
-    "name": "XY Evolutions Elite Trainer Box [Mega Charizard Y]",
-    "set": "XY - Evolutions",
-    "subtype": "etb",
-    "vintage": false,
-    "tcgPlayerId": "123447",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 1842,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/1842/products",
     "sourceDate": "2026-10-10",
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
   },
@@ -12974,20 +12728,6 @@
     "groupId": 2420,
     "ebay": false,
     "source": "https://tcgcsv.com/tcgplayer/3/2420/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
-    "id": "tcgcsv-185731",
-    "name": "Base Set Booster Box [Revised Unlimited Edition]",
-    "set": "Base Set",
-    "subtype": "booster-box",
-    "vintage": false,
-    "tcgPlayerId": "185731",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 604,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/604/products",
     "sourceDate": "2026-10-10",
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
   },
@@ -28737,20 +28477,6 @@
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
   },
   {
-    "id": "tcgcsv-505916",
-    "name": "Crown Zenith Special Collection [Unown V & Lugia V]",
-    "set": "SWSH: Crown Zenith",
-    "subtype": "special-collection",
-    "vintage": false,
-    "tcgPlayerId": "505916",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 17688,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/17688/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
     "id": "tcgcsv-505939",
     "name": "Holiday Calendar 2023",
     "set": "Miscellaneous Cards & Products",
@@ -41782,48 +41508,6 @@
     "browseReason": "case"
   },
   {
-    "id": "tcgcsv-702505",
-    "name": "Mega Forces Tin [Mega Dragonite ex]",
-    "set": "Miscellaneous Cards & Products",
-    "subtype": "tin",
-    "vintage": false,
-    "tcgPlayerId": "702505",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 2374,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/2374/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
-    "id": "tcgcsv-702506",
-    "name": "Mega Forces Tin [Mega Darkrai ex]",
-    "set": "Miscellaneous Cards & Products",
-    "subtype": "tin",
-    "vintage": false,
-    "tcgPlayerId": "702506",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 2374,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/2374/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
-    "id": "tcgcsv-702507",
-    "name": "Mega Forces Tin [Mega Zeraora ex]",
-    "set": "Miscellaneous Cards & Products",
-    "subtype": "tin",
-    "vintage": false,
-    "tcgPlayerId": "702507",
-    "tcgPlayerIdMethod": "tcgcsv-product-id",
-    "groupId": 2374,
-    "ebay": false,
-    "source": "https://tcgcsv.com/tcgplayer/3/2374/products",
-    "sourceDate": "2026-10-10",
-    "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU."
-  },
-  {
     "id": "tcgcsv-702508",
     "name": "Mega Forces Tin [Set of 3]",
     "set": "Miscellaneous Cards & Products",
@@ -43395,5 +43079,69 @@
     "idNote": "This row is that TCGplayer productId. It was not matched onto a Catch'em SKU.",
     "browse": false,
     "browseReason": "set-of-multiple"
+  },
+  {
+    "id": "xy12-etb-mega-charizard-y",
+    "name": "Evolutions Elite Trainer Box [Mega Charizard Y]",
+    "set": "Evolutions",
+    "setId": "xy12",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/xy12/logo.png",
+    "tcgPlayerId": "123447",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "xy12-etb",
+    "art": "Mega Charizard Y",
+    "tcgplayerName": "XY Evolutions Elite Trainer Box [Mega Charizard Y]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art. Price and history are this productId only."
+  },
+  {
+    "id": "mega-forces-tin-mega-dragonite-ex",
+    "name": "Mega Forces Tin [Mega Dragonite ex]",
+    "set": "Mega Forces",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702505",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "mega-forces-tin",
+    "art": "Mega Dragonite ex",
+    "tcgplayerName": "Mega Forces Tin [Mega Dragonite ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art. Price and history are this productId only."
+  },
+  {
+    "id": "mega-forces-tin-mega-darkrai-ex",
+    "name": "Mega Forces Tin [Mega Darkrai ex]",
+    "set": "Mega Forces",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702506",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "mega-forces-tin",
+    "art": "Mega Darkrai ex",
+    "tcgplayerName": "Mega Forces Tin [Mega Darkrai ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art. Price and history are this productId only."
+  },
+  {
+    "id": "mega-forces-tin-mega-zeraora-ex",
+    "name": "Mega Forces Tin [Mega Zeraora ex]",
+    "set": "Mega Forces",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702507",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "mega-forces-tin",
+    "art": "Mega Zeraora ex",
+    "tcgplayerName": "Mega Forces Tin [Mega Zeraora ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art. Price and history are this productId only."
   }
 ]

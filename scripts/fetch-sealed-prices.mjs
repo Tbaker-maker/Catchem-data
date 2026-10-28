@@ -21,7 +21,7 @@ import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 import { costcoListingOk } from "./lib/costco-exclusives.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
 import { sellerSpread } from "./lib/listing-counts.mjs";
-import { loadSealedTcgMarket, tcgPricedRow } from "./lib/sealed-tcg-price.mjs";
+import { loadSealedTcgMarket, tcgPricedRow, catalogByIdFrom, writeNoTcgListingReport } from "./lib/sealed-tcg-price.mjs";
 import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad, medianFacts, floorDropReason } from "./lib/real-listing.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
@@ -879,8 +879,13 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   }
   // Prices are TCGplayer market, never eBay asks. eBay above only counted listings.
   const tcgMarket = await loadSealedTcgMarket(root);
-  const rows = gated.products.map((row) => tcgPricedRow(row, tcgMarket, today));
+  const catalogById = catalogByIdFrom(catalog);
+  const rows = gated.products.map((row) => tcgPricedRow(row, tcgMarket, today, { catalogById }));
   console.log(`   TCGplayer market priced ${rows.filter((p) => p.priceUsd > 0).length} of ${rows.length} sealed`);
+  try {
+    const { report } = await writeNoTcgListingReport(root, rows, catalogById);
+    console.log(`   no-TCGplayer listing report: ${report.count} catalog gaps on file`);
+  } catch (err) { console.error(`no-tcg-listing report failed: ${err.message}`); }
 
   const output = {
     updatedAt: new Date().toISOString(),

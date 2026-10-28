@@ -239,6 +239,13 @@ console.log("── The Spread held when eBay is listings counted ──");
   t("spread held suite", n === 0, `${n} failed`);
 }
 
+console.log("── sealed TCGplayer coverage and fake SKU removal ──");
+{
+  const { run } = await import("./sealed-tcg-coverage.suite.mjs");
+  const n = await run();
+  t("sealed TCGplayer coverage suite", n === 0, `${n} failed`);
+}
+
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");
