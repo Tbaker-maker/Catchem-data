@@ -858,7 +858,7 @@ const LENSES = [
     // Depth fallback (2026-10-28): after TCGplayer-only sealed prices, every
     // divergence row has signal=false and priceFloorClean is empty, so the
     // room lens and signal fallbacks pick nothing. Same live depth pool as
-    // Rip-or-Hold — a headline with listings counted beats no Morning Pulse.
+    // Rip-or-Hold - a headline with listings counted beats no Morning Pulse.
     const depthRows = liveList
       .filter(p => p.priceMedian && (p.listingCount ?? 0) >= 10
         && ["booster-box", "etb", "pc-etb", "booster-bundle"].includes(p.subtype)
