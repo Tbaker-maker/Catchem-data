@@ -5,6 +5,60 @@
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
+      "id": "zsv10pt5-bundle",
+      "name": "Black Bolt Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "rsv10pt5-bundle",
+      "name": "White Flare Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "sv10-bb",
+      "name": "Destined Rivals Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "sv9-bb",
+      "name": "Journey Together Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "sv7-bb",
+      "name": "Stellar Crown Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "sv6-bb",
+      "name": "Twilight Masquerade Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "sv5-bb",
+      "name": "Temporal Forces Booster Bundle",
+      "type": "bundle",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "swsh12pt5-bb",
+      "name": "Crown Zenith Booster Bundle",
+      "type": "bundle",
+      "era": "Sword & Shield"
+    },
+    {
       "id": "me5-bb",
       "name": "Pitch Black Booster Bundle",
       "type": "bundle",
@@ -57,72 +111,6 @@
       "name": "Shrouded Fable Booster Bundle",
       "type": "bundle",
       "era": "Scarlet & Violet"
-    },
-    {
-      "id": "zsv10pt5-bundle",
-      "name": "Black Bolt Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "rsv10pt5-bundle",
-      "name": "White Flare Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "me1-bb",
-      "name": "Mega Evolution Booster Bundle",
-      "type": "bundle",
-      "era": "Mega Evolution"
-    },
-    {
-      "id": "sv10-bb",
-      "name": "Destined Rivals Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sv9-bb",
-      "name": "Journey Together Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sv8-bb",
-      "name": "Surging Sparks Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sv7-bb",
-      "name": "Stellar Crown Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sv6-bb",
-      "name": "Twilight Masquerade Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sv5-bb",
-      "name": "Temporal Forces Booster Bundle",
-      "type": "bundle",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "cel25-bb",
-      "name": "Celebrations Booster Bundle",
-      "type": "bundle",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh12pt5-bb",
-      "name": "Crown Zenith Booster Bundle",
-      "type": "bundle",
-      "era": "Sword & Shield"
     },
     {
       "id": "sv2-bundle",
@@ -457,374 +445,14 @@
     "live": {
       "source": "eBay asking prices",
       "anchorRequested": "2026-03-31",
-      "anchorUsed": "2026-08-18",
+      "anchorUsed": "2026-09-25",
       "anchorLevel": 100,
       "anchorReason": "No eBay asking prices before the first day in heat history. Level 100 starts on that day. March 31 was not invented.",
-      "available": true,
-      "withheld": null,
+      "available": false,
+      "withheld": "eBay asking prices are not a price. Catch'em counts eBay listings only. The TCGplayer market series is the index.",
       "base": 100,
-      "points": [
-        {
-          "date": "2026-08-18",
-          "equal": 100,
-          "value": 100,
-          "matched": 9,
-          "entered": 9
-        },
-        {
-          "date": "2026-08-19",
-          "from": "2026-08-18",
-          "equal": 103.7,
-          "value": 102.5,
-          "matched": 9,
-          "entered": 11,
-          "equalMovePct": 3.6576,
-          "valueMovePct": 2.5402
-        },
-        {
-          "date": "2026-08-20",
-          "from": "2026-08-19",
-          "equal": 103.7,
-          "value": 102.2,
-          "matched": 20,
-          "entered": 0,
-          "equalMovePct": 0.0286,
-          "valueMovePct": -0.3532
-        },
-        {
-          "date": "2026-08-21",
-          "from": "2026-08-20",
-          "equal": 103.6,
-          "value": 101.6,
-          "matched": 20,
-          "entered": 5,
-          "equalMovePct": -0.0701,
-          "valueMovePct": -0.5981
-        },
-        {
-          "date": "2026-08-22",
-          "from": "2026-08-21",
-          "equal": 103.9,
-          "value": 102.8,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.293,
-          "valueMovePct": 1.2009
-        },
-        {
-          "date": "2026-08-26",
-          "from": "2026-08-22",
-          "equal": 103.9,
-          "value": 102,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.0163,
-          "valueMovePct": -0.7984
-        },
-        {
-          "date": "2026-09-21",
-          "from": "2026-08-26",
-          "equal": 103.7,
-          "value": 102.2,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.2101,
-          "valueMovePct": 0.2236
-        },
-        {
-          "date": "2026-09-22",
-          "from": "2026-09-21",
-          "equal": 103.9,
-          "value": 102.3,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.1474,
-          "valueMovePct": 0.1317
-        },
-        {
-          "date": "2026-09-23",
-          "from": "2026-09-22",
-          "equal": 104.2,
-          "value": 102.5,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.3159,
-          "valueMovePct": 0.1601
-        },
-        {
-          "date": "2026-09-24",
-          "from": "2026-09-23",
-          "equal": 104.1,
-          "value": 103.3,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.083,
-          "valueMovePct": 0.7965
-        },
-        {
-          "date": "2026-09-25",
-          "from": "2026-09-24",
-          "equal": 103.7,
-          "value": 103.3,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.4021,
-          "valueMovePct": -0.0555
-        },
-        {
-          "date": "2026-09-26",
-          "from": "2026-09-25",
-          "equal": 103.5,
-          "value": 102.8,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.1992,
-          "valueMovePct": -0.4454
-        },
-        {
-          "date": "2026-09-27",
-          "from": "2026-09-26",
-          "equal": 103.6,
-          "value": 102.8,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.0847,
-          "valueMovePct": 0.0067
-        },
-        {
-          "date": "2026-10-03",
-          "from": "2026-09-27",
-          "equal": 102.4,
-          "value": 101.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -1.1544,
-          "valueMovePct": -0.8551
-        },
-        {
-          "date": "2026-10-05",
-          "from": "2026-10-03",
-          "equal": 102.5,
-          "value": 101.7,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.0911,
-          "valueMovePct": -0.1807
-        },
-        {
-          "date": "2026-10-06",
-          "from": "2026-10-05",
-          "equal": 102.6,
-          "value": 101.8,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.1237,
-          "valueMovePct": 0.0355
-        },
-        {
-          "date": "2026-10-07",
-          "from": "2026-10-06",
-          "equal": 102.9,
-          "value": 102.1,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.2963,
-          "valueMovePct": 0.2887
-        },
-        {
-          "date": "2026-10-08",
-          "from": "2026-10-07",
-          "equal": 102.8,
-          "value": 101.6,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.0745,
-          "valueMovePct": -0.4367
-        },
-        {
-          "date": "2026-10-09",
-          "from": "2026-10-08",
-          "equal": 103,
-          "value": 102.6,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.1382,
-          "valueMovePct": 0.9555
-        },
-        {
-          "date": "2026-10-10",
-          "from": "2026-10-09",
-          "equal": 103,
-          "value": 102.1,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.0049,
-          "valueMovePct": -0.488
-        },
-        {
-          "date": "2026-10-11",
-          "from": "2026-10-10",
-          "equal": 103,
-          "value": 101.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.0031,
-          "valueMovePct": -0.1465
-        },
-        {
-          "date": "2026-10-12",
-          "from": "2026-10-11",
-          "equal": 102.8,
-          "value": 101.8,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.1534,
-          "valueMovePct": -0.1052
-        },
-        {
-          "date": "2026-10-13",
-          "from": "2026-10-12",
-          "equal": 102.4,
-          "value": 100.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.376,
-          "valueMovePct": -0.9395
-        },
-        {
-          "date": "2026-10-14",
-          "from": "2026-10-13",
-          "equal": 102.3,
-          "value": 100.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.139,
-          "valueMovePct": 0.0038
-        },
-        {
-          "date": "2026-10-15",
-          "from": "2026-10-14",
-          "equal": 101.7,
-          "value": 100,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.5598,
-          "valueMovePct": -0.8863
-        },
-        {
-          "date": "2026-10-16",
-          "from": "2026-10-15",
-          "equal": 102.1,
-          "value": 100.2,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.3586,
-          "valueMovePct": 0.2515
-        },
-        {
-          "date": "2026-10-17",
-          "from": "2026-10-16",
-          "equal": 101.7,
-          "value": 100.2,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.343,
-          "valueMovePct": -0.0407
-        },
-        {
-          "date": "2026-10-18",
-          "from": "2026-10-17",
-          "equal": 101.5,
-          "value": 100,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.2355,
-          "valueMovePct": -0.203
-        },
-        {
-          "date": "2026-10-19",
-          "from": "2026-10-18",
-          "equal": 101.4,
-          "value": 99.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.0869,
-          "valueMovePct": -0.08
-        },
-        {
-          "date": "2026-10-21",
-          "from": "2026-10-19",
-          "equal": 101.4,
-          "value": 99.9,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0,
-          "valueMovePct": 0
-        },
-        {
-          "date": "2026-10-23",
-          "from": "2026-10-21",
-          "equal": 101.5,
-          "value": 100.2,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.1537,
-          "valueMovePct": 0.3341
-        },
-        {
-          "date": "2026-10-24",
-          "from": "2026-10-23",
-          "equal": 100.6,
-          "value": 99.5,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": -0.9542,
-          "valueMovePct": -0.7798
-        },
-        {
-          "date": "2026-10-25",
-          "from": "2026-10-24",
-          "equal": 100.9,
-          "value": 100.5,
-          "matched": 25,
-          "entered": 0,
-          "equalMovePct": 0.3712,
-          "valueMovePct": 1.0092
-        },
-        {
-          "date": "2026-10-26",
-          "from": "2026-10-25",
-          "equal": 101.2,
-          "value": 100.6,
-          "matched": 24,
-          "entered": 0,
-          "equalMovePct": 0.2033,
-          "valueMovePct": 0.1752
-        },
-        {
-          "date": "2026-10-27",
-          "from": "2026-10-26",
-          "equal": 100.8,
-          "value": 100.9,
-          "matched": 10,
-          "entered": 1,
-          "equalMovePct": -0.2991,
-          "valueMovePct": 0.2407
-        }
-      ],
+      "points": [],
       "gaps": [
-        {
-          "from": "2026-08-22",
-          "to": "2026-08-26",
-          "missingDays": 3,
-          "note": "No price was invented for the days in between."
-        },
-        {
-          "from": "2026-08-26",
-          "to": "2026-09-21",
-          "missingDays": 25,
-          "note": "No price was invented for the days in between."
-        },
         {
           "from": "2026-09-27",
           "to": "2026-10-03",

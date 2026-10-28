@@ -5,72 +5,6 @@
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
-      "id": "swsh12pt5-etb",
-      "name": "Crown Zenith Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh12-etb",
-      "name": "Silver Tempest Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh11-etb",
-      "name": "Lost Origin Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh8-etb",
-      "name": "Fusion Strike Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh7-etb",
-      "name": "Evolving Skies Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh7-booster-box",
-      "name": "Evolving Skies Booster Box",
-      "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "cel25-etb",
-      "name": "Celebrations Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh12-booster-box",
-      "name": "Silver Tempest Booster Box",
-      "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh11-booster-box",
-      "name": "Lost Origin Booster Box",
-      "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh9-booster-box",
-      "name": "Brilliant Stars Booster Box",
-      "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh10-booster-box",
-      "name": "Astral Radiance Booster Box",
-      "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
       "id": "swsh5-pack",
       "name": "Battle Styles Booster Pack",
       "type": "pack",
@@ -91,6 +25,12 @@
     {
       "id": "swsh8-pack",
       "name": "Fusion Strike Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh11-pack",
+      "name": "Lost Origin Booster Pack",
       "type": "pack",
       "era": "Sword & Shield"
     },
@@ -137,21 +77,9 @@
       "era": "Sword & Shield"
     },
     {
-      "id": "swsh5-etb",
-      "name": "Battle Styles Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
       "id": "swsh6-booster-box",
       "name": "Chilling Reign Booster Box",
       "type": "booster-box",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh6-etb",
-      "name": "Chilling Reign Elite Trainer Box",
-      "type": "etb",
       "era": "Sword & Shield"
     },
     {
@@ -173,27 +101,111 @@
       "era": "Sword & Shield"
     },
     {
-      "id": "cel25-bb",
-      "name": "Celebrations Booster Bundle",
-      "type": "bundle",
-      "era": "Sword & Shield"
-    },
-    {
       "id": "swsh12pt5-bb",
       "name": "Crown Zenith Booster Bundle",
       "type": "bundle",
       "era": "Sword & Shield"
     },
     {
-      "id": "swsh6-pc-etb",
-      "name": "Chilling Reign Pokemon Center Elite Trainer Box",
-      "type": "pc-etb",
+      "id": "swsh12pt5-etb",
+      "name": "Crown Zenith Elite Trainer Box",
+      "type": "etb",
       "era": "Sword & Shield"
     },
     {
-      "id": "swsh7-pc-etb",
-      "name": "Evolving Skies Pokemon Center Elite Trainer Box",
-      "type": "pc-etb",
+      "id": "swsh12-etb",
+      "name": "Silver Tempest Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh11-etb",
+      "name": "Lost Origin Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh8-etb",
+      "name": "Fusion Strike Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh7-booster-box",
+      "name": "Evolving Skies Booster Box",
+      "type": "booster-box",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh12-booster-box",
+      "name": "Silver Tempest Booster Box",
+      "type": "booster-box",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh11-booster-box",
+      "name": "Lost Origin Booster Box",
+      "type": "booster-box",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh9-booster-box",
+      "name": "Brilliant Stars Booster Box",
+      "type": "booster-box",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh10-booster-box",
+      "name": "Astral Radiance Booster Box",
+      "type": "booster-box",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh10-pack",
+      "name": "Astral Radiance Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh12-pack",
+      "name": "Silver Tempest Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh2-pack",
+      "name": "Rebel Clash Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh3-pack",
+      "name": "Darkness Ablaze Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh35-pack",
+      "name": "Champion's Path Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh4-pack",
+      "name": "Vivid Voltage Booster Pack",
+      "type": "pack",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh9-pack",
+      "name": "Brilliant Stars Booster Pack",
+      "type": "pack",
       "era": "Sword & Shield"
     },
     {
@@ -233,27 +245,9 @@
       "era": "Sword & Shield"
     },
     {
-      "id": "swsh11-pack",
-      "name": "Lost Origin Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh10-pack",
-      "name": "Astral Radiance Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
       "id": "swsh11-bundle",
       "name": "Lost Origin Booster Bundle",
       "type": "bundle",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh12-pack",
-      "name": "Silver Tempest Booster Pack",
-      "type": "pack",
       "era": "Sword & Shield"
     },
     {
@@ -265,36 +259,6 @@
     {
       "id": "swsh12pt5-pack",
       "name": "Crown Zenith Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh2-pack",
-      "name": "Rebel Clash Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh3-pack",
-      "name": "Darkness Ablaze Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh35-pack",
-      "name": "Champion's Path Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh4-pack",
-      "name": "Vivid Voltage Booster Pack",
-      "type": "pack",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh9-pack",
-      "name": "Brilliant Stars Booster Pack",
       "type": "pack",
       "era": "Sword & Shield"
     },
@@ -607,374 +571,14 @@
     "live": {
       "source": "eBay asking prices",
       "anchorRequested": "2026-03-31",
-      "anchorUsed": "2026-08-18",
+      "anchorUsed": "2026-09-25",
       "anchorLevel": 100,
       "anchorReason": "No eBay asking prices before the first day in heat history. Level 100 starts on that day. March 31 was not invented.",
-      "available": true,
-      "withheld": null,
+      "available": false,
+      "withheld": "eBay asking prices are not a price. Catch'em counts eBay listings only. The TCGplayer market series is the index.",
       "base": 100,
-      "points": [
-        {
-          "date": "2026-08-18",
-          "equal": 100,
-          "value": 100,
-          "matched": 11,
-          "entered": 11
-        },
-        {
-          "date": "2026-08-19",
-          "from": "2026-08-18",
-          "equal": 100.5,
-          "value": 100.3,
-          "matched": 11,
-          "entered": 27,
-          "equalMovePct": 0.481,
-          "valueMovePct": 0.2794
-        },
-        {
-          "date": "2026-08-20",
-          "from": "2026-08-19",
-          "equal": 100.3,
-          "value": 100.4,
-          "matched": 38,
-          "entered": 1,
-          "equalMovePct": -0.1305,
-          "valueMovePct": 0.1556
-        },
-        {
-          "date": "2026-08-21",
-          "from": "2026-08-20",
-          "equal": 100.3,
-          "value": 100,
-          "matched": 39,
-          "entered": 10,
-          "equalMovePct": -0.0989,
-          "valueMovePct": -0.453
-        },
-        {
-          "date": "2026-08-22",
-          "from": "2026-08-21",
-          "equal": 100.6,
-          "value": 99.9,
-          "matched": 48,
-          "entered": 1,
-          "equalMovePct": 0.3262,
-          "valueMovePct": -0.0646
-        },
-        {
-          "date": "2026-08-26",
-          "from": "2026-08-22",
-          "equal": 100.4,
-          "value": 99.5,
-          "matched": 49,
-          "entered": 1,
-          "equalMovePct": -0.2046,
-          "valueMovePct": -0.4271
-        },
-        {
-          "date": "2026-09-21",
-          "from": "2026-08-26",
-          "equal": 99.8,
-          "value": 98,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.55,
-          "valueMovePct": -1.4532
-        },
-        {
-          "date": "2026-09-22",
-          "from": "2026-09-21",
-          "equal": 99.7,
-          "value": 98.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.1064,
-          "valueMovePct": 0.371
-        },
-        {
-          "date": "2026-09-23",
-          "from": "2026-09-22",
-          "equal": 99.7,
-          "value": 98.2,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.0151,
-          "valueMovePct": -0.1773
-        },
-        {
-          "date": "2026-09-24",
-          "from": "2026-09-23",
-          "equal": 99.8,
-          "value": 98.8,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.124,
-          "valueMovePct": 0.5698
-        },
-        {
-          "date": "2026-09-25",
-          "from": "2026-09-24",
-          "equal": 99.6,
-          "value": 98.8,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.2558,
-          "valueMovePct": -0.0296
-        },
-        {
-          "date": "2026-09-26",
-          "from": "2026-09-25",
-          "equal": 99.6,
-          "value": 98.3,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.0437,
-          "valueMovePct": -0.4841
-        },
-        {
-          "date": "2026-09-27",
-          "from": "2026-09-26",
-          "equal": 99.5,
-          "value": 98,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.1428,
-          "valueMovePct": -0.3211
-        },
-        {
-          "date": "2026-10-03",
-          "from": "2026-09-27",
-          "equal": 99.3,
-          "value": 97.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.214,
-          "valueMovePct": -0.5457
-        },
-        {
-          "date": "2026-10-05",
-          "from": "2026-10-03",
-          "equal": 98.8,
-          "value": 97.2,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.4536,
-          "valueMovePct": -0.2199
-        },
-        {
-          "date": "2026-10-06",
-          "from": "2026-10-05",
-          "equal": 98.7,
-          "value": 96.5,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.1072,
-          "valueMovePct": -0.7571
-        },
-        {
-          "date": "2026-10-07",
-          "from": "2026-10-06",
-          "equal": 98.8,
-          "value": 97.8,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.1307,
-          "valueMovePct": 1.3999
-        },
-        {
-          "date": "2026-10-08",
-          "from": "2026-10-07",
-          "equal": 99.2,
-          "value": 97.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.3787,
-          "valueMovePct": -0.445
-        },
-        {
-          "date": "2026-10-09",
-          "from": "2026-10-08",
-          "equal": 99.2,
-          "value": 96.1,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.0163,
-          "valueMovePct": -1.2833
-        },
-        {
-          "date": "2026-10-10",
-          "from": "2026-10-09",
-          "equal": 99.4,
-          "value": 97,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.1501,
-          "valueMovePct": 0.8567
-        },
-        {
-          "date": "2026-10-11",
-          "from": "2026-10-10",
-          "equal": 99.6,
-          "value": 96.7,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.2135,
-          "valueMovePct": -0.309
-        },
-        {
-          "date": "2026-10-12",
-          "from": "2026-10-11",
-          "equal": 99.6,
-          "value": 97.1,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.047,
-          "valueMovePct": 0.485
-        },
-        {
-          "date": "2026-10-13",
-          "from": "2026-10-12",
-          "equal": 99.3,
-          "value": 97.1,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.3116,
-          "valueMovePct": -0.0056
-        },
-        {
-          "date": "2026-10-14",
-          "from": "2026-10-13",
-          "equal": 99.1,
-          "value": 97,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.2205,
-          "valueMovePct": -0.1144
-        },
-        {
-          "date": "2026-10-15",
-          "from": "2026-10-14",
-          "equal": 98.8,
-          "value": 96.8,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.2622,
-          "valueMovePct": -0.185
-        },
-        {
-          "date": "2026-10-16",
-          "from": "2026-10-15",
-          "equal": 99.1,
-          "value": 97,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.309,
-          "valueMovePct": 0.1827
-        },
-        {
-          "date": "2026-10-17",
-          "from": "2026-10-16",
-          "equal": 98.7,
-          "value": 96.7,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.4906,
-          "valueMovePct": -0.3435
-        },
-        {
-          "date": "2026-10-18",
-          "from": "2026-10-17",
-          "equal": 98.5,
-          "value": 96.2,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.1339,
-          "valueMovePct": -0.4775
-        },
-        {
-          "date": "2026-10-19",
-          "from": "2026-10-18",
-          "equal": 98.5,
-          "value": 96.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.0045,
-          "valueMovePct": 0.1671
-        },
-        {
-          "date": "2026-10-21",
-          "from": "2026-10-19",
-          "equal": 98.5,
-          "value": 96.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0,
-          "valueMovePct": 0
-        },
-        {
-          "date": "2026-10-23",
-          "from": "2026-10-21",
-          "equal": 98.8,
-          "value": 96.8,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.3278,
-          "valueMovePct": 0.4562
-        },
-        {
-          "date": "2026-10-24",
-          "from": "2026-10-23",
-          "equal": 98.6,
-          "value": 96.2,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": -0.2824,
-          "valueMovePct": -0.6574
-        },
-        {
-          "date": "2026-10-25",
-          "from": "2026-10-24",
-          "equal": 99.4,
-          "value": 97.4,
-          "matched": 50,
-          "entered": 0,
-          "equalMovePct": 0.8773,
-          "valueMovePct": 1.2209
-        },
-        {
-          "date": "2026-10-26",
-          "from": "2026-10-25",
-          "equal": 99.2,
-          "value": 97.2,
-          "matched": 49,
-          "entered": 0,
-          "equalMovePct": -0.1954,
-          "valueMovePct": -0.175
-        },
-        {
-          "date": "2026-10-27",
-          "from": "2026-10-26",
-          "equal": 98.9,
-          "value": 96.9,
-          "matched": 27,
-          "entered": 1,
-          "equalMovePct": -0.3123,
-          "valueMovePct": -0.3452
-        }
-      ],
+      "points": [],
       "gaps": [
-        {
-          "from": "2026-08-22",
-          "to": "2026-08-26",
-          "missingDays": 3,
-          "note": "No price was invented for the days in between."
-        },
-        {
-          "from": "2026-08-26",
-          "to": "2026-09-21",
-          "missingDays": 25,
-          "note": "No price was invented for the days in between."
-        },
         {
           "from": "2026-09-27",
           "to": "2026-10-03",

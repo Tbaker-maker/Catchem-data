@@ -5,6 +5,78 @@
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm75-etb",
+      "name": "Dragon Majesty Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "zsv10pt5-etb",
+      "name": "Black Bolt Elite Trainer Box",
+      "type": "etb",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "rsv10pt5-etb",
+      "name": "White Flare Elite Trainer Box",
+      "type": "etb",
+      "era": "Scarlet & Violet"
+    },
+    {
+      "id": "sm2-etb",
+      "name": "Guardians Rising Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm3-etb",
+      "name": "Burning Shadows Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm4-etb",
+      "name": "Crimson Invasion Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "swsh2-etb",
+      "name": "Rebel Clash Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh3-etb",
+      "name": "Darkness Ablaze Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh4-etb",
+      "name": "Vivid Voltage Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh45-etb",
+      "name": "Shining Fates Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
+      "id": "swsh35-etb",
+      "name": "Champion's Path Elite Trainer Box",
+      "type": "etb",
+      "era": "Sword & Shield"
+    },
+    {
       "id": "me5-etb",
       "name": "Pitch Black Elite Trainer Box",
       "type": "etb",
@@ -31,12 +103,6 @@
     {
       "id": "me2-etb",
       "name": "Phantasmal Flames Elite Trainer Box",
-      "type": "etb",
-      "era": "Mega Evolution"
-    },
-    {
-      "id": "me1-etb",
-      "name": "Mega Evolution Elite Trainer Box",
       "type": "etb",
       "era": "Mega Evolution"
     },
@@ -83,12 +149,6 @@
       "era": "Scarlet & Violet"
     },
     {
-      "id": "sv5-etb",
-      "name": "Temporal Forces Elite Trainer Box",
-      "type": "etb",
-      "era": "Scarlet & Violet"
-    },
-    {
       "id": "sv4pt5-etb",
       "name": "Paldean Fates Elite Trainer Box",
       "type": "etb",
@@ -125,12 +185,6 @@
       "era": "Sword & Shield"
     },
     {
-      "id": "swsh7-etb",
-      "name": "Evolving Skies Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
       "id": "cel25-etb",
       "name": "Celebrations Elite Trainer Box",
       "type": "etb",
@@ -139,96 +193,6 @@
     {
       "id": "sm12-etb",
       "name": "Hidden Fates Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "sm35-etb",
-      "name": "Shining Legends Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "zsv10pt5-etb",
-      "name": "Black Bolt Elite Trainer Box",
-      "type": "etb",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "rsv10pt5-etb",
-      "name": "White Flare Elite Trainer Box",
-      "type": "etb",
-      "era": "Scarlet & Violet"
-    },
-    {
-      "id": "sm1-etb",
-      "name": "Sun & Moon Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "sm2-etb",
-      "name": "Guardians Rising Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "sm3-etb",
-      "name": "Burning Shadows Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "sm4-etb",
-      "name": "Crimson Invasion Elite Trainer Box",
-      "type": "etb",
-      "era": "Sun & Moon"
-    },
-    {
-      "id": "swsh2-etb",
-      "name": "Rebel Clash Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh3-etb",
-      "name": "Darkness Ablaze Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh4-etb",
-      "name": "Vivid Voltage Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh5-etb",
-      "name": "Battle Styles Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh6-etb",
-      "name": "Chilling Reign Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh45-etb",
-      "name": "Shining Fates Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "swsh35-etb",
-      "name": "Champion's Path Elite Trainer Box",
-      "type": "etb",
-      "era": "Sword & Shield"
-    },
-    {
-      "id": "sm75-etb",
-      "name": "Dragon Majesty Elite Trainer Box",
       "type": "etb",
       "era": "Sun & Moon"
     }
@@ -535,374 +499,14 @@
     "live": {
       "source": "eBay asking prices",
       "anchorRequested": "2026-03-31",
-      "anchorUsed": "2026-08-18",
+      "anchorUsed": "2026-09-25",
       "anchorLevel": 100,
       "anchorReason": "No eBay asking prices before the first day in heat history. Level 100 starts on that day. March 31 was not invented.",
-      "available": true,
-      "withheld": null,
+      "available": false,
+      "withheld": "eBay asking prices are not a price. Catch'em counts eBay listings only. The TCGplayer market series is the index.",
       "base": 100,
-      "points": [
-        {
-          "date": "2026-08-18",
-          "equal": 100,
-          "value": 100,
-          "matched": 23,
-          "entered": 23
-        },
-        {
-          "date": "2026-08-19",
-          "from": "2026-08-18",
-          "equal": 100.9,
-          "value": 100.7,
-          "matched": 23,
-          "entered": 14,
-          "equalMovePct": 0.934,
-          "valueMovePct": 0.6933
-        },
-        {
-          "date": "2026-08-20",
-          "from": "2026-08-19",
-          "equal": 100.8,
-          "value": 100.8,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0958,
-          "valueMovePct": 0.0641
-        },
-        {
-          "date": "2026-08-21",
-          "from": "2026-08-20",
-          "equal": 100.7,
-          "value": 100.7,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.1467,
-          "valueMovePct": -0.0634
-        },
-        {
-          "date": "2026-08-22",
-          "from": "2026-08-21",
-          "equal": 100.7,
-          "value": 100.6,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.026,
-          "valueMovePct": -0.1259
-        },
-        {
-          "date": "2026-08-26",
-          "from": "2026-08-22",
-          "equal": 100.2,
-          "value": 99.5,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.5037,
-          "valueMovePct": -1.0536
-        },
-        {
-          "date": "2026-09-21",
-          "from": "2026-08-26",
-          "equal": 99.9,
-          "value": 98.1,
-          "matched": 37,
-          "entered": 1,
-          "equalMovePct": -0.2105,
-          "valueMovePct": -1.4596
-        },
-        {
-          "date": "2026-09-22",
-          "from": "2026-09-21",
-          "equal": 99.5,
-          "value": 97.9,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": -0.4489,
-          "valueMovePct": -0.1279
-        },
-        {
-          "date": "2026-09-23",
-          "from": "2026-09-22",
-          "equal": 99.6,
-          "value": 98.1,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": 0.1124,
-          "valueMovePct": 0.1893
-        },
-        {
-          "date": "2026-09-24",
-          "from": "2026-09-23",
-          "equal": 99.5,
-          "value": 97.3,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": -0.0588,
-          "valueMovePct": -0.8398
-        },
-        {
-          "date": "2026-09-25",
-          "from": "2026-09-24",
-          "equal": 99.8,
-          "value": 97.6,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": 0.2391,
-          "valueMovePct": 0.2698
-        },
-        {
-          "date": "2026-09-26",
-          "from": "2026-09-25",
-          "equal": 99.5,
-          "value": 97.4,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": -0.2935,
-          "valueMovePct": -0.1923
-        },
-        {
-          "date": "2026-09-27",
-          "from": "2026-09-26",
-          "equal": 99.3,
-          "value": 97.3,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": -0.1608,
-          "valueMovePct": -0.0912
-        },
-        {
-          "date": "2026-10-03",
-          "from": "2026-09-27",
-          "equal": 99,
-          "value": 96.7,
-          "matched": 38,
-          "entered": 0,
-          "equalMovePct": -0.3229,
-          "valueMovePct": -0.6198
-        },
-        {
-          "date": "2026-10-05",
-          "from": "2026-10-03",
-          "equal": 98.9,
-          "value": 96.6,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0745,
-          "valueMovePct": -0.1067
-        },
-        {
-          "date": "2026-10-06",
-          "from": "2026-10-05",
-          "equal": 99.1,
-          "value": 95.8,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.1636,
-          "valueMovePct": -0.7807
-        },
-        {
-          "date": "2026-10-07",
-          "from": "2026-10-06",
-          "equal": 98.9,
-          "value": 96.3,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.1777,
-          "valueMovePct": 0.4529
-        },
-        {
-          "date": "2026-10-08",
-          "from": "2026-10-07",
-          "equal": 99,
-          "value": 95.7,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.1103,
-          "valueMovePct": -0.6228
-        },
-        {
-          "date": "2026-10-09",
-          "from": "2026-10-08",
-          "equal": 99.1,
-          "value": 95.2,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.1146,
-          "valueMovePct": -0.4671
-        },
-        {
-          "date": "2026-10-10",
-          "from": "2026-10-09",
-          "equal": 99.1,
-          "value": 95.9,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0424,
-          "valueMovePct": 0.7385
-        },
-        {
-          "date": "2026-10-11",
-          "from": "2026-10-10",
-          "equal": 99.5,
-          "value": 95.4,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.3616,
-          "valueMovePct": -0.5806
-        },
-        {
-          "date": "2026-10-12",
-          "from": "2026-10-11",
-          "equal": 99.1,
-          "value": 94.9,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.3761,
-          "valueMovePct": -0.4289
-        },
-        {
-          "date": "2026-10-13",
-          "from": "2026-10-12",
-          "equal": 99.4,
-          "value": 96,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.2732,
-          "valueMovePct": 1.1005
-        },
-        {
-          "date": "2026-10-14",
-          "from": "2026-10-13",
-          "equal": 99,
-          "value": 95.9,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.3891,
-          "valueMovePct": -0.1283
-        },
-        {
-          "date": "2026-10-15",
-          "from": "2026-10-14",
-          "equal": 99,
-          "value": 95.6,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0018,
-          "valueMovePct": -0.2648
-        },
-        {
-          "date": "2026-10-16",
-          "from": "2026-10-15",
-          "equal": 98.9,
-          "value": 94.9,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0326,
-          "valueMovePct": -0.7219
-        },
-        {
-          "date": "2026-10-17",
-          "from": "2026-10-16",
-          "equal": 98.8,
-          "value": 95.2,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.1642,
-          "valueMovePct": 0.3051
-        },
-        {
-          "date": "2026-10-18",
-          "from": "2026-10-17",
-          "equal": 98.6,
-          "value": 94.2,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.1813,
-          "valueMovePct": -1.0426
-        },
-        {
-          "date": "2026-10-19",
-          "from": "2026-10-18",
-          "equal": 98.9,
-          "value": 95.1,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.3312,
-          "valueMovePct": 0.9859
-        },
-        {
-          "date": "2026-10-21",
-          "from": "2026-10-19",
-          "equal": 98.9,
-          "value": 95.1,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0,
-          "valueMovePct": 0
-        },
-        {
-          "date": "2026-10-23",
-          "from": "2026-10-21",
-          "equal": 99.1,
-          "value": 97.9,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.2109,
-          "valueMovePct": 2.9266
-        },
-        {
-          "date": "2026-10-24",
-          "from": "2026-10-23",
-          "equal": 99.1,
-          "value": 95.4,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.0155,
-          "valueMovePct": -2.6067
-        },
-        {
-          "date": "2026-10-25",
-          "from": "2026-10-24",
-          "equal": 99.4,
-          "value": 98.5,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": 0.298,
-          "valueMovePct": 3.2647
-        },
-        {
-          "date": "2026-10-26",
-          "from": "2026-10-25",
-          "equal": 99,
-          "value": 98.4,
-          "matched": 37,
-          "entered": 0,
-          "equalMovePct": -0.3758,
-          "valueMovePct": -0.0569
-        },
-        {
-          "date": "2026-10-27",
-          "from": "2026-10-26",
-          "equal": 98.7,
-          "value": 98.6,
-          "matched": 14,
-          "entered": 0,
-          "equalMovePct": -0.3787,
-          "valueMovePct": 0.1418
-        }
-      ],
+      "points": [],
       "gaps": [
-        {
-          "from": "2026-08-22",
-          "to": "2026-08-26",
-          "missingDays": 3,
-          "note": "No price was invented for the days in between."
-        },
-        {
-          "from": "2026-08-26",
-          "to": "2026-09-21",
-          "missingDays": 25,
-          "note": "No price was invented for the days in between."
-        },
         {
           "from": "2026-09-27",
           "to": "2026-10-03",
