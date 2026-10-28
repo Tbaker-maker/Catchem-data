@@ -9,6 +9,7 @@ No flags.
 - 2026-10-30 30th Celebration — Espeon ex & Umbreon ex Battle Decks — no second source in tonight's files
 - 2026-11-06 Delta Reign (ME06, Mega Rayquaza ex — EN of JP Storm Emeralda) — on schedule, matched in Serebii, PokeGuardian, TCGCSV group (https://www.serebii.net/card/deltareign ; https://www.pokeguardian.com/3231721_pokemon-tcg-mega-evolution-delta-reign-teased-november-release ; https://tcgcsv.com/tcgplayer/3/groups)
 - 2026-11-06 30th Celebration — Day & Night UPCs, Ditto Premium, Mew/Mewtwo Figure Collection — no second source in tonight's files
+- 2026-11-10 McDonald's x Pokémon TCG Happy Meal promotion (US; Canada starts Nov 3) — no second source in tonight's files
 - 2026-11-13 JP: Special Deck Set (Mega Feraligatr ex / Mega Dragonite ex / Mega Gengar ex) — no second source in tonight's files
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
 - 2026-12-04 30th Celebration — Sylveon ex & Greninja ex Tins — no second source in tonight's files

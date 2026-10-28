@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-28",
- "generatedAt": "2026-10-28T13:08:03.425Z",
+ "generatedAt": "2026-10-28T17:48:18.751Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -27,15 +27,15 @@
    "ODD_PRICE": 94,
    "READ_TYPE_EMPTY": 7,
    "YOUTUBE_DISAGREE": 1,
-   "YOUTUBE_LEAD": 9
+   "YOUTUBE_LEAD": 13
   },
   "bySeverity": {
    "high": 4,
-   "medium": 14,
+   "medium": 18,
    "low": 107
   }
  },
- "newTonight": 0,
+ "newTonight": 1,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -1488,13 +1488,13 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24831:2026-10-28",
-   "line": "ME06: Delta Reign: 8 creator videos on 6 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "line": "ME06: Delta Reign: 9 creator videos on 6 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
     "label": "ME06: Delta Reign",
     "channels": 6,
-    "videos": 8,
+    "videos": 9,
     "weighted": 5.25,
     "from": "2026-10-22",
     "to": "2026-10-28"
@@ -1539,14 +1539,14 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:print_run:Print runs:2026-10-28",
-   "line": "Print runs: 5 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "line": "Print runs: 6 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "print_run",
     "ref": null,
     "label": "Print runs",
     "channels": 3,
-    "videos": 5,
-    "weighted": 5,
+    "videos": 6,
+    "weighted": 6,
     "from": "2026-10-22",
     "to": "2026-10-28"
    },
@@ -1556,13 +1556,13 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24541:2026-10-28",
-   "line": "ME: Ascended Heroes: 4 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "line": "ME: Ascended Heroes: 5 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
     "label": "ME: Ascended Heroes",
     "channels": 3,
-    "videos": 4,
+    "videos": 5,
     "weighted": 3,
     "from": "2026-10-22",
     "to": "2026-10-28"
@@ -1573,14 +1573,31 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24269:2026-10-28",
-   "line": "SV10: Destined Rivals: 4 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "line": "SV10: Destined Rivals: 5 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24269,
     "label": "SV10: Destined Rivals",
     "channels": 3,
-    "videos": 4,
+    "videos": 5,
     "weighted": 3,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:sealed_attention:712102:2026-10-28",
+   "line": "Delta Reign Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "data": {
+    "kind": "sealed_attention",
+    "ref": 712102,
+    "label": "Delta Reign Elite Trainer Box",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
     "from": "2026-10-22",
     "to": "2026-10-28"
    },
@@ -1623,6 +1640,23 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
+   "key": "yt:set_attention:24325:2026-10-28",
+   "line": "SV: Black Bolt: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24325,
+    "label": "SV: Black Bolt",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
    "key": "yt:set_attention:23353:2026-10-28",
    "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
@@ -1636,6 +1670,40 @@
     "to": "2026-10-28"
    },
    "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24326:2026-10-28",
+   "line": "SV: White Flare: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24326,
+    "label": "SV: White Flare",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:3118:2026-10-28",
+   "line": "SWSH11: Lost Origin: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 3118,
+    "label": "SWSH11: Lost Origin",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
+   },
+   "new": true
   }
  ]
 }
