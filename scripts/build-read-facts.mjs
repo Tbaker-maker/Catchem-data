@@ -5,7 +5,7 @@ import { readFile, readdir, writeFile, mkdir, rm } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { whatWeSee } from "./lib/what-we-see.mjs";
+import { buildBreakdown } from "./lib/what-we-see.mjs";
 import { unpackLong, mergeHistory, changeOver, highLow, band, indexChange, listingsFact, matchPattern, itemKeys, similar, gapFact } from "./lib/read-facts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -172,6 +172,11 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
     const f = { id: read.id, asOf, source: "Our published files: buckets, hist-long, sets, rotation-status, listing-counts, singles-asks, sealed-prices, rip-roi, year-patterns" };
     const slug = row?.setSlug || slugByName(hit?.sealed?.set) || (setBySlug.has(read.receipt?.slug) ? read.receipt.slug : "") || slugByName(read.set) || slugByName(read.receipt?.set) || "";
     await factsFor(f, row, hit?.sealed || null, slug);
+    const br = buildBreakdown(f);
+    if (br.line) {
+      f.line = br.line;
+      f.breakdown = { lead: br.lead, order: br.order, sections: br.sections };
+    }
     if (Object.keys(f).length > 3) out[read.id] = f;
   }
   if (!opts.items) return { asOf, facts: out };
@@ -184,8 +189,11 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
     const slug = row.setSlug || "unsorted";
     const f = await factsFor({}, row, sealedByPid.get(row.id) || null, row.setSlug || "", true);
     delete f.item.setSlug;
-    f.line = whatWeSee(f);
-    if (!f.line) delete f.line;
+    const br = buildBreakdown(f);
+    if (br.line) {
+      f.line = br.line;
+      f.breakdown = { lead: br.lead, order: br.order, sections: br.sections };
+    }
     if (!items.has(slug)) items.set(slug, {});
     items.get(slug)[row.id] = f;
   }

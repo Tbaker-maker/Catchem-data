@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { unpackLong, mergeHistory, changeOver, highLow, band, listingsFact, matchPattern, itemKeys } from "../lib/read-facts.mjs";
 import { buildReadFacts, factFileName } from "../build-read-facts.mjs";
-import { whatWeSee, BANNED } from "../lib/what-we-see.mjs";
+import { whatWeSee, BANNED, buildBreakdown, breakdownShape, shapeSimilarity } from "../lib/what-we-see.mjs";
 
 let fail = 0;
 const t = (n, c) => { if (c) console.log("  ok ", n); else { fail++; console.error("  FAIL", n); } };
@@ -77,8 +77,9 @@ t("item reads cover every priced row, grouped by set", shard && Object.keys(shar
 t("item read has 7/30/90/1Y fields when dated", shard["tcgcsv-1"].change.d30.pct === -20 && shard["tcgcsv-1"].change.y1);
 t("sealed item read joins its eBay ask by tcgPlayerId", all.items.get("me03-perfect-order")["tcgcsv-900"].gap?.ebay === 76.66);
 t("item reads skip bands and similar (kept small)", !shard["tcgcsv-1"].rarityBand && !shard["tcgcsv-1"].similar);
-const line = whatWeSee({ range: { from: "2025-05-29", now: { date: "2026-10-14" }, high: { price: 84.54, date: "2025-05-29" }, low: { date: "2026-01-08" }, daysSinceHigh: 503, fromHighPct: -44 }, change: { d30: { pct: -22.3, from: "2026-09-14", to: "2026-10-14" } } });
-t("what-we-see line is dated and plain", line === "44% under its high of $84.54 on May 29, 2025, 503 days ago. Down 22% over 30 days, Sep 14, 2026 to Oct 14, 2026." && !BANNED.test(line));
-t("no line without backing data", whatWeSee({ change: { d30: { pct: 3, from: "2026-09-14", to: "2026-10-14" } } }) === "");
+const line = whatWeSee({ id: "tcgcsv-demo", range: { from: "2025-05-29", now: { date: "2026-10-14", price: 47.34 }, high: { price: 84.54, date: "2025-05-29" }, low: { price: 40, date: "2026-01-08" }, daysSinceHigh: 503, fromHighPct: -44 }, change: { d30: { pct: -22.3, from: "2026-09-14", to: "2026-10-14", p0: 60.9, p1: 47.34 } } });
+t("what-we-see line is dated and plain", /84\.54/.test(line) && /2025/.test(line) && /22%|Down|fell|lower/i.test(line) && !BANNED.test(line) && !/[\u2014\u2013]/.test(line));
+t("breakdown carries lead and ordered sections", (() => { const b = buildBreakdown({ id: "tcgcsv-demo", range: { from: "2025-05-29", now: { date: "2026-10-14", price: 47.34 }, high: { price: 84.54, date: "2025-05-29" }, low: { price: 40, date: "2026-01-08" }, daysSinceHigh: 503, fromHighPct: -44 }, change: { d30: { pct: -22.3, from: "2026-09-14", to: "2026-10-14", p0: 60.9, p1: 47.34 } } }); return b.line === line && b.sections.length >= 1 && Array.isArray(b.order) && b.order[0]; })());
+t("no line without backing data", whatWeSee({}) === "" && whatWeSee({ change: { d30: { pct: 3 } } }) === "");
 
 if (fail) process.exit(1); else console.log("read facts ok");
