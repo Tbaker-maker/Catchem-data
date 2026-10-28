@@ -10,9 +10,9 @@
  "steps": [
   {
    "name": "TCGCSV day",
-   "file": "data/history/tcgcsv-daily/2026-10-27.json",
+   "file": "data/history/tcgcsv-daily/2026-10-28.json",
    "result": "file is present",
-   "detail": "2026-10-27"
+   "detail": "2026-10-28"
   },
   {
    "name": "eBay sealed prices",
@@ -24,25 +24,25 @@
    "name": "Public counts",
    "file": "research/assets/public/counts.json",
    "result": "file is present",
-   "detail": "2026-10-27"
+   "detail": "2026-10-28"
   },
   {
    "name": "Reads",
    "file": "research/assets/public/reads.json",
    "result": "file is present",
-   "detail": "2026-10-27"
+   "detail": "2026-10-28"
   },
   {
    "name": "Movers",
    "file": "research/assets/public/movers.json",
    "result": "file is present",
-   "detail": "2026-10-27"
+   "detail": "2026-10-28"
   },
   {
    "name": "Accuracy",
    "file": "research/assets/public/accuracy.json",
    "result": "file is present",
-   "detail": "2026-10-27"
+   "detail": "2026-10-28"
   },
   {
    "name": "Track record",
@@ -59,14 +59,14 @@
   {
    "name": "PPT refresh",
    "file": "data/ppt/run-report.json",
-   "result": "file says calls.failed is 0",
-   "detail": "2026-10-27T19:50:04.640Z"
+   "result": "file says calls.failed is 1",
+   "detail": "2026-10-28T00:54:22.584Z"
   },
   {
    "name": "derived",
    "file": "data/heartbeat.json",
    "result": "time is in the file, pass or fail is not",
-   "detail": "2026-10-27T19:49:50.021Z"
+   "detail": "2026-10-28T00:54:06.547Z"
   },
   {
    "name": "cards",
@@ -90,12 +90,12 @@
    "name": "fetch",
    "file": "data/heartbeat.json",
    "result": "time is in the file, pass or fail is not",
-   "detail": "2026-10-27T19:39:05.764Z"
+   "detail": "2026-10-28T00:38:08.892Z"
   }
  ],
- "newestPriceDay": "2026-10-27",
- "lastFileTime": "2026-10-27T19:49:50.021Z",
- "lastFileTimePt": "2026-10-27 12:49 PT",
+ "newestPriceDay": "2026-10-28",
+ "lastFileTime": "2026-10-28T00:54:06.547Z",
+ "lastFileTimePt": "2026-10-27 17:54 PT",
  "lastFile": "data/heartbeat.json",
  "ebayUpdatedAt": "2026-10-27T19:40:06.747Z",
  "counts": {
@@ -104,7 +104,7 @@
   "sealed": 2303,
   "slab": 0,
   "sets": 205,
-  "priced": 29633,
+  "priced": 29630,
   "artists": 391
  },
  "images": {

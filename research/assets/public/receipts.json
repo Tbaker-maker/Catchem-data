@@ -1,84 +1,12 @@
 {
- "asOf": "2026-10-27",
- "updatedAt": "2026-10-27T19:50:04.640Z",
+ "asOf": "2026-10-28",
+ "updatedAt": "2026-10-28T00:54:22.584Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 10,
- "hits": 2,
- "misses": 8,
+ "scored": 17,
+ "hits": 0,
+ "misses": 17,
  "rows": [
-  {
-   "id": "receipt-2026-08-20-sealed-pgo-etb",
-   "type": "receipt",
-   "result": "hit",
-   "kind": "sealed",
-   "name": "Pokemon GO Elite Trainer Box",
-   "headline": "Pokemon GO Elite Trainer Box. Hit.",
-   "price": 240,
-   "source": "TCGplayer market",
-   "asOf": "2026-08-21",
-   "why": "Written down August 20, 2026 at $239.22, after a lower one. Next TCGplayer market price on August 21, 2026 was $240.00. Same way.",
-   "hist": [
-    [
-     "2026-08-20",
-     239.22
-    ],
-    [
-     "2026-08-21",
-     240
-    ]
-   ],
-   "href": "",
-   "changePct": 0.3
-  },
-  {
-   "id": "receipt-2026-08-21-sealed-sv8pt5-sc",
-   "type": "receipt",
-   "result": "hit",
-   "kind": "sealed",
-   "name": "Prismatic Evolutions Surprise Box",
-   "headline": "Prismatic Evolutions Surprise Box. Hit.",
-   "price": 100,
-   "source": "TCGplayer market",
-   "asOf": "2026-08-22",
-   "why": "Written down August 21, 2026 at $91.23, after a lower one. Next TCGplayer market price on August 22, 2026 was $100.00. Same way.",
-   "hist": [
-    [
-     "2026-08-21",
-     91.23
-    ],
-    [
-     "2026-08-22",
-     100
-    ]
-   ],
-   "href": "",
-   "changePct": 9.6
-  },
-  {
-   "id": "receipt-2026-08-22-sealed-sm11-booster-box",
-   "type": "receipt",
-   "result": "miss",
-   "kind": "sealed",
-   "name": "Unified Minds Booster Box",
-   "headline": "Unified Minds Booster Box. Miss.",
-   "price": 4014.95,
-   "source": "TCGplayer market",
-   "asOf": "2026-08-26",
-   "why": "Written down August 22, 2026 at $4,450.00, after a lower one. Next TCGplayer market price on August 26, 2026 was $4,014.95. The other way.",
-   "hist": [
-    [
-     "2026-08-22",
-     4450
-    ],
-    [
-     "2026-08-26",
-     4014.95
-    ]
-   ],
-   "href": "",
-   "changePct": -9.8
-  },
   {
    "id": "receipt-2026-09-26-sealed-cel25-upc",
    "type": "receipt",
@@ -86,10 +14,10 @@
    "kind": "sealed",
    "name": "Celebrations Ultra Premium Collection",
    "headline": "Celebrations Ultra Premium Collection. Miss.",
-   "price": 1319.99,
+   "price": 1226.14,
    "source": "TCGplayer market",
    "asOf": "2026-09-27",
-   "why": "Written down September 26, 2026 at $1,339.25, after a lower one. Next TCGplayer market price on September 27, 2026 was $1,319.99. The other way.",
+   "why": "Written down September 26, 2026 at $1,339.25, after a lower one. Next TCGplayer market price on September 27, 2026 was $1,226.14. The other way.",
    "hist": [
     [
      "2026-09-26",
@@ -97,11 +25,131 @@
     ],
     [
      "2026-09-27",
-     1319.99
+     1226.14
     ]
    ],
    "href": "",
-   "changePct": -1.4
+   "changePct": -8.4
+  },
+  {
+   "id": "receipt-2026-09-27-sealed-sm12-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Miss.",
+   "price": 4216.67,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-03",
+   "why": "Written down September 27, 2026 at $5,349.69, after a lower one. Next TCGplayer market price on October 3, 2026 was $4,216.67. The other way.",
+   "hist": [
+    [
+     "2026-09-27",
+     5349.69
+    ],
+    [
+     "2026-10-03",
+     4216.67
+    ]
+   ],
+   "href": "",
+   "changePct": -21.2
+  },
+  {
+   "id": "receipt-2026-10-06-sealed-sv3pt5-etb",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "151 Elite Trainer Box",
+   "headline": "151 Elite Trainer Box. Miss.",
+   "price": 497.49,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-07",
+   "why": "Written down October 6, 2026 at $580.00, after a lower one. Next TCGplayer market price on October 7, 2026 was $497.49. The other way.",
+   "hist": [
+    [
+     "2026-10-06",
+     580
+    ],
+    [
+     "2026-10-07",
+     497.49
+    ]
+   ],
+   "href": "",
+   "changePct": -14.2
+  },
+  {
+   "id": "receipt-2026-10-07-sealed-sm12-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Miss.",
+   "price": 4216.67,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-08",
+   "why": "Written down October 7, 2026 at $5,349.69, after a lower one. Next TCGplayer market price on October 8, 2026 was $4,216.67. The other way.",
+   "hist": [
+    [
+     "2026-10-07",
+     5349.69
+    ],
+    [
+     "2026-10-08",
+     4216.67
+    ]
+   ],
+   "href": "",
+   "changePct": -21.2
+  },
+  {
+   "id": "receipt-2026-10-08-sealed-sv3pt5-upc",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "151 Ultra Premium Collection",
+   "headline": "151 Ultra Premium Collection. Miss.",
+   "price": 867.97,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-09",
+   "why": "Written down October 8, 2026 at $950.00, after a lower one. Next TCGplayer market price on October 9, 2026 was $867.97. The other way.",
+   "hist": [
+    [
+     "2026-10-08",
+     950
+    ],
+    [
+     "2026-10-09",
+     867.97
+    ]
+   ],
+   "href": "",
+   "changePct": -8.6
+  },
+  {
+   "id": "receipt-2026-10-09-sealed-sm11-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Unified Minds Booster Box",
+   "headline": "Unified Minds Booster Box. Miss.",
+   "price": 2991.18,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-10",
+   "why": "Written down October 9, 2026 at $4,999.00, after a lower one. Next TCGplayer market price on October 10, 2026 was $2,991.18. The other way.",
+   "hist": [
+    [
+     "2026-10-09",
+     4999
+    ],
+    [
+     "2026-10-10",
+     2991.18
+    ]
+   ],
+   "href": "",
+   "changePct": -40.2
   },
   {
    "id": "receipt-2026-10-10-sealed-swsh2-etb",
@@ -110,10 +158,10 @@
    "kind": "sealed",
    "name": "Rebel Clash Elite Trainer Box",
    "headline": "Rebel Clash Elite Trainer Box. Miss.",
-   "price": 399,
+   "price": 327.82,
    "source": "TCGplayer market",
    "asOf": "2026-10-11",
-   "why": "Written down October 10, 2026 at $397.02, after a higher one. Next TCGplayer market price on October 11, 2026 was $399.00. The other way.",
+   "why": "Written down October 10, 2026 at $397.02, after a lower one. Next TCGplayer market price on October 11, 2026 was $327.82. The other way.",
    "hist": [
     [
      "2026-10-10",
@@ -121,11 +169,35 @@
     ],
     [
      "2026-10-11",
-     399
+     327.82
     ]
    ],
    "href": "",
-   "changePct": 0.5
+   "changePct": -17.4
+  },
+  {
+   "id": "receipt-2026-10-11-sealed-xy12-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Evolutions Booster Box",
+   "headline": "Evolutions Booster Box. Miss.",
+   "price": 2585.75,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-12",
+   "why": "Written down October 11, 2026 at $3,514.95, after a lower one. Next TCGplayer market price on October 12, 2026 was $2,585.75. The other way.",
+   "hist": [
+    [
+     "2026-10-11",
+     3514.95
+    ],
+    [
+     "2026-10-12",
+     2585.75
+    ]
+   ],
+   "href": "",
+   "changePct": -26.4
   },
   {
    "id": "receipt-2026-10-12-sealed-swsh9-booster-box",
@@ -134,10 +206,10 @@
    "kind": "sealed",
    "name": "Brilliant Stars Booster Box",
    "headline": "Brilliant Stars Booster Box. Miss.",
-   "price": 600,
+   "price": 561.03,
    "source": "TCGplayer market",
    "asOf": "2026-10-13",
-   "why": "Written down October 12, 2026 at $600.00, after a higher one. Next TCGplayer market price on October 13, 2026 was $600.00. The other way.",
+   "why": "Written down October 12, 2026 at $600.00, after a lower one. Next TCGplayer market price on October 13, 2026 was $561.03. The other way.",
    "hist": [
     [
      "2026-10-12",
@@ -145,11 +217,11 @@
     ],
     [
      "2026-10-13",
-     600
+     561.03
     ]
    ],
    "href": "",
-   "changePct": 0
+   "changePct": -6.5
   },
   {
    "id": "receipt-2026-10-13-sealed-sm10-booster-box",
@@ -158,10 +230,10 @@
    "kind": "sealed",
    "name": "Unbroken Bonds Booster Box",
    "headline": "Unbroken Bonds Booster Box. Miss.",
-   "price": 3352.32,
+   "price": 2609.39,
    "source": "TCGplayer market",
    "asOf": "2026-10-14",
-   "why": "Written down October 13, 2026 at $3,340.32, after a higher one. Next TCGplayer market price on October 14, 2026 was $3,352.32. The other way.",
+   "why": "Written down October 13, 2026 at $3,340.32, after a lower one. Next TCGplayer market price on October 14, 2026 was $2,609.39. The other way.",
    "hist": [
     [
      "2026-10-13",
@@ -169,11 +241,11 @@
     ],
     [
      "2026-10-14",
-     3352.32
+     2609.39
     ]
    ],
    "href": "",
-   "changePct": 0.4
+   "changePct": -21.9
   },
   {
    "id": "receipt-2026-10-14-sealed-sv3pt5-etb",
@@ -182,10 +254,10 @@
    "kind": "sealed",
    "name": "151 Elite Trainer Box",
    "headline": "151 Elite Trainer Box. Miss.",
-   "price": 571.67,
+   "price": 497.34,
    "source": "TCGplayer market",
    "asOf": "2026-10-15",
-   "why": "Written down October 14, 2026 at $570.00, after a higher one. Next TCGplayer market price on October 15, 2026 was $571.67. The other way.",
+   "why": "Written down October 14, 2026 at $570.00, after a lower one. Next TCGplayer market price on October 15, 2026 was $497.34. The other way.",
    "hist": [
     [
      "2026-10-14",
@@ -193,11 +265,35 @@
     ],
     [
      "2026-10-15",
-     571.67
+     497.34
     ]
    ],
    "href": "",
-   "changePct": 0.3
+   "changePct": -12.7
+  },
+  {
+   "id": "receipt-2026-10-15-sealed-sm12-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Miss.",
+   "price": 4216.67,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-16",
+   "why": "Written down October 15, 2026 at $5,400.00, after a lower one. Next TCGplayer market price on October 16, 2026 was $4,216.67. The other way.",
+   "hist": [
+    [
+     "2026-10-15",
+     5400
+    ],
+    [
+     "2026-10-16",
+     4216.67
+    ]
+   ],
+   "href": "",
+   "changePct": -21.9
   },
   {
    "id": "receipt-2026-10-16-sealed-sv3pt5-upc",
@@ -206,10 +302,10 @@
    "kind": "sealed",
    "name": "151 Ultra Premium Collection",
    "headline": "151 Ultra Premium Collection. Miss.",
-   "price": 948.87,
+   "price": 780.03,
    "source": "TCGplayer market",
    "asOf": "2026-10-17",
-   "why": "Written down October 16, 2026 at $950.00, after a lower one. Next TCGplayer market price on October 17, 2026 was $948.87. The other way.",
+   "why": "Written down October 16, 2026 at $950.00, after a lower one. Next TCGplayer market price on October 17, 2026 was $780.03. The other way.",
    "hist": [
     [
      "2026-10-16",
@@ -217,11 +313,59 @@
     ],
     [
      "2026-10-17",
-     948.87
+     780.03
     ]
    ],
    "href": "",
-   "changePct": -0.1
+   "changePct": -17.9
+  },
+  {
+   "id": "receipt-2026-10-17-sealed-sm11-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Unified Minds Booster Box",
+   "headline": "Unified Minds Booster Box. Miss.",
+   "price": 3322.55,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-18",
+   "why": "Written down October 17, 2026 at $4,999.99, after a lower one. Next TCGplayer market price on October 18, 2026 was $3,322.55. The other way.",
+   "hist": [
+    [
+     "2026-10-17",
+     4999.99
+    ],
+    [
+     "2026-10-18",
+     3322.55
+    ]
+   ],
+   "href": "",
+   "changePct": -33.5
+  },
+  {
+   "id": "receipt-2026-10-18-sealed-swsh2-etb",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Rebel Clash Elite Trainer Box",
+   "headline": "Rebel Clash Elite Trainer Box. Miss.",
+   "price": 327.82,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-19",
+   "why": "Written down October 18, 2026 at $399.81, after a lower one. Next TCGplayer market price on October 19, 2026 was $327.82. The other way.",
+   "hist": [
+    [
+     "2026-10-18",
+     399.81
+    ],
+    [
+     "2026-10-19",
+     327.82
+    ]
+   ],
+   "href": "",
+   "changePct": -18
   },
   {
    "id": "receipt-2026-10-19-sealed-xy12-booster-box",
@@ -230,10 +374,10 @@
    "kind": "sealed",
    "name": "Evolutions Booster Box",
    "headline": "Evolutions Booster Box. Miss.",
-   "price": 3999.99,
+   "price": 2601.99,
    "source": "TCGplayer market",
    "asOf": "2026-10-21",
-   "why": "Written down October 19, 2026 at $3,999.99, after a lower one. Next TCGplayer market price on October 21, 2026 was $3,999.99. The other way.",
+   "why": "Written down October 19, 2026 at $3,999.99, after a lower one. Next TCGplayer market price on October 21, 2026 was $2,601.99. The other way.",
    "hist": [
     [
      "2026-10-19",
@@ -241,23 +385,23 @@
     ],
     [
      "2026-10-21",
-     3999.99
+     2601.99
     ]
    ],
    "href": "",
-   "changePct": 0
+   "changePct": -35
   },
   {
    "id": "receipt-2026-10-23-sealed-sm10-booster-box",
    "type": "receipt",
-   "result": "open",
+   "result": "miss",
    "kind": "sealed",
    "name": "Unbroken Bonds Booster Box",
-   "headline": "Unbroken Bonds Booster Box. Open.",
-   "price": 3514.95,
+   "headline": "Unbroken Bonds Booster Box. Miss.",
+   "price": 2609.39,
    "source": "TCGplayer market",
    "asOf": "2026-10-24",
-   "why": "Written down October 23, 2026 at $3,514.95. The TCGplayer market price before it was the same, so this stays open.",
+   "why": "Written down October 23, 2026 at $3,514.95, after a lower one. Next TCGplayer market price on October 24, 2026 was $2,609.39. The other way.",
    "hist": [
     [
      "2026-10-23",
@@ -265,54 +409,74 @@
     ],
     [
      "2026-10-24",
-     3514.95
+     2609.39
     ]
    ],
    "href": "",
-   "changePct": 0
+   "changePct": -25.8
   },
   {
-   "id": "receipt-2026-10-23-single-swsh7-215",
-   "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon VMAX",
-   "headline": "Umbreon VMAX. Open.",
-   "price": 2283.14,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-23",
-   "why": "Written down October 23, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-23",
-     2283.14
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
-   "id": "receipt-2026-10-27-sealed-sm11-booster-box",
+   "id": "receipt-2026-10-27-sealed-sm12-booster-box",
    "type": "receipt",
    "result": "open",
    "kind": "sealed",
-   "name": "Unified Minds Booster Box",
-   "headline": "Unified Minds Booster Box. Open.",
-   "price": 4999.99,
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Open.",
+   "price": 5499.99,
    "source": "TCGplayer market",
    "asOf": "2026-10-27",
-   "why": "Written down October 27, 2026 at $4,999.99. No later TCGplayer market price is stored, so this stays open.",
+   "why": "Written down October 27, 2026 at $5,499.99. No later TCGplayer market price is stored, so this stays open.",
    "hist": [
     [
      "2026-10-27",
-     4999.99
+     5499.99
     ]
    ],
    "href": "",
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-27-single-swsh7-218",
+   "id": "receipt-2026-10-27-single-sv8pt5-161",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon ex",
+   "headline": "Umbreon ex. Open.",
+   "price": 1412.72,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-27",
+   "why": "Written down October 27, 2026 at $1,412.72. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-27",
+     1412.72
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-28-sealed-sv9-bb",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Journey Together Booster Bundle",
+   "headline": "Journey Together Booster Bundle. Open.",
+   "price": 44.99,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-28",
+   "why": "Written down October 28, 2026 at $44.99. No later TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-28",
+     44.99
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-28-single-swsh7-218",
    "type": "receipt",
    "result": "open",
    "kind": "single",
@@ -320,11 +484,11 @@
    "headline": "Rayquaza VMAX. Open.",
    "price": 1255.44,
    "source": "TCGplayer market",
-   "asOf": "2026-10-27",
-   "why": "Written down October 27, 2026 at $1,255.44. No earlier TCGplayer market price is stored, so this stays open.",
+   "asOf": "2026-10-28",
+   "why": "Written down October 28, 2026 at $1,255.44. No earlier TCGplayer market price is stored, so this stays open.",
    "hist": [
     [
-     "2026-10-27",
+     "2026-10-28",
      1255.44
     ]
    ],
