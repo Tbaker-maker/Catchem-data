@@ -11,6 +11,9 @@ import { nearestPoint, addDays, dateLabel, dayNum } from "./history-reads.mjs";
 const BAN = banGuard("rich reads");
 const LOW = new Set(["Common", "Uncommon", "Rare", "Code Card", "Promo", "None", ""]);
 const TIERS = [["Illustration Rare", "IR"], ["Special Illustration Rare", "SIR"]];
+// Mixed sealed needs listings counted from the board week, not a stale file.
+export const LISTINGS_FRESH_DAYS = 2;
+
 
 export function copyOk(text) {
   const s = String(text || "");
@@ -230,10 +233,13 @@ export function mixedReads({ cards, sealedPool, listings, rotation, asOf, start,
   for (const p of sealedPool || []) {
     const lc = byId.get(p.id)?.listingsCounted;
     if (!lc?.date || !Number.isInteger(lc.n) || !(p.from > 0) || !(p.to > 0)) continue;
+    // Stale listings half must not mix with a fresh market price.
+    if (dayNum(asOf) - dayNum(lc.date) > LISTINGS_FRESH_DAYS) continue;
     const pricePct = ((p.to - p.from) / p.from) * 100;
     const listFrom = lc.prev && Number.isInteger(lc.prev.n) ? lc.prev.n : null;
     const listDate = lc.prev?.date;
     if (listFrom == null || !listDate) continue;
+    if (dayNum(asOf) - dayNum(listDate) > LISTINGS_FRESH_DAYS + 7) continue;
     if (Math.abs(pricePct) < 3 && Math.abs(lc.n - listFrom) < 4) continue;
     const listPct = listFrom > 0 ? ((lc.n - listFrom) / listFrom) * 100 : 0;
     let rot = "";
@@ -249,8 +255,10 @@ export function mixedReads({ cards, sealedPool, listings, rotation, asOf, start,
     const read = rowBase("mixed", `mixed-sealed-${p.id}`, p.name, headline, lines, asOf, `TCGplayer market, ${priceStart} and ${priceEnd}; eBay listings counted, ${listDate} and ${lc.date}`, {
       sku: p.id, href: `/p/${p.id}`,
       why: "The market prices and the listings counted are separate dated files.",
-      startDate: listDate, endDate: lc.date,
-      receipt: { pricePct: round1(pricePct), listingsPct: round1(listPct) },
+      // Board day is the end of the read so a fresh price half is not marked stale.
+      startDate: listDate < priceStart ? listDate : priceStart,
+      endDate: priceEnd,
+      receipt: { pricePct: round1(pricePct), listingsPct: round1(listPct), listingsFrom: listDate, listingsTo: lc.date, priceFrom: priceStart, priceTo: priceEnd },
     });
     if (read) out.push({ ...read, rank: Math.abs(pricePct) + Math.abs(listPct) });
   }

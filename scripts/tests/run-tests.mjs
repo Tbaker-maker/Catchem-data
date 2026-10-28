@@ -296,6 +296,14 @@ console.log("── face stamp keeps group subjects clean ──");
   t("face stamp subject suite", n === 0, `${n} failed`);
 }
 
+console.log("── reads check Oct 28 regressions ──");
+{
+  const { run } = await import("./reads-check-oct28.suite.mjs");
+  const n = await run();
+  t("reads check Oct 28 suite", n === 0, `${n} failed`);
+}
+
+
 console.log("── no PPT history in public outputs ──");
 {
   const n = await runNoPptPublicTests();

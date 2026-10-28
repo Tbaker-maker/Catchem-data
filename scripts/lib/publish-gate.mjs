@@ -40,6 +40,9 @@ export const RULES = [
   ["sold", "Copy says sold or sales"],
   ["empty", "No headline and no path"],
   ["low-value", "Cheap card with a tiny dollar move"],
+  ["mixed-stale", "Mixed read pairs a fresh price with stale listings counted"],
+  ["change-conflict", "One read shows two different change figures for the same story"],
+  ["species-number", "A species count line names a different card printing"],
 ];
 
 const isSealed = (r) => r.kind === "sealed" || r.readKind === "sealed" || r.readKind === "listings" || r.kind === "listings" || /^\/p\//.test(r.href || "") || (r.sku && !/^tcgcsv-/.test(r.sku) && r.family === "listings");
@@ -140,6 +143,57 @@ function bareLowPattern(read) {
   return false;
 }
 
+
+// Mixed sealed that still carries a listings date far behind asOf must not publish.
+function mixedStale(read, ctx) {
+  if (String(read?.readKind || read?.kind || "") !== "mixed") return false;
+  if (read?.stale === true) return true;
+  const asOf = String(ctx.asOf || read?.asOf || "").slice(0, 10);
+  const listingTo = String(read?.receipt?.listingsTo || "").slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(asOf) && /^\d{4}-\d{2}-\d{2}$/.test(listingTo)) {
+    const age = daySpan(listingTo, asOf);
+    if (age != null && age > 2) return true;
+  }
+  // Headline that names an Oct listings half while asOf is much later.
+  const blob = `${read?.headline || ""}\n${(read?.lines || []).join("\n")}`;
+  const m = blob.match(/Listings counted[^\n]*\bon\s+(\d{4}-\d{2}-\d{2})\s*\./i)
+    || blob.match(/Listings counted[^\n]*to\s+\d+\s+on\s+(\d{4}-\d{2}-\d{2})/i);
+  if (m && /^\d{4}-\d{2}-\d{2}$/.test(asOf)) {
+    const age = daySpan(m[1], asOf);
+    if (age != null && age > 2) return true;
+  }
+  return false;
+}
+
+// Headline "Down 31% in 31 days" next to a trend line "Down 19.8% from Sep 26" on the same read.
+function changeConflict(read) {
+  const head = String(read?.headline || "");
+  const hm = head.match(/\b(?:Up|Down)\s+(\d+(?:\.\d+)?)%\s+in\s+(\d+)\s+days/i);
+  if (!hm) return false;
+  const headPct = Number(hm[1]);
+  const headDays = Number(hm[2]);
+  if (!(headDays >= 14 && headDays <= 45)) return false;
+  for (const line of read?.lines || []) {
+    const tm = String(line).match(/\b(?:Up|Down)\s+(\d+(?:\.\d+)?)%\s+from\s+[A-Z][a-z]{2}\s+\d{1,2}\s+to\s+[A-Z][a-z]{2}\s+\d{1,2}/);
+    if (!tm) continue;
+    const linePct = Number(tm[1]);
+    if (Math.abs(headPct - linePct) >= 5) return true;
+  }
+  return false;
+}
+
+// "Number 2 of 27 Umbreon 059/131 cards" on a 161/131 read.
+function speciesNumberMismatch(read) {
+  const own = String(read?.number || read?.receipt?.num || "").trim();
+  if (!own) return false;
+  for (const line of read?.lines || []) {
+    const m = String(line).match(/Number\s+\d+\s+of\s+\d+\s+.+?\s+(\d+\/\d+)\s+cards we price/i);
+    if (!m) continue;
+    if (m[1] !== own) return true;
+  }
+  return false;
+}
+
 export function checkRead(read, ctx = {}) {
   const flags = [];
   let r = read;
@@ -226,6 +280,9 @@ export function checkRead(read, ctx = {}) {
   if (SOLD_WORD.test(copyBlob(r))) flags.push({ rule: "sold", action: "drop", note: "sold or sales" });
   if (!String(r.headline || "").trim() && !String(r.path || "").trim()) flags.push({ rule: "empty", action: "drop", note: "no sentence" });
   if (lowValueMove(r, ctx.floor)) flags.push({ rule: "low-value", action: "drop", note: "cheap tiny move" });
+  if (mixedStale(r, ctx)) flags.push({ rule: "mixed-stale", action: "drop", note: "stale listings half" });
+  if (changeConflict(r)) flags.push({ rule: "change-conflict", action: "drop", note: "two change figures" });
+  if (speciesNumberMismatch(r)) flags.push({ rule: "species-number", action: "drop", note: "species line names another printing" });
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
 }

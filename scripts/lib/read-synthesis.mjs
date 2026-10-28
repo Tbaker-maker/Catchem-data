@@ -37,7 +37,7 @@ export function validSynth(cfg) {
     if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
     out.trendMinPct[w] = a; out.slackDays[w] = b;
   }
-  for (const k of ["peerInlineMaxPts", "spikeRatio"]) { const n = Number(cfg[k]); if (cfg[k] != null && Number.isFinite(n)) out[k] = n; }
+  for (const k of ["peerInlineMaxPts", "spikeRatio", "baselineSpikeRatio", "neighborBand", "launchSkipDays"]) { const n = Number(cfg[k]); if (cfg[k] != null && Number.isFinite(n)) out[k] = n; }
   return out;
 }
 
@@ -78,10 +78,38 @@ const r0 = (x) => Math.round(Math.abs(x));
 const median = (xs) => { const s = xs.slice().sort((a, b) => a - b); const m = s.length >> 1; return s.length ? (s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2) : null; };
 const at = (p, asOf) => `${usd(p[1])} on ${dateLabel(p[0], asOf)}`;
 
+const closeBand = (a, b, band) => Math.abs(a - b) / Math.max(a, b) <= band;
+
+// A one-day (or short-run) spike is not a window baseline. Neighbours that agree
+// within the band, with the mid point sticking out by baselineSpikeRatio (or
+// spikeRatio), are replaced by the earlier neighbour.
+function isBaselineSpike(pts, idx, cfg, last) {
+  if (idx <= 0 || idx >= pts.length) return false;
+  const left = pts[idx - 1]?.[1];
+  const right = (pts[idx + 1]?.[1] ?? last?.[1]);
+  if (!(left > 0) || !(right > 0)) return false;
+  const band = Number(cfg.neighborBand);
+  const ratioMin = Number(cfg.baselineSpikeRatio) > 1
+    ? Number(cfg.baselineSpikeRatio)
+    : (Number(cfg.spikeRatio) > 1 ? Number(cfg.spikeRatio) : 0);
+  if (!(ratioMin > 1)) return false;
+  const mid = pts[idx][1];
+  if (!(mid > 0)) return false;
+  if (Number.isFinite(band) && band > 0 && !closeBand(left, right, band)) return false;
+  return mid / Math.max(left, right) >= ratioMin;
+}
+
 function changeAt(pts, asOf, days, cfg) {
   const last = pts[pts.length - 1];
-  const p = nearestPoint(pts.slice(0, -1), addDays(asOf, -days), cfg.slackDays[days]);
+  const prior = pts.slice(0, -1);
+  let p = nearestPoint(prior, addDays(asOf, -days), cfg.slackDays[days]);
   if (!p) return null;
+  let idx = prior.findIndex((row) => row[0] === p[0]);
+  // Walk off a spike baseline to the earlier steady neighbour when one exists.
+  while (idx > 0 && isBaselineSpike(prior, idx, cfg, last)) {
+    p = prior[idx - 1];
+    idx -= 1;
+  }
   return { days, from: p, to: last, pct: pct(p[1], last[1]) };
 }
 

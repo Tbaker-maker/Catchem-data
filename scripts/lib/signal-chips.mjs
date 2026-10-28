@@ -343,15 +343,34 @@ function rangeChip(points, asOf, rules) {
   };
 }
 
+// Last N priced nights at the same cent value. A window move that has already
+// settled is not Rising or Cooling momentum, and must not score loud dots.
+export function trailingFlat(points, asOf, nights, slack) {
+  const n = Math.round(Number(nights));
+  if (!(n >= 2) || !points?.length) return false;
+  const end = nearest(points, asOf, Number.isFinite(slack) ? slack : 0);
+  if (!end) return false;
+  const upto = points.filter((p) => p[0] <= end[0]);
+  if (upto.length < n) return false;
+  const tail = upto.slice(-n);
+  const cents = Math.round(tail[0][1] * 100);
+  return tail.every((p) => Math.round(p[1] * 100) === cents);
+}
+
 function momentumChip(points, asOf, rules) {
   const m = rules?.momentum;
   if (!m || !Number.isFinite(num(m.risingMin)) || !Number.isFinite(num(m.coolingMax))) return null;
   const days = num(m.recentDays);
   const slack = num(rules?.move?.slackDays);
-  const now = nearest(points, asOf, Number.isFinite(slack) ? slack : 0);
-  const then = nearest(points, addDays(asOf, -days), Number.isFinite(slack) ? slack : 0);
+  const soft = Number.isFinite(slack) ? slack : 0;
+  const now = nearest(points, asOf, soft);
+  const then = nearest(points, addDays(asOf, -days), soft);
   if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
   const pct = ((now[1] - then[1]) / then[1]) * 100;
+  const flatN = num(m.flatRecentDays);
+  if (flatN >= 2 && trailingFlat(points, asOf, flatN, soft)) {
+    return { kind: "momentum", word: "Flat", mag: 0, label: "Momentum Flat", settled: true };
+  }
   const word = pct >= num(m.risingMin) ? "Rising" : pct <= num(m.coolingMax) ? "Cooling" : "Flat";
   return { kind: "momentum", word, mag: Math.abs(pct), label: `Momentum ${word}` };
 }
@@ -743,8 +762,12 @@ function cohortKey(read, ctx, rules) {
   return `${side}:${vintage ? "vintage" : "modern"}`;
 }
 
-function withStrength(published, internal, cohort, rules) {
+function withStrength(published, internal, cohort, rules, settled) {
   if (!published || published.dir === "dash" || !rules?.strength) return published;
+  // A price that has sat still for the flatRecentDays window is not a loud move.
+  if (settled && (published.kind === "move" || published.kind === "momentum")) {
+    return { ...published, strength: 1 };
+  }
   const spec = rules.strength.cohorts?.[cohort]?.[published.kind] ?? rules.strength.fallback?.[published.kind];
   if (spec == null) return published;
   const mag = chipMagnitude(internal);
@@ -775,9 +798,13 @@ export function readSignals(read, ctx = {}, rules = {}) {
   const asOf = String(ctx.asOf || read?.asOf || "").slice(0, 10);
   const all = qualifyChips(read, ctx, rules);
   const cohort = cohortKey(read, ctx, rules);
+  const slack = num(rules?.move?.slackDays);
+  const flatN = num(rules?.momentum?.flatRecentDays);
+  const points = cleanPoints(ctx.points || []);
+  const settled = flatN >= 2 && trailingFlat(points, asOf, flatN, Number.isFinite(slack) ? slack : 0);
   const signals = pickChips(all, rules).map((chip) => {
     const internal = all.find((row) => (row.kind === "supply" ? "listings" : row.kind) === chip.kind);
-    return withStrength(chip, internal, cohort, rules);
+    return withStrength(chip, internal, cohort, rules, settled);
   });
   const tiles = tilesFor(read, all, ctx, rules);
   if (!signals.length) return tiles ? { signals: [], blurb: "", tiles } : { signals: [], blurb: "" };

@@ -216,10 +216,12 @@ await writeFile(statePath, JSON.stringify(state) + "\n");
 const doc = publicSampleDoc(dayName, [...(prior.rows || []), ...fresh]);
 doc.ranAt = new Date().toISOString();
 await writeFile(samplePath, JSON.stringify(doc, null, 1) + "\n");
+// Stamp today's date whenever this run finishes, so the hold list is not
+// left on a week-old asOf after quiet nights with no new un-holds.
+hold.asOf = dayName;
+await writeFile(holdPath, JSON.stringify(hold));
 if (fresh.some((row) => row.published)) {
-  hold.asOf = dayName;
   ladder.asOf = dayName;
-  await writeFile(holdPath, JSON.stringify(hold));
   await writeFile(ladderPath, JSON.stringify(ladder));
 }
 const published = fresh.filter((row) => row.published).length;
