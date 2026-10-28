@@ -349,6 +349,31 @@ export function itemOf(read, ctx) {
   return { id: read.sku, pts, title, asOf: read.asOf, set: row.set || read.set || "", setSlug: row.setSlug || "", release: String(row.release || ctx.setRel.get(row.setSlug) || "").slice(0, 10), sealed, kind: kind === "deep" ? `deep:${read.deep}` : kind, kindLine: own && !CONDITION.test(own) ? own : "" };
 }
 
+
+// Dollars named in why/whyItMatters must match the lead window, not an older
+// board proof. Synthesis rewrites the headline from findings; keep why in step.
+function leadPricePair(lead) {
+  const n = lead?.nums;
+  if (!n || typeof n !== "object") return null;
+  if (n.st?.from && n.st?.to) return [n.st.from[1], n.st.to[1]];
+  if (n.lead?.from && n.lead?.to) return [n.lead.from[1], n.lead.to[1]];
+  if (n.own?.from && n.own?.to) return [n.own.from[1], n.own.to[1]];
+  if (n.hi && n.now) return [n.hi[1], n.now[1]];
+  if (n.lo && n.now) return [n.lo[1], n.now[1]];
+  return null;
+}
+
+function whyFromLead(lead) {
+  const pair = leadPricePair(lead);
+  if (!pair) return null;
+  const from = Number(pair[0]);
+  const to = Number(pair[1]);
+  if (!(from > 0) || !(to > 0)) return null;
+  const delta = to - from;
+  const dir = delta >= 0 ? "Up" : "Down";
+  return `${dir} ${money(Math.abs(delta))} on those two dates.`;
+}
+
 // Rewrite the item reads. Returns the new list and a report.
 export function synthesizeReads(reads, ctx, cfg) {
   const items = reads.filter(isItemRead);
@@ -368,6 +393,11 @@ export function synthesizeReads(reads, ctx, cfg) {
     const next = { ...r, headline: leadPrice && r.headline ? r.headline : got.text, path: got.text, variants: [got.text], synth: true,
       receipt: { ...(r.receipt || {}), synth: { lead: lead.type, title: item.title, signals: got.pick.map((p) => p.tag), facts: got.pick.map((p) => ({ tag: p.tag, type: p.type, nums: p.nums || null })), now: item.pts[item.pts.length - 1], sources: ["research/assets/public/hist-long", "research/assets/public/buckets", "research/assets/public/listings-counted.json", "data/sealed-prices.json", "research/assets/public/set-value", "research/assets/public/rotation-status.json"] } } };
     if (lead.window) next.windowDays = lead.window;
+    const whyLead = whyFromLead(lead);
+    if (whyLead) {
+      next.why = whyLead;
+      next.whyItMatters = whyLead;
+    }
     return next;
   });
   return { reads: out, report };

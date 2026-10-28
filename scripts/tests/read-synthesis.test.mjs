@@ -91,6 +91,25 @@ for (const r of done) {
 }
 t(`dated prices match the source files (${checked} checked)`, checked > 0 && bad.length === 0);
 if (bad.length) console.error(bad.slice(0, 5));
+// why dollars must match the lead finding window (not a leftover board proof)
+{
+  let whyBad = [];
+  for (const r of done) {
+    const lead = (r.receipt?.synth?.facts || [])[0];
+    const nums = lead?.nums || {};
+    let pair = null;
+    if (nums.st?.from && nums.st?.to) pair = [nums.st.from[1], nums.st.to[1]];
+    else if (nums.lead?.from && nums.lead?.to) pair = [nums.lead.from[1], nums.lead.to[1]];
+    if (!pair) continue;
+    const m = String(r.why || "").match(/^(Up|Down) \$([\d,.]+) on those two dates\.$/);
+    if (!m) { whyBad.push(r.id + " missing why"); continue; }
+    const claimed = Number(m[2].replace(/,/g, ""));
+    const actual = Math.abs(Number(pair[1]) - Number(pair[0]));
+    if (Math.abs(actual - claimed) > 0.051) whyBad.push(`${r.id} why $${claimed} vs lead $${actual.toFixed(2)}`);
+  }
+  t("synth why dollars match the lead window", whyBad.length === 0);
+  if (whyBad.length) console.error(whyBad.slice(0, 5));
+}
 await rm(root, { recursive: true, force: true });
 
 // Wording: "in line" only for a small set gap, and a one day spike is not a peak.
