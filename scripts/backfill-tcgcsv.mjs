@@ -7,7 +7,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { rejectReason, rowAcceptable } from "./lib/tcgcsv-match.mjs";
+import { rejectReason, rowAcceptable, buildMappingEntries } from "./lib/tcgcsv-match.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "data/history/tcgplayer-market");
@@ -134,7 +134,11 @@ for (const c of candidates) {
     unmatched.push({ id: c.id, name: c.name, reason: "product id was not in the current Pokémon catalog", tcgplayerProductId: c.tcgplayerProductId });
     continue;
   }
-  const why = rejectReason({ ...c, name: c.kind === "single" ? found.name : c.name, subtype: c.kind === "single" ? "single" : c.subtype }, found.name);
+  // Art splits and catalog stamps already carry the TCGplayer name. Check that
+  // against the live catalog, not our display name (display names can say
+  // "Base" or other set words the catalog omits).
+  const nameForCheck = c.kind === "single" ? found.name : (c.matchedName || c.name);
+  const why = rejectReason({ ...c, name: nameForCheck, subtype: c.kind === "single" ? "single" : c.subtype }, found.name);
   if (c.kind !== "single" && why) {
     unmatched.push({ id: c.id, name: c.name, reason: why, tcgplayerProductId: c.tcgplayerProductId, catalogName: found.name });
     continue;
@@ -220,10 +224,13 @@ const coverage = {
   daysPerProduct: files.map((f) => ({ id: f.id, days: f.days, latestMarket: f.market })),
   note: "Weekly archive sampling is what this script will do once the archive is public again. Until then every past day is a gap.",
 };
+let priorMapping = { entries: [] };
+try { priorMapping = JSON.parse(await readFile(join(OUT, "mapping.json"), "utf8")); } catch {}
+const mappingEntries = buildMappingEntries(accepted, products, priorMapping.entries || []);
 await writeFile(join(OUT, "mapping.json"), JSON.stringify({
   asOf: TODAY,
-  source: "crosscheck-id-map high-confidence rows, checked against the live TCGCSV catalog",
-  entries: accepted.map((a) => ({ id: a.id, tcgplayerProductId: a.tcgplayerProductId, tcgplayerName: a.catalogName, ourName: a.name })),
+  source: "crosscheck-id-map high-confidence rows, checked against the live TCGCSV catalog, plus art-split and preserved curated joins",
+  entries: mappingEntries,
 }, null, 2));
 await writeFile(join(OUT, "unmatched.json"), JSON.stringify({ asOf: TODAY, products: unmatched }, null, 2));
 await writeFile(join(OUT, "coverage.json"), JSON.stringify(coverage, null, 2));
