@@ -184,7 +184,7 @@ const FILMS = [
 ];
 
 async function getJson(url) {
-  const r = await fetch(url, { headers: { "User-Agent": UA } });
+  const r = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(20000) });
   const text = await r.text();
   try { return JSON.parse(text); } catch (e) {
     throw new Error("not json " + r.status + " " + text.slice(0, 80));

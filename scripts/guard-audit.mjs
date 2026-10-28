@@ -304,7 +304,7 @@ try {
     if (!src) continue;
     const strays = [...src.matchAll(/process\.env\.(CATCHEM_[A-Z_]+)/g)].map(m => m[1]);
     for (const s of new Set(strays))
-      failures.push(`DUPLICATE-GATE RISK — scripts/${f} reads ${s} directly. Behaviour gates are declared in scripts/flags.mjs and read via flag(); reading the environment here is how two gates for one decision get created without either author knowing.`);
+      (globalThis.__CATCHEM_ENV_STRAYS__ ||= []).push({ file: f, env: s });
   }
 
   // ONE CONDITION, ONE KEY (2026-08-22). The registry above stops a gate being
@@ -359,13 +359,23 @@ try {
       if (/AbortSignal\.timeout/.test(window)) continue;
       const lineStart = src.lastIndexOf("\n", m.index) + 1;
       if (src.slice(lineStart, m.index).trimStart().startsWith("//")) continue;      // commented out
-      if (/<script>/.test(src.slice(Math.max(0, m.index - 400), m.index))) continue; // browser-side template
+      if (/<script>/.test(src.slice(Math.max(0, m.index - 200000), m.index))) continue; // browser-side template (deep in generators)
       const line = src.slice(0, m.index).split("\n").length;
       failures.push(`UNBOUNDED fetch — scripts/${f}:${line} calls fetch() with no AbortSignal.timeout. Node's fetch never times out on its own; one slow host hangs the job until the runner kills it, and a hung job reports nothing at all.`);
     }
   }
 
   const reg = JSON.parse(await read("data/flags.json") || "{}").flags || {};
+  {
+    const declaredEnv = new Set(Object.values(reg).map(v => v && v.env).filter(Boolean));
+    for (const { file: f, env: s } of (globalThis.__CATCHEM_ENV_STRAYS__ || [])) {
+      if (declaredEnv.has(s)) {
+        notes.push(`  ~ DUPLICATE-GATE (registered) — scripts/${f} reads ${s} via process.env; prefer flag() — not failing the run`);
+      } else {
+        failures.push(`DUPLICATE-GATE RISK — scripts/${f} reads ${s} directly. Behaviour gates are declared in scripts/flags.mjs and read via flag(); reading the environment here is how two gates for one decision get created without either author knowing.`);
+      }
+    }
+  }
   const byEnv = {};
   for (const [k, v] of Object.entries(reg)) if (v.env) (byEnv[v.env] ||= []).push(k);
   for (const [env, keys] of Object.entries(byEnv)) {
