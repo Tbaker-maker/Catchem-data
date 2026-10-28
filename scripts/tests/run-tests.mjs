@@ -246,6 +246,13 @@ console.log("── sealed TCGplayer coverage and fake SKU removal ──");
   t("sealed TCGplayer coverage suite", n === 0, `${n} failed`);
 }
 
+console.log("── lock regression (LOCK.md gates) ──");
+{
+  const { run } = await import("./lock-regression.suite.mjs");
+  const n = await run();
+  t("lock regression suite", n === 0, `${n} failed`);
+}
+
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");
