@@ -3,26 +3,28 @@
 // Covers every product in search-lite (sealed + singles). Backs off on 503/ERR.
 // Usage:
 //   node scripts/prewarm-product-pages.mjs [--all] [--limit N] [--sleep-ms N] [--kind sealed|single|all]
-// Env: CATCHEM_ORIGIN (default https://catchemtcg.com)
+import { flag } from "./flags.mjs";
+
 const args = process.argv.slice(2);
-function flag(name, def) {
+function opt(name, def) {
   const i = args.indexOf(name);
   if (i < 0) return def;
   const v = args[i + 1];
   if (v == null || v.startsWith("--")) return true;
   return v;
 }
-const all = args.includes("--all") || flag("--limit", "") === "0";
-const limit = all ? Infinity : Number(flag("--limit", 0) || 0) || Infinity;
-const sleepMs = Number(flag("--sleep-ms", 1200));
-const kind = String(flag("--kind", "all") || "all");
-const base = process.env.CATCHEM_ORIGIN || "https://catchemtcg.com";
+const all = args.includes("--all") || opt("--limit", "") === "0";
+const limit = all ? Infinity : Number(opt("--limit", 0) || 0) || Infinity;
+const sleepMs = Number(opt("--sleep-ms", 1200));
+const kind = String(opt("--kind", "all") || "all");
+const base = String(flag("site") || "https://catchemtcg.com").replace(/\/$/, "");
+const FETCH_MS = 120000;
 
 async function sleep(ms) { await new Promise((r) => setTimeout(r, ms)); }
 
 const searchUrl =
   "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/public-data/research/assets/public/search-lite.json";
-const rows = await (await fetch(searchUrl)).json();
+const rows = await (await fetch(searchUrl, { signal: AbortSignal.timeout(60000) })).json();
 if (!Array.isArray(rows)) throw new Error("search-lite shape");
 let ids = rows
   .filter((r) => Array.isArray(r) && typeof r[0] === "string" && r[0].startsWith("tcgcsv-"))
@@ -43,6 +45,7 @@ for (let i = 0; i < ids.length; i += 1) {
   try {
     const res = await fetch(`${base}/p/${id}?prewarm=html`, {
       headers: { "user-agent": "catchem-prewarm-html/2" },
+      signal: AbortSignal.timeout(FETCH_MS),
     });
     code = res.status;
     xp = res.headers.get("x-prewarm") || "";
