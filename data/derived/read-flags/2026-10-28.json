@@ -1,0 +1,201 @@
+{
+ "asOf": "2026-10-28",
+ "source": "Thin data check. Blocked reads are left out and listed here. They are not rewritten.",
+ "flags": [
+  {
+   "id": "mktmove-sv3pt5-upc",
+   "name": "151 Ultra Premium Collection",
+   "rule": "small-dip",
+   "reason": "This sealed dip is too small in percent or dollars.",
+   "read": {
+    "id": "mktmove-sv3pt5-upc",
+    "name": "151 Ultra Premium Collection",
+    "headline": "151 Ultra Premium Collection: the TCGplayer market price went from $810.79 to $809.15 over Oct 27 to Oct 28.",
+    "set": "",
+    "sku": "sv3pt5-upc",
+    "readKind": "mktmove",
+    "deep": ""
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-84773",
+   "name": "Deoxys ex (Speed Forme)",
+   "rule": "single-jump",
+   "reason": "This slump or recovery is one jump between two prices.",
+   "read": {
+    "id": "deep-slump-tcgcsv-84773",
+    "name": "Deoxys ex (Speed Forme)",
+    "headline": "Slump watch: Deoxys ex (Speed Forme) (EX Emerald) 93/106, Ultra Rare, is 67% under its Aug 31 high.",
+    "set": "",
+    "sku": "tcgcsv-84773",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88797",
+   "name": "Rocket's Suicune ex",
+   "rule": "single-price",
+   "reason": "This slump or recovery rests on one dated price.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88797",
+    "name": "Rocket's Suicune ex",
+    "headline": "Slump watch: Rocket's Suicune ex (EX Team Rocket Returns) 105/109, Ultra Rare, is 59% under its Sep 4 high.",
+    "set": "",
+    "sku": "tcgcsv-88797",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-84771",
+   "name": "Deoxys ex (Defense Forme)",
+   "rule": "single-jump",
+   "reason": "This slump or recovery is one jump between two prices.",
+   "read": {
+    "id": "deep-slump-tcgcsv-84771",
+    "name": "Deoxys ex (Defense Forme)",
+    "headline": "Slump watch: Deoxys ex (Defense Forme) (EX Deoxys) 99/107, Ultra Rare, is 68% under its Aug 31 high.",
+    "set": "",
+    "sku": "tcgcsv-84771",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88648",
+   "name": "Rayquaza EX (123 Full Art)",
+   "rule": "single-price",
+   "reason": "This slump or recovery rests on one dated price.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88648",
+    "name": "Rayquaza EX (123 Full Art)",
+    "headline": "Slump watch: Rayquaza EX (123 Full Art) (Dragons Exalted) 123/124, Ultra Rare, is 55% under its Sep 15 high.",
+    "set": "",
+    "sku": "tcgcsv-88648",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88647",
+   "name": "Rayquaza ex (Delta Species)",
+   "rule": "single-price",
+   "reason": "This slump or recovery rests on one dated price.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88647",
+    "name": "Rayquaza ex (Delta Species)",
+    "headline": "Slump watch: Rayquaza ex (Delta Species) (EX Dragon Frontiers) 97/101, Ultra Rare, is 29% under its Aug 6 high.",
+    "set": "",
+    "sku": "tcgcsv-88647",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-sealedgap-sv6-bb",
+   "name": "Twilight Masquerade Booster Bundle",
+   "rule": "date-mismatch",
+   "reason": "The listings counted date is not the same day as the price date.",
+   "read": {
+    "id": "deep-sealedgap-sv6-bb",
+    "name": "Twilight Masquerade Booster Bundle",
+    "headline": "Twilight Masquerade Booster Bundle vs its top chase card: Greninja ex (Twilight Masquerade) 214/167 costs 3.3x the sealed price tonight, from 4.6x on Sep 26.",
+    "set": "",
+    "sku": "sv6-bb",
+    "readKind": "deep",
+    "deep": "sealedgap"
+   }
+  },
+  {
+   "id": "deep-sealedgap-swsh3-etb",
+   "name": "Darkness Ablaze Elite Trainer Box",
+   "rule": "date-mismatch",
+   "reason": "The listings counted date is not the same day as the price date.",
+   "read": {
+    "id": "deep-sealedgap-swsh3-etb",
+    "name": "Darkness Ablaze Elite Trainer Box",
+    "headline": "Darkness Ablaze Elite Trainer Box vs its top chase card: it costs 3.2x Charizard VMAX (Darkness Ablaze) 020/189 tonight, from 2.6x on Sep 26.",
+    "set": "",
+    "sku": "swsh3-etb",
+    "readKind": "deep",
+    "deep": "sealedgap"
+   }
+  },
+  {
+   "id": "span-year-ago-tcgcsv-625582",
+   "name": "Paradox Rift Single Pack Blister [Ceruledge]",
+   "rule": "thin-listings",
+   "reason": "This big move rests on too few listings counted.",
+   "read": {
+    "id": "span-year-ago-tcgcsv-625582",
+    "name": "Paradox Rift Single Pack Blister [Ceruledge]",
+    "headline": "A year ago today it was $9.05 on Oct 28, 2025, now $40.98 on Oct 28, 2026 (+352.8%).",
+    "set": "SV04: Paradox Rift",
+    "sku": "tcgcsv-625582",
+    "readKind": "year-ago",
+    "deep": "year-ago"
+   }
+  },
+  {
+   "id": "span-year-ago-tcgcsv-626630",
+   "name": "Journey Together Single Pack Blister [Melmetal]",
+   "rule": "thin-listings",
+   "reason": "This big move rests on too few listings counted.",
+   "read": {
+    "id": "span-year-ago-tcgcsv-626630",
+    "name": "Journey Together Single Pack Blister [Melmetal]",
+    "headline": "A year ago today it was $10.19 on Oct 28, 2025, now $34.66 on Oct 28, 2026 (+240.1%).",
+    "set": "SV09: Journey Together",
+    "sku": "tcgcsv-626630",
+    "readKind": "year-ago",
+    "deep": "year-ago"
+   }
+  },
+  {
+   "id": "span-year-ago-tcgcsv-505916",
+   "name": "Crown Zenith Special Collection [Unown V & Lugia V]",
+   "rule": "thin-listings",
+   "reason": "This big move rests on too few listings counted.",
+   "read": {
+    "id": "span-year-ago-tcgcsv-505916",
+    "name": "Crown Zenith Special Collection [Unown V & Lugia V]",
+    "headline": "A year ago today it was $83.67 on Oct 28, 2025, now $290.50 on Oct 28, 2026 (+247.2%).",
+    "set": "SWSH: Crown Zenith",
+    "sku": "tcgcsv-505916",
+    "readKind": "year-ago",
+    "deep": "year-ago"
+   }
+  },
+  {
+   "id": "sealed-week-tcgcsv-98542",
+   "name": "Rising Rivals Booster Pack",
+   "rule": "thin-listings",
+   "reason": "This big move rests on too few listings counted.",
+   "read": {
+    "id": "sealed-week-tcgcsv-98542",
+    "name": "Rising Rivals Booster Pack",
+    "headline": "Rising Rivals Booster Pack more than doubled in a week: $400.00 (Oct 21) to $999.99 (Oct 28) on TCGplayer market.",
+    "set": "Rising Rivals",
+    "sku": "tcgcsv-98542",
+    "readKind": "sealed",
+    "deep": ""
+   }
+  },
+  {
+   "id": "span-year-range-tcgcsv-206029",
+   "name": "Sword & Shield 3 Pack Blister [Morpeko]",
+   "rule": "thin-listings",
+   "reason": "This big move rests on too few listings counted.",
+   "read": {
+    "id": "span-year-range-tcgcsv-206029",
+    "name": "Sword & Shield 3 Pack Blister [Morpeko]",
+    "headline": "Near the high end of its 12-month range: Sword & Shield 3 Pack Blister [Morpeko], $64.99 on Oct 28, 2026.",
+    "set": "SWSH01: Sword & Shield Base Set",
+    "sku": "tcgcsv-206029",
+    "readKind": "year-range",
+    "deep": "year-range"
+   }
+  }
+ ]
+}

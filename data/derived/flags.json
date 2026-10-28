@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-27",
- "generatedAt": "2026-10-28T00:14:45.315Z",
+ "asOf": "2026-10-28",
+ "generatedAt": "2026-10-28T03:14:20.215Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,17 +21,18 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 3,
+   "PRICE_MOVE": 7,
    "NEWS_SOURCE_FAILING": 6,
    "DATA_GAP": 1,
    "ODD_PRICE": 49,
-   "READ_TYPE_EMPTY": 6,
-   "YOUTUBE_LEAD": 12
+   "READ_TYPE_EMPTY": 8,
+   "YOUTUBE_DISAGREE": 1,
+   "YOUTUBE_LEAD": 8
   },
   "bySeverity": {
-   "high": 2,
-   "medium": 15,
-   "low": 60
+   "high": 4,
+   "medium": 13,
+   "low": 63
   }
  },
  "newTonight": 0,
@@ -39,15 +40,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:89165:2026-10-27",
-   "line": "Shining Kabutops (Neo Destiny): $382.44 (2026-10-26) to $1399.95 (2026-10-27) on TCGplayer market, up 266%.",
+   "key": "move:84187:2026-10-28",
+   "line": "Charizard (EX Dragon): $550.00 (2026-10-27) to $1499.99 (2026-10-28) on TCGplayer market, up 173%.",
    "data": {
-    "id": "tcgcsv-89165",
-    "from": 382.44,
-    "to": 1399.95,
-    "fromDay": "2026-10-26",
-    "toDay": "2026-10-27",
-    "pct": 266.1,
+    "id": "tcgcsv-84187",
+    "from": 550,
+    "to": 1499.99,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": 172.7,
     "kind": "single"
    },
    "new": false
@@ -55,15 +56,47 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:90114:2026-10-27",
-   "line": "Tyranitar (H28) (Aquapolis): $698.00 (2026-10-26) to $198.90 (2026-10-27) on TCGplayer market, down 72%.",
+   "key": "move:107008:2026-10-28",
+   "line": "Ninetales (Base Set (Shadowless)): $800.00 (2026-10-27) to $172.83 (2026-10-28) on TCGplayer market, down 78%.",
    "data": {
-    "id": "tcgcsv-90114",
-    "from": 698,
-    "to": 198.9,
-    "fromDay": "2026-10-26",
-    "toDay": "2026-10-27",
-    "pct": -71.5,
+    "id": "tcgcsv-107008",
+    "from": 800,
+    "to": 172.83,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": -78.4,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:84610:2026-10-28",
+   "line": "Dark Houndoom (Neo Destiny): $47.01 (2026-10-27) to $299.99 (2026-10-28) on TCGplayer market, up 538%.",
+   "data": {
+    "id": "tcgcsv-84610",
+    "from": 47.01,
+    "to": 299.99,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": 538.1,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:90113:2026-10-28",
+   "line": "Tyranitar (12) (Neo Discovery): $400.00 (2026-10-27) to $148.99 (2026-10-28) on TCGplayer market, down 63%.",
+   "data": {
+    "id": "tcgcsv-90113",
+    "from": 400,
+    "to": 148.99,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": -62.8,
     "kind": "single"
    },
    "new": false
@@ -71,15 +104,47 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:87445:2026-10-27",
-   "line": "Mightyena (EX Deoxys): $14.91 (2026-10-26) to $41.72 (2026-10-27) on TCGplayer market, up 180%.",
+   "key": "move:45123:2026-10-28",
+   "line": "Vaporeon (12) (Jungle): $155.49 (2026-10-27) to $236.99 (2026-10-28) on TCGplayer market, up 52%.",
    "data": {
-    "id": "tcgcsv-87445",
-    "from": 14.91,
-    "to": 41.72,
-    "fromDay": "2026-10-26",
-    "toDay": "2026-10-27",
-    "pct": 179.8,
+    "id": "tcgcsv-45123",
+    "from": 155.49,
+    "to": 236.99,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": 52.4,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:477366:2026-10-28",
+   "line": "Bellossom - 2004 (Chris Fulop) (World Championship Decks): $14.02 (2026-10-27) to $31.68 (2026-10-28) on TCGplayer market, up 126%.",
+   "data": {
+    "id": "tcgcsv-477366",
+    "from": 14.02,
+    "to": 31.68,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": 126,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:477464:2026-10-28",
+   "line": "Wobbuffet - 2004 (Reed Weichler) (World Championship Decks): $5.20 (2026-10-27) to $18.55 (2026-10-28) on TCGplayer market, up 257%.",
+   "data": {
+    "id": "tcgcsv-477464",
+    "from": 5.2,
+    "to": 18.55,
+    "fromDay": "2026-10-27",
+    "toDay": "2026-10-28",
+    "pct": 256.7,
     "kind": "single"
    },
    "new": false
@@ -795,6 +860,17 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
+   "key": "empty:low",
+   "line": "Read type \"low\" produced nothing tonight.",
+   "data": {
+    "kind": "low",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
    "key": "empty:sealed",
    "line": "Read type \"sealed\" produced nothing tonight.",
    "data": {
@@ -850,6 +926,17 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
+   "key": "empty:listings",
+   "line": "Read type \"listings\" produced nothing tonight.",
+   "data": {
+    "kind": "listings",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
    "key": "empty:sealedchase",
    "line": "Read type \"sealedchase\" produced nothing tonight.",
    "data": {
@@ -859,10 +946,20 @@
    "new": false
   },
   {
+   "type": "YOUTUBE_DISAGREE",
+   "severity": "low",
+   "key": "yt:data:2026-10-28",
+   "line": "2 creator claims were contradicted by TCGplayer prices tonight (2026-10-28).",
+   "data": {
+    "count": 2
+   },
+   "new": false
+  },
+  {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24831:2026-10-27",
-   "line": "ME06: Delta Reign: 8 creator videos on 6 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-10-28",
+   "line": "ME06: Delta Reign: 8 creator videos on 6 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
@@ -870,16 +967,16 @@
     "channels": 6,
     "videos": 8,
     "weighted": 5.25,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-27",
-   "line": "SV: Prismatic Evolutions: 8 creator videos on 5 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:23821:2026-10-28",
+   "line": "SV: Prismatic Evolutions: 8 creator videos on 5 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23821,
@@ -887,50 +984,50 @@
     "channels": 5,
     "videos": 8,
     "weighted": 5,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-10-27",
-   "line": "ME: 30th Celebration: 8 creator videos on 4 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-10-28",
+   "line": "ME: 30th Celebration: 6 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
-    "channels": 4,
-    "videos": 8,
-    "weighted": 4,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "channels": 3,
+    "videos": 6,
+    "weighted": 3,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-10-27",
-   "line": "Print runs: 7 creator videos on 4 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-10-28",
+   "line": "Print runs: 5 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "print_run",
     "ref": null,
     "label": "Print runs",
-    "channels": 4,
-    "videos": 7,
-    "weighted": 7,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "channels": 3,
+    "videos": 5,
+    "weighted": 5,
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24541:2026-10-27",
-   "line": "ME: Ascended Heroes: 4 creator videos on 3 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:24541:2026-10-28",
+   "line": "ME: Ascended Heroes: 4 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
@@ -938,16 +1035,16 @@
     "channels": 3,
     "videos": 4,
     "weighted": 3,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24269:2026-10-27",
-   "line": "SV10: Destined Rivals: 4 creator videos on 3 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:24269:2026-10-28",
+   "line": "SV10: Destined Rivals: 4 creator videos on 3 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24269,
@@ -955,33 +1052,16 @@
     "channels": 3,
     "videos": 4,
     "weighted": 3,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2848:2026-10-27",
-   "line": "SWSH07: Evolving Skies: 3 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 2848,
-    "label": "SWSH07: Evolving Skies",
-    "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24448:2026-10-27",
-   "line": "ME02: Phantasmal Flames: 2 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:24448:2026-10-28",
+   "line": "ME02: Phantasmal Flames: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24448,
@@ -989,16 +1069,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23353:2026-10-27",
-   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
+   "key": "yt:set_attention:23353:2026-10-28",
+   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-10-22 to 2026-10-28 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23353,
@@ -1006,59 +1086,8 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:3040:2026-10-27",
-   "line": "SWSH10: Astral Radiance: 2 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 3040,
-    "label": "SWSH10: Astral Radiance",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:3118:2026-10-27",
-   "line": "SWSH11: Lost Origin: 2 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 3118,
-    "label": "SWSH11: Lost Origin",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:3170:2026-10-27",
-   "line": "SWSH12: Silver Tempest: 2 creator videos on 2 channels, 2026-10-21 to 2026-10-27 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 3170,
-    "label": "SWSH12: Silver Tempest",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-21",
-    "to": "2026-10-27"
+    "from": "2026-10-22",
+    "to": "2026-10-28"
    },
    "new": false
   }
