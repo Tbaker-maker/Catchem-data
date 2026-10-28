@@ -1,0 +1,50 @@
+# After a successful public-data publish night, pace ?prewarm=html across every
+# product so FEED_KV product-html is warm for first user hits (cold p95 budget).
+name: Prewarm product HTML
+on:
+  workflow_run:
+    workflows: ["Update sealed prices"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "all | sealed | single"
+        default: all
+        type: string
+      sleep_ms:
+        description: "Gap between requests (ms)"
+        default: "1200"
+        type: string
+      limit:
+        description: "Max ids (0 = all)"
+        default: "0"
+        type: string
+
+concurrency:
+  group: prewarm-product-html
+  cancel-in-progress: false
+
+jobs:
+  prewarm:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Pace prewarm=html for every product
+        env:
+          CATCHEM_ORIGIN: https://catchemtcg.com
+        run: |
+          KIND="${{ github.event.inputs.kind || 'all' }}"
+          SLEEP="${{ github.event.inputs.sleep_ms || '1200' }}"
+          LIMIT="${{ github.event.inputs.limit || '0' }}"
+          if [ "$LIMIT" = "0" ]; then
+            node scripts/prewarm-product-pages.mjs --all --kind "$KIND" --sleep-ms "$SLEEP"
+          else
+            node scripts/prewarm-product-pages.mjs --limit "$LIMIT" --kind "$KIND" --sleep-ms "$SLEEP"
+          fi
