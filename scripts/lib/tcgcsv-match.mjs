@@ -35,9 +35,14 @@ export function rejectReason(product, matchedName) {
   if (product?.subtype === "etb" && !ml.includes("elite trainer")) return "matched name is not an elite trainer box";
   const bracket = matched.match(/\[[^\]]+\]/);
   if (bracket) {
-    const bits = bracket[0].toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3);
-    const named = bits.some((w) => ol.includes(w));
-    if (!named) return "cover variant: the TCGplayer name names a specific art and ours does not";
+    const inner = bracket[0].slice(1, -1).trim().toLowerCase();
+    // Quantity packs are not cover arts: [Set of 3], [Set of 2], etc.
+    const quantityPack = /^set of \d+$/i.test(inner) || /^\d+[\s-]?packs?$/i.test(inner);
+    if (!quantityPack) {
+      const bits = inner.split(/[^a-z0-9]+/).filter((w) => w.length > 3);
+      const named = bits.some((w) => ol.includes(w));
+      if (!named) return "cover variant: the TCGplayer name names a specific art and ours does not";
+    }
   }
   const need = words(ours).filter((w) => !["elite", "trainer", "box", "booster", "pack", "bundle", "center"].includes(w));
   const have = new Set(words(matched));
@@ -52,4 +57,44 @@ export function rowAcceptable(row) {
   const id = Number(row.tcgPlayerId);
   if (!Number.isInteger(id) || id <= 0) return "no TCGplayer product id";
   return null;
+}
+
+// Nightly backfill must not drop curated joins. Keep accepted rows, seed
+// art-split product ids from the sealed catalog, and preserve prior mapping
+// rows that still match the product's TCGplayer id.
+export function buildMappingEntries(accepted, products, priorEntries = []) {
+  const byId = new Map();
+  for (const a of accepted || []) {
+    if (!a?.id || !(Number(a.tcgplayerProductId) > 0)) continue;
+    byId.set(a.id, {
+      id: a.id,
+      tcgplayerProductId: Number(a.tcgplayerProductId),
+      tcgplayerName: a.catalogName || a.tcgplayerName || null,
+      ourName: a.name,
+    });
+  }
+  const list = Array.isArray(products) ? products : Object.values(products || {});
+  const productById = new Map(list.filter((p) => p && p.id).map((p) => [p.id, p]));
+  for (const p of list) {
+    if (!p?.id || p.combinedArts || byId.has(p.id)) continue;
+    const pid = Number(p.tcgPlayerId);
+    if (!(pid > 0)) continue;
+    if (p.artOf || p.tcgPlayerIdMethod === "art-split-by-productId") {
+      byId.set(p.id, {
+        id: p.id,
+        tcgplayerProductId: pid,
+        tcgplayerName: p.tcgplayerName || null,
+        ourName: p.name,
+      });
+    }
+  }
+  for (const e of priorEntries || []) {
+    if (!e?.id || byId.has(e.id)) continue;
+    const p = productById.get(e.id);
+    if (!p || p.combinedArts) continue;
+    if (Number(p.tcgPlayerId) !== Number(e.tcgplayerProductId)) continue;
+    if (!(Number(e.tcgplayerProductId) > 0)) continue;
+    byId.set(e.id, e);
+  }
+  return [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
 }

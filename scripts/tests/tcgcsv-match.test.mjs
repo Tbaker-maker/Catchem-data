@@ -1,4 +1,4 @@
-import { rejectReason, rowAcceptable } from "../lib/tcgcsv-match.mjs";
+import { rejectReason, rowAcceptable, buildMappingEntries } from "../lib/tcgcsv-match.mjs";
 
 let fail = 0;
 const t = (name, cond) => {
@@ -48,6 +48,34 @@ t("low confidence rejected", rowAcceptable({ matchConfidence: "low", reviewed: t
 t("unreviewed rejected", rowAcceptable({ matchConfidence: "high", reviewed: false, tcgPlayerId: "1" }));
 t("excluded rejected", rowAcceptable({ matchConfidence: "high", reviewed: true, tcgPlayerId: "1", exclude: true }));
 t("high reviewed accepted", rowAcceptable({ matchConfidence: "high", reviewed: true, tcgPlayerId: "123" }) === null);
+
+
+t("set of 3 bracket is not a cover art", rejectReason(
+  { name: "Mega Forces Tin [Set of 3]", subtype: "tin" },
+  "Mega Forces Tin [Set of 3]",
+) === null);
+t("charizard cover still rejected after quantity fix", rejectReason(
+  { name: "Evolutions Elite Trainer Box", subtype: "etb" },
+  "XY Evolutions Elite Trainer Box [Mega Charizard Y]",
+));
+
+const mapped = buildMappingEntries(
+  [{ id: "swsh5-pack", name: "Battle Styles Booster Pack", tcgplayerProductId: 229276, catalogName: "Battle Styles Booster Pack" }],
+  [
+    { id: "sv1-pc-etb-miraidon", name: "SV PC ETB [Miraidon]", artOf: "sv1-pc-etb", tcgPlayerId: "478756", tcgplayerName: "PC ETB [Miraidon]", tcgPlayerIdMethod: "art-split-by-productId" },
+    { id: "tcgcsv-702508", name: "Mega Forces Tin [Set of 3]", tcgPlayerId: "702508", browse: false },
+    { id: "gone-id", name: "Removed", tcgPlayerId: "1" },
+  ],
+  [
+    { id: "tcgcsv-702508", tcgplayerProductId: 702508, tcgplayerName: "Mega Forces Tin [Set of 3]", ourName: "Mega Forces Tin [Set of 3]" },
+    { id: "gone-id", tcgplayerProductId: 999, tcgplayerName: "stale", ourName: "stale" },
+  ],
+);
+const ids = new Set(mapped.map((e) => e.id));
+t("mapping keeps accepted rows", ids.has("swsh5-pack"));
+t("mapping seeds art-split product ids", ids.has("sv1-pc-etb-miraidon") && mapped.find((e) => e.id === "sv1-pc-etb-miraidon").tcgplayerProductId === 478756);
+t("mapping preserves curated prior when product id still matches", ids.has("tcgcsv-702508"));
+t("mapping drops prior when product id no longer matches", !ids.has("gone-id"));
 
 console.log(fail ? `${fail} failed` : "tcgcsv match ok");
 if (fail) process.exit(1);
