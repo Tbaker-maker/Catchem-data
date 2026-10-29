@@ -76,6 +76,7 @@ export async function run() {
   t("market vs ask read is off", reverse == null);
   const solo = marketMoveRead("me5-etb", { ...market, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 44 }] }, { id: "me5-etb", tcgplayerProductId: 5 });
   t("TCGplayer-only market move has no ask", solo && solo.readKind === "mktmove" && solo.receipt.marketFrom === 40 && solo.receipt.marketTo === 44 && !("ask" in solo.receipt) && !/eBay ask|still ask/i.test(solo.path + solo.why));
+  t("mktmove source is TCGplayer market", solo && solo.source === "TCGplayer market");
   t("a different product id is not a pair", gapRead("me5-etb", moved, market, { id: "other", tcgplayerProductId: 5 }) == null);
 
   const clean = [];

@@ -448,6 +448,7 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
     asOf: to,
     href: `/p/${encodeURIComponent(productId)}`,
     lane: "sealed",
+    source: "TCGplayer market",
     receipt: { from, to, marketFrom: mktFrom, marketTo: mktTo, ask: askFrom },
   };
 }
@@ -497,6 +498,7 @@ export function marketMoveRead(productId, marketDoc, mappingRow) {
     asOf: to,
     href: `/p/${encodeURIComponent(productId)}`,
     lane: "sealed",
+    source: "TCGplayer market",
     receipt: { from, to, marketFrom: mktFrom, marketTo: mktTo },
   };
 }

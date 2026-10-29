@@ -38,6 +38,7 @@ export async function run() {
   const mktMap = { id: "evolving-skies-box", tcgplayerProductId: 242436 };
   const moved = marketMoveRead("evolving-skies-box", mktDoc, mktMap);
   t("TCGplayer-only market move ships without an ask", moved && moved.readKind === "mktmove" && moved.receipt.marketFrom === 2200 && moved.receipt.marketTo === 2178.94 && !("ask" in moved.receipt) && /TCGplayer market/.test(moved.path) && !/eBay ask/.test(moved.path));
+  t("mktmove names TCGplayer market as source", moved && moved.source === "TCGplayer market");
   t("flat market is not a move", marketMoveRead("evolving-skies-box", { ...mktDoc, points: [{ date: "2026-10-25", market: 2200 }, { date: "2026-10-27", market: 2200 }] }, mktMap) === null);
   t("sealed receipts say TCGplayer market", receiptSource({ kind: "sealed" }) === "TCGplayer market");
   return fail;
