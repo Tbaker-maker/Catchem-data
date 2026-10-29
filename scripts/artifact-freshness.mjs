@@ -229,6 +229,15 @@ const SLOW = {
   "research/assets/public/condition-prices.json":
     "written when a vintage listing sample publishes a condition price. A quiet file means nothing new was published. The sample log is the daily check.",
 };
+
+// A path the job writes, but that has never been committed because git add
+// pointed at a different file. Excused only while git has no commit. Once a
+// commit exists, a quiet file is a real miss. Do not use this for a file that
+// is allowed to sit still.
+const UNTIL_FIRST = {
+  "data/era-index-history-tcg.json":
+    "compute-derived.mjs writes this TCGplayer era series every sealed run. Git add listed the frozen eBay file data/era-index-history.json instead, so this series was never committed. Excused only until the first commit.",
+};
 let suspect = 0, excused = 0;
 
 const stale = [];
@@ -244,6 +253,8 @@ for (const r of rows) {
       continue;
     }
     if (excuse) { console.log(`  ·  ${label} never written — ${excuse}`); excused++; continue; }
+    const first = UNTIL_FIRST[r.p];
+    if (first) { console.log(`  ·  ${label} never written — ${first}`); excused++; continue; }
     console.log(`  ?  ${label} never committed — promised by ${r.job.workflow}`);
     suspect++; stale.push({ ...r, why: "never committed" });
     continue;
