@@ -1,0 +1,3065 @@
+{
+  "source": "Catalogue logos by set id. A published logo is /img/{setId}/logo.png when that file is the official logo for the same id. A set with no official logo uses a branded tile at its own path. Remote logo URLs are never published.",
+  "read": "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pok\u00e9mon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
+  "rejectSha256": {
+    "genericSet": "97bd74b939562df8df81ca5adb37db55632fea64eca631208e02152344c6ee3b",
+    "genericPromo": "7d7c739c448dfb28d03b38310f834e0cfdd748d8a37dcc34169a4f8c33bd2dd7"
+  },
+  "universe": 206,
+  "publishedSets": 205,
+  "withLogo": 205,
+  "logos": {
+    "alternate-art-promos": {
+      "setId": "alternateartpromos",
+      "slug": "alternate-art-promos",
+      "name": "Alternate Art Promos",
+      "logo": "/img/alternateartpromos/logo.png",
+      "src": "/img/alternateartpromos/logo.png",
+      "kind": "tile"
+    },
+    "alternateartpromos": {
+      "setId": "alternateartpromos",
+      "slug": "alternate-art-promos",
+      "name": "Alternate Art Promos",
+      "logo": "/img/alternateartpromos/logo.png",
+      "src": "/img/alternateartpromos/logo.png",
+      "kind": "tile"
+    },
+    "aquapolis": {
+      "setId": "ecard2",
+      "slug": "aquapolis",
+      "name": "Aquapolis",
+      "logo": "/img/ecard2/logo.png",
+      "src": "/img/ecard2/logo.png"
+    },
+    "arceus": {
+      "setId": "pl4",
+      "slug": "arceus",
+      "name": "Arceus",
+      "logo": "/img/pl4/logo.png",
+      "src": "/img/pl4/logo.png"
+    },
+    "base-set": {
+      "setId": "base1",
+      "slug": "base-set",
+      "name": "Base Set",
+      "logo": "/img/base1/logo.png",
+      "src": "/img/base1/logo.png"
+    },
+    "base-set-2": {
+      "setId": "base4",
+      "slug": "base-set-2",
+      "name": "Base Set 2",
+      "logo": "/img/base4/logo.png",
+      "src": "/img/base4/logo.png"
+    },
+    "base1": {
+      "setId": "base1",
+      "slug": "base-set",
+      "name": "Base Set",
+      "logo": "/img/base1/logo.png",
+      "src": "/img/base1/logo.png"
+    },
+    "base2": {
+      "setId": "base2",
+      "slug": "jungle",
+      "name": "Jungle",
+      "logo": "/img/base2/logo.png",
+      "src": "/img/base2/logo.png"
+    },
+    "base3": {
+      "setId": "base3",
+      "slug": "fossil",
+      "name": "Fossil",
+      "logo": "/img/base3/logo.png",
+      "src": "/img/base3/logo.png"
+    },
+    "base4": {
+      "setId": "base4",
+      "slug": "base-set-2",
+      "name": "Base Set 2",
+      "logo": "/img/base4/logo.png",
+      "src": "/img/base4/logo.png"
+    },
+    "base5": {
+      "setId": "base5",
+      "slug": "team-rocket",
+      "name": "Team Rocket",
+      "logo": "/img/base5/logo.png",
+      "src": "/img/base5/logo.png"
+    },
+    "base6": {
+      "setId": "base6",
+      "slug": "legendary-collection",
+      "name": "Legendary Collection",
+      "logo": "/img/base6/logo.png",
+      "src": "/img/base6/logo.png"
+    },
+    "basep": {
+      "setId": "basep",
+      "slug": "wotc-promo",
+      "name": "WoTC Promo",
+      "logo": "/img/basep/logo.png",
+      "src": "/img/basep/logo.png"
+    },
+    "battle-academy": {
+      "setId": "battleacademy",
+      "slug": "battle-academy",
+      "name": "Battle Academy",
+      "logo": "/img/battleacademy/logo.png",
+      "src": "/img/battleacademy/logo.png",
+      "kind": "tile"
+    },
+    "battle-academy-2022": {
+      "setId": "battleacademy2022",
+      "slug": "battle-academy-2022",
+      "name": "Battle Academy 2022",
+      "logo": "/img/battleacademy2022/logo.png",
+      "src": "/img/battleacademy2022/logo.png",
+      "kind": "tile"
+    },
+    "battle-academy-2024": {
+      "setId": "battleacademy2024",
+      "slug": "battle-academy-2024",
+      "name": "Battle Academy 2024",
+      "logo": "/img/battleacademy2024/logo.png",
+      "src": "/img/battleacademy2024/logo.png",
+      "kind": "tile"
+    },
+    "battleacademy": {
+      "setId": "battleacademy",
+      "slug": "battle-academy",
+      "name": "Battle Academy",
+      "logo": "/img/battleacademy/logo.png",
+      "src": "/img/battleacademy/logo.png",
+      "kind": "tile"
+    },
+    "battleacademy2022": {
+      "setId": "battleacademy2022",
+      "slug": "battle-academy-2022",
+      "name": "Battle Academy 2022",
+      "logo": "/img/battleacademy2022/logo.png",
+      "src": "/img/battleacademy2022/logo.png",
+      "kind": "tile"
+    },
+    "battleacademy2024": {
+      "setId": "battleacademy2024",
+      "slug": "battle-academy-2024",
+      "name": "Battle Academy 2024",
+      "logo": "/img/battleacademy2024/logo.png",
+      "src": "/img/battleacademy2024/logo.png",
+      "kind": "tile"
+    },
+    "best-of-promos": {
+      "setId": "bp",
+      "slug": "best-of-promos",
+      "name": "Best of Promos",
+      "logo": "/img/bp/logo.png",
+      "src": "/img/bp/logo.png"
+    },
+    "black-and-white": {
+      "setId": "bw1",
+      "slug": "black-and-white",
+      "name": "Black and White",
+      "logo": "/img/bw1/logo.png",
+      "src": "/img/bw1/logo.png"
+    },
+    "black-and-white-promos": {
+      "setId": "bwp",
+      "slug": "black-and-white-promos",
+      "name": "Black and White Promos",
+      "logo": "/img/bwp/logo.png",
+      "src": "/img/bwp/logo.png"
+    },
+    "blister-exclusives": {
+      "setId": "blisterexclusives",
+      "slug": "blister-exclusives",
+      "name": "Blister Exclusives",
+      "logo": "/img/blisterexclusives/logo.png",
+      "src": "/img/blisterexclusives/logo.png",
+      "kind": "tile"
+    },
+    "blisterexclusives": {
+      "setId": "blisterexclusives",
+      "slug": "blister-exclusives",
+      "name": "Blister Exclusives",
+      "logo": "/img/blisterexclusives/logo.png",
+      "src": "/img/blisterexclusives/logo.png",
+      "kind": "tile"
+    },
+    "boundaries-crossed": {
+      "setId": "bw7",
+      "slug": "boundaries-crossed",
+      "name": "Boundaries Crossed",
+      "logo": "/img/bw7/logo.png",
+      "src": "/img/bw7/logo.png"
+    },
+    "bp": {
+      "setId": "bp",
+      "slug": "best-of-promos",
+      "name": "Best of Promos",
+      "logo": "/img/bp/logo.png",
+      "src": "/img/bp/logo.png"
+    },
+    "burger-king-promos": {
+      "setId": "burgerkingpromos",
+      "slug": "burger-king-promos",
+      "name": "Burger King Promos",
+      "logo": "/img/burgerkingpromos/logo.png",
+      "src": "/img/burgerkingpromos/logo.png",
+      "kind": "tile"
+    },
+    "burgerkingpromos": {
+      "setId": "burgerkingpromos",
+      "slug": "burger-king-promos",
+      "name": "Burger King Promos",
+      "logo": "/img/burgerkingpromos/logo.png",
+      "src": "/img/burgerkingpromos/logo.png",
+      "kind": "tile"
+    },
+    "bw-trainer-kit-excadrill-and-zoroark": {
+      "setId": "bwtrainerkitexcadrillandzoroark",
+      "slug": "bw-trainer-kit-excadrill-and-zoroark",
+      "name": "BW Trainer Kit: Excadrill & Zoroark",
+      "logo": "/img/bwtrainerkitexcadrillandzoroark/logo.png",
+      "src": "/img/bwtrainerkitexcadrillandzoroark/logo.png",
+      "kind": "tile"
+    },
+    "bw1": {
+      "setId": "bw1",
+      "slug": "black-and-white",
+      "name": "Black and White",
+      "logo": "/img/bw1/logo.png",
+      "src": "/img/bw1/logo.png"
+    },
+    "bw10": {
+      "setId": "bw10",
+      "slug": "plasma-blast",
+      "name": "Plasma Blast",
+      "logo": "/img/bw10/logo.png",
+      "src": "/img/bw10/logo.png"
+    },
+    "bw11": {
+      "setId": "bw11",
+      "slug": "legendary-treasures",
+      "name": "Legendary Treasures",
+      "logo": "/img/bw11/logo.png",
+      "src": "/img/bw11/logo.png"
+    },
+    "bw2": {
+      "setId": "bw2",
+      "slug": "emerging-powers",
+      "name": "Emerging Powers",
+      "logo": "/img/bw2/logo.png",
+      "src": "/img/bw2/logo.png"
+    },
+    "bw3": {
+      "setId": "bw3",
+      "slug": "noble-victories",
+      "name": "Noble Victories",
+      "logo": "/img/bw3/logo.png",
+      "src": "/img/bw3/logo.png"
+    },
+    "bw4": {
+      "setId": "bw4",
+      "slug": "next-destinies",
+      "name": "Next Destinies",
+      "logo": "/img/bw4/logo.png",
+      "src": "/img/bw4/logo.png"
+    },
+    "bw5": {
+      "setId": "bw5",
+      "slug": "dark-explorers",
+      "name": "Dark Explorers",
+      "logo": "/img/bw5/logo.png",
+      "src": "/img/bw5/logo.png"
+    },
+    "bw6": {
+      "setId": "bw6",
+      "slug": "dragons-exalted",
+      "name": "Dragons Exalted",
+      "logo": "/img/bw6/logo.png",
+      "src": "/img/bw6/logo.png"
+    },
+    "bw7": {
+      "setId": "bw7",
+      "slug": "boundaries-crossed",
+      "name": "Boundaries Crossed",
+      "logo": "/img/bw7/logo.png",
+      "src": "/img/bw7/logo.png"
+    },
+    "bw8": {
+      "setId": "bw8",
+      "slug": "plasma-storm",
+      "name": "Plasma Storm",
+      "logo": "/img/bw8/logo.png",
+      "src": "/img/bw8/logo.png"
+    },
+    "bw9": {
+      "setId": "bw9",
+      "slug": "plasma-freeze",
+      "name": "Plasma Freeze",
+      "logo": "/img/bw9/logo.png",
+      "src": "/img/bw9/logo.png"
+    },
+    "bwp": {
+      "setId": "bwp",
+      "slug": "black-and-white-promos",
+      "name": "Black and White Promos",
+      "logo": "/img/bwp/logo.png",
+      "src": "/img/bwp/logo.png"
+    },
+    "bwtrainerkitexcadrillandzoroark": {
+      "setId": "bwtrainerkitexcadrillandzoroark",
+      "slug": "bw-trainer-kit-excadrill-and-zoroark",
+      "name": "BW Trainer Kit: Excadrill & Zoroark",
+      "logo": "/img/bwtrainerkitexcadrillandzoroark/logo.png",
+      "src": "/img/bwtrainerkitexcadrillandzoroark/logo.png",
+      "kind": "tile"
+    },
+    "call-of-legends": {
+      "setId": "col1",
+      "slug": "call-of-legends",
+      "name": "Call of Legends",
+      "logo": "/img/col1/logo.png",
+      "src": "/img/col1/logo.png"
+    },
+    "cel25": {
+      "setId": "cel25",
+      "slug": "celebrations",
+      "name": "Celebrations",
+      "logo": "/img/cel25/logo.png",
+      "src": "/img/cel25/logo.png"
+    },
+    "cel25c": {
+      "setId": "cel25",
+      "slug": "celebrations",
+      "name": "Celebrations: Classic Collection",
+      "parentSetId": "cel25",
+      "gallerySetId": "cel25c",
+      "logo": "/img/cel25/logo.png",
+      "src": "/img/cel25/logo.png"
+    },
+    "celebrations": {
+      "setId": "cel25",
+      "slug": "celebrations",
+      "name": "Celebrations",
+      "logo": "/img/cel25/logo.png",
+      "src": "/img/cel25/logo.png"
+    },
+    "champion-s-path": {
+      "setId": "swsh35",
+      "slug": "champion-s-path",
+      "name": "Champion's Path",
+      "logo": "/img/swsh35/logo.png",
+      "src": "/img/swsh35/logo.png"
+    },
+    "col1": {
+      "setId": "col1",
+      "slug": "call-of-legends",
+      "name": "Call of Legends",
+      "logo": "/img/col1/logo.png",
+      "src": "/img/col1/logo.png"
+    },
+    "countdown-calendar-promos": {
+      "setId": "countdowncalendarpromos",
+      "slug": "countdown-calendar-promos",
+      "name": "Countdown Calendar Promos",
+      "logo": "/img/countdowncalendarpromos/logo.png",
+      "src": "/img/countdowncalendarpromos/logo.png",
+      "kind": "tile"
+    },
+    "countdowncalendarpromos": {
+      "setId": "countdowncalendarpromos",
+      "slug": "countdown-calendar-promos",
+      "name": "Countdown Calendar Promos",
+      "logo": "/img/countdowncalendarpromos/logo.png",
+      "src": "/img/countdowncalendarpromos/logo.png",
+      "kind": "tile"
+    },
+    "dark-explorers": {
+      "setId": "bw5",
+      "slug": "dark-explorers",
+      "name": "Dark Explorers",
+      "logo": "/img/bw5/logo.png",
+      "src": "/img/bw5/logo.png"
+    },
+    "dc1": {
+      "setId": "dc1",
+      "slug": "double-crisis",
+      "name": "Double Crisis",
+      "logo": "/img/dc1/logo.png",
+      "src": "/img/dc1/logo.png"
+    },
+    "deck-exclusives": {
+      "setId": "deckexclusives",
+      "slug": "deck-exclusives",
+      "name": "Deck Exclusives",
+      "logo": "/img/deckexclusives/logo.png",
+      "src": "/img/deckexclusives/logo.png",
+      "kind": "tile"
+    },
+    "deckexclusives": {
+      "setId": "deckexclusives",
+      "slug": "deck-exclusives",
+      "name": "Deck Exclusives",
+      "logo": "/img/deckexclusives/logo.png",
+      "src": "/img/deckexclusives/logo.png",
+      "kind": "tile"
+    },
+    "det1": {
+      "setId": "det1",
+      "slug": "detective-pikachu",
+      "name": "Detective Pikachu",
+      "logo": "/img/det1/logo.png",
+      "src": "/img/det1/logo.png"
+    },
+    "detective-pikachu": {
+      "setId": "det1",
+      "slug": "detective-pikachu",
+      "name": "Detective Pikachu",
+      "logo": "/img/det1/logo.png",
+      "src": "/img/det1/logo.png"
+    },
+    "diamond-and-pearl": {
+      "setId": "dp1",
+      "slug": "diamond-and-pearl",
+      "name": "Diamond and Pearl",
+      "logo": "/img/dp1/logo.png",
+      "src": "/img/dp1/logo.png"
+    },
+    "diamond-and-pearl-promos": {
+      "setId": "dpp",
+      "slug": "diamond-and-pearl-promos",
+      "name": "Diamond and Pearl Promos",
+      "logo": "/img/dpp/logo.png",
+      "src": "/img/dpp/logo.png"
+    },
+    "double-crisis": {
+      "setId": "dc1",
+      "slug": "double-crisis",
+      "name": "Double Crisis",
+      "logo": "/img/dc1/logo.png",
+      "src": "/img/dc1/logo.png"
+    },
+    "dp-trainer-kit-manaphy-and-lucario": {
+      "setId": "dptrainerkitmanaphyandlucario",
+      "slug": "dp-trainer-kit-manaphy-and-lucario",
+      "name": "DP Trainer Kit: Manaphy & Lucario",
+      "logo": "/img/dptrainerkitmanaphyandlucario/logo.png",
+      "src": "/img/dptrainerkitmanaphyandlucario/logo.png",
+      "kind": "tile"
+    },
+    "dp1": {
+      "setId": "dp1",
+      "slug": "diamond-and-pearl",
+      "name": "Diamond and Pearl",
+      "logo": "/img/dp1/logo.png",
+      "src": "/img/dp1/logo.png"
+    },
+    "dp2": {
+      "setId": "dp2",
+      "slug": "mysterious-treasures",
+      "name": "Mysterious Treasures",
+      "logo": "/img/dp2/logo.png",
+      "src": "/img/dp2/logo.png"
+    },
+    "dp3": {
+      "setId": "dp3",
+      "slug": "secret-wonders",
+      "name": "Secret Wonders",
+      "logo": "/img/dp3/logo.png",
+      "src": "/img/dp3/logo.png"
+    },
+    "dp4": {
+      "setId": "dp4",
+      "slug": "great-encounters",
+      "name": "Great Encounters",
+      "logo": "/img/dp4/logo.png",
+      "src": "/img/dp4/logo.png"
+    },
+    "dp5": {
+      "setId": "dp5",
+      "slug": "majestic-dawn",
+      "name": "Majestic Dawn",
+      "logo": "/img/dp5/logo.png",
+      "src": "/img/dp5/logo.png"
+    },
+    "dp6": {
+      "setId": "dp6",
+      "slug": "legends-awakened",
+      "name": "Legends Awakened",
+      "logo": "/img/dp6/logo.png",
+      "src": "/img/dp6/logo.png"
+    },
+    "dp7": {
+      "setId": "dp7",
+      "slug": "stormfront",
+      "name": "Stormfront",
+      "logo": "/img/dp7/logo.png",
+      "src": "/img/dp7/logo.png"
+    },
+    "dpp": {
+      "setId": "dpp",
+      "slug": "diamond-and-pearl-promos",
+      "name": "Diamond and Pearl Promos",
+      "logo": "/img/dpp/logo.png",
+      "src": "/img/dpp/logo.png"
+    },
+    "dptrainerkitmanaphyandlucario": {
+      "setId": "dptrainerkitmanaphyandlucario",
+      "slug": "dp-trainer-kit-manaphy-and-lucario",
+      "name": "DP Trainer Kit: Manaphy & Lucario",
+      "logo": "/img/dptrainerkitmanaphyandlucario/logo.png",
+      "src": "/img/dptrainerkitmanaphyandlucario/logo.png",
+      "kind": "tile"
+    },
+    "dragon-majesty": {
+      "setId": "sm75",
+      "slug": "dragon-majesty",
+      "name": "Dragon Majesty",
+      "logo": "/img/sm75/logo.png",
+      "src": "/img/sm75/logo.png"
+    },
+    "dragon-vault": {
+      "setId": "dv1",
+      "slug": "dragon-vault",
+      "name": "Dragon Vault",
+      "logo": "/img/dv1/logo.png",
+      "src": "/img/dv1/logo.png"
+    },
+    "dragons-exalted": {
+      "setId": "bw6",
+      "slug": "dragons-exalted",
+      "name": "Dragons Exalted",
+      "logo": "/img/bw6/logo.png",
+      "src": "/img/bw6/logo.png"
+    },
+    "dv1": {
+      "setId": "dv1",
+      "slug": "dragon-vault",
+      "name": "Dragon Vault",
+      "logo": "/img/dv1/logo.png",
+      "src": "/img/dv1/logo.png"
+    },
+    "e-reader-sample-cards": {
+      "setId": "ereadersamplecards",
+      "slug": "e-reader-sample-cards",
+      "name": "e-Reader Sample Cards",
+      "logo": "/img/ereadersamplecards/logo.png",
+      "src": "/img/ereadersamplecards/logo.png",
+      "kind": "tile"
+    },
+    "ecard1": {
+      "setId": "ecard1",
+      "slug": "expedition",
+      "name": "Expedition",
+      "logo": "/img/ecard1/logo.png",
+      "src": "/img/ecard1/logo.png"
+    },
+    "ecard2": {
+      "setId": "ecard2",
+      "slug": "aquapolis",
+      "name": "Aquapolis",
+      "logo": "/img/ecard2/logo.png",
+      "src": "/img/ecard2/logo.png"
+    },
+    "ecard3": {
+      "setId": "ecard3",
+      "slug": "skyridge",
+      "name": "Skyridge",
+      "logo": "/img/ecard3/logo.png",
+      "src": "/img/ecard3/logo.png"
+    },
+    "emerging-powers": {
+      "setId": "bw2",
+      "slug": "emerging-powers",
+      "name": "Emerging Powers",
+      "logo": "/img/bw2/logo.png",
+      "src": "/img/bw2/logo.png"
+    },
+    "ereadersamplecards": {
+      "setId": "ereadersamplecards",
+      "slug": "e-reader-sample-cards",
+      "name": "e-Reader Sample Cards",
+      "logo": "/img/ereadersamplecards/logo.png",
+      "src": "/img/ereadersamplecards/logo.png",
+      "kind": "tile"
+    },
+    "ex-battle-stadium": {
+      "setId": "exbattlestadium",
+      "slug": "ex-battle-stadium",
+      "name": "EX Battle Stadium",
+      "logo": "/img/exbattlestadium/logo.png",
+      "src": "/img/exbattlestadium/logo.png",
+      "kind": "tile"
+    },
+    "ex-crystal-guardians": {
+      "setId": "ex14",
+      "slug": "ex-crystal-guardians",
+      "name": "EX Crystal Guardians",
+      "logo": "/img/ex14/logo.png",
+      "src": "/img/ex14/logo.png"
+    },
+    "ex-delta-species": {
+      "setId": "ex11",
+      "slug": "ex-delta-species",
+      "name": "EX Delta Species",
+      "logo": "/img/ex11/logo.png",
+      "src": "/img/ex11/logo.png"
+    },
+    "ex-deoxys": {
+      "setId": "ex8",
+      "slug": "ex-deoxys",
+      "name": "EX Deoxys",
+      "logo": "/img/ex8/logo.png",
+      "src": "/img/ex8/logo.png"
+    },
+    "ex-dragon": {
+      "setId": "ex3",
+      "slug": "ex-dragon",
+      "name": "EX Dragon",
+      "logo": "/img/ex3/logo.png",
+      "src": "/img/ex3/logo.png"
+    },
+    "ex-dragon-frontiers": {
+      "setId": "ex15",
+      "slug": "ex-dragon-frontiers",
+      "name": "EX Dragon Frontiers",
+      "logo": "/img/ex15/logo.png",
+      "src": "/img/ex15/logo.png"
+    },
+    "ex-emerald": {
+      "setId": "ex9",
+      "slug": "ex-emerald",
+      "name": "EX Emerald",
+      "logo": "/img/ex9/logo.png",
+      "src": "/img/ex9/logo.png"
+    },
+    "ex-firered-and-leafgreen": {
+      "setId": "ex6",
+      "slug": "ex-firered-and-leafgreen",
+      "name": "EX FireRed & LeafGreen",
+      "logo": "/img/ex6/logo.png",
+      "src": "/img/ex6/logo.png"
+    },
+    "ex-hidden-legends": {
+      "setId": "ex5",
+      "slug": "ex-hidden-legends",
+      "name": "EX Hidden Legends",
+      "logo": "/img/ex5/logo.png",
+      "src": "/img/ex5/logo.png"
+    },
+    "ex-holon-phantoms": {
+      "setId": "ex13",
+      "slug": "ex-holon-phantoms",
+      "name": "EX Holon Phantoms",
+      "logo": "/img/ex13/logo.png",
+      "src": "/img/ex13/logo.png"
+    },
+    "ex-legend-maker": {
+      "setId": "ex12",
+      "slug": "ex-legend-maker",
+      "name": "EX Legend Maker",
+      "logo": "/img/ex12/logo.png",
+      "src": "/img/ex12/logo.png"
+    },
+    "ex-power-keepers": {
+      "setId": "ex16",
+      "slug": "ex-power-keepers",
+      "name": "EX Power Keepers",
+      "logo": "/img/ex16/logo.png",
+      "src": "/img/ex16/logo.png"
+    },
+    "ex-ruby-and-sapphire": {
+      "setId": "ex1",
+      "slug": "ex-ruby-and-sapphire",
+      "name": "EX Ruby and Sapphire",
+      "logo": "/img/ex1/logo.png",
+      "src": "/img/ex1/logo.png"
+    },
+    "ex-sandstorm": {
+      "setId": "ex2",
+      "slug": "ex-sandstorm",
+      "name": "EX Sandstorm",
+      "logo": "/img/ex2/logo.png",
+      "src": "/img/ex2/logo.png"
+    },
+    "ex-team-magma-vs-team-aqua": {
+      "setId": "ex4",
+      "slug": "ex-team-magma-vs-team-aqua",
+      "name": "EX Team Magma vs Team Aqua",
+      "logo": "/img/ex4/logo.png",
+      "src": "/img/ex4/logo.png"
+    },
+    "ex-team-rocket-returns": {
+      "setId": "ex7",
+      "slug": "ex-team-rocket-returns",
+      "name": "EX Team Rocket Returns",
+      "logo": "/img/ex7/logo.png",
+      "src": "/img/ex7/logo.png"
+    },
+    "ex-trainer-kit-1-latias-and-latios": {
+      "setId": "extrainerkit1latiasandlatios",
+      "slug": "ex-trainer-kit-1-latias-and-latios",
+      "name": "EX Trainer Kit 1: Latias & Latios",
+      "logo": "/img/extrainerkit1latiasandlatios/logo.png",
+      "src": "/img/extrainerkit1latiasandlatios/logo.png",
+      "kind": "tile"
+    },
+    "ex-trainer-kit-2-plusle-and-minun": {
+      "setId": "extrainerkit2plusleandminun",
+      "slug": "ex-trainer-kit-2-plusle-and-minun",
+      "name": "EX Trainer Kit 2: Plusle & Minun",
+      "logo": "/img/extrainerkit2plusleandminun/logo.png",
+      "src": "/img/extrainerkit2plusleandminun/logo.png",
+      "kind": "tile"
+    },
+    "ex-unseen-forces": {
+      "setId": "ex10",
+      "slug": "ex-unseen-forces",
+      "name": "EX Unseen Forces",
+      "logo": "/img/ex10/logo.png",
+      "src": "/img/ex10/logo.png"
+    },
+    "ex1": {
+      "setId": "ex1",
+      "slug": "ex-ruby-and-sapphire",
+      "name": "EX Ruby and Sapphire",
+      "logo": "/img/ex1/logo.png",
+      "src": "/img/ex1/logo.png"
+    },
+    "ex10": {
+      "setId": "ex10",
+      "slug": "ex-unseen-forces",
+      "name": "EX Unseen Forces",
+      "logo": "/img/ex10/logo.png",
+      "src": "/img/ex10/logo.png"
+    },
+    "ex11": {
+      "setId": "ex11",
+      "slug": "ex-delta-species",
+      "name": "EX Delta Species",
+      "logo": "/img/ex11/logo.png",
+      "src": "/img/ex11/logo.png"
+    },
+    "ex12": {
+      "setId": "ex12",
+      "slug": "ex-legend-maker",
+      "name": "EX Legend Maker",
+      "logo": "/img/ex12/logo.png",
+      "src": "/img/ex12/logo.png"
+    },
+    "ex13": {
+      "setId": "ex13",
+      "slug": "ex-holon-phantoms",
+      "name": "EX Holon Phantoms",
+      "logo": "/img/ex13/logo.png",
+      "src": "/img/ex13/logo.png"
+    },
+    "ex14": {
+      "setId": "ex14",
+      "slug": "ex-crystal-guardians",
+      "name": "EX Crystal Guardians",
+      "logo": "/img/ex14/logo.png",
+      "src": "/img/ex14/logo.png"
+    },
+    "ex15": {
+      "setId": "ex15",
+      "slug": "ex-dragon-frontiers",
+      "name": "EX Dragon Frontiers",
+      "logo": "/img/ex15/logo.png",
+      "src": "/img/ex15/logo.png"
+    },
+    "ex16": {
+      "setId": "ex16",
+      "slug": "ex-power-keepers",
+      "name": "EX Power Keepers",
+      "logo": "/img/ex16/logo.png",
+      "src": "/img/ex16/logo.png"
+    },
+    "ex2": {
+      "setId": "ex2",
+      "slug": "ex-sandstorm",
+      "name": "EX Sandstorm",
+      "logo": "/img/ex2/logo.png",
+      "src": "/img/ex2/logo.png"
+    },
+    "ex3": {
+      "setId": "ex3",
+      "slug": "ex-dragon",
+      "name": "EX Dragon",
+      "logo": "/img/ex3/logo.png",
+      "src": "/img/ex3/logo.png"
+    },
+    "ex4": {
+      "setId": "ex4",
+      "slug": "ex-team-magma-vs-team-aqua",
+      "name": "EX Team Magma vs Team Aqua",
+      "logo": "/img/ex4/logo.png",
+      "src": "/img/ex4/logo.png"
+    },
+    "ex5": {
+      "setId": "ex5",
+      "slug": "ex-hidden-legends",
+      "name": "EX Hidden Legends",
+      "logo": "/img/ex5/logo.png",
+      "src": "/img/ex5/logo.png"
+    },
+    "ex6": {
+      "setId": "ex6",
+      "slug": "ex-firered-and-leafgreen",
+      "name": "EX FireRed & LeafGreen",
+      "logo": "/img/ex6/logo.png",
+      "src": "/img/ex6/logo.png"
+    },
+    "ex7": {
+      "setId": "ex7",
+      "slug": "ex-team-rocket-returns",
+      "name": "EX Team Rocket Returns",
+      "logo": "/img/ex7/logo.png",
+      "src": "/img/ex7/logo.png"
+    },
+    "ex8": {
+      "setId": "ex8",
+      "slug": "ex-deoxys",
+      "name": "EX Deoxys",
+      "logo": "/img/ex8/logo.png",
+      "src": "/img/ex8/logo.png"
+    },
+    "ex9": {
+      "setId": "ex9",
+      "slug": "ex-emerald",
+      "name": "EX Emerald",
+      "logo": "/img/ex9/logo.png",
+      "src": "/img/ex9/logo.png"
+    },
+    "exbattlestadium": {
+      "setId": "exbattlestadium",
+      "slug": "ex-battle-stadium",
+      "name": "EX Battle Stadium",
+      "logo": "/img/exbattlestadium/logo.png",
+      "src": "/img/exbattlestadium/logo.png",
+      "kind": "tile"
+    },
+    "expedition": {
+      "setId": "ecard1",
+      "slug": "expedition",
+      "name": "Expedition",
+      "logo": "/img/ecard1/logo.png",
+      "src": "/img/ecard1/logo.png"
+    },
+    "extrainerkit1latiasandlatios": {
+      "setId": "extrainerkit1latiasandlatios",
+      "slug": "ex-trainer-kit-1-latias-and-latios",
+      "name": "EX Trainer Kit 1: Latias & Latios",
+      "logo": "/img/extrainerkit1latiasandlatios/logo.png",
+      "src": "/img/extrainerkit1latiasandlatios/logo.png",
+      "kind": "tile"
+    },
+    "extrainerkit2plusleandminun": {
+      "setId": "extrainerkit2plusleandminun",
+      "slug": "ex-trainer-kit-2-plusle-and-minun",
+      "name": "EX Trainer Kit 2: Plusle & Minun",
+      "logo": "/img/extrainerkit2plusleandminun/logo.png",
+      "src": "/img/extrainerkit2plusleandminun/logo.png",
+      "kind": "tile"
+    },
+    "first-partner-collection-2026": {
+      "setId": "firstpartnercollection2026",
+      "slug": "first-partner-collection-2026",
+      "name": "First Partner Collection 2026",
+      "logo": "/img/firstpartnercollection2026/logo.png",
+      "src": "/img/firstpartnercollection2026/logo.png",
+      "kind": "tile"
+    },
+    "first-partner-pack": {
+      "setId": "firstpartnerpack",
+      "slug": "first-partner-pack",
+      "name": "First Partner Pack",
+      "logo": "/img/firstpartnerpack/logo.png",
+      "src": "/img/firstpartnerpack/logo.png",
+      "kind": "tile"
+    },
+    "firstpartnercollection2026": {
+      "setId": "firstpartnercollection2026",
+      "slug": "first-partner-collection-2026",
+      "name": "First Partner Collection 2026",
+      "logo": "/img/firstpartnercollection2026/logo.png",
+      "src": "/img/firstpartnercollection2026/logo.png",
+      "kind": "tile"
+    },
+    "firstpartnerpack": {
+      "setId": "firstpartnerpack",
+      "slug": "first-partner-pack",
+      "name": "First Partner Pack",
+      "logo": "/img/firstpartnerpack/logo.png",
+      "src": "/img/firstpartnerpack/logo.png",
+      "kind": "tile"
+    },
+    "fossil": {
+      "setId": "base3",
+      "slug": "fossil",
+      "name": "Fossil",
+      "logo": "/img/base3/logo.png",
+      "src": "/img/base3/logo.png"
+    },
+    "g1": {
+      "setId": "g1",
+      "slug": "generations",
+      "name": "Generations",
+      "logo": "/img/g1/logo.png",
+      "src": "/img/g1/logo.png"
+    },
+    "generations": {
+      "setId": "g1",
+      "slug": "generations",
+      "name": "Generations",
+      "logo": "/img/g1/logo.png",
+      "src": "/img/g1/logo.png"
+    },
+    "great-encounters": {
+      "setId": "dp4",
+      "slug": "great-encounters",
+      "name": "Great Encounters",
+      "logo": "/img/dp4/logo.png",
+      "src": "/img/dp4/logo.png"
+    },
+    "gym-challenge": {
+      "setId": "gym2",
+      "slug": "gym-challenge",
+      "name": "Gym Challenge",
+      "logo": "/img/gym2/logo.png",
+      "src": "/img/gym2/logo.png"
+    },
+    "gym-heroes": {
+      "setId": "gym1",
+      "slug": "gym-heroes",
+      "name": "Gym Heroes",
+      "logo": "/img/gym1/logo.png",
+      "src": "/img/gym1/logo.png"
+    },
+    "gym1": {
+      "setId": "gym1",
+      "slug": "gym-heroes",
+      "name": "Gym Heroes",
+      "logo": "/img/gym1/logo.png",
+      "src": "/img/gym1/logo.png"
+    },
+    "gym2": {
+      "setId": "gym2",
+      "slug": "gym-challenge",
+      "name": "Gym Challenge",
+      "logo": "/img/gym2/logo.png",
+      "src": "/img/gym2/logo.png"
+    },
+    "heartgold-soulsilver": {
+      "setId": "hgss1",
+      "slug": "heartgold-soulsilver",
+      "name": "HeartGold SoulSilver",
+      "logo": "/img/hgss1/logo.png",
+      "src": "/img/hgss1/logo.png"
+    },
+    "hgss-promos": {
+      "setId": "hsp",
+      "slug": "hgss-promos",
+      "name": "HGSS Promos",
+      "logo": "/img/hsp/logo.png",
+      "src": "/img/hsp/logo.png"
+    },
+    "hgss-trainer-kit-gyarados-and-raichu": {
+      "setId": "hgsstrainerkitgyaradosandraichu",
+      "slug": "hgss-trainer-kit-gyarados-and-raichu",
+      "name": "HGSS Trainer Kit: Gyarados & Raichu",
+      "logo": "/img/hgsstrainerkitgyaradosandraichu/logo.png",
+      "src": "/img/hgsstrainerkitgyaradosandraichu/logo.png",
+      "kind": "tile"
+    },
+    "hgss1": {
+      "setId": "hgss1",
+      "slug": "heartgold-soulsilver",
+      "name": "HeartGold SoulSilver",
+      "logo": "/img/hgss1/logo.png",
+      "src": "/img/hgss1/logo.png"
+    },
+    "hgss2": {
+      "setId": "hgss2",
+      "slug": "unleashed",
+      "name": "Unleashed",
+      "logo": "/img/hgss2/logo.png",
+      "src": "/img/hgss2/logo.png"
+    },
+    "hgss3": {
+      "setId": "hgss3",
+      "slug": "undaunted",
+      "name": "Undaunted",
+      "logo": "/img/hgss3/logo.png",
+      "src": "/img/hgss3/logo.png"
+    },
+    "hgss4": {
+      "setId": "hgss4",
+      "slug": "triumphant",
+      "name": "Triumphant",
+      "logo": "/img/hgss4/logo.png",
+      "src": "/img/hgss4/logo.png"
+    },
+    "hgsstrainerkitgyaradosandraichu": {
+      "setId": "hgsstrainerkitgyaradosandraichu",
+      "slug": "hgss-trainer-kit-gyarados-and-raichu",
+      "name": "HGSS Trainer Kit: Gyarados & Raichu",
+      "logo": "/img/hgsstrainerkitgyaradosandraichu/logo.png",
+      "src": "/img/hgsstrainerkitgyaradosandraichu/logo.png",
+      "kind": "tile"
+    },
+    "hidden-fates": {
+      "setId": "sm115",
+      "slug": "hidden-fates",
+      "name": "Hidden Fates",
+      "logo": "/img/sm115/logo.png",
+      "src": "/img/sm115/logo.png"
+    },
+    "hsp": {
+      "setId": "hsp",
+      "slug": "hgss-promos",
+      "name": "HGSS Promos",
+      "logo": "/img/hsp/logo.png",
+      "src": "/img/hsp/logo.png"
+    },
+    "jumbo-cards": {
+      "setId": "jumbocards",
+      "slug": "jumbo-cards",
+      "name": "Jumbo Cards",
+      "logo": "/img/jumbocards/logo.png",
+      "src": "/img/jumbocards/logo.png",
+      "kind": "tile"
+    },
+    "jumbocards": {
+      "setId": "jumbocards",
+      "slug": "jumbo-cards",
+      "name": "Jumbo Cards",
+      "logo": "/img/jumbocards/logo.png",
+      "src": "/img/jumbocards/logo.png",
+      "kind": "tile"
+    },
+    "jungle": {
+      "setId": "base2",
+      "slug": "jungle",
+      "name": "Jungle",
+      "logo": "/img/base2/logo.png",
+      "src": "/img/base2/logo.png"
+    },
+    "kalos-starter-set": {
+      "setId": "xy0",
+      "slug": "kalos-starter-set",
+      "name": "Kalos Starter Set",
+      "logo": "/img/xy0/logo.png",
+      "src": "/img/xy0/logo.png"
+    },
+    "kids-wb-promos": {
+      "setId": "kidswbpromos",
+      "slug": "kids-wb-promos",
+      "name": "Kids WB Promos",
+      "logo": "/img/kidswbpromos/logo.png",
+      "src": "/img/kidswbpromos/logo.png",
+      "kind": "tile"
+    },
+    "kidswbpromos": {
+      "setId": "kidswbpromos",
+      "slug": "kids-wb-promos",
+      "name": "Kids WB Promos",
+      "logo": "/img/kidswbpromos/logo.png",
+      "src": "/img/kidswbpromos/logo.png",
+      "kind": "tile"
+    },
+    "league-and-championship-cards": {
+      "setId": "leagueandchampionshipcards",
+      "slug": "league-and-championship-cards",
+      "name": "League & Championship Cards",
+      "logo": "/img/leagueandchampionshipcards/logo.png",
+      "src": "/img/leagueandchampionshipcards/logo.png",
+      "kind": "tile"
+    },
+    "leagueandchampionshipcards": {
+      "setId": "leagueandchampionshipcards",
+      "slug": "league-and-championship-cards",
+      "name": "League & Championship Cards",
+      "logo": "/img/leagueandchampionshipcards/logo.png",
+      "src": "/img/leagueandchampionshipcards/logo.png",
+      "kind": "tile"
+    },
+    "legendary-collection": {
+      "setId": "base6",
+      "slug": "legendary-collection",
+      "name": "Legendary Collection",
+      "logo": "/img/base6/logo.png",
+      "src": "/img/base6/logo.png"
+    },
+    "legendary-treasures": {
+      "setId": "bw11",
+      "slug": "legendary-treasures",
+      "name": "Legendary Treasures",
+      "logo": "/img/bw11/logo.png",
+      "src": "/img/bw11/logo.png"
+    },
+    "legends-awakened": {
+      "setId": "dp6",
+      "slug": "legends-awakened",
+      "name": "Legends Awakened",
+      "logo": "/img/dp6/logo.png",
+      "src": "/img/dp6/logo.png"
+    },
+    "majestic-dawn": {
+      "setId": "dp5",
+      "slug": "majestic-dawn",
+      "name": "Majestic Dawn",
+      "logo": "/img/dp5/logo.png",
+      "src": "/img/dp5/logo.png"
+    },
+    "mcd11": {
+      "setId": "mcd11",
+      "slug": "mcdonald-s-promos-2011",
+      "name": "McDonald's Promos 2011",
+      "logo": "/img/mcd11/logo.png",
+      "src": "/img/mcd11/logo.png"
+    },
+    "mcd12": {
+      "setId": "mcd12",
+      "slug": "mcdonald-s-promos-2012",
+      "name": "McDonald's Promos 2012",
+      "logo": "/img/mcd12/logo.png",
+      "src": "/img/mcd12/logo.png"
+    },
+    "mcd14": {
+      "setId": "mcd14",
+      "slug": "mcdonald-s-promos-2014",
+      "name": "McDonald's Promos 2014",
+      "logo": "/img/mcd14/logo.png",
+      "src": "/img/mcd14/logo.png"
+    },
+    "mcd15": {
+      "setId": "mcd15",
+      "slug": "mcdonald-s-promos-2015",
+      "name": "McDonald's Promos 2015",
+      "logo": "/img/mcd15/logo.png",
+      "src": "/img/mcd15/logo.png"
+    },
+    "mcd16": {
+      "setId": "mcd16",
+      "slug": "mcdonald-s-promos-2016",
+      "name": "McDonald's Promos 2016",
+      "logo": "/img/mcd16/logo.png",
+      "src": "/img/mcd16/logo.png"
+    },
+    "mcd17": {
+      "setId": "mcd17",
+      "slug": "mcdonald-s-promos-2017",
+      "name": "McDonald's Promos 2017",
+      "logo": "/img/mcd17/logo.png",
+      "src": "/img/mcd17/logo.png"
+    },
+    "mcd18": {
+      "setId": "mcd18",
+      "slug": "mcdonald-s-promos-2018",
+      "name": "McDonald's Promos 2018",
+      "logo": "/img/mcd18/logo.png",
+      "src": "/img/mcd18/logo.png"
+    },
+    "mcd19": {
+      "setId": "mcd19",
+      "slug": "mcdonald-s-promos-2019",
+      "name": "McDonald's Promos 2019",
+      "logo": "/img/mcd19/logo.png",
+      "src": "/img/mcd19/logo.png"
+    },
+    "mcd21": {
+      "setId": "mcd21",
+      "slug": "mcdonald-s-25th-anniversary-promos",
+      "name": "McDonald's 25th Anniversary Promos",
+      "logo": "/img/mcd21/logo.png",
+      "src": "/img/mcd21/logo.png"
+    },
+    "mcd22": {
+      "setId": "mcd22",
+      "slug": "mcdonald-s-promos-2022",
+      "name": "McDonald's Promos 2022",
+      "logo": "/img/mcd22/logo.png",
+      "src": "/img/mcd22/logo.png"
+    },
+    "mcdonald-s-25th-anniversary-promos": {
+      "setId": "mcd21",
+      "slug": "mcdonald-s-25th-anniversary-promos",
+      "name": "McDonald's 25th Anniversary Promos",
+      "logo": "/img/mcd21/logo.png",
+      "src": "/img/mcd21/logo.png"
+    },
+    "mcdonald-s-promos-2011": {
+      "setId": "mcd11",
+      "slug": "mcdonald-s-promos-2011",
+      "name": "McDonald's Promos 2011",
+      "logo": "/img/mcd11/logo.png",
+      "src": "/img/mcd11/logo.png"
+    },
+    "mcdonald-s-promos-2012": {
+      "setId": "mcd12",
+      "slug": "mcdonald-s-promos-2012",
+      "name": "McDonald's Promos 2012",
+      "logo": "/img/mcd12/logo.png",
+      "src": "/img/mcd12/logo.png"
+    },
+    "mcdonald-s-promos-2014": {
+      "setId": "mcd14",
+      "slug": "mcdonald-s-promos-2014",
+      "name": "McDonald's Promos 2014",
+      "logo": "/img/mcd14/logo.png",
+      "src": "/img/mcd14/logo.png"
+    },
+    "mcdonald-s-promos-2015": {
+      "setId": "mcd15",
+      "slug": "mcdonald-s-promos-2015",
+      "name": "McDonald's Promos 2015",
+      "logo": "/img/mcd15/logo.png",
+      "src": "/img/mcd15/logo.png"
+    },
+    "mcdonald-s-promos-2016": {
+      "setId": "mcd16",
+      "slug": "mcdonald-s-promos-2016",
+      "name": "McDonald's Promos 2016",
+      "logo": "/img/mcd16/logo.png",
+      "src": "/img/mcd16/logo.png"
+    },
+    "mcdonald-s-promos-2017": {
+      "setId": "mcd17",
+      "slug": "mcdonald-s-promos-2017",
+      "name": "McDonald's Promos 2017",
+      "logo": "/img/mcd17/logo.png",
+      "src": "/img/mcd17/logo.png"
+    },
+    "mcdonald-s-promos-2018": {
+      "setId": "mcd18",
+      "slug": "mcdonald-s-promos-2018",
+      "name": "McDonald's Promos 2018",
+      "logo": "/img/mcd18/logo.png",
+      "src": "/img/mcd18/logo.png"
+    },
+    "mcdonald-s-promos-2019": {
+      "setId": "mcd19",
+      "slug": "mcdonald-s-promos-2019",
+      "name": "McDonald's Promos 2019",
+      "logo": "/img/mcd19/logo.png",
+      "src": "/img/mcd19/logo.png"
+    },
+    "mcdonald-s-promos-2022": {
+      "setId": "mcd22",
+      "slug": "mcdonald-s-promos-2022",
+      "name": "McDonald's Promos 2022",
+      "logo": "/img/mcd22/logo.png",
+      "src": "/img/mcd22/logo.png"
+    },
+    "mcdonald-s-promos-2023": {
+      "setId": "mcdonaldspromos2023",
+      "slug": "mcdonald-s-promos-2023",
+      "name": "McDonald's Promos 2023",
+      "logo": "/img/mcdonaldspromos2023/logo.png",
+      "src": "/img/mcdonaldspromos2023/logo.png",
+      "kind": "tile"
+    },
+    "mcdonald-s-promos-2024": {
+      "setId": "mcdonaldspromos2024",
+      "slug": "mcdonald-s-promos-2024",
+      "name": "McDonald's Promos 2024",
+      "logo": "/img/mcdonaldspromos2024/logo.png",
+      "src": "/img/mcdonaldspromos2024/logo.png",
+      "kind": "tile"
+    },
+    "mcdonaldspromos2023": {
+      "setId": "mcdonaldspromos2023",
+      "slug": "mcdonald-s-promos-2023",
+      "name": "McDonald's Promos 2023",
+      "logo": "/img/mcdonaldspromos2023/logo.png",
+      "src": "/img/mcdonaldspromos2023/logo.png",
+      "kind": "tile"
+    },
+    "mcdonaldspromos2024": {
+      "setId": "mcdonaldspromos2024",
+      "slug": "mcdonald-s-promos-2024",
+      "name": "McDonald's Promos 2024",
+      "logo": "/img/mcdonaldspromos2024/logo.png",
+      "src": "/img/mcdonaldspromos2024/logo.png",
+      "kind": "tile"
+    },
+    "me-30th-celebration": {
+      "setId": "me55",
+      "slug": "me-30th-celebration",
+      "name": "ME: 30th Celebration",
+      "logo": "/img/me55/logo.png",
+      "src": "/img/me55/logo.png",
+      "kind": "tile"
+    },
+    "me-ascended-heroes": {
+      "setId": "me2pt5",
+      "slug": "me-ascended-heroes",
+      "name": "ME: Ascended Heroes",
+      "logo": "/img/me2pt5/logo.png",
+      "src": "/img/me2pt5/logo.png",
+      "kind": "tile"
+    },
+    "me-mega-evolution-promo": {
+      "setId": "mep",
+      "slug": "me-mega-evolution-promo",
+      "name": "ME: Mega Evolution Promo",
+      "logo": "/img/me1/logo.png",
+      "src": "/img/me1/logo.png",
+      "confirmed": "Catalogue cards are setId mep (mep-9, mep-10, mep-22, mep-31). Scrydex image mep-003 is Alakazam 003, a card in this set. The mep logo URL is the generic promo star, so the logo is parent me1.",
+      "parentSetId": "me1"
+    },
+    "me01-mega-evolution": {
+      "setId": "me1",
+      "slug": "me01-mega-evolution",
+      "name": "ME01: Mega Evolution",
+      "logo": "/img/me1/logo.png",
+      "src": "/img/me1/logo.png"
+    },
+    "me02-phantasmal-flames": {
+      "setId": "me2",
+      "slug": "me02-phantasmal-flames",
+      "name": "ME02: Phantasmal Flames",
+      "logo": "/img/me2/logo.png",
+      "src": "/img/me2/logo.png"
+    },
+    "me03-perfect-order": {
+      "setId": "me3",
+      "slug": "me03-perfect-order",
+      "name": "ME03: Perfect Order",
+      "logo": "/img/me3/logo.png",
+      "src": "/img/me3/logo.png",
+      "kind": "tile"
+    },
+    "me04-chaos-rising": {
+      "setId": "me4",
+      "slug": "me04-chaos-rising",
+      "name": "ME04: Chaos Rising",
+      "logo": "/img/me4/logo.png",
+      "src": "/img/me4/logo.png",
+      "kind": "tile"
+    },
+    "me05-pitch-black": {
+      "setId": "me5",
+      "slug": "me05-pitch-black",
+      "name": "ME05: Pitch Black",
+      "logo": "/img/me5/logo.png",
+      "src": "/img/me5/logo.png",
+      "kind": "tile"
+    },
+    "me06-delta-reign": {
+      "setId": "me6",
+      "slug": "me06-delta-reign",
+      "name": "ME06: Delta Reign",
+      "logo": "/img/me6/logo.png",
+      "src": "/img/me6/logo.png",
+      "kind": "tile"
+    },
+    "me1": {
+      "setId": "me1",
+      "slug": "me01-mega-evolution",
+      "name": "ME01: Mega Evolution",
+      "logo": "/img/me1/logo.png",
+      "src": "/img/me1/logo.png"
+    },
+    "me2": {
+      "setId": "me2",
+      "slug": "me02-phantasmal-flames",
+      "name": "ME02: Phantasmal Flames",
+      "logo": "/img/me2/logo.png",
+      "src": "/img/me2/logo.png"
+    },
+    "me2pt5": {
+      "setId": "me2pt5",
+      "slug": "me-ascended-heroes",
+      "name": "ME: Ascended Heroes",
+      "logo": "/img/me2pt5/logo.png",
+      "src": "/img/me2pt5/logo.png",
+      "kind": "tile"
+    },
+    "me3": {
+      "setId": "me3",
+      "slug": "me03-perfect-order",
+      "name": "ME03: Perfect Order",
+      "logo": "/img/me3/logo.png",
+      "src": "/img/me3/logo.png",
+      "kind": "tile"
+    },
+    "me4": {
+      "setId": "me4",
+      "slug": "me04-chaos-rising",
+      "name": "ME04: Chaos Rising",
+      "logo": "/img/me4/logo.png",
+      "src": "/img/me4/logo.png",
+      "kind": "tile"
+    },
+    "me5": {
+      "setId": "me5",
+      "slug": "me05-pitch-black",
+      "name": "ME05: Pitch Black",
+      "logo": "/img/me5/logo.png",
+      "src": "/img/me5/logo.png",
+      "kind": "tile"
+    },
+    "me55": {
+      "setId": "me55",
+      "slug": "me-30th-celebration",
+      "name": "ME: 30th Celebration",
+      "logo": "/img/me55/logo.png",
+      "src": "/img/me55/logo.png",
+      "kind": "tile"
+    },
+    "me55c": {
+      "setId": "me55",
+      "slug": "me-30th-celebration",
+      "name": "30th Celebration: Classic Collection",
+      "parentSetId": "me55",
+      "gallerySetId": "me55c",
+      "logo": "/img/me55/logo.png",
+      "src": "/img/me55/logo.png"
+    },
+    "me6": {
+      "setId": "me6",
+      "slug": "me06-delta-reign",
+      "name": "ME06: Delta Reign",
+      "logo": "/img/me6/logo.png",
+      "src": "/img/me6/logo.png",
+      "kind": "tile"
+    },
+    "mee": {
+      "setId": "mee",
+      "slug": "mee-mega-evolution-energies",
+      "name": "MEE: Mega Evolution Energies",
+      "logo": "/img/mee/logo.png",
+      "src": "/img/mee/logo.png",
+      "kind": "tile"
+    },
+    "mee-mega-evolution-energies": {
+      "setId": "mee",
+      "slug": "mee-mega-evolution-energies",
+      "name": "MEE: Mega Evolution Energies",
+      "logo": "/img/mee/logo.png",
+      "src": "/img/mee/logo.png",
+      "kind": "tile"
+    },
+    "mep": {
+      "setId": "mep",
+      "slug": "me-mega-evolution-promo",
+      "name": "ME: Mega Evolution Promo",
+      "logo": "/img/me1/logo.png",
+      "src": "/img/me1/logo.png",
+      "confirmed": "Catalogue cards are setId mep (mep-9, mep-10, mep-22, mep-31). Scrydex image mep-003 is Alakazam 003, a card in this set. The mep logo URL is the generic promo star, so the logo is parent me1.",
+      "parentSetId": "me1"
+    },
+    "miscellaneous-cards-and-products": {
+      "setId": "miscellaneouscardsandproducts",
+      "slug": "miscellaneous-cards-and-products",
+      "name": "Miscellaneous Cards & Products",
+      "logo": "/img/miscellaneouscardsandproducts/logo.png",
+      "src": "/img/miscellaneouscardsandproducts/logo.png",
+      "kind": "tile"
+    },
+    "miscellaneouscardsandproducts": {
+      "setId": "miscellaneouscardsandproducts",
+      "slug": "miscellaneous-cards-and-products",
+      "name": "Miscellaneous Cards & Products",
+      "logo": "/img/miscellaneouscardsandproducts/logo.png",
+      "src": "/img/miscellaneouscardsandproducts/logo.png",
+      "kind": "tile"
+    },
+    "my-first-battle": {
+      "setId": "myfirstbattle",
+      "slug": "my-first-battle",
+      "name": "My First Battle",
+      "logo": "/img/myfirstbattle/logo.png",
+      "src": "/img/myfirstbattle/logo.png",
+      "kind": "tile"
+    },
+    "myfirstbattle": {
+      "setId": "myfirstbattle",
+      "slug": "my-first-battle",
+      "name": "My First Battle",
+      "logo": "/img/myfirstbattle/logo.png",
+      "src": "/img/myfirstbattle/logo.png",
+      "kind": "tile"
+    },
+    "mysterious-treasures": {
+      "setId": "dp2",
+      "slug": "mysterious-treasures",
+      "name": "Mysterious Treasures",
+      "logo": "/img/dp2/logo.png",
+      "src": "/img/dp2/logo.png"
+    },
+    "neo-destiny": {
+      "setId": "neo4",
+      "slug": "neo-destiny",
+      "name": "Neo Destiny",
+      "logo": "/img/neo4/logo.png",
+      "src": "/img/neo4/logo.png"
+    },
+    "neo-discovery": {
+      "setId": "neo2",
+      "slug": "neo-discovery",
+      "name": "Neo Discovery",
+      "logo": "/img/neo2/logo.png",
+      "src": "/img/neo2/logo.png"
+    },
+    "neo-genesis": {
+      "setId": "neo1",
+      "slug": "neo-genesis",
+      "name": "Neo Genesis",
+      "logo": "/img/neo1/logo.png",
+      "src": "/img/neo1/logo.png"
+    },
+    "neo-revelation": {
+      "setId": "neo3",
+      "slug": "neo-revelation",
+      "name": "Neo Revelation",
+      "logo": "/img/neo3/logo.png",
+      "src": "/img/neo3/logo.png"
+    },
+    "neo1": {
+      "setId": "neo1",
+      "slug": "neo-genesis",
+      "name": "Neo Genesis",
+      "logo": "/img/neo1/logo.png",
+      "src": "/img/neo1/logo.png"
+    },
+    "neo2": {
+      "setId": "neo2",
+      "slug": "neo-discovery",
+      "name": "Neo Discovery",
+      "logo": "/img/neo2/logo.png",
+      "src": "/img/neo2/logo.png"
+    },
+    "neo3": {
+      "setId": "neo3",
+      "slug": "neo-revelation",
+      "name": "Neo Revelation",
+      "logo": "/img/neo3/logo.png",
+      "src": "/img/neo3/logo.png"
+    },
+    "neo4": {
+      "setId": "neo4",
+      "slug": "neo-destiny",
+      "name": "Neo Destiny",
+      "logo": "/img/neo4/logo.png",
+      "src": "/img/neo4/logo.png"
+    },
+    "next-destinies": {
+      "setId": "bw4",
+      "slug": "next-destinies",
+      "name": "Next Destinies",
+      "logo": "/img/bw4/logo.png",
+      "src": "/img/bw4/logo.png"
+    },
+    "nintendo-promos": {
+      "setId": "nintendopromos",
+      "slug": "nintendo-promos",
+      "name": "Nintendo Promos",
+      "logo": "/img/nintendopromos/logo.png",
+      "src": "/img/nintendopromos/logo.png",
+      "kind": "tile"
+    },
+    "nintendopromos": {
+      "setId": "nintendopromos",
+      "slug": "nintendo-promos",
+      "name": "Nintendo Promos",
+      "logo": "/img/nintendopromos/logo.png",
+      "src": "/img/nintendopromos/logo.png",
+      "kind": "tile"
+    },
+    "noble-victories": {
+      "setId": "bw3",
+      "slug": "noble-victories",
+      "name": "Noble Victories",
+      "logo": "/img/bw3/logo.png",
+      "src": "/img/bw3/logo.png"
+    },
+    "pgo": {
+      "setId": "pgo",
+      "slug": "pokemon-go",
+      "name": "Pok\u00e9mon GO",
+      "logo": "/img/pgo/logo.png",
+      "src": "/img/pgo/logo.png"
+    },
+    "pikachu-world-collection-promos": {
+      "setId": "pikachuworldcollectionpromos",
+      "slug": "pikachu-world-collection-promos",
+      "name": "Pikachu World Collection Promos",
+      "logo": "/img/pikachuworldcollectionpromos/logo.png",
+      "src": "/img/pikachuworldcollectionpromos/logo.png",
+      "kind": "tile"
+    },
+    "pikachuworldcollectionpromos": {
+      "setId": "pikachuworldcollectionpromos",
+      "slug": "pikachu-world-collection-promos",
+      "name": "Pikachu World Collection Promos",
+      "logo": "/img/pikachuworldcollectionpromos/logo.png",
+      "src": "/img/pikachuworldcollectionpromos/logo.png",
+      "kind": "tile"
+    },
+    "pl1": {
+      "setId": "pl1",
+      "slug": "platinum",
+      "name": "Platinum",
+      "logo": "/img/pl1/logo.png",
+      "src": "/img/pl1/logo.png"
+    },
+    "pl2": {
+      "setId": "pl2",
+      "slug": "rising-rivals",
+      "name": "Rising Rivals",
+      "logo": "/img/pl2/logo.png",
+      "src": "/img/pl2/logo.png"
+    },
+    "pl3": {
+      "setId": "pl3",
+      "slug": "supreme-victors",
+      "name": "Supreme Victors",
+      "logo": "/img/pl3/logo.png",
+      "src": "/img/pl3/logo.png"
+    },
+    "pl4": {
+      "setId": "pl4",
+      "slug": "arceus",
+      "name": "Arceus",
+      "logo": "/img/pl4/logo.png",
+      "src": "/img/pl4/logo.png"
+    },
+    "plasma-blast": {
+      "setId": "bw10",
+      "slug": "plasma-blast",
+      "name": "Plasma Blast",
+      "logo": "/img/bw10/logo.png",
+      "src": "/img/bw10/logo.png"
+    },
+    "plasma-freeze": {
+      "setId": "bw9",
+      "slug": "plasma-freeze",
+      "name": "Plasma Freeze",
+      "logo": "/img/bw9/logo.png",
+      "src": "/img/bw9/logo.png"
+    },
+    "plasma-storm": {
+      "setId": "bw8",
+      "slug": "plasma-storm",
+      "name": "Plasma Storm",
+      "logo": "/img/bw8/logo.png",
+      "src": "/img/bw8/logo.png"
+    },
+    "platinum": {
+      "setId": "pl1",
+      "slug": "platinum",
+      "name": "Platinum",
+      "logo": "/img/pl1/logo.png",
+      "src": "/img/pl1/logo.png"
+    },
+    "player-placement-trainer-promos": {
+      "setId": "playerplacementtrainerpromos",
+      "slug": "player-placement-trainer-promos",
+      "name": "Player Placement Trainer Promos",
+      "logo": "/img/playerplacementtrainerpromos/logo.png",
+      "src": "/img/playerplacementtrainerpromos/logo.png",
+      "kind": "tile"
+    },
+    "playerplacementtrainerpromos": {
+      "setId": "playerplacementtrainerpromos",
+      "slug": "player-placement-trainer-promos",
+      "name": "Player Placement Trainer Promos",
+      "logo": "/img/playerplacementtrainerpromos/logo.png",
+      "src": "/img/playerplacementtrainerpromos/logo.png",
+      "kind": "tile"
+    },
+    "pokemon-go": {
+      "setId": "pgo",
+      "slug": "pokemon-go",
+      "name": "Pok\u00e9mon GO",
+      "logo": "/img/pgo/logo.png",
+      "src": "/img/pgo/logo.png"
+    },
+    "pop-series-1": {
+      "setId": "pop1",
+      "slug": "pop-series-1",
+      "name": "POP Series 1",
+      "logo": "/img/pop1/logo.png",
+      "src": "/img/pop1/logo.png"
+    },
+    "pop-series-2": {
+      "setId": "pop2",
+      "slug": "pop-series-2",
+      "name": "POP Series 2",
+      "logo": "/img/pop2/logo.png",
+      "src": "/img/pop2/logo.png"
+    },
+    "pop-series-3": {
+      "setId": "pop3",
+      "slug": "pop-series-3",
+      "name": "POP Series 3",
+      "logo": "/img/pop3/logo.png",
+      "src": "/img/pop3/logo.png"
+    },
+    "pop-series-4": {
+      "setId": "pop4",
+      "slug": "pop-series-4",
+      "name": "POP Series 4",
+      "logo": "/img/pop4/logo.png",
+      "src": "/img/pop4/logo.png"
+    },
+    "pop-series-5": {
+      "setId": "pop5",
+      "slug": "pop-series-5",
+      "name": "POP Series 5",
+      "logo": "/img/pop5/logo.png",
+      "src": "/img/pop5/logo.png"
+    },
+    "pop-series-6": {
+      "setId": "pop6",
+      "slug": "pop-series-6",
+      "name": "POP Series 6",
+      "logo": "/img/pop6/logo.png",
+      "src": "/img/pop6/logo.png"
+    },
+    "pop-series-7": {
+      "setId": "pop7",
+      "slug": "pop-series-7",
+      "name": "POP Series 7",
+      "logo": "/img/pop7/logo.png",
+      "src": "/img/pop7/logo.png"
+    },
+    "pop-series-8": {
+      "setId": "pop8",
+      "slug": "pop-series-8",
+      "name": "POP Series 8",
+      "logo": "/img/pop8/logo.png",
+      "src": "/img/pop8/logo.png"
+    },
+    "pop-series-9": {
+      "setId": "pop9",
+      "slug": "pop-series-9",
+      "name": "POP Series 9",
+      "logo": "/img/pop9/logo.png",
+      "src": "/img/pop9/logo.png"
+    },
+    "pop1": {
+      "setId": "pop1",
+      "slug": "pop-series-1",
+      "name": "POP Series 1",
+      "logo": "/img/pop1/logo.png",
+      "src": "/img/pop1/logo.png"
+    },
+    "pop2": {
+      "setId": "pop2",
+      "slug": "pop-series-2",
+      "name": "POP Series 2",
+      "logo": "/img/pop2/logo.png",
+      "src": "/img/pop2/logo.png"
+    },
+    "pop3": {
+      "setId": "pop3",
+      "slug": "pop-series-3",
+      "name": "POP Series 3",
+      "logo": "/img/pop3/logo.png",
+      "src": "/img/pop3/logo.png"
+    },
+    "pop4": {
+      "setId": "pop4",
+      "slug": "pop-series-4",
+      "name": "POP Series 4",
+      "logo": "/img/pop4/logo.png",
+      "src": "/img/pop4/logo.png"
+    },
+    "pop5": {
+      "setId": "pop5",
+      "slug": "pop-series-5",
+      "name": "POP Series 5",
+      "logo": "/img/pop5/logo.png",
+      "src": "/img/pop5/logo.png"
+    },
+    "pop6": {
+      "setId": "pop6",
+      "slug": "pop-series-6",
+      "name": "POP Series 6",
+      "logo": "/img/pop6/logo.png",
+      "src": "/img/pop6/logo.png"
+    },
+    "pop7": {
+      "setId": "pop7",
+      "slug": "pop-series-7",
+      "name": "POP Series 7",
+      "logo": "/img/pop7/logo.png",
+      "src": "/img/pop7/logo.png"
+    },
+    "pop8": {
+      "setId": "pop8",
+      "slug": "pop-series-8",
+      "name": "POP Series 8",
+      "logo": "/img/pop8/logo.png",
+      "src": "/img/pop8/logo.png"
+    },
+    "pop9": {
+      "setId": "pop9",
+      "slug": "pop-series-9",
+      "name": "POP Series 9",
+      "logo": "/img/pop9/logo.png",
+      "src": "/img/pop9/logo.png"
+    },
+    "prize-pack-series-cards": {
+      "setId": "prizepackseriescards",
+      "slug": "prize-pack-series-cards",
+      "name": "Prize Pack Series Cards",
+      "logo": "/img/prizepackseriescards/logo.png",
+      "src": "/img/prizepackseriescards/logo.png",
+      "kind": "tile"
+    },
+    "prizepackseriescards": {
+      "setId": "prizepackseriescards",
+      "slug": "prize-pack-series-cards",
+      "name": "Prize Pack Series Cards",
+      "logo": "/img/prizepackseriescards/logo.png",
+      "src": "/img/prizepackseriescards/logo.png",
+      "kind": "tile"
+    },
+    "professor-program-promos": {
+      "setId": "professorprogrampromos",
+      "slug": "professor-program-promos",
+      "name": "Professor Program Promos",
+      "logo": "/img/professorprogrampromos/logo.png",
+      "src": "/img/professorprogrampromos/logo.png",
+      "kind": "tile"
+    },
+    "professorprogrampromos": {
+      "setId": "professorprogrampromos",
+      "slug": "professor-program-promos",
+      "name": "Professor Program Promos",
+      "logo": "/img/professorprogrampromos/logo.png",
+      "src": "/img/professorprogrampromos/logo.png",
+      "kind": "tile"
+    },
+    "rising-rivals": {
+      "setId": "pl2",
+      "slug": "rising-rivals",
+      "name": "Rising Rivals",
+      "logo": "/img/pl2/logo.png",
+      "src": "/img/pl2/logo.png"
+    },
+    "rsv10pt5": {
+      "setId": "rsv10pt5",
+      "slug": "sv-white-flare",
+      "name": "SV: White Flare",
+      "logo": "/img/rsv10pt5/logo.png",
+      "src": "/img/rsv10pt5/logo.png"
+    },
+    "ru1": {
+      "setId": "ru1",
+      "slug": "rumble",
+      "name": "Rumble",
+      "logo": "/img/ru1/logo.png",
+      "src": "/img/ru1/logo.png"
+    },
+    "rumble": {
+      "setId": "ru1",
+      "slug": "rumble",
+      "name": "Rumble",
+      "logo": "/img/ru1/logo.png",
+      "src": "/img/ru1/logo.png"
+    },
+    "secret-wonders": {
+      "setId": "dp3",
+      "slug": "secret-wonders",
+      "name": "Secret Wonders",
+      "logo": "/img/dp3/logo.png",
+      "src": "/img/dp3/logo.png"
+    },
+    "shining-fates": {
+      "setId": "swsh45",
+      "slug": "shining-fates",
+      "name": "Shining Fates",
+      "logo": "/img/swsh45/logo.png",
+      "src": "/img/swsh45/logo.png"
+    },
+    "shining-legends": {
+      "setId": "sm35",
+      "slug": "shining-legends",
+      "name": "Shining Legends",
+      "logo": "/img/sm35/logo.png",
+      "src": "/img/sm35/logo.png"
+    },
+    "si1": {
+      "setId": "si1",
+      "slug": "southern-islands",
+      "name": "Southern Islands",
+      "logo": "/img/si1/logo.png",
+      "src": "/img/si1/logo.png"
+    },
+    "skyridge": {
+      "setId": "ecard3",
+      "slug": "skyridge",
+      "name": "Skyridge",
+      "logo": "/img/ecard3/logo.png",
+      "src": "/img/ecard3/logo.png"
+    },
+    "sm-base-set": {
+      "setId": "sm1",
+      "slug": "sm-base-set",
+      "name": "SM Base Set",
+      "logo": "/img/sm1/logo.png",
+      "src": "/img/sm1/logo.png"
+    },
+    "sm-burning-shadows": {
+      "setId": "sm3",
+      "slug": "sm-burning-shadows",
+      "name": "SM - Burning Shadows",
+      "logo": "/img/sm3/logo.png",
+      "src": "/img/sm3/logo.png"
+    },
+    "sm-celestial-storm": {
+      "setId": "sm7",
+      "slug": "sm-celestial-storm",
+      "name": "SM - Celestial Storm",
+      "logo": "/img/sm7/logo.png",
+      "src": "/img/sm7/logo.png"
+    },
+    "sm-cosmic-eclipse": {
+      "setId": "sm12",
+      "slug": "sm-cosmic-eclipse",
+      "name": "SM - Cosmic Eclipse",
+      "logo": "/img/sm12/logo.png",
+      "src": "/img/sm12/logo.png"
+    },
+    "sm-crimson-invasion": {
+      "setId": "sm4",
+      "slug": "sm-crimson-invasion",
+      "name": "SM - Crimson Invasion",
+      "logo": "/img/sm4/logo.png",
+      "src": "/img/sm4/logo.png"
+    },
+    "sm-forbidden-light": {
+      "setId": "sm6",
+      "slug": "sm-forbidden-light",
+      "name": "SM - Forbidden Light",
+      "logo": "/img/sm6/logo.png",
+      "src": "/img/sm6/logo.png"
+    },
+    "sm-guardians-rising": {
+      "setId": "sm2",
+      "slug": "sm-guardians-rising",
+      "name": "SM - Guardians Rising",
+      "logo": "/img/sm2/logo.png",
+      "src": "/img/sm2/logo.png"
+    },
+    "sm-lost-thunder": {
+      "setId": "sm8",
+      "slug": "sm-lost-thunder",
+      "name": "SM - Lost Thunder",
+      "logo": "/img/sm8/logo.png",
+      "src": "/img/sm8/logo.png"
+    },
+    "sm-promos": {
+      "setId": "smp",
+      "slug": "sm-promos",
+      "name": "SM Promos",
+      "logo": "/img/smp/logo.png",
+      "src": "/img/smp/logo.png"
+    },
+    "sm-team-up": {
+      "setId": "sm9",
+      "slug": "sm-team-up",
+      "name": "SM - Team Up",
+      "logo": "/img/sm9/logo.png",
+      "src": "/img/sm9/logo.png"
+    },
+    "sm-trainer-kit-alolan-sandslash-and-alolan-ninetales": {
+      "setId": "smtrainerkitalolansandslashandalolanninetales",
+      "slug": "sm-trainer-kit-alolan-sandslash-and-alolan-ninetales",
+      "name": "SM Trainer Kit: Alolan Sandslash & Alolan Ninetales",
+      "logo": "/img/smtrainerkitalolansandslashandalolanninetales/logo.png",
+      "src": "/img/smtrainerkitalolansandslashandalolanninetales/logo.png",
+      "kind": "tile"
+    },
+    "sm-trainer-kit-lycanroc-and-alolan-raichu": {
+      "setId": "smtrainerkitlycanrocandalolanraichu",
+      "slug": "sm-trainer-kit-lycanroc-and-alolan-raichu",
+      "name": "SM Trainer Kit: Lycanroc & Alolan Raichu",
+      "logo": "/img/smtrainerkitlycanrocandalolanraichu/logo.png",
+      "src": "/img/smtrainerkitlycanrocandalolanraichu/logo.png",
+      "kind": "tile"
+    },
+    "sm-ultra-prism": {
+      "setId": "sm5",
+      "slug": "sm-ultra-prism",
+      "name": "SM - Ultra Prism",
+      "logo": "/img/sm5/logo.png",
+      "src": "/img/sm5/logo.png"
+    },
+    "sm-unbroken-bonds": {
+      "setId": "sm10",
+      "slug": "sm-unbroken-bonds",
+      "name": "SM - Unbroken Bonds",
+      "logo": "/img/sm10/logo.png",
+      "src": "/img/sm10/logo.png"
+    },
+    "sm-unified-minds": {
+      "setId": "sm11",
+      "slug": "sm-unified-minds",
+      "name": "SM - Unified Minds",
+      "logo": "/img/sm11/logo.png",
+      "src": "/img/sm11/logo.png"
+    },
+    "sm1": {
+      "setId": "sm1",
+      "slug": "sm-base-set",
+      "name": "SM Base Set",
+      "logo": "/img/sm1/logo.png",
+      "src": "/img/sm1/logo.png"
+    },
+    "sm10": {
+      "setId": "sm10",
+      "slug": "sm-unbroken-bonds",
+      "name": "SM - Unbroken Bonds",
+      "logo": "/img/sm10/logo.png",
+      "src": "/img/sm10/logo.png"
+    },
+    "sm11": {
+      "setId": "sm11",
+      "slug": "sm-unified-minds",
+      "name": "SM - Unified Minds",
+      "logo": "/img/sm11/logo.png",
+      "src": "/img/sm11/logo.png"
+    },
+    "sm115": {
+      "setId": "sm115",
+      "slug": "hidden-fates",
+      "name": "Hidden Fates",
+      "logo": "/img/sm115/logo.png",
+      "src": "/img/sm115/logo.png"
+    },
+    "sm12": {
+      "setId": "sm12",
+      "slug": "sm-cosmic-eclipse",
+      "name": "SM - Cosmic Eclipse",
+      "logo": "/img/sm12/logo.png",
+      "src": "/img/sm12/logo.png"
+    },
+    "sm2": {
+      "setId": "sm2",
+      "slug": "sm-guardians-rising",
+      "name": "SM - Guardians Rising",
+      "logo": "/img/sm2/logo.png",
+      "src": "/img/sm2/logo.png"
+    },
+    "sm3": {
+      "setId": "sm3",
+      "slug": "sm-burning-shadows",
+      "name": "SM - Burning Shadows",
+      "logo": "/img/sm3/logo.png",
+      "src": "/img/sm3/logo.png"
+    },
+    "sm35": {
+      "setId": "sm35",
+      "slug": "shining-legends",
+      "name": "Shining Legends",
+      "logo": "/img/sm35/logo.png",
+      "src": "/img/sm35/logo.png"
+    },
+    "sm4": {
+      "setId": "sm4",
+      "slug": "sm-crimson-invasion",
+      "name": "SM - Crimson Invasion",
+      "logo": "/img/sm4/logo.png",
+      "src": "/img/sm4/logo.png"
+    },
+    "sm5": {
+      "setId": "sm5",
+      "slug": "sm-ultra-prism",
+      "name": "SM - Ultra Prism",
+      "logo": "/img/sm5/logo.png",
+      "src": "/img/sm5/logo.png"
+    },
+    "sm6": {
+      "setId": "sm6",
+      "slug": "sm-forbidden-light",
+      "name": "SM - Forbidden Light",
+      "logo": "/img/sm6/logo.png",
+      "src": "/img/sm6/logo.png"
+    },
+    "sm7": {
+      "setId": "sm7",
+      "slug": "sm-celestial-storm",
+      "name": "SM - Celestial Storm",
+      "logo": "/img/sm7/logo.png",
+      "src": "/img/sm7/logo.png"
+    },
+    "sm75": {
+      "setId": "sm75",
+      "slug": "dragon-majesty",
+      "name": "Dragon Majesty",
+      "logo": "/img/sm75/logo.png",
+      "src": "/img/sm75/logo.png"
+    },
+    "sm8": {
+      "setId": "sm8",
+      "slug": "sm-lost-thunder",
+      "name": "SM - Lost Thunder",
+      "logo": "/img/sm8/logo.png",
+      "src": "/img/sm8/logo.png"
+    },
+    "sm9": {
+      "setId": "sm9",
+      "slug": "sm-team-up",
+      "name": "SM - Team Up",
+      "logo": "/img/sm9/logo.png",
+      "src": "/img/sm9/logo.png"
+    },
+    "sma": {
+      "setId": "sm115",
+      "slug": "hidden-fates",
+      "name": "Hidden Fates Shiny Vault",
+      "parentSetId": "sm115",
+      "gallerySetId": "sma",
+      "logo": "/img/sm115/logo.png",
+      "src": "/img/sm115/logo.png"
+    },
+    "smp": {
+      "setId": "smp",
+      "slug": "sm-promos",
+      "name": "SM Promos",
+      "logo": "/img/smp/logo.png",
+      "src": "/img/smp/logo.png"
+    },
+    "smtrainerkitalolansandslashandalolanninetales": {
+      "setId": "smtrainerkitalolansandslashandalolanninetales",
+      "slug": "sm-trainer-kit-alolan-sandslash-and-alolan-ninetales",
+      "name": "SM Trainer Kit: Alolan Sandslash & Alolan Ninetales",
+      "logo": "/img/smtrainerkitalolansandslashandalolanninetales/logo.png",
+      "src": "/img/smtrainerkitalolansandslashandalolanninetales/logo.png",
+      "kind": "tile"
+    },
+    "smtrainerkitlycanrocandalolanraichu": {
+      "setId": "smtrainerkitlycanrocandalolanraichu",
+      "slug": "sm-trainer-kit-lycanroc-and-alolan-raichu",
+      "name": "SM Trainer Kit: Lycanroc & Alolan Raichu",
+      "logo": "/img/smtrainerkitlycanrocandalolanraichu/logo.png",
+      "src": "/img/smtrainerkitlycanrocandalolanraichu/logo.png",
+      "kind": "tile"
+    },
+    "southeast-asia-exclusives": {
+      "setId": "southeastasiaexclusives",
+      "slug": "southeast-asia-exclusives",
+      "name": "Southeast Asia Exclusives",
+      "logo": "/img/southeastasiaexclusives/logo.png",
+      "src": "/img/southeastasiaexclusives/logo.png",
+      "kind": "tile"
+    },
+    "southeastasiaexclusives": {
+      "setId": "southeastasiaexclusives",
+      "slug": "southeast-asia-exclusives",
+      "name": "Southeast Asia Exclusives",
+      "logo": "/img/southeastasiaexclusives/logo.png",
+      "src": "/img/southeastasiaexclusives/logo.png",
+      "kind": "tile"
+    },
+    "southern-islands": {
+      "setId": "si1",
+      "slug": "southern-islands",
+      "name": "Southern Islands",
+      "logo": "/img/si1/logo.png",
+      "src": "/img/si1/logo.png"
+    },
+    "stormfront": {
+      "setId": "dp7",
+      "slug": "stormfront",
+      "name": "Stormfront",
+      "logo": "/img/dp7/logo.png",
+      "src": "/img/dp7/logo.png"
+    },
+    "supreme-victors": {
+      "setId": "pl3",
+      "slug": "supreme-victors",
+      "name": "Supreme Victors",
+      "logo": "/img/pl3/logo.png",
+      "src": "/img/pl3/logo.png"
+    },
+    "sv-black-bolt": {
+      "setId": "zsv10pt5",
+      "slug": "sv-black-bolt",
+      "name": "SV: Black Bolt",
+      "logo": "/img/zsv10pt5/logo.png",
+      "src": "/img/zsv10pt5/logo.png"
+    },
+    "sv-paldean-fates": {
+      "setId": "sv4pt5",
+      "slug": "sv-paldean-fates",
+      "name": "SV: Paldean Fates",
+      "logo": "/img/sv4pt5/logo.png",
+      "src": "/img/sv4pt5/logo.png"
+    },
+    "sv-prismatic-evolutions": {
+      "setId": "sv8pt5",
+      "slug": "sv-prismatic-evolutions",
+      "name": "SV: Prismatic Evolutions",
+      "logo": "/img/sv8pt5/logo.png",
+      "src": "/img/sv8pt5/logo.png"
+    },
+    "sv-scarlet-and-violet-151": {
+      "setId": "sv3pt5",
+      "slug": "sv-scarlet-and-violet-151",
+      "name": "SV: Scarlet & Violet 151",
+      "logo": "/img/sv3pt5/logo.png",
+      "src": "/img/sv3pt5/logo.png"
+    },
+    "sv-scarlet-and-violet-promo-cards": {
+      "setId": "svp",
+      "slug": "sv-scarlet-and-violet-promo-cards",
+      "name": "SV: Scarlet & Violet Promo Cards",
+      "logo": "/img/svp/logo.png",
+      "src": "/img/svp/logo.png"
+    },
+    "sv-shrouded-fable": {
+      "setId": "sv6pt5",
+      "slug": "sv-shrouded-fable",
+      "name": "SV: Shrouded Fable",
+      "logo": "/img/sv6pt5/logo.png",
+      "src": "/img/sv6pt5/logo.png"
+    },
+    "sv-white-flare": {
+      "setId": "rsv10pt5",
+      "slug": "sv-white-flare",
+      "name": "SV: White Flare",
+      "logo": "/img/rsv10pt5/logo.png",
+      "src": "/img/rsv10pt5/logo.png"
+    },
+    "sv01-scarlet-and-violet-base-set": {
+      "setId": "sv1",
+      "slug": "sv01-scarlet-and-violet-base-set",
+      "name": "SV01: Scarlet & Violet Base Set",
+      "logo": "/img/sv1/logo.png",
+      "src": "/img/sv1/logo.png"
+    },
+    "sv02-paldea-evolved": {
+      "setId": "sv2",
+      "slug": "sv02-paldea-evolved",
+      "name": "SV02: Paldea Evolved",
+      "logo": "/img/sv2/logo.png",
+      "src": "/img/sv2/logo.png"
+    },
+    "sv03-obsidian-flames": {
+      "setId": "sv3",
+      "slug": "sv03-obsidian-flames",
+      "name": "SV03: Obsidian Flames",
+      "logo": "/img/sv3/logo.png",
+      "src": "/img/sv3/logo.png"
+    },
+    "sv04-paradox-rift": {
+      "setId": "sv4",
+      "slug": "sv04-paradox-rift",
+      "name": "SV04: Paradox Rift",
+      "logo": "/img/sv4/logo.png",
+      "src": "/img/sv4/logo.png"
+    },
+    "sv05-temporal-forces": {
+      "setId": "sv5",
+      "slug": "sv05-temporal-forces",
+      "name": "SV05: Temporal Forces",
+      "logo": "/img/sv5/logo.png",
+      "src": "/img/sv5/logo.png"
+    },
+    "sv06-twilight-masquerade": {
+      "setId": "sv6",
+      "slug": "sv06-twilight-masquerade",
+      "name": "SV06: Twilight Masquerade",
+      "logo": "/img/sv6/logo.png",
+      "src": "/img/sv6/logo.png"
+    },
+    "sv07-stellar-crown": {
+      "setId": "sv7",
+      "slug": "sv07-stellar-crown",
+      "name": "SV07: Stellar Crown",
+      "logo": "/img/sv7/logo.png",
+      "src": "/img/sv7/logo.png"
+    },
+    "sv08-surging-sparks": {
+      "setId": "sv8",
+      "slug": "sv08-surging-sparks",
+      "name": "SV08: Surging Sparks",
+      "logo": "/img/sv8/logo.png",
+      "src": "/img/sv8/logo.png"
+    },
+    "sv09-journey-together": {
+      "setId": "sv9",
+      "slug": "sv09-journey-together",
+      "name": "SV09: Journey Together",
+      "logo": "/img/sv9/logo.png",
+      "src": "/img/sv9/logo.png"
+    },
+    "sv1": {
+      "setId": "sv1",
+      "slug": "sv01-scarlet-and-violet-base-set",
+      "name": "SV01: Scarlet & Violet Base Set",
+      "logo": "/img/sv1/logo.png",
+      "src": "/img/sv1/logo.png"
+    },
+    "sv10": {
+      "setId": "sv10",
+      "slug": "sv10-destined-rivals",
+      "name": "SV10: Destined Rivals",
+      "logo": "/img/sv10/logo.png",
+      "src": "/img/sv10/logo.png"
+    },
+    "sv10-destined-rivals": {
+      "setId": "sv10",
+      "slug": "sv10-destined-rivals",
+      "name": "SV10: Destined Rivals",
+      "logo": "/img/sv10/logo.png",
+      "src": "/img/sv10/logo.png"
+    },
+    "sv2": {
+      "setId": "sv2",
+      "slug": "sv02-paldea-evolved",
+      "name": "SV02: Paldea Evolved",
+      "logo": "/img/sv2/logo.png",
+      "src": "/img/sv2/logo.png"
+    },
+    "sv3": {
+      "setId": "sv3",
+      "slug": "sv03-obsidian-flames",
+      "name": "SV03: Obsidian Flames",
+      "logo": "/img/sv3/logo.png",
+      "src": "/img/sv3/logo.png"
+    },
+    "sv3pt5": {
+      "setId": "sv3pt5",
+      "slug": "sv-scarlet-and-violet-151",
+      "name": "SV: Scarlet & Violet 151",
+      "logo": "/img/sv3pt5/logo.png",
+      "src": "/img/sv3pt5/logo.png"
+    },
+    "sv4": {
+      "setId": "sv4",
+      "slug": "sv04-paradox-rift",
+      "name": "SV04: Paradox Rift",
+      "logo": "/img/sv4/logo.png",
+      "src": "/img/sv4/logo.png"
+    },
+    "sv4pt5": {
+      "setId": "sv4pt5",
+      "slug": "sv-paldean-fates",
+      "name": "SV: Paldean Fates",
+      "logo": "/img/sv4pt5/logo.png",
+      "src": "/img/sv4pt5/logo.png"
+    },
+    "sv5": {
+      "setId": "sv5",
+      "slug": "sv05-temporal-forces",
+      "name": "SV05: Temporal Forces",
+      "logo": "/img/sv5/logo.png",
+      "src": "/img/sv5/logo.png"
+    },
+    "sv6": {
+      "setId": "sv6",
+      "slug": "sv06-twilight-masquerade",
+      "name": "SV06: Twilight Masquerade",
+      "logo": "/img/sv6/logo.png",
+      "src": "/img/sv6/logo.png"
+    },
+    "sv6pt5": {
+      "setId": "sv6pt5",
+      "slug": "sv-shrouded-fable",
+      "name": "SV: Shrouded Fable",
+      "logo": "/img/sv6pt5/logo.png",
+      "src": "/img/sv6pt5/logo.png"
+    },
+    "sv7": {
+      "setId": "sv7",
+      "slug": "sv07-stellar-crown",
+      "name": "SV07: Stellar Crown",
+      "logo": "/img/sv7/logo.png",
+      "src": "/img/sv7/logo.png"
+    },
+    "sv8": {
+      "setId": "sv8",
+      "slug": "sv08-surging-sparks",
+      "name": "SV08: Surging Sparks",
+      "logo": "/img/sv8/logo.png",
+      "src": "/img/sv8/logo.png"
+    },
+    "sv8pt5": {
+      "setId": "sv8pt5",
+      "slug": "sv-prismatic-evolutions",
+      "name": "SV: Prismatic Evolutions",
+      "logo": "/img/sv8pt5/logo.png",
+      "src": "/img/sv8pt5/logo.png"
+    },
+    "sv9": {
+      "setId": "sv9",
+      "slug": "sv09-journey-together",
+      "name": "SV09: Journey Together",
+      "logo": "/img/sv9/logo.png",
+      "src": "/img/sv9/logo.png"
+    },
+    "sve": {
+      "setId": "sve",
+      "slug": "sve-scarlet-and-violet-energies",
+      "name": "SVE: Scarlet & Violet Energies",
+      "logo": "/img/sve/logo.png",
+      "src": "/img/sve/logo.png"
+    },
+    "sve-scarlet-and-violet-energies": {
+      "setId": "sve",
+      "slug": "sve-scarlet-and-violet-energies",
+      "name": "SVE: Scarlet & Violet Energies",
+      "logo": "/img/sve/logo.png",
+      "src": "/img/sve/logo.png"
+    },
+    "svp": {
+      "setId": "svp",
+      "slug": "sv-scarlet-and-violet-promo-cards",
+      "name": "SV: Scarlet & Violet Promo Cards",
+      "logo": "/img/svp/logo.png",
+      "src": "/img/svp/logo.png"
+    },
+    "swsh-crown-zenith": {
+      "setId": "swsh12pt5",
+      "slug": "swsh-crown-zenith",
+      "name": "SWSH: Crown Zenith",
+      "logo": "/img/swsh12pt5/logo.png",
+      "src": "/img/swsh12pt5/logo.png"
+    },
+    "swsh-sword-and-shield-promo-cards": {
+      "setId": "swshp",
+      "slug": "swsh-sword-and-shield-promo-cards",
+      "name": "SWSH: Sword & Shield Promo Cards",
+      "logo": "/img/swshp/logo.png",
+      "src": "/img/swshp/logo.png"
+    },
+    "swsh01-sword-and-shield-base-set": {
+      "setId": "swsh1",
+      "slug": "swsh01-sword-and-shield-base-set",
+      "name": "SWSH01: Sword & Shield Base Set",
+      "logo": "/img/swsh1/logo.png",
+      "src": "/img/swsh1/logo.png"
+    },
+    "swsh02-rebel-clash": {
+      "setId": "swsh2",
+      "slug": "swsh02-rebel-clash",
+      "name": "SWSH02: Rebel Clash",
+      "logo": "/img/swsh2/logo.png",
+      "src": "/img/swsh2/logo.png"
+    },
+    "swsh03-darkness-ablaze": {
+      "setId": "swsh3",
+      "slug": "swsh03-darkness-ablaze",
+      "name": "SWSH03: Darkness Ablaze",
+      "logo": "/img/swsh3/logo.png",
+      "src": "/img/swsh3/logo.png"
+    },
+    "swsh04-vivid-voltage": {
+      "setId": "swsh4",
+      "slug": "swsh04-vivid-voltage",
+      "name": "SWSH04: Vivid Voltage",
+      "logo": "/img/swsh4/logo.png",
+      "src": "/img/swsh4/logo.png"
+    },
+    "swsh05-battle-styles": {
+      "setId": "swsh5",
+      "slug": "swsh05-battle-styles",
+      "name": "SWSH05: Battle Styles",
+      "logo": "/img/swsh5/logo.png",
+      "src": "/img/swsh5/logo.png"
+    },
+    "swsh06-chilling-reign": {
+      "setId": "swsh6",
+      "slug": "swsh06-chilling-reign",
+      "name": "SWSH06: Chilling Reign",
+      "logo": "/img/swsh6/logo.png",
+      "src": "/img/swsh6/logo.png"
+    },
+    "swsh07-evolving-skies": {
+      "setId": "swsh7",
+      "slug": "swsh07-evolving-skies",
+      "name": "SWSH07: Evolving Skies",
+      "logo": "/img/swsh7/logo.png",
+      "src": "/img/swsh7/logo.png"
+    },
+    "swsh08-fusion-strike": {
+      "setId": "swsh8",
+      "slug": "swsh08-fusion-strike",
+      "name": "SWSH08: Fusion Strike",
+      "logo": "/img/swsh8/logo.png",
+      "src": "/img/swsh8/logo.png"
+    },
+    "swsh09-brilliant-stars": {
+      "setId": "swsh9",
+      "slug": "swsh09-brilliant-stars",
+      "name": "SWSH09: Brilliant Stars",
+      "logo": "/img/swsh9/logo.png",
+      "src": "/img/swsh9/logo.png"
+    },
+    "swsh1": {
+      "setId": "swsh1",
+      "slug": "swsh01-sword-and-shield-base-set",
+      "name": "SWSH01: Sword & Shield Base Set",
+      "logo": "/img/swsh1/logo.png",
+      "src": "/img/swsh1/logo.png"
+    },
+    "swsh10": {
+      "setId": "swsh10",
+      "slug": "swsh10-astral-radiance",
+      "name": "SWSH10: Astral Radiance",
+      "logo": "/img/swsh10/logo.png",
+      "src": "/img/swsh10/logo.png"
+    },
+    "swsh10-astral-radiance": {
+      "setId": "swsh10",
+      "slug": "swsh10-astral-radiance",
+      "name": "SWSH10: Astral Radiance",
+      "logo": "/img/swsh10/logo.png",
+      "src": "/img/swsh10/logo.png"
+    },
+    "swsh10tg": {
+      "setId": "swsh10",
+      "slug": "swsh10-astral-radiance",
+      "name": "Astral Radiance Trainer Gallery",
+      "parentSetId": "swsh10",
+      "gallerySetId": "swsh10tg",
+      "logo": "/img/swsh10/logo.png",
+      "src": "/img/swsh10/logo.png"
+    },
+    "swsh11": {
+      "setId": "swsh11",
+      "slug": "swsh11-lost-origin",
+      "name": "SWSH11: Lost Origin",
+      "logo": "/img/swsh11/logo.png",
+      "src": "/img/swsh11/logo.png"
+    },
+    "swsh11-lost-origin": {
+      "setId": "swsh11",
+      "slug": "swsh11-lost-origin",
+      "name": "SWSH11: Lost Origin",
+      "logo": "/img/swsh11/logo.png",
+      "src": "/img/swsh11/logo.png"
+    },
+    "swsh11tg": {
+      "setId": "swsh11",
+      "slug": "swsh11-lost-origin",
+      "name": "Lost Origin Trainer Gallery",
+      "parentSetId": "swsh11",
+      "gallerySetId": "swsh11tg",
+      "logo": "/img/swsh11/logo.png",
+      "src": "/img/swsh11/logo.png"
+    },
+    "swsh12": {
+      "setId": "swsh12",
+      "slug": "swsh12-silver-tempest",
+      "name": "SWSH12: Silver Tempest",
+      "logo": "/img/swsh12/logo.png",
+      "src": "/img/swsh12/logo.png"
+    },
+    "swsh12-silver-tempest": {
+      "setId": "swsh12",
+      "slug": "swsh12-silver-tempest",
+      "name": "SWSH12: Silver Tempest",
+      "logo": "/img/swsh12/logo.png",
+      "src": "/img/swsh12/logo.png"
+    },
+    "swsh12pt5": {
+      "setId": "swsh12pt5",
+      "slug": "swsh-crown-zenith",
+      "name": "SWSH: Crown Zenith",
+      "logo": "/img/swsh12pt5/logo.png",
+      "src": "/img/swsh12pt5/logo.png"
+    },
+    "swsh12pt5gg": {
+      "setId": "swsh12pt5",
+      "slug": "swsh-crown-zenith",
+      "name": "Crown Zenith Galarian Gallery",
+      "parentSetId": "swsh12pt5",
+      "gallerySetId": "swsh12pt5gg",
+      "logo": "/img/swsh12pt5/logo.png",
+      "src": "/img/swsh12pt5/logo.png"
+    },
+    "swsh12tg": {
+      "setId": "swsh12",
+      "slug": "swsh12-silver-tempest",
+      "name": "Silver Tempest Trainer Gallery",
+      "parentSetId": "swsh12",
+      "gallerySetId": "swsh12tg",
+      "logo": "/img/swsh12/logo.png",
+      "src": "/img/swsh12/logo.png"
+    },
+    "swsh2": {
+      "setId": "swsh2",
+      "slug": "swsh02-rebel-clash",
+      "name": "SWSH02: Rebel Clash",
+      "logo": "/img/swsh2/logo.png",
+      "src": "/img/swsh2/logo.png"
+    },
+    "swsh3": {
+      "setId": "swsh3",
+      "slug": "swsh03-darkness-ablaze",
+      "name": "SWSH03: Darkness Ablaze",
+      "logo": "/img/swsh3/logo.png",
+      "src": "/img/swsh3/logo.png"
+    },
+    "swsh35": {
+      "setId": "swsh35",
+      "slug": "champion-s-path",
+      "name": "Champion's Path",
+      "logo": "/img/swsh35/logo.png",
+      "src": "/img/swsh35/logo.png"
+    },
+    "swsh4": {
+      "setId": "swsh4",
+      "slug": "swsh04-vivid-voltage",
+      "name": "SWSH04: Vivid Voltage",
+      "logo": "/img/swsh4/logo.png",
+      "src": "/img/swsh4/logo.png"
+    },
+    "swsh45": {
+      "setId": "swsh45",
+      "slug": "shining-fates",
+      "name": "Shining Fates",
+      "logo": "/img/swsh45/logo.png",
+      "src": "/img/swsh45/logo.png"
+    },
+    "swsh45sv": {
+      "setId": "swsh45",
+      "slug": "shining-fates",
+      "name": "Shining Fates Shiny Vault",
+      "parentSetId": "swsh45",
+      "gallerySetId": "swsh45sv",
+      "logo": "/img/swsh45/logo.png",
+      "src": "/img/swsh45/logo.png"
+    },
+    "swsh5": {
+      "setId": "swsh5",
+      "slug": "swsh05-battle-styles",
+      "name": "SWSH05: Battle Styles",
+      "logo": "/img/swsh5/logo.png",
+      "src": "/img/swsh5/logo.png"
+    },
+    "swsh6": {
+      "setId": "swsh6",
+      "slug": "swsh06-chilling-reign",
+      "name": "SWSH06: Chilling Reign",
+      "logo": "/img/swsh6/logo.png",
+      "src": "/img/swsh6/logo.png"
+    },
+    "swsh7": {
+      "setId": "swsh7",
+      "slug": "swsh07-evolving-skies",
+      "name": "SWSH07: Evolving Skies",
+      "logo": "/img/swsh7/logo.png",
+      "src": "/img/swsh7/logo.png"
+    },
+    "swsh8": {
+      "setId": "swsh8",
+      "slug": "swsh08-fusion-strike",
+      "name": "SWSH08: Fusion Strike",
+      "logo": "/img/swsh8/logo.png",
+      "src": "/img/swsh8/logo.png"
+    },
+    "swsh9": {
+      "setId": "swsh9",
+      "slug": "swsh09-brilliant-stars",
+      "name": "SWSH09: Brilliant Stars",
+      "logo": "/img/swsh9/logo.png",
+      "src": "/img/swsh9/logo.png"
+    },
+    "swsh9tg": {
+      "setId": "swsh9",
+      "slug": "swsh09-brilliant-stars",
+      "name": "Brilliant Stars Trainer Gallery",
+      "parentSetId": "swsh9",
+      "gallerySetId": "swsh9tg",
+      "logo": "/img/swsh9/logo.png",
+      "src": "/img/swsh9/logo.png"
+    },
+    "swshp": {
+      "setId": "swshp",
+      "slug": "swsh-sword-and-shield-promo-cards",
+      "name": "SWSH: Sword & Shield Promo Cards",
+      "logo": "/img/swshp/logo.png",
+      "src": "/img/swshp/logo.png"
+    },
+    "team-rocket": {
+      "setId": "base5",
+      "slug": "team-rocket",
+      "name": "Team Rocket",
+      "logo": "/img/base5/logo.png",
+      "src": "/img/base5/logo.png"
+    },
+    "trading-card-game-classic": {
+      "setId": "tradingcardgameclassic",
+      "slug": "trading-card-game-classic",
+      "name": "Trading Card Game Classic",
+      "logo": "/img/tradingcardgameclassic/logo.png",
+      "src": "/img/tradingcardgameclassic/logo.png",
+      "kind": "tile"
+    },
+    "tradingcardgameclassic": {
+      "setId": "tradingcardgameclassic",
+      "slug": "trading-card-game-classic",
+      "name": "Trading Card Game Classic",
+      "logo": "/img/tradingcardgameclassic/logo.png",
+      "src": "/img/tradingcardgameclassic/logo.png",
+      "kind": "tile"
+    },
+    "trick-or-trade-booster-bundle": {
+      "setId": "trickortradeboosterbundle",
+      "slug": "trick-or-trade-booster-bundle",
+      "name": "Trick or Trade BOOster Bundle",
+      "logo": "/img/trickortradeboosterbundle/logo.png",
+      "src": "/img/trickortradeboosterbundle/logo.png",
+      "kind": "tile"
+    },
+    "trick-or-trade-booster-bundle-2023": {
+      "setId": "trickortradeboosterbundle2023",
+      "slug": "trick-or-trade-booster-bundle-2023",
+      "name": "Trick or Trade BOOster Bundle 2023",
+      "logo": "/img/trickortradeboosterbundle2023/logo.png",
+      "src": "/img/trickortradeboosterbundle2023/logo.png",
+      "kind": "tile"
+    },
+    "trick-or-trade-booster-bundle-2024": {
+      "setId": "trickortradeboosterbundle2024",
+      "slug": "trick-or-trade-booster-bundle-2024",
+      "name": "Trick or Trade BOOster Bundle 2024",
+      "logo": "/img/trickortradeboosterbundle2024/logo.png",
+      "src": "/img/trickortradeboosterbundle2024/logo.png",
+      "kind": "tile"
+    },
+    "trickortradeboosterbundle": {
+      "setId": "trickortradeboosterbundle",
+      "slug": "trick-or-trade-booster-bundle",
+      "name": "Trick or Trade BOOster Bundle",
+      "logo": "/img/trickortradeboosterbundle/logo.png",
+      "src": "/img/trickortradeboosterbundle/logo.png",
+      "kind": "tile"
+    },
+    "trickortradeboosterbundle2023": {
+      "setId": "trickortradeboosterbundle2023",
+      "slug": "trick-or-trade-booster-bundle-2023",
+      "name": "Trick or Trade BOOster Bundle 2023",
+      "logo": "/img/trickortradeboosterbundle2023/logo.png",
+      "src": "/img/trickortradeboosterbundle2023/logo.png",
+      "kind": "tile"
+    },
+    "trickortradeboosterbundle2024": {
+      "setId": "trickortradeboosterbundle2024",
+      "slug": "trick-or-trade-booster-bundle-2024",
+      "name": "Trick or Trade BOOster Bundle 2024",
+      "logo": "/img/trickortradeboosterbundle2024/logo.png",
+      "src": "/img/trickortradeboosterbundle2024/logo.png",
+      "kind": "tile"
+    },
+    "triumphant": {
+      "setId": "hgss4",
+      "slug": "triumphant",
+      "name": "Triumphant",
+      "logo": "/img/hgss4/logo.png",
+      "src": "/img/hgss4/logo.png"
+    },
+    "undaunted": {
+      "setId": "hgss3",
+      "slug": "undaunted",
+      "name": "Undaunted",
+      "logo": "/img/hgss3/logo.png",
+      "src": "/img/hgss3/logo.png"
+    },
+    "unleashed": {
+      "setId": "hgss2",
+      "slug": "unleashed",
+      "name": "Unleashed",
+      "logo": "/img/hgss2/logo.png",
+      "src": "/img/hgss2/logo.png"
+    },
+    "world-championship-decks": {
+      "setId": "worldchampionshipdecks",
+      "slug": "world-championship-decks",
+      "name": "World Championship Decks",
+      "logo": "/img/worldchampionshipdecks/logo.png",
+      "src": "/img/worldchampionshipdecks/logo.png",
+      "kind": "tile"
+    },
+    "worldchampionshipdecks": {
+      "setId": "worldchampionshipdecks",
+      "slug": "world-championship-decks",
+      "name": "World Championship Decks",
+      "logo": "/img/worldchampionshipdecks/logo.png",
+      "src": "/img/worldchampionshipdecks/logo.png",
+      "kind": "tile"
+    },
+    "wotc-promo": {
+      "setId": "basep",
+      "slug": "wotc-promo",
+      "name": "WoTC Promo",
+      "logo": "/img/basep/logo.png",
+      "src": "/img/basep/logo.png"
+    },
+    "xy-ancient-origins": {
+      "setId": "xy7",
+      "slug": "xy-ancient-origins",
+      "name": "XY - Ancient Origins",
+      "logo": "/img/xy7/logo.png",
+      "src": "/img/xy7/logo.png"
+    },
+    "xy-base-set": {
+      "setId": "xy1",
+      "slug": "xy-base-set",
+      "name": "XY Base Set",
+      "logo": "/img/xy1/logo.png",
+      "src": "/img/xy1/logo.png"
+    },
+    "xy-breakpoint": {
+      "setId": "xy9",
+      "slug": "xy-breakpoint",
+      "name": "XY - BREAKpoint",
+      "logo": "/img/xy9/logo.png",
+      "src": "/img/xy9/logo.png"
+    },
+    "xy-breakthrough": {
+      "setId": "xy8",
+      "slug": "xy-breakthrough",
+      "name": "XY - BREAKthrough",
+      "logo": "/img/xy8/logo.png",
+      "src": "/img/xy8/logo.png"
+    },
+    "xy-evolutions": {
+      "setId": "xy12",
+      "slug": "xy-evolutions",
+      "name": "XY - Evolutions",
+      "logo": "/img/xy12/logo.png",
+      "src": "/img/xy12/logo.png"
+    },
+    "xy-fates-collide": {
+      "setId": "xy10",
+      "slug": "xy-fates-collide",
+      "name": "XY - Fates Collide",
+      "logo": "/img/xy10/logo.png",
+      "src": "/img/xy10/logo.png"
+    },
+    "xy-flashfire": {
+      "setId": "xy2",
+      "slug": "xy-flashfire",
+      "name": "XY - Flashfire",
+      "logo": "/img/xy2/logo.png",
+      "src": "/img/xy2/logo.png"
+    },
+    "xy-furious-fists": {
+      "setId": "xy3",
+      "slug": "xy-furious-fists",
+      "name": "XY - Furious Fists",
+      "logo": "/img/xy3/logo.png",
+      "src": "/img/xy3/logo.png"
+    },
+    "xy-phantom-forces": {
+      "setId": "xy4",
+      "slug": "xy-phantom-forces",
+      "name": "XY - Phantom Forces",
+      "logo": "/img/xy4/logo.png",
+      "src": "/img/xy4/logo.png"
+    },
+    "xy-primal-clash": {
+      "setId": "xy5",
+      "slug": "xy-primal-clash",
+      "name": "XY - Primal Clash",
+      "logo": "/img/xy5/logo.png",
+      "src": "/img/xy5/logo.png"
+    },
+    "xy-promos": {
+      "setId": "xyp",
+      "slug": "xy-promos",
+      "name": "XY Promos",
+      "logo": "/img/xyp/logo.png",
+      "src": "/img/xyp/logo.png"
+    },
+    "xy-roaring-skies": {
+      "setId": "xy6",
+      "slug": "xy-roaring-skies",
+      "name": "XY - Roaring Skies",
+      "logo": "/img/xy6/logo.png",
+      "src": "/img/xy6/logo.png"
+    },
+    "xy-steam-siege": {
+      "setId": "xy11",
+      "slug": "xy-steam-siege",
+      "name": "XY - Steam Siege",
+      "logo": "/img/xy11/logo.png",
+      "src": "/img/xy11/logo.png"
+    },
+    "xy-trainer-kit-bisharp-and-wigglytuff": {
+      "setId": "xytrainerkitbisharpandwigglytuff",
+      "slug": "xy-trainer-kit-bisharp-and-wigglytuff",
+      "name": "XY Trainer Kit: Bisharp & Wigglytuff",
+      "logo": "/img/xytrainerkitbisharpandwigglytuff/logo.png",
+      "src": "/img/xytrainerkitbisharpandwigglytuff/logo.png",
+      "kind": "tile"
+    },
+    "xy-trainer-kit-latias-and-latios": {
+      "setId": "xytrainerkitlatiasandlatios",
+      "slug": "xy-trainer-kit-latias-and-latios",
+      "name": "XY Trainer Kit: Latias & Latios",
+      "logo": "/img/xytrainerkitlatiasandlatios/logo.png",
+      "src": "/img/xytrainerkitlatiasandlatios/logo.png",
+      "kind": "tile"
+    },
+    "xy-trainer-kit-pikachu-libre-and-suicune": {
+      "setId": "xytrainerkitpikachulibreandsuicune",
+      "slug": "xy-trainer-kit-pikachu-libre-and-suicune",
+      "name": "XY Trainer Kit: Pikachu Libre & Suicune",
+      "logo": "/img/xytrainerkitpikachulibreandsuicune/logo.png",
+      "src": "/img/xytrainerkitpikachulibreandsuicune/logo.png",
+      "kind": "tile"
+    },
+    "xy-trainer-kit-sylveon-and-noivern": {
+      "setId": "xytrainerkitsylveonandnoivern",
+      "slug": "xy-trainer-kit-sylveon-and-noivern",
+      "name": "XY Trainer Kit: Sylveon & Noivern",
+      "logo": "/img/xytrainerkitsylveonandnoivern/logo.png",
+      "src": "/img/xytrainerkitsylveonandnoivern/logo.png",
+      "kind": "tile"
+    },
+    "xy0": {
+      "setId": "xy0",
+      "slug": "kalos-starter-set",
+      "name": "Kalos Starter Set",
+      "logo": "/img/xy0/logo.png",
+      "src": "/img/xy0/logo.png"
+    },
+    "xy1": {
+      "setId": "xy1",
+      "slug": "xy-base-set",
+      "name": "XY Base Set",
+      "logo": "/img/xy1/logo.png",
+      "src": "/img/xy1/logo.png"
+    },
+    "xy10": {
+      "setId": "xy10",
+      "slug": "xy-fates-collide",
+      "name": "XY - Fates Collide",
+      "logo": "/img/xy10/logo.png",
+      "src": "/img/xy10/logo.png"
+    },
+    "xy11": {
+      "setId": "xy11",
+      "slug": "xy-steam-siege",
+      "name": "XY - Steam Siege",
+      "logo": "/img/xy11/logo.png",
+      "src": "/img/xy11/logo.png"
+    },
+    "xy12": {
+      "setId": "xy12",
+      "slug": "xy-evolutions",
+      "name": "XY - Evolutions",
+      "logo": "/img/xy12/logo.png",
+      "src": "/img/xy12/logo.png"
+    },
+    "xy2": {
+      "setId": "xy2",
+      "slug": "xy-flashfire",
+      "name": "XY - Flashfire",
+      "logo": "/img/xy2/logo.png",
+      "src": "/img/xy2/logo.png"
+    },
+    "xy3": {
+      "setId": "xy3",
+      "slug": "xy-furious-fists",
+      "name": "XY - Furious Fists",
+      "logo": "/img/xy3/logo.png",
+      "src": "/img/xy3/logo.png"
+    },
+    "xy4": {
+      "setId": "xy4",
+      "slug": "xy-phantom-forces",
+      "name": "XY - Phantom Forces",
+      "logo": "/img/xy4/logo.png",
+      "src": "/img/xy4/logo.png"
+    },
+    "xy5": {
+      "setId": "xy5",
+      "slug": "xy-primal-clash",
+      "name": "XY - Primal Clash",
+      "logo": "/img/xy5/logo.png",
+      "src": "/img/xy5/logo.png"
+    },
+    "xy6": {
+      "setId": "xy6",
+      "slug": "xy-roaring-skies",
+      "name": "XY - Roaring Skies",
+      "logo": "/img/xy6/logo.png",
+      "src": "/img/xy6/logo.png"
+    },
+    "xy7": {
+      "setId": "xy7",
+      "slug": "xy-ancient-origins",
+      "name": "XY - Ancient Origins",
+      "logo": "/img/xy7/logo.png",
+      "src": "/img/xy7/logo.png"
+    },
+    "xy8": {
+      "setId": "xy8",
+      "slug": "xy-breakthrough",
+      "name": "XY - BREAKthrough",
+      "logo": "/img/xy8/logo.png",
+      "src": "/img/xy8/logo.png"
+    },
+    "xy9": {
+      "setId": "xy9",
+      "slug": "xy-breakpoint",
+      "name": "XY - BREAKpoint",
+      "logo": "/img/xy9/logo.png",
+      "src": "/img/xy9/logo.png"
+    },
+    "xyp": {
+      "setId": "xyp",
+      "slug": "xy-promos",
+      "name": "XY Promos",
+      "logo": "/img/xyp/logo.png",
+      "src": "/img/xyp/logo.png"
+    },
+    "xytrainerkitbisharpandwigglytuff": {
+      "setId": "xytrainerkitbisharpandwigglytuff",
+      "slug": "xy-trainer-kit-bisharp-and-wigglytuff",
+      "name": "XY Trainer Kit: Bisharp & Wigglytuff",
+      "logo": "/img/xytrainerkitbisharpandwigglytuff/logo.png",
+      "src": "/img/xytrainerkitbisharpandwigglytuff/logo.png",
+      "kind": "tile"
+    },
+    "xytrainerkitlatiasandlatios": {
+      "setId": "xytrainerkitlatiasandlatios",
+      "slug": "xy-trainer-kit-latias-and-latios",
+      "name": "XY Trainer Kit: Latias & Latios",
+      "logo": "/img/xytrainerkitlatiasandlatios/logo.png",
+      "src": "/img/xytrainerkitlatiasandlatios/logo.png",
+      "kind": "tile"
+    },
+    "xytrainerkitpikachulibreandsuicune": {
+      "setId": "xytrainerkitpikachulibreandsuicune",
+      "slug": "xy-trainer-kit-pikachu-libre-and-suicune",
+      "name": "XY Trainer Kit: Pikachu Libre & Suicune",
+      "logo": "/img/xytrainerkitpikachulibreandsuicune/logo.png",
+      "src": "/img/xytrainerkitpikachulibreandsuicune/logo.png",
+      "kind": "tile"
+    },
+    "xytrainerkitsylveonandnoivern": {
+      "setId": "xytrainerkitsylveonandnoivern",
+      "slug": "xy-trainer-kit-sylveon-and-noivern",
+      "name": "XY Trainer Kit: Sylveon & Noivern",
+      "logo": "/img/xytrainerkitsylveonandnoivern/logo.png",
+      "src": "/img/xytrainerkitsylveonandnoivern/logo.png",
+      "kind": "tile"
+    },
+    "zsv10pt5": {
+      "setId": "zsv10pt5",
+      "slug": "sv-black-bolt",
+      "name": "SV: Black Bolt",
+      "logo": "/img/zsv10pt5/logo.png",
+      "src": "/img/zsv10pt5/logo.png"
+    }
+  },
+  "noLogo": []
+}
