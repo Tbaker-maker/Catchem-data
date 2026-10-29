@@ -5,7 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { BANNED } from "../lib/public-bundle.mjs";
 import { flag } from "../flags.mjs";
-import { buildReadLibrary, writeReadLibrary, boardImage, BRAND_TILE } from "../lib/read-library.mjs";
+import { buildReadLibrary, writeReadLibrary, boardImage, BRAND_TILE, pictureForRead } from "../lib/read-library.mjs";
 import {
   FOOTER,
   chaseInMorningFile,
@@ -377,6 +377,15 @@ export async function run() {
     t("board image: branded tile when the flag is off and no catalogue hit", boardImage({ sku: "tcgcsv-704180" }, {}, false) === BRAND_TILE);
     t("board image: a sealed slug maps to its TCGplayer id", boardImage({ id: "askmove-sv7-etb", sku: "sv7-etb" }, {}, true, new Map([["sv7-etb", "557350"]])) === "https://tcgplayer-cdn.tcgplayer.com/product/557350_in_400x400.jpg");
     t("board image: a non-product read still gets the tile", boardImage({ id: "spread-x" }, {}, true) === BRAND_TILE);
+    const logos = { "sv07-stellar-crown": { logo: "/img/sv7/logo.png", setId: "sv7" } };
+    const stellar = { id: "deep-set-sv07-stellar-crown", readKind: "deep", deep: "set", image: BRAND_TILE, receipt: { slug: "sv07-stellar-crown" }, href: "" };
+    t("a set deep dive uses the set logo instead of the site tile", pictureForRead(stellar, {}, false, new Map(), logos) === "https://catchemtcg.com/img/sv7/logo.png");
+    const noLogo = { id: "deep-set-custom", readKind: "deep", deep: "set", receipt: { slug: "custom", cards: [{ id: "tcgcsv-42" }] } };
+    t("a set deep dive with no logo uses a product picture", pictureForRead(noLogo, { "tcgcsv-42": "/cards/sv7/1.png" }, false, new Map(), {}) === "https://catchemtcg.com/cards/sv7/1.png");
+    const poke = { id: "deep-pokemon-unown", readKind: "deep", deep: "pokemon", lineCards: [{ cards: [{ id: "tcgcsv-90189", image: "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg" }] }] };
+    t("a deep dive with no set logo uses a line card product image", pictureForRead(poke, {}, false, new Map(), {}) === "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg");
+    t("a deep dive with no set and no product keeps the site tile", pictureForRead({ id: "deep-era-x", readKind: "deep", deep: "era" }, {}, false, new Map(), logos) === BRAND_TILE);
+    t("a non-deep read with no picture still gets the tile", pictureForRead({ id: "spread-x" }, {}, true, new Map(), logos) === BRAND_TILE);
     try {
       const pub = JSON.parse(await readFile(join(dirname(fileURLToPath(import.meta.url)), "../../research/assets/public/reads.json"), "utf8"));
       t("published reads.json: no board row has an empty image", (pub.reads || []).every((row) => typeof row.image === "string" && row.image.trim() !== ""));

@@ -8,7 +8,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
-import { boardImage, loadBoardImageInputs } from "./read-library.mjs";
+import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
 
 const LONG_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -868,10 +868,10 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     fresh.push(...keep);
   }
   attachListingsFacts(fresh, listings);
-  const { images, tcgOn, sealedPid } = await loadBoardImageInputs(root);
-  for (const r of fresh) r.image = boardImage(r, images, tcgOn, sealedPid);
+  const { images, tcgOn, sealedPid, logos } = await loadBoardImageInputs(root);
+  for (const r of fresh) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   for (const r of fresh) { if (!r.why) r.why = `From ${r.source}.`; if (!r.whyItMatters) r.whyItMatters = r.why; }
-  for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
+  for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
   const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepGap, deepRecovery, deepSlump, deepSealed, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
@@ -911,7 +911,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   attachListingsFacts(priceDedup, listings);
   const fitted = fitBoard(priceDedup.filter(onePage), freshOne);
   const mixed = unstickFamilies(dropHeldReads(mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 }), heldIds));
-  for (const r of mixed) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
+  for (const r of mixed) if (!String(r.image || "").trim()) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   const listingIndex = await loadListingIndex(root);
   const gated = finishBoard(await dropThinReads(mixed, root, end, listingAnnotate(listingIndex)));
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");

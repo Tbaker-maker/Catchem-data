@@ -654,16 +654,76 @@ export function boardImage(row, images = {}, tcgOn = true, sealedPid = new Map()
   return BRAND_TILE;
 }
 
+export function setSlugOf(row) {
+  const href = String(row?.href || "");
+  const fromHref = href.match(/^\/sets\/([a-z0-9-]+)$/i);
+  if (fromHref && fromHref[1] !== "sets") return fromHref[1];
+  const slug = String(row?.receipt?.slug || "").trim();
+  if (/^[a-z0-9-]+$/i.test(slug)) return slug;
+  const id = String(row?.id || "");
+  const fromId = id.match(/^deep-set-([a-z0-9-]+)$/i);
+  return fromId ? fromId[1] : "";
+}
+
+export function logoUrl(logos, slug) {
+  if (!slug || !logos) return "";
+  const row = logos[slug] || logos[slug.toLowerCase()];
+  const path = String(row?.logo || "");
+  if (!/^\/img\/[A-Za-z0-9]+\/logo\.png$/.test(path)) return "";
+  return `${SITE_ORIGIN}${path}`;
+}
+
+// A deep dive that would otherwise get the site tile uses the set logo, then a
+// real product picture from the receipt or the line cards. Other reads keep boardImage.
+function productShot(url) {
+  const s = String(url || "").trim();
+  if (!s || s === BRAND_TILE || s.endsWith("/og.png") || s.includes("..")) return "";
+  if (/^https:\/\/tcgplayer-cdn\.tcgplayer\.com\/product\/\d+_in_400x400\.jpg$/.test(s)) return s;
+  if (/^https:\/\/catchemtcg\.com\/(?:data\/editor\/tcg|cards|img)\/[A-Za-z0-9._/-]+$/.test(s)) return s;
+  return "";
+}
+
+export function pictureForRead(row, images = {}, tcgOn = true, sealedPid = new Map(), logos = {}) {
+  const base = boardImage(row, images, tcgOn, sealedPid);
+  const deep = String(row?.readKind || row?.kind || "") === "deep" || !!row?.deep;
+  if (!deep || base !== BRAND_TILE) return base;
+  const logo = logoUrl(logos, setSlugOf(row));
+  if (logo) return logo;
+  const ids = [];
+  for (const card of row?.receipt?.cards || []) {
+    const shot = productShot(card?.image);
+    if (shot) return shot;
+    if (card?.id) ids.push(String(card.id));
+  }
+  if (row?.sku) ids.push(String(row.sku));
+  for (const id of ids) {
+    const pic = boardImage({ sku: id, id }, images, tcgOn, sealedPid);
+    if (pic && pic !== BRAND_TILE) return pic;
+  }
+  for (const line of row?.lineCards || []) {
+    for (const card of line?.cards || []) {
+      const shot = productShot(card?.image);
+      if (shot) return shot;
+      if (!card?.id) continue;
+      const pic = boardImage({ sku: String(card.id), id: String(card.id) }, images, tcgOn, sealedPid);
+      if (pic && pic !== BRAND_TILE) return pic;
+    }
+  }
+  return base;
+}
+
 export async function loadBoardImageInputs(root) {
   let images = {};
   const tcgOn = flag("images.tcgplayer") !== false;
   try { images = JSON.parse(await readFile(join(root, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }
+  let logos = {};
+  try { logos = JSON.parse(await readFile(join(root, "research/assets/public/set-logos.json"), "utf8")).logos || {}; } catch { logos = {}; }
   const sealedPid = new Map();
   try {
     const doc = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
     for (const p of Array.isArray(doc) ? doc : doc.products || []) if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
   } catch { /* no sealed map */ }
-  return { images, tcgOn, sealedPid };
+  return { images, tcgOn, sealedPid, logos };
 }
 
 export async function writeReadLibrary({ root, catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = null, pptPublic = null, volumeReads = null }) {
@@ -697,11 +757,11 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   const readsPath = join(root, READS_FILE);
   await mkdir(dirname(readsPath), { recursive: true });
   const published = publishReads(lib);
-  const { images: boardImages, tcgOn, sealedPid } = await loadBoardImageInputs(root);
+  const { images: boardImages, tcgOn, sealedPid, logos } = await loadBoardImageInputs(root);
   // publishReads returns the same row objects as lib.board. Stamp the picture
   // on copies so the library object stays the one written to read-library.json.
   const stamped = (published.reads || []).map((row) => ({ ...row }));
-  for (const row of stamped) row.image = boardImage(row, boardImages, tcgOn, sealedPid);
+  for (const row of stamped) row.image = pictureForRead(row, boardImages, tcgOn, sealedPid, logos);
   await writeFile(readsPath, JSON.stringify({ ...published, reads: stamped }));
   return lib;
 }
