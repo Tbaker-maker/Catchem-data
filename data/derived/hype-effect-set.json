@@ -1,23 +1,52 @@
 {
  "asOf": "2026-10-29",
- "generatedAt": "2026-10-29T11:21:02.872Z",
+ "generatedAt": "2026-10-29T12:42:49.383Z",
  "level": "set",
  "note": "Hype-effect public reads. Neutral, data-only. Passed n≥20 holdout only. No creator names. Not advice.",
  "surface": "set",
  "neverMix": "Singles and sealed stay in separate files. Never show sealed on card pages.",
  "holdout": {
-  "n": 2,
-  "trainN": 0,
-  "testN": 2,
-  "trainMedianPct": null,
-  "testMedianPct": -19.3,
-  "medianPct": -19.3,
-  "from": "2026-09-26",
+  "n": 25,
+  "trainN": 16,
+  "testN": 9,
+  "trainMedianPct": -6.3,
+  "testMedianPct": -2.3,
+  "medianPct": -4.2,
+  "from": "2026-04-27",
   "to": "2026-09-26",
-  "passedHoldout": false,
-  "status": "private_candidate",
+  "passedHoldout": true,
+  "status": "passed_holdout",
   "minTest": 6
  },
- "count": 0,
- "items": []
+ "count": 2,
+ "items": [
+  {
+   "id": "hype:set:set:SV: Prismatic Evolutions:2026-10-29",
+   "level": "set",
+   "key": "set:SV: Prismatic Evolutions",
+   "label": "Prismatic Evolutions",
+   "line": "Heavy creator attention on Prismatic Evolutions this week. Past sets with this much attention moved -4.2% over 30 days (n=25, 2026-04-27 to 2026-09-26).",
+   "n": 25,
+   "medianPct": -4.2,
+   "from": "2026-04-27",
+   "to": "2026-09-26",
+   "weekFrom": "2026-10-24",
+   "weekTo": "2026-10-24",
+   "status": "passed_holdout"
+  },
+  {
+   "id": "hype:set:group:24722:2026-10-29",
+   "level": "set",
+   "key": "group:24722",
+   "label": "30th Celebration",
+   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.2% over 30 days (n=25, 2026-04-27 to 2026-09-26).",
+   "n": 25,
+   "medianPct": -4.2,
+   "from": "2026-04-27",
+   "to": "2026-09-26",
+   "weekFrom": "2026-10-17",
+   "weekTo": "2026-10-17",
+   "status": "passed_holdout"
+  }
+ ]
 }

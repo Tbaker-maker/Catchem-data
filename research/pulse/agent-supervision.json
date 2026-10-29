@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-10-28T20:34:13.582Z",
- "date": "2026-10-28",
+ "generatedAt": "2026-10-29T13:22:12.732Z",
+ "date": "2026-10-29",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
@@ -14,7 +14,7 @@
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 28 finding(s)",
+  "steward: 27 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -32,8 +32,8 @@
   "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 10 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "steward: FARMING — findings climbed 4 → 4 → 5 → 28 across four runs with nothing resolved. Volume is not work.",
-  "steward: OVER-BUDGET — 28 findings against a ceiling of 8. An unreadable list is an unread list.",
+  "steward: FARMING — findings climbed 4 → 4 → 5 → 27 across four runs with nothing resolved. Volume is not work.",
+  "steward: OVER-BUDGET — 27 findings against a ceiling of 8. An unreadable list is an unread list.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -480,7 +480,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Shining Fates Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 138 listings counted.\"",
+   "what": "[YouTube] Lost Origin Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 137 listings counted.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -642,22 +642,6 @@
    "owner": "chat",
    "what": "domain-plausibility: an incident in your domain: \"The first Catch'em Update draft read \"151 Ultra Premium Collection is up 7500% this week\" \"",
    "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "steward",
-   "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
-   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -848,7 +832,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 326 places",
+   "what": "the paid provider is called from 327 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -864,7 +848,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 66 days.",
+   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 67 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -880,7 +864,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BACKUP.md has sat untouched for 67 days.",
+   "what": "PENDING-BACKUP.md has sat untouched for 68 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -896,7 +880,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-BOX.md has sat untouched for 66 days.",
+   "what": "PENDING-BLIND-BOX.md has sat untouched for 67 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -912,7 +896,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-PACKS.md has sat untouched for 66 days.",
+   "what": "PENDING-BLIND-PACKS.md has sat untouched for 67 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -928,7 +912,23 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 67 days.",
+   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 68 days.",
+   "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "tyler",
+   "what": "PENDING-CC-BREAKER.md has sat untouched for 68 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",

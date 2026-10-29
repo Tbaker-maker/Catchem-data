@@ -1,17 +1,17 @@
-# What the machines noticed — 2026-10-28
+# What the machines noticed — 2026-10-29
 
-Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
+Read it with coffee. Anything urgent says so in capitals.
 
 ## Our own claims
-One of our own claims did not survive today. That is what the falsifiers are for, and it is going in public.
+We said in advance what would end this thesis. That thing happened. So it ends.
 
 **NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
-- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 3 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
+- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 2 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
 
 ## Our own numbers
-A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
+We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
 
-25 product(s) we featured and can no longer price:
+26 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -75,17 +75,17 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## Where today's story goes
-- **X** — "Mega Evolution listings moved 193.3% while its print window closes."
-- **YouTube** — Lost Origin Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 137 listings counted."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.5."
+- **X** — "Paradox Rift listings moved -66.7% while its print window closes."
+- **YouTube** — Journey Together Booster Bundle — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 143 listings counted."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.3."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 67 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.

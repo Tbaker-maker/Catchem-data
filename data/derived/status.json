@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-28",
- "generatedAt": "2026-10-29T08:49:48.909Z",
+ "asOf": "2026-10-29",
+ "generatedAt": "2026-10-29T13:33:39.691Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
-   "date": "2026-10-28",
+   "date": "2026-10-29",
    "ok": true,
    "detail": "fresh"
   },
@@ -13,13 +13,13 @@
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
    "date": "2026-10-29",
-   "ok": false,
-   "detail": "dated 2026-10-29"
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "reads",
    "path": "research/assets/public/reads.json",
-   "date": "2026-10-28",
+   "date": "2026-10-29",
    "ok": true,
    "detail": "fresh"
   },
@@ -32,10 +32,11 @@
   }
  ],
  "failures": [
-  "listings-counted",
   "scanner"
  ],
- "alerts": [],
+ "alerts": [
+  "eBay Browse is at 98% of the 4,277 daily listing calls as of 2026-10-29."
+ ],
  "reran": [],
  "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }

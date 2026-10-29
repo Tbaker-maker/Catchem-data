@@ -1,18 +1,31 @@
 {
- "generatedAt": "2026-10-28T20:32:55.245Z",
- "date": "2026-10-28",
- "checked": 175,
- "warned": 2,
+ "generatedAt": "2026-10-29T13:21:35.599Z",
+ "date": "2026-10-29",
+ "checked": 174,
+ "warned": 1,
  "blocked": 6,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
+  {
+   "id": "sm75-etb",
+   "name": "Dragon Majesty Elite Trainer Box",
+   "median": 1228.24,
+   "high": null,
+   "floor": 1449.95,
+   "listings": 4,
+   "reasons": [
+    "only 4 listings — too thin to headline"
+   ],
+   "warns": [],
+   "topPricedTitles": null
+  },
   {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
    "median": 162.86,
    "high": null,
    "floor": 164.99,
-   "listings": 74,
+   "listings": 77,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -24,23 +37,10 @@
    "name": "Sun & Moon Booster Box",
    "median": 1015.71,
    "high": null,
-   "floor": 995,
-   "listings": 7,
+   "floor": 1009.99,
+   "listings": 9,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
-   ],
-   "warns": [],
-   "topPricedTitles": null
-  },
-  {
-   "id": "sm10-booster-box",
-   "name": "Unbroken Bonds Booster Box",
-   "median": 2609.39,
-   "high": null,
-   "floor": 3149.97,
-   "listings": 4,
-   "reasons": [
-    "only 4 listings — too thin to headline"
    ],
    "warns": [],
    "topPricedTitles": null
@@ -51,7 +51,7 @@
    "median": 688.99,
    "high": null,
    "floor": 695,
-   "listings": 10,
+   "listings": 11,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
    ],
@@ -61,7 +61,7 @@
   {
    "id": "swsh1-etb",
    "name": "Sword & Shield Base Elite Trainer Box",
-   "median": 174.44,
+   "median": 175.63,
    "high": null,
    "floor": 169.86,
    "listings": 6,
@@ -74,13 +74,13 @@
   {
    "id": "swsh1-pack",
    "name": "Sword & Shield Booster Pack",
-   "median": 12.38,
+   "median": 12.16,
    "high": null,
    "floor": 10.5,
-   "listings": 3,
+   "listings": 4,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5.",
-    "only 3 listings — too thin to headline"
+    "only 4 listings — too thin to headline"
    ],
    "warns": [],
    "topPricedTitles": null
