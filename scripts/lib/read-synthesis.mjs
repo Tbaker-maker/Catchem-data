@@ -16,6 +16,25 @@ import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards } from "./history-reads.mjs";
 import { eraTagOf } from "./signal-chips.mjs";
 
+export const HEADLINE_MAX = 300;
+
+// Keep a headline inside a readable length. A whole sentence stays when it fits.
+// A sentence that is itself too long ends on a word, never mid-word.
+export function capHeadline(text, max = HEADLINE_MAX) {
+  const s = String(text || "").replace(/\s+/g, " ").trim();
+  if (s.length <= max) return s;
+  const parts = s.split(/(?<=[.!?])\s+/);
+  let out = "";
+  for (const part of parts) {
+    const next = out ? `${out} ${part}` : part;
+    if (next.length > max) break;
+    out = next;
+  }
+  if (out) return out;
+  const slice = s.slice(0, max);
+  const word = slice.lastIndexOf(" ");
+  return (word > 0 ? slice.slice(0, word) : slice).trim();
+}
 const BANNED = banGuard("read synthesis");
 const DASH = /[\u2014\u2013]/;
 const SOLD = /\b(?:sold|sales)\b/i;
@@ -267,7 +286,7 @@ export function compose(item, fs, cfg, used) {
   }
   const avail = new Set(fs.map((f) => f.tag).concat(kindF ? ["kind"] : [])).size;
   if (tags.size < Math.min(cfg.minSignals, avail)) return null;
-  const text = pick.map((p, i) => (i ? p.short : p.text)).join(" ");
+  const text = capHeadline(pick.map((p, i) => (i ? p.short : p.text)).join(" "));
   if (BANNED.test(text) || DASH.test(text) || SOLD.test(text)) return null;
   if (item.sealed && CONDITION.test(text)) return null;
   if (used) used.byType.set(key(lead), (used.byType.get(key(lead)) || 0) + 1);
@@ -390,7 +409,9 @@ export function synthesizeReads(reads, ctx, cfg) {
     const lead = got.lead;
     // A lead price read keeps its TCGplayer market headline; the summary is its lead line.
     const leadPrice = ((r.board !== "v3" && r.readKind === "price") || r.kind === "single" || r.kind === "sealed") && /\bon TCGplayer market\b/.test(String(r.headline || ""));
-    const next = { ...r, headline: leadPrice && r.headline ? r.headline : got.text, path: got.text, variants: [got.text], synth: true,
+    const rawHead = leadPrice && r.headline ? r.headline : got.text;
+    const text = capHeadline(rawHead);
+    const next = { ...r, headline: text, path: text, variants: [text], synth: true,
       receipt: { ...(r.receipt || {}), synth: { lead: lead.type, title: item.title, signals: got.pick.map((p) => p.tag), facts: got.pick.map((p) => ({ tag: p.tag, type: p.type, nums: p.nums || null })), now: item.pts[item.pts.length - 1], sources: ["research/assets/public/hist-long", "research/assets/public/buckets", "research/assets/public/listings-counted.json", "data/sealed-prices.json", "research/assets/public/set-value", "research/assets/public/rotation-status.json"] } } };
     if (lead.window) next.windowDays = lead.window;
     const whyLead = whyFromLead(lead);

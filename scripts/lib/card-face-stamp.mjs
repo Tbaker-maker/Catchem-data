@@ -15,7 +15,7 @@ import {
   priceRecord,
   CONDITION_NOTE,
 } from "./card-face.mjs";
-import { boardImage, loadBoardImageInputs, BRAND_TILE } from "./read-library.mjs";
+import { boardImage, loadBoardImageInputs, BRAND_TILE, pictureForRead } from "./read-library.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 
 const BANNED = banGuard("card face stamp");
@@ -315,6 +315,10 @@ export function stampRead(read, index, images) {
   if (direct && singleCard(read)) {
     const image = picture(direct, images);
     if (image && (!read.image || String(read.image).endsWith("/og.png"))) read.image = image;
+  }
+  if ((read.readKind === "deep" || read.kind === "deep" || read.deep) && (!read.image || String(read.image).endsWith("/og.png"))) {
+    const next = pictureForRead(read, images.images, images.tcgOn, images.sealedPid, images.logos);
+    if (next && next !== BRAND_TILE) read.image = next;
   }
   const blob = [...new Set([read.headline, read.path, ...(read.lines || [])].filter((s) => typeof s === "string"))].join("\n");
   const prices = dollars(blob, read.asOf || "", read.price);

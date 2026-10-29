@@ -1,5 +1,5 @@
-// Cheap-move floor. The numbers live in catchem-data-private
-// (config/feed-floor.json). This file never stores them.
+// Cheap-move floor and the sealed lead floor. The numbers live in
+// catchem-data-private (config/feed-floor.json). This file never stores them.
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,7 +10,13 @@ function valid(cfg) {
   const maxCheapPrice = Number(cfg?.maxCheapPrice);
   const maxCheapMove = Number(cfg?.maxCheapMove);
   if (!(maxCheapPrice > 0) || !(maxCheapMove > 0)) return null;
-  return { maxCheapPrice, maxCheapMove };
+  const out = { maxCheapPrice, maxCheapMove };
+  // Optional. A sealed market lead needs both. Missing means that lead stays off.
+  const usd = Number(cfg?.minSealedLeadUsd);
+  const pct = Number(cfg?.minSealedLeadPct);
+  if (usd > 0) out.minSealedLeadUsd = usd;
+  if (pct > 0) out.minSealedLeadPct = pct;
+  return out;
 }
 
 export async function loadFeedFloor(root = ROOT) {

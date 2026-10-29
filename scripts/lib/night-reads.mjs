@@ -24,7 +24,7 @@ export const ASK_CLAUSE = "The ask changed. The market price did not. Asks are n
 export const MKT_CLAUSE = "The market price changed. The ask did not. Asks are not listings gone.";
 export const STILL_CLAUSE = "Asks and listing count. Not listings gone.";
 
-export const RANKED_KINDS = new Set(["setshare", "spread"]);
+export const RANKED_KINDS = new Set(["setshare", "spread", "mktmove"]);
 export const KIND_ORDER = ["quiet", "mix", "conditions", "solddown", "setshare", "spread", "askmove", "mktmove", "listing"];
 export const EMPTY_COPY = {
   quiet: "No quiet Near Mint window is on file.",
@@ -585,17 +585,51 @@ export function rememberShown(state, reads, asOf) {
   return { asOf, days: COOLDOWN_DAYS, shown };
 }
 
+export function sealedMove(read) {
+  const from = Number(read?.receipt?.marketFrom);
+  const to = Number(read?.receipt?.marketTo);
+  if (!(from > 0) || !(to > 0)) return null;
+  return { dollars: Math.abs(to - from), pct: Math.abs((to - from) / from) * 100 };
+}
+
+// Both limits come from the private feed floor. Missing either one, the move
+// cannot lead. A tiny overnight change stays off the sealed lead.
+export function sealedLeadLimits(cfg) {
+  const usd = Number(cfg?.minSealedLeadUsd);
+  const pct = Number(cfg?.minSealedLeadPct);
+  if (!(usd > 0) || !(pct > 0)) return null;
+  return { minSealedLeadUsd: usd, minSealedLeadPct: pct };
+}
+
+export function passesSealedLead(read, cfg) {
+  const limits = sealedLeadLimits(cfg);
+  if (!limits) return false;
+  const move = sealedMove(read);
+  if (!move) return false;
+  return move.dollars >= limits.minSealedLeadUsd && move.pct >= limits.minSealedLeadPct;
+}
+
+export function rankMktMoves(rows, cfg) {
+  return (rows || []).filter((row) => passesSealedLead(row, cfg)).sort((a, b) => {
+    const A = sealedMove(a);
+    const B = sealedMove(b);
+    return B.dollars - A.dollars || B.pct - A.pct || String(a.id).localeCompare(String(b.id));
+  });
+}
+
 /**
  * Cap each kind. Ranked kinds keep their incoming order. Others shuffle by date.
  * One sku per night. Cards shown inside the cooldown stay off.
+ * A market move leads only when it clears the private dollar and percent floor.
  */
-export function pickNight(candidates, state, asOf) {
+export function pickNight(candidates, state, asOf, cfg) {
   const blocked = cooledSet(state, asOf);
   const groups = new Map(KIND_ORDER.map((kind) => [kind, []]));
   for (const row of candidates || []) {
     if (!row || !groups.has(row.readKind) || !row.sku || blocked.has(row.sku)) continue;
     groups.get(row.readKind).push(row);
   }
+  groups.set("mktmove", rankMktMoves(groups.get("mktmove"), cfg));
   for (const [kind, rows] of groups) {
     if (RANKED_KINDS.has(kind)) continue;
     const shuffled = seededShuffle(rows.map((row) => row.id), `${asOf}|${kind}`);

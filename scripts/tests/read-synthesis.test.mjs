@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -13,6 +13,15 @@ const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesi
 console.log("read synthesis");
 t("fixture limits load", CFG != null);
 t("missing limits do not load", validSynth({}) === null && validSynth({ ...CFG, weights: {} }) === null);
+t("a short headline stays whole", capHeadline("Up 4% over 7 days.") === "Up 4% over 7 days.");
+const longLead = "Up 214% on the year: Lugia went from $9.85 on Oct 30, 2025 to $30.90 on Oct 29.";
+const longMore = `${longLead} It is up 24% over 7 days, up 33% over 30 days and up 39% over 90 days. That beats its set over 30 days, and the wider market too. That is its highest price on file, back to Feb 8, 2024, above the earlier peak.`;
+const capped = capHeadline(`${longMore} ${"word ".repeat(80)}`);
+t("a long headline stays at or under 300 characters", capped.length <= HEADLINE_MAX && capped.length > 40);
+t("a long headline ends on a sentence when one fits", capped.endsWith(".") && capped.startsWith("Up 214%"));
+const oneLong = `Word ${"alpha ".repeat(80)}end.`;
+const cut = capHeadline(oneLong);
+t("a single long sentence ends on a word", cut.length <= HEADLINE_MAX && !cut.endsWith("alph") && cut.split(" ").every((w) => w.length > 0));
 
 const asOf = "2026-10-23";
 const root = await mkdtemp(join(tmpdir(), "synth-"));
@@ -68,7 +77,7 @@ const capN = Math.max(1, Math.floor(CFG.maxOpeningShare * items.length));
 t("no single opening goes over the share cap", [...open.values()].every((n) => n <= capN));
 t("the old one year opening is gone", done.every((r) => !r.headline.startsWith("One year on")));
 t("each read cites at least 2 distinct signals", done.every((r) => new Set(r.receipt.synth.signals).size >= 2));
-t("2 to 3 sentences", done.every((r) => { const n = r.headline.split(/(?<=[.])\s(?=[A-Z])/).length; return n >= 2 && n <= 3; }));
+t("2 to 3 sentences, or one when two would pass 300 characters", done.every((r) => { const n = r.headline.split(/(?<=[.])\s(?=[A-Z])/).length; return r.headline.length <= 300 && n >= 1 && n <= 3; }));
 t("no advice, dashes, sold or sales", done.every((r) => !hasBannedWord(r.headline) && !/[\u2014\u2013]/.test(r.headline) && !/\b(sold|sales)\b/i.test(r.headline)));
 const etb = done.find((r) => r.sku === "tcgcsv-9000");
 t("sealed never gets a condition label", etb && !/\b(NM|Near Mint)\b/.test(etb.headline));

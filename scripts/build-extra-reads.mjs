@@ -220,7 +220,7 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   const taken = new Set(flagged.concat(dives, volume).map((row) => String(row.sku || "")));
   const floor = await loadFeedFloor(root);
   const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")) && !lowValueMove(row, floor));
-  const shape = pickNight(candidates, rotation, asOf);
+  const shape = pickNight(candidates, rotation, asOf, floor);
   let sealedProducts = [];
   try {
     const doc = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));

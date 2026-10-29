@@ -1,4 +1,5 @@
 import { cardFacts, quietFact } from "../lib/shape-facts.mjs";
+import { readFileSync } from "node:fs";
 import {
   ASK_CLAUSE,
   MIX_CLAUSE,
@@ -10,8 +11,10 @@ import {
   STILL_CLAUSE,
   gapRead,
   marketMoveRead,
+  passesSealedLead,
   pickNight,
   quietRead,
+  rankMktMoves,
   spreadRead,
   stillRead,
 } from "../lib/night-reads.mjs";
@@ -77,6 +80,20 @@ export async function run() {
   const solo = marketMoveRead("me5-etb", { ...market, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 44 }] }, { id: "me5-etb", tcgplayerProductId: 5 });
   t("TCGplayer-only market move has no ask", solo && solo.readKind === "mktmove" && solo.receipt.marketFrom === 40 && solo.receipt.marketTo === 44 && !("ask" in solo.receipt) && !/eBay ask|still ask/i.test(solo.path + solo.why));
   t("mktmove source is TCGplayer market", solo && solo.source === "TCGplayer market");
+  const floor = { maxCheapPrice: 5, maxCheapMove: 0.5, minSealedLeadUsd: 5, minSealedLeadPct: 3 };
+  const tiny = marketMoveRead("me3-etb", { id: "me3-etb", name: "Perfect Order Elite Trainer Box", tcgplayerProductId: 672401, points: [{ date: "2026-10-28", market: 70.19 }, { date: "2026-10-29", market: 71.33 }] }, { id: "me3-etb", tcgplayerProductId: 672401 });
+  const bigger = marketMoveRead("swsh7-box", { id: "swsh7-box", name: "Evolving Skies Booster Box", tcgplayerProductId: 246327, points: [{ date: "2026-10-28", market: 800 }, { date: "2026-10-29", market: 860 }] }, { id: "swsh7-box", tcgplayerProductId: 246327 });
+  const mid = marketMoveRead("sv7-etb", { id: "sv7-etb", name: "Stellar Crown Elite Trainer Box", tcgplayerProductId: 557350, points: [{ date: "2026-10-28", market: 40 }, { date: "2026-10-29", market: 42 }] }, { id: "sv7-etb", tcgplayerProductId: 557350 });
+  const second = marketMoveRead("sv8-etb", { id: "sv8-etb", name: "Surging Sparks Elite Trainer Box", tcgplayerProductId: 500001, points: [{ date: "2026-10-28", market: 100 }, { date: "2026-10-29", market: 120 }] }, { id: "sv8-etb", tcgplayerProductId: 500001 });
+  t("a $1.14 overnight sealed move does not clear the floor", tiny && passesSealedLead(tiny, floor) === false);
+  t("a move under the dollar floor stays off even when the percent is larger", passesSealedLead(mid, floor) === false);
+  const ranked = rankMktMoves([tiny, mid, second, bigger], floor);
+  t("the sealed lead is the largest move that clears both floors", ranked.length === 2 && ranked[0].id === "mktmove-swsh7-box" && ranked[1].id === "mktmove-sv8-etb");
+  t("no floor means no sealed lead", rankMktMoves([bigger], { maxCheapPrice: 5, maxCheapMove: 0.5 }).length === 0);
+  const night = pickNight([tiny, bigger, mid, second], { shown: [] }, "2026-10-29", floor);
+  t("pickNight does not put the $1.14 move on the sealed lead", (night.byKind.mktmove?.items || []).every((row) => row.id !== tiny.id) && night.byKind.mktmove?.items?.[0]?.id === "mktmove-swsh7-box");
+  const src = readFileSync(new URL("../lib/night-reads.mjs", import.meta.url), "utf8") + readFileSync(new URL("../lib/feed-floor.mjs", import.meta.url), "utf8");
+  t("the sealed floor is not baked into the public scripts", !/minSealedLeadUsd\s*[:=]\s*\d/.test(src) && !/minSealedLeadPct\s*[:=]\s*\d/.test(src));
   t("a different product id is not a pair", gapRead("me5-etb", moved, market, { id: "other", tcgplayerProductId: 5 }) == null);
 
   const clean = [];
