@@ -91,5 +91,11 @@ export async function run() {
   t("the era chart does not connect a gap", era.connectsGaps === false && era.tcgplayerSegments.length === 2 && era.tcgplayerSegments[0][0].date === "2026-10-01" && era.tcgplayerSegments[1][0].date === "2026-10-03");
   const pulse = await readFile(join(ROOT, "scripts/generate-pulse.mjs"), "utf8");
   t("the pulse chart does not read era-index-history as an index", !pulse.includes('J("data/era-index-history.json")') && pulse.includes("eraFeed"));
+  const sealedJob = await readFile(join(ROOT, ".github/workflows/update-sealed-prices.yml"), "utf8");
+  const derived = await readFile(join(ROOT, "scripts/compute-derived.mjs"), "utf8");
+  const fresh = await readFile(join(ROOT, "scripts/artifact-freshness.mjs"), "utf8");
+  t("the sealed job commits the TCGplayer era series", sealedJob.includes("data/era-index-history-tcg.json") && derived.includes('const ERA_HIST = "data/era-index-history-tcg.json"'));
+  t("the sealed job does not promise the frozen eBay era file", !sealedJob.includes("data/era-index-history.json"));
+  t("a never-committed TCGplayer era file is excused only until its first commit", fresh.includes("UNTIL_FIRST") && fresh.includes('"data/era-index-history-tcg.json"') && fresh.includes("const first = UNTIL_FIRST[r.p]"));
   return fail;
 }
