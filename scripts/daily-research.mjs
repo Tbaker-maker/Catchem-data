@@ -129,6 +129,7 @@ Run today's check now. Remember: digest first, then the fenced \`\`\`json radar 
     await writeFile(RADAR_FILE, JSON.stringify(parsed, null, 2) + "\n");
     radarNote = changed ? "radar updated" : "radar checked, no change";
     console.log("✓ " + radarNote);
+    await stampPublicReleases();
     digest = text.split(FENCE + "json").slice(0, -1).join(FENCE + "json").trim() || text.trim();
   } else {
     // No block at all is a legitimate "nothing to change" under the brief. It
@@ -139,10 +140,21 @@ Run today's check now. Remember: digest first, then the fenced \`\`\`json radar 
     await writeFile(RADAR_FILE, JSON.stringify(prev, null, 2) + "\n");
     radarNote = "radar checked, no change (no block emitted)";
     console.log("✓ " + radarNote);
+    await stampPublicReleases();
   }
 
   await saveDigest(digest, radarNote);
   console.log("✓ digest written: research/digests/" + today + ".md");
+}
+
+async function stampPublicReleases() {
+  const { writePublicReleases } = await import("./lib/feature-data.mjs");
+  const wrote = await writePublicReleases(ROOT);
+  if (!wrote) {
+    console.error("✗ public releases were not written from the radar");
+    process.exit(1);
+  }
+  console.log("✓ public releases checked date copied from the radar");
 }
 
 // ONE WRITER, so every exit path leaves a readable digest AND states at the top

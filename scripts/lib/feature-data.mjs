@@ -1,7 +1,7 @@
 // Public files for set value, rotation, releases, and listing counts.
 // Every number is copied from a file already in the repo. A missing price stays off.
 
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 // Marks with no announced date. Not a date: a labeled window from the
@@ -390,6 +390,20 @@ export function buildReleases(radar, items, days) {
     releases.push(entry);
   }
   return { checked, source: "data/release-radar.json", releases };
+}
+
+// The research job moves radar.updated when the list changes. Public releases
+// copy that date. If this write is skipped, the public file stays on yesterday
+// and the feature-data check fails. This reads files already in the repo.
+export async function writePublicReleases(root) {
+  const radar = JSON.parse(await readFile(join(root, "data/release-radar.json"), "utf8"));
+  const catalog = JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const { days } = await loadPriceMap(root);
+  const releases = buildReleases(radar, catalog.items || [], days);
+  if (!shouldWrite("releases", { checked: releases.checked, releases: releases.releases.length })) return false;
+  if (!nonEmptyDoc(releases)) return false;
+  await writeFile(join(root, "research/assets/public/releases.json"), JSON.stringify(releases) + "\n");
+  return true;
 }
 
 export function dailyRows(docs) {
