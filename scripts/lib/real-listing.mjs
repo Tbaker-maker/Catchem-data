@@ -269,6 +269,37 @@ export function cleanHistory(points, median) {
   return { kept, dropped };
 }
 
+// A median is only comparable to another median, and only when both counts
+// clear the same minimum. A one-listing history row is not that median.
+// Points with no count are a different measure and are not mixed in.
+export function likeForLikePoints(points, minCount = DEFAULT_MEDIAN_MIN) {
+  const min = Number(minCount) > 0 ? Number(minCount) : DEFAULT_MEDIAN_MIN;
+  const rows = [];
+  for (const point of points || []) {
+    const date = String(point?.date || "").slice(0, 10);
+    const price = Number(point?.ebayMedianAsk ?? point?.price);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !(price > 0)) continue;
+    const count = Number(point?.ebayMedianCount);
+    const isMedian = Number.isInteger(count) && count >= 0 && (point.ebayMedianAsk != null || point.ebayMedianCount != null);
+    rows.push({ date, price, count: Number.isInteger(count) ? count : null, measure: isMedian ? "ebay-median" : "price" });
+  }
+  const medians = rows.filter((p) => p.measure === "ebay-median" && p.count >= min);
+  if (rows.some((p) => p.measure === "ebay-median")) return medians;
+  return rows.filter((p) => p.measure === "price");
+}
+
+// Two ends of one measure, or nothing. A median of many listings is not
+// compared with a single-listing history row.
+export function likeForLikeMove(points, minCount = DEFAULT_MEDIAN_MIN) {
+  const series = likeForLikePoints(points, minCount);
+  if (series.length < 2) return null;
+  const from = series[0];
+  const to = series[series.length - 1];
+  if (from.date === to.date) return null;
+  if (from.measure !== to.measure) return null;
+  return { from, to, measure: from.measure };
+}
+
 // Drop a junk floor and history points. Does not invent a cheapest listing.
 export function gateSealedProduct(product) {
   const median = robustMedianOf(product);

@@ -320,26 +320,62 @@ function goneChip(ctx, rules) {
   return { kind: "gone", dots, word, rate, label: `Listings gone, ${word}` };
 }
 
-function rangeChip(points, asOf, rules) {
-  const minDays = num(rules?.range?.minDays);
-  if (!(minDays > 0) || points.length < 3) return null;
+// One range window for the chip and for a high claim on the same points.
+// 90 days, or the whole series when the window has fewer than 3 points.
+// "Today" is a point on asOf (within slack). An older last point is not today.
+export function priceRange(points, asOf, rules = {}) {
+  const minDays = num(rules?.minDays ?? rules?.range?.minDays);
+  const needDays = minDays > 0 ? minDays : 1;
+  const list = cleanPoints(points);
+  if (list.length < 3) return null;
   const end = dayNum(asOf);
-  const window = points.filter((p) => end - dayNum(p[0]) <= 90 && end - dayNum(p[0]) >= 0);
-  const rows = window.length >= 3 ? window : points;
+  if (!Number.isFinite(end)) return null;
+  const windowDays = num(rules?.windowDays) > 0 ? num(rules.windowDays) : 90;
+  const window = list.filter((p) => end - dayNum(p[0]) <= windowDays && end - dayNum(p[0]) >= 0);
+  const rows = window.length >= 3 ? window : list;
   const days = dayNum(rows[rows.length - 1][0]) - dayNum(rows[0][0]);
-  if (!(days >= minDays)) return null;
-  const vals = rows.map((p) => p[1]);
-  const lo = Math.min(...vals);
-  const hi = Math.max(...vals);
-  if (!(hi > lo)) return null;
-  const today = nearest(rows, asOf, Number.isFinite(num(rules?.move?.slackDays)) ? num(rules.move.slackDays) : 0) || rows[rows.length - 1];
-  const pos = Math.round(((today[1] - lo) / (hi - lo)) * 100) / 100;
+  if (!(days >= needDays)) return null;
+  const slack = Number.isFinite(num(rules?.slackDays)) ? num(rules.slackDays) : (Number.isFinite(num(rules?.move?.slackDays)) ? num(rules.move.slackDays) : 0);
+  const today = nearest(rows, asOf, slack);
+  if (!today) return null;
+  let hi = rows[0];
+  let lo = rows[0];
+  for (const p of rows) {
+    if (p[1] > hi[1] || (p[1] === hi[1] && p[0] > hi[0])) hi = p;
+    if (p[1] < lo[1] || (p[1] === lo[1] && p[0] < lo[0])) lo = p;
+  }
+  if (!(hi[1] > lo[1])) return null;
+  const pos = Math.round(((today[1] - lo[1]) / (hi[1] - lo[1])) * 100) / 100;
   const place = pos < 0.34 ? "lower part" : pos > 0.66 ? "upper part" : "middle";
   return {
-    kind: "range",
     pos,
     days,
-    label: `Today sits in the ${place} of the ${days} day range`,
+    place,
+    today,
+    high: hi[1],
+    highOn: hi[0],
+    low: lo[1],
+    lowOn: lo[0],
+    from: rows[0][0],
+  };
+}
+
+function money(n) {
+  return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function rangeChip(points, asOf, rules) {
+  const minDays = num(rules?.range?.minDays);
+  if (!(minDays > 0)) return null;
+  const range = priceRange(points, asOf, { minDays, slackDays: rules?.move?.slackDays, windowDays: rules?.range?.windowDays });
+  if (!range) return null;
+  return {
+    kind: "range",
+    pos: range.pos,
+    days: range.days,
+    high: range.high,
+    highOn: range.highOn,
+    label: `Today sits in the ${range.place} of the ${range.days} day range. High ${money(range.high)} on ${dayLabel(range.highOn)}.`,
   };
 }
 
@@ -505,7 +541,7 @@ function publish(chip) {
   if (chip.kind === "move") return { kind: "move", dir: chip.dir, text: chip.text, label: chip.label };
   if (chip.kind === "supply") return { kind: "listings", dir: chip.dir, text: chip.text, label: chip.label };
   if (chip.kind === "gone") return { kind: "gone", dots: chip.dots, word: chip.word || GONE_WORD[chip.dots] || "steady", label: chip.label };
-  if (chip.kind === "range") return { kind: "range", pos: chip.pos, days: chip.days, label: chip.label };
+  if (chip.kind === "range") return { kind: "range", pos: chip.pos, days: chip.days, high: chip.high, highOn: chip.highOn, label: chip.label };
   if (chip.kind === "momentum") return { kind: "momentum", word: chip.word, label: chip.label };
   if (chip.kind === "rotation") return { kind: "rotation", text: chip.text, label: chip.label };
   if (chip.kind === "art") return { kind: "art", badge: chip.badge, label: chip.label };

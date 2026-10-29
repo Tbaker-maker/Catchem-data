@@ -5,11 +5,32 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { readSignals } from "./lib/signal-chips.mjs";
+import { mergeHistory } from "./lib/read-facts.mjs";
+import { likeForLikePoints } from "./lib/real-listing.mjs";
 import { dropHeldChips, loadHeldIds, mentionsHeld } from "./lib/price-hold-skip.mjs";
 import { loadListingIndex, loadReadThinData, thinReadBlock, writeReadFlags } from "./lib/read-thin-data.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC = join(ROOT, "research/assets/public");
+
+// Hist-long and the nightly spark are one series. The longer file alone is
+// not "today": a September point must not be called today while the headline
+// uses the October price. A step over 2.5x where the two files meet is a
+// different printing, so those points are not joined.
+export const JOIN_RATIO = 2.5;
+export function pricePointsForChip(older, spark, asOf) {
+  const long = Array.isArray(older) ? older : [];
+  const night = Array.isArray(spark) ? spark : [];
+  const end = String(asOf || "").slice(0, 10);
+  const reaches = (pts) => pts.length && pts[pts.length - 1][0] === end;
+  if (long.length && night.length) {
+    const a = long[long.length - 1][1];
+    const b = night[0][1];
+    if (!(a > 0) || !(b > 0) || b / a > JOIN_RATIO || a / b > JOIN_RATIO) return reaches(night) ? night : [];
+  }
+  const joined = mergeHistory(long, night);
+  return joined.length ? joined : (reaches(night) ? night : long);
+}
 
 async function readJson(path) {
   try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
@@ -219,11 +240,10 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const item = byId.get(product.id) || { n: last.n, prev: prev ? prev.n : null, prevDate: prev ? prev.date : "", date: last.date };
     item.series = series;
     item.nights = [];
-    item.prices = [];
+    item.prices = likeForLikePoints(product.priceHistory || []).map((row) => [row.date, row.price]);
     for (const point of product.priceHistory || []) {
       const date = String(point?.date || "").slice(0, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-      if (Number(point.price) > 0) item.prices.push([date, Number(point.price)]);
       const share = shareOf(point);
       if (share != null && Number.isInteger(point.sellers) && Number.isInteger(point.filteredTotal)) {
         item.nights.push({ date, n: point.filteredTotal, sellers: point.sellers, share });
@@ -252,9 +272,9 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     if (stampSkipped(read, holds)) return null;
     const set = setFor(read, sets);
     const rot = set ? rotBy.get(set.slug) : null;
-    const spark = sparks.get(sku);
-    const older = hist.get(sku);
-    const points = (older && older.length > (spark?.length || 0)) ? older : (spark || older || []);
+    const spark = sparks.get(sku) || [];
+    const older = hist.get(sku) || [];
+    const points = pricePointsForChip(older, spark, read.asOf || asOf);
     const promo = (read.tags || []).includes("Promo") || /promo/i.test(String(read.set || "")) || /promo/i.test(String(set?.name || ""));
     const built = readSignals(read, {
       asOf: read.asOf || asOf,
