@@ -144,6 +144,8 @@ export async function run() {
   t("the writer skips undated inputs and empty docs", shouldWrite("set-value", { date: "", prices: loaded.map.size }) === false && shouldWrite("set-value", { date: day.date, prices: 0 }) === false && shouldWrite("rotation", { asOf: "", sets: 205 }) === false && shouldWrite("releases", { checked: radar.updated, releases: 0 }) === false && shouldWrite("listings", { asOf: "not-a-date", products: 4, parents: 17 }) === false && nonEmptyDoc({}) === false && nonEmptyDoc({ slug: "base-set" }) === false && nonEmptyDoc({ asOf: day.date, slug: "base-set" }) === true);
   const writerSrc = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
   t("the nightly writer does not delete set-value before it writes", !/\brm\s*\(/.test(writerSrc) && writerSrc.includes("shouldWrite(") && writerSrc.includes("nonEmptyDoc("));
+  const researchSrc = await readFile(join(ROOT, "scripts/daily-research.mjs"), "utf8");
+  t("daily research copies the radar date into public releases", researchSrc.includes("writePublicReleases") && researchSrc.includes("stampPublicReleases"));
   let marketBad = 0;
   for (const row of releases.releases) {
     const src = verified.find((item) => item.name === row.name);
