@@ -674,7 +674,15 @@ export function logoUrl(logos, slug) {
 }
 
 // A deep dive that would otherwise get the site tile uses the set logo, then a
-// real product picture from the receipt. Other reads keep boardImage.
+// real product picture from the receipt or the line cards. Other reads keep boardImage.
+function productShot(url) {
+  const s = String(url || "").trim();
+  if (!s || s === BRAND_TILE || s.endsWith("/og.png") || s.includes("..")) return "";
+  if (/^https:\/\/tcgplayer-cdn\.tcgplayer\.com\/product\/\d+_in_400x400\.jpg$/.test(s)) return s;
+  if (/^https:\/\/catchemtcg\.com\/(?:data\/editor\/tcg|cards|img)\/[A-Za-z0-9._/-]+$/.test(s)) return s;
+  return "";
+}
+
 export function pictureForRead(row, images = {}, tcgOn = true, sealedPid = new Map(), logos = {}) {
   const base = boardImage(row, images, tcgOn, sealedPid);
   const deep = String(row?.readKind || row?.kind || "") === "deep" || !!row?.deep;
@@ -682,11 +690,24 @@ export function pictureForRead(row, images = {}, tcgOn = true, sealedPid = new M
   const logo = logoUrl(logos, setSlugOf(row));
   if (logo) return logo;
   const ids = [];
-  for (const card of row?.receipt?.cards || []) if (card?.id) ids.push(String(card.id));
+  for (const card of row?.receipt?.cards || []) {
+    const shot = productShot(card?.image);
+    if (shot) return shot;
+    if (card?.id) ids.push(String(card.id));
+  }
   if (row?.sku) ids.push(String(row.sku));
   for (const id of ids) {
     const pic = boardImage({ sku: id, id }, images, tcgOn, sealedPid);
     if (pic && pic !== BRAND_TILE) return pic;
+  }
+  for (const line of row?.lineCards || []) {
+    for (const card of line?.cards || []) {
+      const shot = productShot(card?.image);
+      if (shot) return shot;
+      if (!card?.id) continue;
+      const pic = boardImage({ sku: String(card.id), id: String(card.id) }, images, tcgOn, sealedPid);
+      if (pic && pic !== BRAND_TILE) return pic;
+    }
   }
   return base;
 }

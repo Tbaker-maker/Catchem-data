@@ -382,6 +382,9 @@ export async function run() {
     t("a set deep dive uses the set logo instead of the site tile", pictureForRead(stellar, {}, false, new Map(), logos) === "https://catchemtcg.com/img/sv7/logo.png");
     const noLogo = { id: "deep-set-custom", readKind: "deep", deep: "set", receipt: { slug: "custom", cards: [{ id: "tcgcsv-42" }] } };
     t("a set deep dive with no logo uses a product picture", pictureForRead(noLogo, { "tcgcsv-42": "/cards/sv7/1.png" }, false, new Map(), {}) === "https://catchemtcg.com/cards/sv7/1.png");
+    const poke = { id: "deep-pokemon-unown", readKind: "deep", deep: "pokemon", lineCards: [{ cards: [{ id: "tcgcsv-90189", image: "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg" }] }] };
+    t("a deep dive with no set logo uses a line card product image", pictureForRead(poke, {}, false, new Map(), {}) === "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg");
+    t("a deep dive with no set and no product keeps the site tile", pictureForRead({ id: "deep-era-x", readKind: "deep", deep: "era" }, {}, false, new Map(), logos) === BRAND_TILE);
     t("a non-deep read with no picture still gets the tile", pictureForRead({ id: "spread-x" }, {}, true, new Map(), logos) === BRAND_TILE);
     try {
       const pub = JSON.parse(await readFile(join(dirname(fileURLToPath(import.meta.url)), "../../research/assets/public/reads.json"), "utf8"));
