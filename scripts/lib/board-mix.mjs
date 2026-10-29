@@ -24,6 +24,7 @@ import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
+import { loadJumpy } from "./jumpy-price.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
 import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
@@ -785,10 +786,11 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const catalogDoc = await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] });
     const catNum = new Map((catalogDoc.items || []).map((it) => [it.id, it.number || ""]));
     const numbered = histCards.map((c) => (c.number ? c : { ...c, number: catNum.get(c.id) || "" }));
+    const jumpy = await loadJumpy(root);
     fresh.push(
-      ...everyPrinting(numbered, tagsOf, { asOf: end, max: 6 }),
-      ...sameLabelAcrossSets(numbered, tagsOf, { asOf: end, max: 6 }),
-      ...chaseLists(histCards, tagsOf, { asOf: end, max: 20 }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
+      ...everyPrinting(numbered, tagsOf, { asOf: end, max: 6, jumpy }),
+      ...sameLabelAcrossSets(numbered, tagsOf, { asOf: end, max: 6, jumpy }),
+      ...chaseLists(histCards, tagsOf, { asOf: end, max: 20, jumpy }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
     );
     deepSlump = slumpWatch(histCards, tagsOf, { asOf: end, max: 10, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
     deepSlump = await dropThinReads(deepSlump, root, end);

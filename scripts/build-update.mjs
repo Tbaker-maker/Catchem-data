@@ -27,6 +27,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { likeForLikePoints } from "./lib/real-listing.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -56,15 +57,16 @@ if (ageH > MAX_AGE_HOURS) {
 const products = (sp.products ?? []).filter(p => p.dataStatus === "live" && p.priceUsd != null);
 const WINDOW_DAYS = 7;
 const movers = products.map(p => {
-  const hist = (p.priceHistory ?? []).filter(h => h.price != null);
-  if (hist.length < 2) return null;
-  // Compare against the oldest point inside the window, not simply the previous
-  // one — a day-on-day move is noise and a week is a story.
+  // Same measure only. A one-listing median is not compared with a fuller median.
+  const series = likeForLikePoints(p.priceHistory ?? []);
   const cutoff = new Date(Date.now() - WINDOW_DAYS * 86400000).toISOString().slice(0, 10);
-  const older = hist.filter(h => h.date >= cutoff)[0] ?? hist[0];
-  if (!older?.price) return null;
-  const pct = (p.priceUsd - older.price) / older.price * 100;
-  return { name: p.name, price: p.priceUsd, prevPrice: older.price, from: older.date, pct };
+  const inWindow = series.filter((row) => row.date >= cutoff);
+  if (inWindow.length < 2) return null;
+  const older = inWindow[0];
+  const newer = inWindow[inWindow.length - 1];
+  if (older.date === newer.date || !(older.price > 0)) return null;
+  const pct = (newer.price - older.price) / older.price * 100;
+  return { name: p.name, price: newer.price, prevPrice: older.price, from: older.date, pct };
 }).filter(m => m && Math.abs(m.pct) >= MIN_MOVE)
   .sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
 

@@ -15,6 +15,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { loadSealedTcgMarket } from "./lib/sealed-tcg-price.mjs";
+import { likeForLikePoints } from "./lib/real-listing.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "data");
@@ -33,12 +34,13 @@ const pct = (now, then) => (then > 0 ? (now - then) / then : null);
 const round = n => (n == null ? null : Math.round(n * 1000) / 1000);
 
 function priceWoW(history, cutoff) {
-  const priced = history.filter(h => Number(h.price) > 0);
-  const usable = cutoff ? priced.filter(h => h.date >= cutoff) : priced;
-  if (usable.length < MIN_HISTORY_DAYS) return { wow: null, days: usable.length };
-  const now = usable[usable.length - 1].price;
-  const then = usable[usable.length - 8].price; // 7 days back
-  return { wow: pct(now, then), days: usable.length };
+  // A median of one listing is not the same measure as a fuller median, or as a plain price.
+  // Sealed history is the price field only. That field is TCGplayer market. An eBay median is listings, not a sealed price.
+  const series = likeForLikePoints((history || []).map((h) => ({ date: h.date, price: h.price }))).filter((h) => !cutoff || h.date >= cutoff);
+  if (series.length < MIN_HISTORY_DAYS) return { wow: null, days: series.length };
+  const now = series[series.length - 1].price;
+  const then = series[series.length - 8].price;
+  return { wow: pct(now, then), days: series.length };
 }
 
 function supplyWoW(snapshots, id) {

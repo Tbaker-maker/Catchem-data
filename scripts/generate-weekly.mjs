@@ -8,6 +8,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { likeForLikePoints } from "./lib/real-listing.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 const DRY = process.env.WEEKLY_DRYRUN === "1";
@@ -21,7 +22,7 @@ let der = null; try { der = await J("data/derived-insights.json"); } catch {}
 const CUT = "2026-08-18"; // fix-deploy: earlier rows untrusted
 const movers = [];
 for (const p of sp.products) {
-  const h = (p.priceHistory||[]).filter(r=>r.date>=CUT);
+  const h = likeForLikePoints(p.priceHistory || []).filter(r => r.date >= CUT);
   if (h.length>=win && p.dataStatus==="live" && h[h.length-win].price) {
     const wow=(h[h.length-1].price-h[h.length-win].price)/h[h.length-win].price;
     movers.push({name:p.name, now:h[h.length-1].price, wow:Math.round(wow*1000)/10});
