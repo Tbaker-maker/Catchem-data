@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-28",
- "updatedAt": "2026-10-28T18:37:10.247Z",
+ "asOf": "2026-10-29",
+ "updatedAt": "2026-10-29T12:22:48.089Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 18,
+ "scored": 19,
  "hits": 0,
- "misses": 18,
+ "misses": 19,
  "rows": [
   {
    "id": "receipt-2026-09-26-sealed-cel25-upc",
@@ -440,24 +440,28 @@
    "changePct": -23.3
   },
   {
-   "id": "receipt-2026-10-23-single-swsh7-215",
+   "id": "receipt-2026-10-28-sealed-swsh11-etb",
    "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon VMAX",
-   "headline": "Umbreon VMAX. Open.",
-   "price": 2283.14,
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Lost Origin Elite Trainer Box",
+   "headline": "Lost Origin Elite Trainer Box. Miss.",
+   "price": 195.15,
    "source": "TCGplayer market",
-   "asOf": "2026-10-23",
-   "why": "Written down October 23, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "asOf": "2026-10-29",
+   "why": "Written down October 28, 2026 at $195.14, after a higher one. Next TCGplayer market price on October 29, 2026 was $195.15. The other way.",
    "hist": [
     [
-     "2026-10-23",
-     2283.14
+     "2026-10-28",
+     195.14
+    ],
+    [
+     "2026-10-29",
+     195.15
     ]
    ],
    "href": "",
-   "changePct": null
+   "changePct": 0
   },
   {
    "id": "receipt-2026-10-27-single-sv8pt5-161",
@@ -480,26 +484,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-28-sealed-swsh11-etb",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "Lost Origin Elite Trainer Box",
-   "headline": "Lost Origin Elite Trainer Box. Open.",
-   "price": 195.14,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-28",
-   "why": "Written down October 28, 2026 at $195.14. No later TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-28",
-     195.14
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-28-single-swsh12-186",
    "type": "receipt",
    "result": "open",
@@ -514,6 +498,46 @@
     [
      "2026-10-28",
      516.63
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-29-sealed-sv9-bb",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Journey Together Booster Bundle",
+   "headline": "Journey Together Booster Bundle. Open.",
+   "price": 43.45,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-29",
+   "why": "Written down October 29, 2026 at $43.45. No later TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-29",
+     43.45
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-29-single-swsh7-218",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Rayquaza VMAX",
+   "headline": "Rayquaza VMAX. Open.",
+   "price": 1255.44,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-29",
+   "why": "Written down October 29, 2026 at $1,255.44. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-29",
+     1255.44
     ]
    ],
    "href": "",
