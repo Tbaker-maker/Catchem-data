@@ -1,4 +1,9 @@
-import { citedFiles, pendingBuilds, prsFromLog, renderBrief, weekWindow } from "../lib/founder-brief.mjs";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { citedFiles, pendingBuilds, prsFromLog, renderBrief, shouldWriteBrief, weekWindow } from "../lib/founder-brief.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 export async function run() {
   let fail = 0;
@@ -39,6 +44,14 @@ export async function run() {
     "## RD5\n- status: SHIPPED\n",
   );
   t("a shipped job is not a next build", kept.length === 1 && kept[0].id === "DC1");
+  t("a late Sunday still writes", shouldWriteBrief({ weekday: "Sun", hour: 11 }).write === true && shouldWriteBrief({ weekday: "Sun", hour: 11 }).reason === "Sunday PT");
+  t("Sunday at 8 still writes", shouldWriteBrief({ weekday: "Sun", hour: 8 }).write === true);
+  t("a weekday does not write", shouldWriteBrief({ weekday: "Fri", hour: 8 }).write === false);
+  t("force writes on a weekday", shouldWriteBrief({ weekday: "Fri", hour: 11 }, true).write === true);
+  const build = await readFile(join(ROOT, "scripts/build-founder-brief.mjs"), "utf8");
+  const yml = await readFile(join(ROOT, ".github/workflows/founder-brief.yml"), "utf8");
+  t("the writer does not treat a late Sunday as success", !build.includes("pt.hour === 8") && build.includes("process.exit(1)") && !/brief: "skipped"/.test(build));
+  t("a missing brief fails the job", yml.includes("Founder brief wrote nothing") && yml.includes("exit 1") && !yml.includes("No brief changes."));
   return fail;
 }
 

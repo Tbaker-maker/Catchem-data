@@ -1,12 +1,13 @@
 // Write the weekly founder brief from dated files and merged PR titles.
-// Runs on Sunday at 8 AM Pacific unless BRIEF_FORCE=1. Missing files hide
-// their section. This does not post anywhere.
+// Sunday Pacific, any hour: Actions often starts the 8 AM cron late.
+// BRIEF_FORCE=1 writes on any day. A run that does not write exits 1.
+// Missing files hide their section. This does not post anywhere.
 import { execFile } from "node:child_process";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import { prsFromLog, renderBrief, weekWindow } from "./lib/founder-brief.mjs";
+import { prsFromLog, renderBrief, shouldWriteBrief, weekWindow } from "./lib/founder-brief.mjs";
 
 const exec = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,9 +25,10 @@ function ptParts(now) {
 const now = new Date();
 const pt = ptParts(now);
 const force = process.env.BRIEF_FORCE === "1";
-if (!force && !(pt.weekday === "Sun" && pt.hour === 8)) {
-  console.log(JSON.stringify({ brief: "skipped", reason: "not Sunday 8 AM PT", day: pt.day, weekday: pt.weekday, hour: pt.hour }));
-  process.exit(0);
+const decision = shouldWriteBrief(pt, force);
+if (!decision.write) {
+  console.error(JSON.stringify({ brief: "failed", reason: decision.reason, day: pt.day, weekday: pt.weekday, hour: pt.hour }));
+  process.exit(1);
 }
 
 const status = await readJson(join(ROOT, "data/derived/status.json"));
@@ -63,4 +65,9 @@ const merged = { asOf: pt.day, repo: "Catchem-data", prs };
 await writeFile(join(dir, "merged-prs.json"), JSON.stringify(merged, null, 1) + "\n");
 const path = join(dir, `${pt.day}.md`);
 await writeFile(path, text);
+const info = await stat(path);
+if (!info.size) {
+  console.error(JSON.stringify({ brief: "failed", reason: "wrote an empty file", day: pt.day, path: `data/derived/brief/${pt.day}.md` }));
+  process.exit(1);
+}
 console.log(JSON.stringify({ brief: { asOf: pt.day, shipped: prs.length, path: `data/derived/brief/${pt.day}.md` } }));
