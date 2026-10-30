@@ -98,6 +98,25 @@ export function runTcgcsvCatalogTests() {
   const snap = mergeSnapshot([built], { asOf: "2026-09-26", failedGroups: [] });
   t("kinds stay apart", snap.latest.counts.single === 2 && snap.latest.counts.sealed === 2 && snap.latest.counts.slab === 0 && snap.latest.counts.skipped.case === 0);
   t("daily file keeps the primary price and the other printing", snap.daily.prices.length === 3 && snap.daily.prices.find((p) => p.id === 10).printings.length === 2 && snap.daily.date === "2026-09-26");
+  t("a missing low stays off the daily row", snap.daily.prices.every((p) => !("low" in p) && !("condition" in p)));
+  const withLow = buildGroup({
+    groupId: 1,
+    groupName: "BW: Plasma Storm",
+    asOf: "2026-10-26",
+    products: [
+      card(86916, "Lugia EX", "134/135", "Ultra Rare"),
+      { productId: 11, name: "Plasma Storm Booster Box", extendedData: [] },
+    ],
+    priceRows: [
+      { productId: 86916, marketPrice: 2717.32, lowPrice: 2849.99, subTypeName: "Holofoil" },
+      { productId: 86916, marketPrice: 40, lowPrice: 30, subTypeName: "Reverse Holofoil" },
+      { productId: 11, marketPrice: 250, lowPrice: 0, subTypeName: "Normal" },
+    ],
+  });
+  const lugiaDay = withLow.prices.find((p) => p.id === 86916);
+  const boxDay = withLow.prices.find((p) => p.id === 11);
+  t("tonight's lowest listing is stored on the picked printing", lugiaDay && lugiaDay.market === 2717.32 && lugiaDay.printing === "Holofoil" && lugiaDay.low === 2849.99 && !("condition" in lugiaDay));
+  t("a zero low is not written, and sealed gets no condition", boxDay && boxDay.market === 250 && !("low" in boxDay) && !("condition" in boxDay) && withLow.items.find((i) => i.tcgplayerProductId === 11).kind === "sealed");
   t("history points at the daily file", snap.latest.items[0].history.startsWith("data/history/tcgcsv-daily/2026-09-26.json#"));
 
   console.log(fail ? `${fail} failed` : "tcgcsv catalog ok");

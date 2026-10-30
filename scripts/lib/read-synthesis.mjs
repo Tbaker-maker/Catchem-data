@@ -288,6 +288,34 @@ export function findings(item, ctx, cfg) {
 
 // Lead with the strongest finding whose opening is not over the share cap, then add
 // up to two supporting sentences from other signals, scored ones first.
+function saidMove(text, dir, pct, days) {
+  const t = String(text || "");
+  const n = String(days);
+  const window = n === "365" ? "a year" : `${n} days`;
+  if (new RegExp(`\\b${dir} ${pct}% over ${window}\\b`, "i").test(t)) return true;
+  if (new RegExp(`\\bover ${window} it is ${dir} ${pct}%\\b`, "i").test(t)) return true;
+  return false;
+}
+
+// A supporting sentence that repeats a move the lead already stated keeps the comparison only.
+function unrepeated(have, short) {
+  const s = String(short || "");
+  const over = s.match(/^Over (\d+) days it is (up|down) (\d+)%(?:, (.*))?$/i);
+  if (over) {
+    if (!saidMove(have, over[2], over[3], over[1])) return s;
+    const rest = over[4] || "";
+    if (!rest) return "";
+    const body = rest.replace(/\.$/, "");
+    return body.charAt(0).toUpperCase() + body.slice(1) + ".";
+  }
+  const that = s.match(/^That (trails|beats) its set over (\d+) days: (up|down) (\d+)% against (.*)$/i);
+  if (that && saidMove(have, that[3], that[4], that[2])) {
+    const verb = that[1].toLowerCase() === "beats" ? "Ahead of" : "Trailing";
+    return `${verb} ${that[5].replace(/\.$/, "")}.`;
+  }
+  return s;
+}
+
 export function compose(item, fs, cfg, used) {
   const ranked = fs.filter((f) => f.score > 0 && f.text).sort((a, b) => b.score - a.score);
   const kindF = item.kindLine ? { tag: "kind", type: `kind:${item.kind}`, score: cfg.weights.kind, text: item.kindLine } : null;
@@ -313,7 +341,14 @@ export function compose(item, fs, cfg, used) {
   }
   const avail = new Set(fs.map((f) => f.tag).concat(kindF ? ["kind"] : [])).size;
   if (tags.size < Math.min(cfg.minSignals, avail)) return null;
-  const text = capHeadline(pick.map((p, i) => (i ? p.short : p.text)).join(" "));
+  const parts = [];
+  for (let i = 0; i < pick.length; i += 1) {
+    const raw = i ? pick[i].short : pick[i].text;
+    const piece = i ? unrepeated(parts.join(" "), raw) : raw;
+    if (!piece) continue;
+    parts.push(piece);
+  }
+  const text = capHeadline(parts.join(" "));
   if (BANNED.test(text) || DASH.test(text) || SOLD.test(text)) return null;
   if (item.sealed && CONDITION.test(text)) return null;
   if (used) used.byType.set(key(lead), (used.byType.get(key(lead)) || 0) + 1);

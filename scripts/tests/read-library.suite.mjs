@@ -88,7 +88,7 @@ export async function run() {
   t("streak shows both prices and both dates", streak && streak.headline.includes("$5.00") && streak.headline.includes("$1.00") && streak.headline.includes("Oct 8") && streak.headline.includes("Oct 4") && !/\b20\d{2}-\d{2}-\d{2}\b/.test(streak.headline) && streak.sku === "tcgcsv-9");
   t("signals chip rows are movers, set moves, highs, and streaks", lib.signals.every((row) => ["mover", "set", "high", "streak"].includes(row.signal)) && lib.signals.some((row) => row.signal === "mover") && !lib.signals.some((row) => row.signal === "plain"));
   const mover = lib.board.find((row) => row.signal === "mover");
-  t("mover why is the dollar move and the id stays on the source line", mover && mover.whyItMatters === "Up $1.03 on those two dates." && !mover.whyItMatters.includes("tcgcsv-") && !mover.whyItMatters.includes("data/") && mover.sourceLine === "tcgcsv-1");
+  t("mover why is the dollar move and the id stays on the source line", mover && mover.whyItMatters === "Up $1.03 from Oct 1 to Oct 8." && !mover.whyItMatters.includes("tcgcsv-") && !mover.whyItMatters.includes("data/") && mover.sourceLine === "tcgcsv-1");
   t("listing sentence is the footer once", lib.footer === "An ask is a listing price. A listing is not a sale." && lib.board.every((row) => !String(row.whatWouldMakeThisWrong).includes("listing is not a sale") && !String(row.whyItMatters).includes("listing is not a sale")));
   t("no banned word in a board line", lib.board.every((row) => !BANNED.test(row.headline) && !BANNED.test(row.whyItMatters) && !BANNED.test(row.whatWouldMakeThisWrong)));
   t("a 7.9% move is not a mover", explainRead(card({ id: "move-tcgcsv-8-7", sku: "tcgcsv-8", headline: "x", price: 10, changePct: 7.9, windowDays: 7 }), "mover") == null);

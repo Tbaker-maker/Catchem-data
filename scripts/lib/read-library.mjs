@@ -216,22 +216,22 @@ export function explainRead(row, kind) {
   let why = "";
   let wrong = "";
   if (kind === "mover" && proof && sku && price && days === 7 && change != null && moverGate(proof)) {
-    why = whyPlain(proof.from, proof.to);
+    why = whyPlain(proof.from, proof.to, proof.start, proof.end);
     wrong = "Wrong if either date has a different market price.";
   } else if (kind === "high" && proof && head.includes("6-month high") && sku) {
-    why = whyPlain(proof.from, proof.to);
+    why = whyPlain(proof.from, proof.to, proof.start, proof.end);
     wrong = "Wrong if the latest price is not the high on the dates checked.";
   } else if (kind === "low" && proof && head.includes("6-month low") && sku) {
-    why = whyPlain(proof.from, proof.to);
+    why = whyPlain(proof.from, proof.to, proof.start, proof.end);
     wrong = "Wrong if the latest price is not the low on the dates checked.";
   } else if (kind === "streak" && proof && sku && asOf && price && Number(row?.streakN) >= STREAK_MIN && proof.from != null) {
-    why = whyPlain(proof.from, proof.to);
+    why = whyPlain(proof.from, proof.to, proof.start, proof.end);
     wrong = "Wrong if a day in the run is missing or a step went the other way.";
   } else if (kind === "set" && proof && (row?.readKind === "lag" || row?.kind === "lag" || row?.readKind === "group" || row?.kind === "group")) {
     why = clean(row?.why) || "Both series have a price on the two dates.";
     wrong = "Wrong if the pack or the box has no price on the start date.";
   } else if (kind === "plain" && proof && sku && price && days === 7 && change != null && Math.abs(change) < MOVER_PCT) {
-    why = whyPlain(proof.from, proof.to);
+    why = whyPlain(proof.from, proof.to, proof.start, proof.end);
     wrong = "Wrong if either date has a different market price.";
   } else if ((!kind || kind === "read") && sku && (head || price)) {
     why = "This is the market price on the date shown.";

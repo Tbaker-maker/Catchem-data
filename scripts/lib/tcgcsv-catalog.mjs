@@ -135,6 +135,8 @@ export function buildGroup({ groupId, groupName, products, priceRows, asOf }) {
       item.asOf = asOf;
       item.printing = picked.subTypeName || null;
       const priceRow = { id: product.productId, market: item.price, printing: item.printing };
+      const low = Number(picked.lowPrice);
+      if (low > 0) priceRow.low = money(low);
       if (printings.length > 1) priceRow.printings = printings.map(({ name, price }) => ({ name, price }));
       prices.push(priceRow);
     }
