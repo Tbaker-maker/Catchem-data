@@ -1,0 +1,61 @@
+{
+  "enabled": false,
+  "flag": "supply.leadReads",
+  "asOf": "2026-10-09",
+  "label": "eBay listings",
+  "rule": "Exact calendar day before that product's latest night. A missing night drops the read. Counts are active eBay listings, not sales. A read needs a change of at least 15% and both exact days.",
+  "nights": [
+    "2026-08-18",
+    "2026-08-19",
+    "2026-08-20",
+    "2026-08-21",
+    "2026-08-22",
+    "2026-08-26",
+    "2026-09-21",
+    "2026-09-22",
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-26",
+    "2026-09-27",
+    "2026-10-03",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09"
+  ],
+  "nightCount": 19,
+  "products": 183,
+  "productsOnLatest": 177,
+  "windows": {
+    "7": {
+      "days": 7,
+      "exactStart": "2026-10-02",
+      "exactStartOnFile": false,
+      "productsWithBothDays": 1,
+      "qualify": 0
+    },
+    "30": {
+      "days": 30,
+      "exactStart": "2026-09-09",
+      "exactStartOnFile": false,
+      "productsWithBothDays": 0,
+      "qualify": 0
+    }
+  },
+  "wouldQualify": 0,
+  "belowGate": [
+    {
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "days": 7,
+      "pct": -5.6,
+      "from": 18,
+      "to": 17,
+      "fromDate": "2026-08-19",
+      "toDate": "2026-08-26"
+    }
+  ],
+  "reads": []
+}
