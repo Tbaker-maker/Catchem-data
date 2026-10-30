@@ -68,6 +68,7 @@ function keepLead(r, asOf, seriesOf, lowOf) {
 function prepare(r, asOf, jumpy, seriesOf, lowOf) {
   const q = quoted(r, asOf, jumpy);
   if (!q) return null;
+  if (typeof seriesOf !== "function" && typeof lowOf !== "function") return q;
   return keepLead(q, asOf, seriesOf, lowOf);
 }
 
