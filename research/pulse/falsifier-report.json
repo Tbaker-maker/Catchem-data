@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-29T13:22:15.477Z",
- "date": "2026-10-29",
- "mood": "We said in advance what would end this thesis. That thing happened. So it ends.",
+ "generatedAt": "2026-10-30T13:41:21.913Z",
+ "date": "2026-10-30",
+ "mood": "Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
  "coverage": {
   "thesesInDoctrine": 10,
@@ -9,8 +9,8 @@
   "untested": []
  },
  "summary": {
-  "survived": 2,
-  "tripped": 1,
+  "survived": 3,
+  "tripped": 0,
   "insufficient": 6,
   "pending": 2
  },
@@ -50,7 +50,7 @@
    "name": "Venue Boundary",
    "falsifier": "TCGplayer vintage-sealed volume becomes material — listing depth comparable to modern",
    "verdict": "SURVIVED",
-   "detail": "vintage depth 12 vs modern 55 — still a thinner, separate market"
+   "detail": "vintage depth 12 vs modern 59 — still a thinner, separate market"
   },
   {
    "id": "RT-5",
@@ -72,8 +72,8 @@
    "id": "RT-2",
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
-   "verdict": "TRIPPED",
-   "detail": "100% of 2 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition"
+   "verdict": "SURVIVED",
+   "detail": "8 injections today; 25% moved prices measurably"
   },
   {
    "id": "RT-7",
@@ -88,7 +88,7 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "7 crossings today (4 arriving, 3 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "detail": "12 crossings today (10 arriving, 2 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
    "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {
@@ -96,13 +96,8 @@
    "name": "Index moves only on the market",
    "falsifier": "the index level changes on a day when composition or pricing basis changed",
    "verdict": "SURVIVED",
-   "detail": "157 products carried the day's move; 17 entered or lacked a prior price and correctly contributed nothing"
+   "detail": "156 products carried the day's move; 18 entered or lacked a prior price and correctly contributed nothing"
   }
  ],
- "amendmentsDrafted": [
-  {
-   "thesis": "RT-2",
-   "draft": "RT-2 (Supply Injection Absorb-or-Stall) tripped its own falsifier on 2026-10-29: 100% of 2 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition We stated in advance that this would end the thesis, so it ends. A replacement read will not be published until it carries its own falsifier."
-  }
- ]
+ "amendmentsDrafted": []
 }

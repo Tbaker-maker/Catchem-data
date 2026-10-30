@@ -1,17 +1,15 @@
-# What the machines noticed — 2026-10-29
+# What the machines noticed — 2026-10-30
 
-Read it with coffee. Anything urgent says so in capitals.
+The overnight shift's notes. Short on purpose.
 
 ## Our own claims
-We said in advance what would end this thesis. That thing happened. So it ends.
-
-**NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
-- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 2 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
+Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
+3 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
+A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
 
-26 product(s) we featured and can no longer price:
+27 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -28,7 +26,7 @@ We put something in front of readers and can no longer price it. That is the kin
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 25 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 26 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
@@ -75,17 +73,17 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## Where today's story goes
-- **X** — "Paradox Rift listings moved -66.7% while its print window closes."
-- **YouTube** — Journey Together Booster Bundle — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 143 listings counted."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.3."
+- **X** — "Obsidian Flames listings moved 240% while its print window closes."
+- **YouTube** — Shrouded Fable Booster Bundle — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 147 listings counted."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.2."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 68 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 70 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -94,10 +92,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-59 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 362 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: exclude = 54. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 96% rejection rate (6/150) — *largest bucket: set = 58. A single over-broad term can eat a market.*
+57 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 357 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: type = 52. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 91% rejection rate (14/150) — *largest bucket: set = 45. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -120,13 +118,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 158 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 164 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-75 open — 56 need eyes on a rendered page, 19 need a decision.
+76 open — 57 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
