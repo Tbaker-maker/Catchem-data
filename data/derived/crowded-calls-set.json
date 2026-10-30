@@ -1,45 +1,23 @@
 {
- "asOf": "2026-10-29",
- "generatedAt": "2026-10-29T12:42:49.383Z",
+ "asOf": "2026-10-30",
+ "generatedAt": "2026-10-30T11:29:17.641Z",
  "level": "set",
  "note": "Crowded-call flags. Neutral, data-only. Passed n≥20 holdout only. Singles/sealed/set separated. Not advice.",
  "surface": "set",
  "neverMix": "Singles and sealed stay in separate files. Never show sealed on card pages.",
  "holdout": {
-  "n": 21,
-  "trainN": 15,
-  "testN": 6,
-  "trainMedianPct": -7.4,
-  "testMedianPct": -3.9,
-  "medianPct": -5.4,
-  "from": "2026-04-27",
+  "n": 2,
+  "trainN": 0,
+  "testN": 2,
+  "trainMedianPct": null,
+  "testMedianPct": -19.3,
+  "medianPct": -19.3,
+  "from": "2026-09-26",
   "to": "2026-09-26",
-  "passedHoldout": true,
-  "status": "passed_holdout",
+  "passedHoldout": false,
+  "status": "private_candidate",
   "minTest": 6
  },
- "count": 1,
- "items": [
-  {
-   "id": "crowded:set:group:24722:down:2026-10-29",
-   "type": "CROWDED_CALL",
-   "severity": "low",
-   "key": "crowded:set:group:24722:down:2026-10-17",
-   "level": "set",
-   "subjectKey": "group:24722",
-   "label": "30th Celebration",
-   "line": "Crowded down-direction attention on set 30th Celebration: 3 creators, 4 calls, 2026-10-17 to 2026-10-17. Past crowded calls moved -5.4% over 30 days (n=21, 2026-04-27 to 2026-09-26).",
-   "n": 21,
-   "medianPct": -5.4,
-   "from": "2026-04-27",
-   "to": "2026-09-26",
-   "creators": 3,
-   "calls": 4,
-   "direction": "down",
-   "windowFrom": "2026-10-17",
-   "windowTo": "2026-10-17",
-   "status": "passed_holdout",
-   "surface": "set"
-  }
- ]
+ "count": 0,
+ "items": []
 }
