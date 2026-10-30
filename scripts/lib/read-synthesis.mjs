@@ -1,10 +1,8 @@
-// Synthesized reads for one item. Each read about a single product is rewritten
-// into a 2 to 3 sentence summary from every signal on file for that item:
-// price trend over 7, 30, 90 and 365 days, where today sits against its range,
-// weekly streaks and how often the price moved, listings counted, the eBay ask
-// against TCGplayer market, its set and the wider market, and set context.
-// The lead sentence is the most notable finding for that item, so openings come
-// from the data. Every number is a real dated point kept in receipt.synth.
+// Synthesized reads for one item. The headline, the chips and the lines share
+// the lead window. A 7 day line does not sit next to a 30 day line or a year
+// line. Supporting sentences come from that same window only.
+// The lead sentence is the most notable finding for that item.
+// Every number is a real dated point kept in receipt.synth.
 // Every limit and weight lives in catchem-data-private (config/read-synthesis.json).
 // Without them nothing is rewritten and the step says so.
 import { readFile } from "node:fs/promises";
@@ -13,8 +11,9 @@ import { banGuard } from "./copy-rules.mjs";
 import { money } from "./public-bundle.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
 import { monthDay } from "./takes.mjs";
-import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards } from "./history-reads.mjs";
+import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange } from "./signal-chips.mjs";
+import { speakDates } from "./read-quality.mjs";
 
 export const HEADLINE_MAX = 300;
 
@@ -136,16 +135,22 @@ function isBaselineSpike(pts, idx, cfg, last) {
 
 function changeAt(pts, asOf, days, cfg) {
   const last = pts[pts.length - 1];
+  if (!last || last[0] !== asOf) return null;
   const prior = pts.slice(0, -1);
-  let p = nearestPoint(prior, addDays(asOf, -days), cfg.slackDays[days]);
+  const target = addDays(asOf, -days);
+  let p = prior.find((row) => row[0] === target);
+  if (!p) p = nearestPoint(prior, target, cfg.slackDays[days]);
   if (!p) return null;
   let idx = prior.findIndex((row) => row[0] === p[0]);
-  // Walk off a spike baseline to the earlier steady neighbour when one exists.
   while (idx > 0 && isBaselineSpike(prior, idx, cfg, last)) {
     p = prior[idx - 1];
     idx -= 1;
   }
-  return { days, from: p, to: last, pct: pct(p[1], last[1]) };
+  const span = dayNum(last[0]) - dayNum(p[0]);
+  if (!(span > 0)) return null;
+  // A week is 7 days. A point one day off is a different window, not a week.
+  if (span === 7 && oneNightMove(pts, p[0], last[0])) return null;
+  return { days: span, asked: days, from: p, to: last, pct: pct(p[1], last[1]) };
 }
 
 function weeklyStreak(pts, asOf) {
@@ -201,37 +206,26 @@ export function findings(item, ctx, cfg) {
     const shared = priceRange(pts, asOf, { minDays: 1, slackDays: 0 });
     const atSharedHigh = !!(shared && shared.place === "upper part" && Math.round(shared.high * 100) === Math.round(last[1] * 100));
     if (!hi) { if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` }); }
-    else if (last[1] > hi[1] && atSharedHigh) out.push({ tag: "range", type: "high", score: cfg.weights.high, nums: { hi, now: last, window: shared }, text: `Highest price in the ${shared.days} day range for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price in the ${shared.days} day range, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
+    else if (last[1] > hi[1] && atSharedHigh) out.push({ tag: "range", type: "high", window: shared.days, score: cfg.weights.high, nums: { hi, now: last, window: shared }, text: `Highest price in the ${shared.days} day range for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, above the earlier peak of ${at(hi, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its highest price in the ${shared.days} day range, back to ${dateLabel(pts[0][0], asOf)}, above the earlier peak of ${at(hi, asOf)}.` });
     else if (last[1] < lo[1]) out.push({ tag: "range", type: "low", score: cfg.weights.low, nums: { lo, now: last }, text: `Lowest price on file for ${title}: ${usd(last[1])} on ${monthDay(asOf)}, under the earlier low of ${at(lo, asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.`, short: `That is its lowest price on file, back to ${dateLabel(pts[0][0], asOf)}, under the earlier low of ${at(lo, asOf)}.` });
     else if (hi) {
       const off = (1 - last[1] / hi[1]) * 100;
       const level = Math.round(hi[1] * 100) === Math.round(last[1] * 100);
       if (level && !atSharedHigh) { /* the chip window does not call this a high, so the headline does not either */ }
-      else if (off <= cfg.nearHighPct) out.push({ tag: "range", type: "nearHigh", score: cfg.weights.nearHigh, nums: { hi, now: last, window: shared },
+      else if (off <= cfg.nearHighPct) out.push({ tag: "range", type: "nearHigh", window: level ? shared.days : undefined, score: cfg.weights.nearHigh, nums: { hi, now: last, window: shared },
         text: level ? `Level with its highest price in the ${shared.days} day range: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, the same as on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `About ${Math.max(1, r0(off))}% under its highest price on file: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}, against a peak of ${at(hi, asOf)}.`,
         short: level ? `It is level with its highest price in the ${shared.days} day range, first reached on ${dateLabel(hi[0], asOf)}, with records back to ${dateLabel(pts[0][0], asOf)}.` : `It sits about ${Math.max(1, r0(off))}% under its highest price on file, ${at(hi, asOf)}.` });
       else if (off >= cfg.drawdownMinPct) out.push({ tag: "range", type: "drawdown", score: cfg.weights.drawdown * (off / 100), nums: { hi, now: last }, text: `Still ${r0(off)}% under its peak of ${at(hi, asOf)}: ${title} is at ${usd(last[1])} on ${monthDay(asOf)}.`, short: `It is still ${r0(off)}% under its peak of ${at(hi, asOf)}.` });
     }
   }
-  // Trend across windows
-  const moves = WINDOWS.map((w) => ch[w]).filter((c) => c && Math.abs(c.pct) >= cfg.trendMinPct[c.days] && Math.abs(c.to[1] - c.from[1]) >= cfg.minTrendUsd);
-  if (moves.length) {
-    const lead = moves.reduce((m, c) => (Math.abs(c.pct) / cfg.trendMinPct[c.days] > Math.abs(m.pct) / cfg.trendMinPct[m.days] ? c : m));
-    const others = WINDOWS.map((w) => ch[w]).filter((c) => c && c !== lead);
-    const win = (c) => (c.days === 365 ? "a year" : `${c.days} days`);
-    const word = (c) => (r0(c.pct) < 1 ? `flat over ${win(c)}` : `${c.pct >= 0 ? "up" : "down"} ${r0(c.pct)}% over ${win(c)}`);
-    const list = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}` : xs[0]);
-    const tail = others.length ? `, and is ${list(others.map(word))}` : "";
-    const days = dayNum(asOf) - dayNum(lead.from[0]);
-    out.push({ tag: "trend", type: `trend${lead.days}${lead.pct >= 0 ? "up" : "down"}`, window: lead.days, score: cfg.weights.trend * (Math.abs(lead.pct) / cfg.trendMinPct[lead.days]), nums: { lead, others },
-      text: `${lead.pct >= 0 ? "Up" : "Down"} ${r0(lead.pct)}% ${lead.days === 7 ? "in a week" : lead.days === 365 ? "on the year" : `in ${days} days`}: ${title} went from ${at(lead.from, asOf)} to ${usd(lead.to[1])} on ${monthDay(asOf)}${tail}.`,
-      short: `Over time it is ${list(WINDOWS.map((w) => ch[w]).filter(Boolean).map(word))}, to ${usd(last[1])} on ${monthDay(asOf)}.` });
-  }
-  // Short and long term disagree
-  const s = ch[30]; const l = ch[365] || ch[90];
-  if (s && l && Math.sign(s.pct) !== Math.sign(l.pct) && Math.abs(s.pct) >= cfg.divergenceMinPct && Math.abs(l.pct) >= cfg.divergenceMinPct) {
-    out.push({ tag: "trend", type: "divergence", window: 30, score: cfg.weights.divergence, nums: { s, l },
-      text: `The month and the ${l.days === 365 ? "year" : "quarter"} point different ways for ${title}: ${s.pct >= 0 ? "up" : "down"} ${r0(s.pct)}% since ${dateLabel(s.from[0], asOf)}, yet ${l.pct >= 0 ? "up" : "down"} ${r0(l.pct)}% since ${dateLabel(l.from[0], asOf)} (${usd(l.from[1])}).`, short: `The month and the ${l.days === 365 ? "year" : "quarter"} disagree: ${s.pct >= 0 ? "up" : "down"} ${r0(s.pct)}% since ${dateLabel(s.from[0], asOf)}, ${l.pct >= 0 ? "up" : "down"} ${r0(l.pct)}% since ${dateLabel(l.from[0], asOf)}.` });
+  // One finding per window. A read leads with one of them, never several at once.
+  const moves = WINDOWS.map((w) => ch[w]).filter((c) => c && Math.abs(c.pct) >= cfg.trendMinPct[c.asked] && Math.abs(c.to[1] - c.from[1]) >= cfg.minTrendUsd);
+  for (const move of moves) {
+    const when = move.days === 7 ? "in a week" : move.days === 30 ? "over 30 days" : move.days === 90 ? "in the last 90 days" : move.days === 365 ? "on the year" : `in ${move.days} days`;
+    const over = move.days === 365 ? "a year" : move.days === 7 ? "a week" : `${move.days} days`;
+    out.push({ tag: "trend", type: `trend${move.asked}${move.pct >= 0 ? "up" : "down"}`, window: move.days, score: cfg.weights.trend * (Math.abs(move.pct) / cfg.trendMinPct[move.asked]), nums: { lead: move },
+      text: `${move.pct >= 0 ? "Up" : "Down"} ${r0(move.pct)}% ${when}: ${title} went from ${at(move.from, asOf)} to ${usd(move.to[1])} on ${monthDay(asOf)}.`,
+      short: `${move.pct >= 0 ? "Up" : "Down"} ${r0(move.pct)}% over ${over}, to ${usd(last[1])} on ${monthDay(asOf)}.` });
   }
   // Weekly streak and how often it moved
   const st = weeklyStreak(pts, asOf);
@@ -240,7 +234,7 @@ export function findings(item, ctx, cfg) {
       text: `${st.dir > 0 ? "Higher" : "Lower"} for ${st.n} weeks running: ${title} moved from ${at(st.from, asOf)} to ${usd(st.to[1])} on ${monthDay(asOf)}.`, short: `It has closed ${st.dir > 0 ? "higher" : "lower"} ${st.n} weeks running, from ${at(st.from, asOf)}.` });
   }
   const mv = movedDays(pts, asOf);
-  if (mv) out.push({ tag: "activity", type: "activity", score: 0, nums: { mv }, text: `The price changed on ${mv.moved} of the last ${mv.of} days on file.`, short: `The price changed on ${mv.moved} of the last ${mv.of} days on file.` });
+  if (mv) out.push({ tag: "activity", type: "activity", window: 30, score: 0, nums: { mv }, text: `The price changed on ${mv.moved} of the last ${mv.of} days on file.`, short: `The price changed on ${mv.moved} of the last ${mv.of} days on file.` });
   // Against its set and the market
   const peer = ctx.peers?.get(item.setSlug);
   const sg = (x) => `${x >= 0 ? "+" : "-"}${Math.abs(x).toFixed(1)}%`;
@@ -249,14 +243,14 @@ export function findings(item, ctx, cfg) {
     const own = r0(ch[30].pct) < 1 ? "flat" : `${ch[30].pct >= 0 ? "up" : "down"} ${r0(ch[30].pct)}%`;
     const mkt = ctx.market && ctx.market.n >= cfg.peerMinN ? `, and ${sg(ctx.market.median)} for ${ctx.market.n} priced items across the market` : "";
     const base = `${sg(peer.median)} median for ${peer.n} ${item.set} items priced ${usd(cfg.peerMinPrice)} or more${mkt}`;
-    if (Math.abs(gap) >= cfg.peerMinGapPts) out.push({ tag: "peers", type: gap > 0 ? "peersAhead" : "peersBehind", score: cfg.weights.peers * (Math.abs(gap) / cfg.peerMinGapPts), nums: { peer, market: ctx.market, own: ch[30] },
+    if (Math.abs(gap) >= cfg.peerMinGapPts) out.push({ tag: "peers", type: gap > 0 ? "peersAhead" : "peersBehind", window: 30, score: cfg.weights.peers * (Math.abs(gap) / cfg.peerMinGapPts), nums: { peer, market: ctx.market, own: ch[30] },
       text: `${gap > 0 ? "Ahead of" : "Behind"} its set: ${title} is ${own} over 30 days against a ${base}.`,
       short: `That ${gap > 0 ? "beats" : "trails"} its set over 30 days: ${own} against a ${base}.` });
     else {
       // "In line" only for a small gap. A wider one says which side it is on, without leading the read.
       const inlineMax = Number.isFinite(Number(cfg.peerInlineMaxPts)) ? Number(cfg.peerInlineMaxPts) : cfg.peerMinGapPts;
       const short = Math.abs(gap) <= inlineMax ? `Over 30 days it is ${own}, in line with a ${base}.` : `Over 30 days it is ${own}, ${gap > 0 ? "ahead of" : "trailing"} a ${base}.`;
-      out.push({ tag: "peers", type: "peersInline", score: 0, nums: { peer, market: ctx.market, own: ch[30] }, short });
+      out.push({ tag: "peers", type: "peersInline", window: 30, score: 0, nums: { peer, market: ctx.market, own: ch[30] }, short });
     }
   }
   // Supply and eBay asks (sealed)
@@ -303,10 +297,15 @@ export function compose(item, fs, cfg, used) {
   const key = (f) => openingKey(f.text, [item.title]);
   const count = (f) => (used ? used.byType.get(key(f)) || 0 : 0);
   const lead = ranked.find((f) => count(f) < cap) || ranked.slice().sort((a, b) => count(a) - count(b))[0];
+  const leadWindow = Number.isFinite(Number(lead.window)) ? Number(lead.window) : null;
+  const sameWindow = (f) => {
+    if (!leadWindow || !Number.isFinite(Number(f.window))) return true;
+    return Number(f.window) === leadWindow;
+  };
   const tags = new Set([lead.tag]);
   const pick = [lead];
   const ORDER = ["trend", "range", "listings", "ask", "peers", "streak", "activity", "set"];
-  const pool = ranked.filter((f) => f !== lead && f.short).concat(fs.filter((f) => !(f.score > 0) && f.short).sort((a, b) => ORDER.indexOf(a.tag) - ORDER.indexOf(b.tag)));
+  const pool = ranked.filter((f) => f !== lead && f.short && sameWindow(f)).concat(fs.filter((f) => !(f.score > 0) && f.short && sameWindow(f)).sort((a, b) => ORDER.indexOf(a.tag) - ORDER.indexOf(b.tag)));
   for (const f of pool) {
     if (pick.length >= 3) break;
     if (tags.has(f.tag)) continue;
@@ -421,6 +420,83 @@ function whyFromLead(lead) {
   return `${dir} ${money(Math.abs(delta))} on those two dates.`;
 }
 
+function namedWindows(text) {
+  const s = String(text || "");
+  const hit = new Set();
+  if (/\b7\s*[- ]?days?\b|\b7D\b|\bin a week\b/i.test(s)) hit.add(7);
+  if (/\b30\s*[- ]?days?\b|\b30D\b/i.test(s)) hit.add(30);
+  if (/\b90\s*[- ]?days?\b|\b90D\b/i.test(s)) hit.add(90);
+  if (/\b365\s*[- ]?days?\b|\bon the year\b|\bin a year\b|\bover the year\b|\bover a year\b/i.test(s)) hit.add(365);
+  const m = s.match(/\b(\d+)\s+day\b/i);
+  if (m) hit.add(Number(m[1]));
+  return hit;
+}
+
+function chipDays(chip) {
+  const named = namedWindows(`${chip?.text || ""} ${chip?.label || ""}`);
+  if (named.size > 1) return -1;
+  if (named.size === 1) return [...named][0];
+  const n = Number(chip?.days);
+  return n > 0 ? n : null;
+}
+
+// Drop chips, tiles and lines that name a different window than the lead.
+export function alignToWindow(read, days) {
+  const n = Number(days);
+  if (!(n > 0) || !read) return read;
+  const next = { ...read, windowDays: n };
+  if (Array.isArray(read.signals)) {
+    next.signals = read.signals.filter((chip) => {
+      const w = chipDays(chip);
+      return w == null || w === n;
+    });
+  }
+  const tile = read.tiles?.price;
+  if (tile && !tile.dash && Number(tile.days) > 0 && Number(tile.days) !== n) {
+    const tiles = { ...read.tiles };
+    delete tiles.price;
+    next.tiles = tiles;
+  }
+  const keep = (line) => {
+    if (typeof line !== "string") return true;
+    const hit = namedWindows(line);
+    return hit.size === 0 || (hit.size === 1 && hit.has(n));
+  };
+  if (Array.isArray(read.lines)) next.lines = read.lines.filter(keep);
+  return next;
+}
+
+function leadEnds(lead) {
+  const n = lead?.nums || {};
+  const c = n.lead || n.own || n.s;
+  if (Array.isArray(c?.from) && Array.isArray(c?.to) && /^\d{4}-\d{2}-\d{2}$/.test(String(c.from[0])) && /^\d{4}-\d{2}-\d{2}$/.test(String(c.to[0]))) {
+    return { startDate: String(c.from[0]), endDate: String(c.to[0]) };
+  }
+  return null;
+}
+
+function speakRead(read) {
+  const asOf = read?.asOf;
+  const next = { ...read };
+  if (next.headline) next.headline = speakDates(next.headline, asOf);
+  if (next.path) next.path = speakDates(next.path, asOf);
+  if (next.source) next.source = speakDates(next.source, asOf);
+  if (next.why) next.why = speakDates(next.why, asOf);
+  if (next.whyItMatters) next.whyItMatters = speakDates(next.whyItMatters, asOf);
+  if (Array.isArray(next.lines)) next.lines = next.lines.map((line) => typeof line === "string" ? speakDates(line, asOf) : line);
+  if (Array.isArray(next.variants)) next.variants = next.variants.map((line) => typeof line === "string" ? speakDates(line, asOf) : line);
+  if (Array.isArray(next.signals)) {
+    next.signals = next.signals.map((chip) => {
+      if (!chip || typeof chip !== "object") return chip;
+      const out = { ...chip };
+      if (typeof out.label === "string") out.label = speakDates(out.label, asOf);
+      if (typeof out.text === "string") out.text = speakDates(out.text, asOf);
+      return out;
+    });
+  }
+  return next;
+}
+
 // Rewrite the item reads. Returns the new list and a report.
 export function synthesizeReads(reads, ctx, cfg) {
   const items = reads.filter(isItemRead);
@@ -437,17 +513,26 @@ export function synthesizeReads(reads, ctx, cfg) {
     const lead = got.lead;
     // A lead price read keeps its TCGplayer market headline; the summary is its lead line.
     const leadPrice = ((r.board !== "v3" && r.readKind === "price") || r.kind === "single" || r.kind === "sealed") && /\bon TCGplayer market\b/.test(String(r.headline || ""));
-    const rawHead = leadPrice && r.headline ? r.headline : got.text;
-    const text = capHeadline(rawHead);
-    const next = { ...r, headline: text, path: text, variants: [text], synth: true,
+    const useSynth = !(leadPrice && r.headline);
+    const text = capHeadline(useSynth ? got.text : r.headline);
+    let next = { ...r, headline: text, path: text, variants: [text], synth: true,
       receipt: { ...(r.receipt || {}), synth: { lead: lead.type, title: item.title, signals: got.pick.map((p) => p.tag), facts: got.pick.map((p) => ({ tag: p.tag, type: p.type, nums: p.nums || null })), now: item.pts[item.pts.length - 1], sources: ["research/assets/public/hist-long", "research/assets/public/buckets", "research/assets/public/listings-counted.json", "data/sealed-prices.json", "research/assets/public/set-value", "research/assets/public/rotation-status.json"] } } };
-    if (lead.window) next.windowDays = lead.window;
+    const windowDays = Number(lead.window) || (namedWindows(text).size === 1 ? [...namedWindows(text)][0] : 0);
+    if (useSynth) {
+      next.lines = got.pick.slice(1).map((p) => p.short).filter((line) => typeof line === "string" && line.trim());
+      const ends = leadEnds(lead);
+      if (ends && windowDays) {
+        next.startDate = ends.startDate;
+        next.endDate = ends.endDate;
+      }
+    }
+    if (windowDays) next = alignToWindow(next, windowDays);
     const whyLead = whyFromLead(lead);
     if (whyLead) {
       next.why = whyLead;
       next.whyItMatters = whyLead;
     }
-    return next;
+    return speakRead(next);
   });
   return { reads: out, report };
 }

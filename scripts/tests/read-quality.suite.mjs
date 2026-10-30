@@ -182,11 +182,11 @@ export async function run() {
   const movers = pair.board.filter((row) => row.signal === "mover");
   t("at most one mover up and one mover down", movers.length === 2 && movers.filter((row) => row.changePct > 0).length === 1 && movers.filter((row) => row.changePct < 0).length === 1 && movers.some((row) => row.sku === "tcgcsv-5"));
   const top = movers.find((row) => row.sku === "tcgcsv-5");
-  t("price form puts dollars before the percent", top.headline === "Kadabra (Base Set). TCGplayer market: $15.00 (2026-10-08), from $10.00 (2026-10-01). Up $5.00, 50%.");
+  t("price form puts dollars before the percent", top.headline === "Kadabra (Base Set). TCGplayer market: $15.00 (Oct 8), from $10.00 (Oct 1). Up $5.00, 50%.");
 
   const empty = libOf({ cards: {} });
-  t("quiet night with zero reads", empty.board.length === 0 && empty.quietNight === `Quiet night, ${ASOF}. No read cleared the bar. Missing days were not filled in.`);
-  t("quiet night helper does not pad", quietNight(ASOF, 0).includes("No read") && quietNight(ASOF, 2) === `Quiet night, ${ASOF}. 2 read cleared the bar. A thin board is the whole board.` && quietNight(ASOF, 3) === "");
+  t("quiet night with zero reads", empty.board.length === 0 && empty.quietNight === "Quiet night, Oct 8. No read cleared the bar. Missing days were not filled in.");
+  t("quiet night helper does not pad", quietNight(ASOF, 0).includes("No read") && quietNight(ASOF, 2) === "Quiet night, Oct 8. 2 read cleared the bar. A thin board is the whole board." && quietNight(ASOF, 3) === "");
   t("two reads stay two", pair.board.length === 2 && pair.quietNight.includes("2 read cleared the bar") && pair.quietNight.includes("A thin board is the whole board"));
 
   const high = card({
@@ -263,7 +263,7 @@ export async function run() {
   const on = libOf({ cards: turnedCards, series: turnedSeries, dailyFiles: files, library: true });
   const turned = on.board.filter((row) => row.signal === "turned");
   t("turned caps at one when the switch is on", turned.length === 1 && turned[0].sku === "tcgcsv-51");
-  t("turned copy names the week and the last night", turned[0].headline.includes("TCGplayer market: $28.00 (2026-10-08), from $20.00 (2026-10-01). Last night it went from $30.00 to $28.00.") && turned[0].whyItMatters === "The week is up $8.00. The last day turned down $2.00.");
+  t("turned copy names the week and the last night", turned[0].headline.includes("TCGplayer market: $28.00 (Oct 8), from $20.00 (Oct 1). Last night it went from $30.00 to $28.00.") && turned[0].whyItMatters === "The week is up $8.00. The last day turned down $2.00.");
 
   const sealedProducts = [
     { id: "art-parent", name: "Art Parent ETB", combinedArts: true, tcgPlayerId: null },
@@ -281,7 +281,7 @@ export async function run() {
   const sealedOn = libOf({ cards: {}, series: sealedSeries, dailyFiles: new Set(["2026-10-01", ASOF]), library: true, sealed: sealedProducts });
   const sealedRows = sealedOn.board.filter((row) => row.signal === "sealed");
   t("sealed week caps at one and skips art parents", sealedRows.length === 1 && sealedRows[0].sku === "box-b" && !sealedOn.board.some((row) => /Art /.test(row.name)));
-  t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (2026-10-08), from $50.00 (2026-10-01). Up $20.00.") && !/\bNM\b/.test(sealedRows[0].headline) && sealedRows[0].whyItMatters === "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.");
+  t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (Oct 8), from $50.00 (Oct 1). Up $20.00.") && !/\bNM\b/.test(sealedRows[0].headline) && sealedRows[0].whyItMatters === "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.");
 
   // The live radar drops a row once it has released (the 10-26 digest dropped
   // Deck Crafter's Collection), so the release-day check pins its own rows on
@@ -306,7 +306,7 @@ export async function run() {
     radar: { ...radar, upcoming: radar.upcoming.map((row) => ({ ...row, msrp: 49.99 })) },
   });
   const releases = releaseDay.board.filter((row) => row.signal === "release");
-  t("release shows the verified non-jp row seven days out, with no MSRP", releases.length === 1 && releases[0].headline.startsWith(`Deck Crafter's Collection is dated 2026-10-23 on the release file (checked ${radar.updated}).`) && !/msrp|\$/i.test(releases[0].headline) && !releases.some((row) => /jp/i.test(row.headline)));
+  t("release shows the verified non-jp row seven days out, with no MSRP", releases.length === 1 && releases[0].headline.startsWith("Deck Crafter's Collection is dated Oct 23 on the release file (checked ") && !/\b20\d{2}-\d{2}-\d{2}\b/.test(releases[0].headline) && !/msrp|\$/i.test(releases[0].headline) && !releases.some((row) => /jp/i.test(row.headline)));
   const none = buildReadLibrary({
     catalogue: { asOf: "2026-10-11", source: "TCGplayer market", cards: {} },
     extra: { lag: { reads: [] }, group: { reads: [] } },

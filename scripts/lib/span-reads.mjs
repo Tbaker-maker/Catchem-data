@@ -12,6 +12,7 @@ import { addDays, dateLabel as monthLabel } from "./history-reads.mjs";
 import { loadFillMap } from "./fill-history.mjs";
 import { loadHistoryCards } from "./history-reads.mjs";
 import { publicCopyOk } from "./year-patterns.mjs";
+import { speakDates } from "./read-quality.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
 
 const usd = (n) => tcgAmount(n, money);
@@ -137,12 +138,12 @@ function base(kind, item, headline, lines, asOf, source, extra) {
     name: item.name || item.set || "",
     set: item.set || "",
     ...(item.number ? { number: item.number } : {}),
-    headline,
-    path: headline,
-    lines,
+    headline: speakDates(headline, asOf),
+    path: speakDates(headline, asOf),
+    lines: (lines || []).map((line) => speakDates(line, asOf)),
     asOf,
-    source,
-    why: extra.why,
+    source: speakDates(source, asOf),
+    why: extra.why ? speakDates(extra.why, asOf) : extra.why,
     price: extra.price,
     startDate: extra.startDate,
     endDate: extra.endDate,

@@ -21,7 +21,8 @@ export function markCited(set, doc) {
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
-import { loadHistoryCards, historyReads } from "./history-reads.mjs";
+import { loadHistoryCards, historyReads, dayNum } from "./history-reads.mjs";
+import { speakDates } from "./read-quality.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
@@ -350,7 +351,7 @@ export function listingReads(doc, { minStart = 15, minMove = 4, minPct = 20 } = 
     if (Math.abs(b - a) < minMove || Math.abs(pct(a, b)) < minPct) continue;
     const headline = `${p.name}: eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}). A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
-    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.prev.date} and ${lc.date}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${p.name}. A listing is not a sale.`].filter(cleanCopy) });
+    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${monthDay(lc.prev.date)} and ${monthDay(lc.date)}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${p.name}. A listing is not a sale.`].filter(cleanCopy) });
   }
   return out;
 }
@@ -505,8 +506,10 @@ export function polishPriceRead(r) {
   const p = Math.round(Math.abs(pct(from, to)));
   const x = to / from;
   let headline;
+  const week = Number(r.windowDays) === 7 && dayNum(r.endDate) - dayNum(r.startDate) === 7;
   if (r.readKind === "streak" && r.streakN >= 3) headline = `${up ? "Up" : "Down"} ${r.streakN} days in a row: ${who}, ${span} on TCGplayer market.`;
-  else if (up && x >= 2) headline = `${who} more than doubled in a week: ${span} on TCGplayer market.`;
+  else if (up && x >= 2 && week) headline = `${who} more than doubled in a week: ${span} on TCGplayer market.`;
+  else if (up && x >= 2) headline = `${who} more than doubled: ${span} on TCGplayer market.`;
   else headline = `${who}: ${span} on TCGplayer market. ${up ? "Up" : "Down"} ${p}%.`;
   const variants = [
     `${who} went ${up ? "up" : "down"} ${p}% in ${r.windowDays || 7} days: ${span}, TCGplayer market.`,
@@ -870,7 +873,16 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   attachListingsFacts(fresh, listings);
   const { images, tcgOn, sealedPid, logos } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
-  for (const r of fresh) { if (!r.why) r.why = `From ${r.source}.`; if (!r.whyItMatters) r.whyItMatters = r.why; }
+  for (const r of fresh) {
+    if (r.headline) r.headline = speakDates(r.headline, r.asOf);
+    if (r.path) r.path = speakDates(r.path, r.asOf);
+    if (r.source) r.source = speakDates(r.source, r.asOf);
+    if (Array.isArray(r.lines)) r.lines = r.lines.map((line) => typeof line === "string" ? speakDates(line, r.asOf) : line);
+    if (!r.why && r.source) r.why = `From ${r.source}.`;
+    if (r.why) r.why = speakDates(r.why, r.asOf);
+    if (!r.whyItMatters) r.whyItMatters = r.why;
+    else r.whyItMatters = speakDates(r.whyItMatters, r.asOf);
+  }
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
@@ -914,6 +926,15 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   for (const r of mixed) if (!String(r.image || "").trim()) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   const listingIndex = await loadListingIndex(root);
   const gated = finishBoard(await dropThinReads(mixed, root, end, listingAnnotate(listingIndex)));
+  for (const r of gated) {
+    if (r.headline) r.headline = speakDates(r.headline, r.asOf);
+    if (r.path) r.path = speakDates(r.path, r.asOf);
+    if (r.source) r.source = speakDates(r.source, r.asOf);
+    if (r.why) r.why = speakDates(r.why, r.asOf);
+    if (r.whyItMatters) r.whyItMatters = speakDates(r.whyItMatters, r.asOf);
+    if (Array.isArray(r.lines)) r.lines = r.lines.map((line) => typeof line === "string" ? speakDates(line, r.asOf) : line);
+    if (Array.isArray(r.variants)) r.variants = r.variants.map((line) => typeof line === "string" ? speakDates(line, r.asOf) : line);
+  }
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of gated) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;

@@ -85,7 +85,7 @@ export async function run() {
   t("plain takes at most two seats", lib.board.filter((row) => row.signal === "plain").length <= PLAIN_CAP);
   t("one sku is not boarded twice", new Set(lib.board.map((row) => row.sku)).size === lib.board.length);
   const streak = lib.board.find((row) => row.signal === "streak");
-  t("streak shows both prices and both dates", streak && streak.headline.includes("$5.00") && streak.headline.includes("$1.00") && streak.headline.includes("2026-10-08") && streak.headline.includes("2026-10-04") && streak.sku === "tcgcsv-9");
+  t("streak shows both prices and both dates", streak && streak.headline.includes("$5.00") && streak.headline.includes("$1.00") && streak.headline.includes("Oct 8") && streak.headline.includes("Oct 4") && !/\b20\d{2}-\d{2}-\d{2}\b/.test(streak.headline) && streak.sku === "tcgcsv-9");
   t("signals chip rows are movers, set moves, highs, and streaks", lib.signals.every((row) => ["mover", "set", "high", "streak"].includes(row.signal)) && lib.signals.some((row) => row.signal === "mover") && !lib.signals.some((row) => row.signal === "plain"));
   const mover = lib.board.find((row) => row.signal === "mover");
   t("mover why is the dollar move and the id stays on the source line", mover && mover.whyItMatters === "Up $1.03 on those two dates." && !mover.whyItMatters.includes("tcgcsv-") && !mover.whyItMatters.includes("data/") && mover.sourceLine === "tcgcsv-1");

@@ -16,6 +16,8 @@ const hist = mergeHistory([["2025-10-14", 10], ["2026-07-15", 30]], [["2026-09-1
 t("30-day change uses dated ends", JSON.stringify(changeOver(hist, 30, "2026-10-14")) === JSON.stringify({ pct: -25, from: "2026-09-14", to: "2026-10-14", p0: 20, p1: 15 }));
 t("1Y change from the year-ago point", changeOver(hist, 365, "2026-10-14")?.pct === 50);
 t("no 30-day change across a long gap", changeOver([["2026-08-01", 5], ["2026-10-14", 6]], 30, "2026-10-14") === null);
+t("a 7 day window is not an 8 day span", changeOver([["2026-10-22", 10], ["2026-10-30", 11]], 7, "2026-10-30") === null);
+t("one night is not a 7 day move", changeOver([["2026-10-23", 10], ["2026-10-29", 10], ["2026-10-30", 12]], 7, "2026-10-30") === null);
 const hl = highLow(hist, "2026-10-14");
 t("high, low, days since high, % from high", hl.high.date === "2026-07-15" && hl.low.price === 10 && hl.daysSinceHigh === 91 && hl.fromHighPct === -50);
 t("band needs 5 items", band([{ pct: 1, from: "a", to: "b" }]) === null && band([1, 2, -3, 4, 5].map((p) => ({ pct: p, from: "2026-09-14", to: "2026-10-14" }))).median === 2);

@@ -19,8 +19,9 @@ export async function run() {
   t("a 52-week high needs a year of points", extremeRead(card([["2026-01-01", 10], [asOf, 20]]), asOf, 1) === null);
   t("a tiny new high is not a read", extremeRead(card([["2024-02-08", 50], ["2026-01-01", 100], [asOf, 101]]), asOf, 1) === null);
 
-  const yr = windowRead(card([["2025-10-09", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" });
-  t("one year on uses the real start day", yr && yr.headline.includes("$20.00 (Oct 9, 2025) to $40.00 (Oct 12)") && !yr.headline.includes(" NM") && yr.startDate === "2025-10-09");
+  const yr = windowRead(card([["2025-10-12", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" });
+  t("one year on uses the exact start day", yr && yr.headline.includes("$20.00 (Oct 12, 2025) to $40.00 (Oct 12)") && !yr.headline.includes(" NM") && yr.startDate === "2025-10-12" && yr.windowDays === 365);
+  t("a point a few days off is not called one year", windowRead(card([["2025-10-09", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" }) === null);
   t("no point near the day, no read", windowRead(card([["2025-09-01", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, minUsd: 5, kind: "year" }) === null);
   t("an outsized jump is left out", windowRead(card([["2026-09-12", 2], [asOf, 40]]), asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain" }) === null);
 

@@ -3,6 +3,7 @@
 import { setAgeKey } from "./year-patterns.mjs";
 import { patternPasses } from "./proven-signal.mjs";
 import { stageOf } from "./sealed-rating.mjs";
+import { oneNightMove } from "./history-reads.mjs";
 
 const DAY = 86400000;
 const iso = (s) => (/^\d{4}-\d{2}-\d{2}/.test(String(s || "")) ? String(s).slice(0, 10) : "");
@@ -40,10 +41,14 @@ export function priceOn(hist, day, maxGap = 8) {
 }
 
 export function changeOver(hist, days, asOf) {
-  if (!hist.length || !asOf) return null;
-  const end = priceOn(hist, asOf, 3);
-  const start = priceOn(hist, addDays(asOf, -days));
-  if (!end || !start) return null;
+  if (!hist.length || !asOf || !(days > 0)) return null;
+  const endDay = asOf;
+  const startDay = addDays(asOf, -days);
+  const end = priceOn(hist, endDay, 0);
+  const start = priceOn(hist, startDay, 0);
+  if (!end || !start || end[0] !== endDay || start[0] !== startDay) return null;
+  if (daysBetween(start[0], end[0]) !== days) return null;
+  if (days === 7 && oneNightMove(hist, start[0], end[0])) return null;
   const p = pct(start[1], end[1]);
   return p == null ? null : { pct: p, from: start[0], to: end[0], p0: start[1], p1: end[1] };
 }

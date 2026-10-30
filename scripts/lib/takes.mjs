@@ -1,7 +1,7 @@
 // One code per read. The label is not stored. No code means no take.
 // Never defaults to Watch.
 import { money, TAKE_FOOTER, TAKE_LABELS, lineBanned } from "./public-bundle.mjs";
-import { centsOf, formatPct, whyPlain } from "./read-quality.mjs";
+import { centsOf, formatPct, speakDay, whyPlain } from "./read-quality.mjs";
 import { tcgAmount } from "./card-face.mjs";
 
 export { TAKE_FOOTER, TAKE_LABELS };
@@ -78,7 +78,7 @@ function priceSentence(input) {
   const gap = tcgAmount(Math.abs((centsOf(to) - centsOf(from)) / 100), money);
   const pct = formatPct(((to - from) / from) * 100);
   if (!gap || !pct) return "";
-  return `TCGplayer market: ${tcgAmount(to, money)} (${input.end}), from ${tcgAmount(from, money)} (${input.start}). ${dir} ${gap}, ${pct}%.`;
+  return `TCGplayer market: ${tcgAmount(to, money)} (${speakDay(input.end, input.end)}), from ${tcgAmount(from, money)} (${speakDay(input.start, input.end)}). ${dir} ${gap}, ${pct}%.`;
 }
 
 export function takeLayout(input = {}) {
@@ -92,7 +92,7 @@ export function takeLayout(input = {}) {
   const wrong = String(input.wrong || "Wrong if either date has a different market price.").trim();
   const sourceName = String(input.source || "TCGplayer market").trim();
   const sourceDate = String(input.sourceDate || input.end || "").slice(0, 10);
-  const source = sourceName && /^\d{4}-\d{2}-\d{2}$/.test(sourceDate) ? `${sourceName}, ${sourceDate}.` : "";
+  const source = sourceName && /^\d{4}-\d{2}-\d{2}$/.test(sourceDate) ? `${sourceName}, ${speakDay(sourceDate, sourceDate)}.` : "";
   const lines = [TAKE_LABELS[code], prices, listingsLine, why, wrong, source, TAKE_FOOTER].filter(Boolean);
   if (lines.some((line) => lineBanned(line))) return null;
   if (listingsLine && /\b(because|Browse|listingCount|browseTotal)\b/.test(listingsLine)) return null;
