@@ -1,7 +1,9 @@
 name: Founder brief
 
-# Sunday 8 AM Pacific. 15:00 UTC is 8 AM during daylight time. 16:00 UTC is
-# 8 AM during standard time. The script writes on the matching hour only.
+# Sunday morning Pacific. 15:00 UTC is 8 AM during daylight time.
+# 16:00 UTC is 8 AM during standard time. Actions often starts these
+# late, so the script writes on any Sunday Pacific hour. The job
+# fails if that run does not leave a brief.
 on:
   schedule:
     - cron: "0 15 * * 0"
@@ -31,10 +33,16 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          day=$(TZ=America/Vancouver date +%F)
           git add data/derived/brief/
           if git diff --staged --quiet; then
-            echo "No brief changes."
+            if git cat-file -e "HEAD:data/derived/brief/${day}.md" 2>/dev/null; then
+              echo "Brief for ${day} is already on main."
+            else
+              echo "Founder brief wrote nothing for ${day}."
+              exit 1
+            fi
           else
-            git commit -m "Weekly founder brief ($(date -u +'%Y-%m-%d'))"
+            git commit -m "Weekly founder brief (${day})"
             git push
           fi

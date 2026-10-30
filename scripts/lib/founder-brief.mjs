@@ -15,6 +15,13 @@ export function weekWindow(asOf) {
   return { start: start.toISOString().slice(0, 10), end: asOf };
 }
 
+// The Sunday crons are often hours late. The day is the gate, not the hour.
+export function shouldWriteBrief(pt, force = false) {
+  if (force === true) return { write: true, reason: "BRIEF_FORCE" };
+  if (pt && pt.weekday === "Sun") return { write: true, reason: "Sunday PT" };
+  return { write: false, reason: "not Sunday PT and BRIEF_FORCE is not set" };
+}
+
 function dayKey(value) {
   const raw = String(value || "");
   if (raw.length > 10) {
