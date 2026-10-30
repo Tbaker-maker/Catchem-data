@@ -8,7 +8,7 @@
 //   node scripts/prewarm-product-pages.mjs --batch 0 --batch-size 169 --ids prewarm-state/ids.json --state prewarm-state/warm.json --report prewarm-state/batch-0.json
 //   node scripts/prewarm-product-pages.mjs --join prewarm-state --reports prewarm-state/reports
 //
-// Env: CATCHEM_ORIGIN, PREWARM_KIND, PREWARM_SLEEP, PREWARM_LIMIT, PREWARM_FRESH, PREWARM_MAX_BATCHES
+// Env: PREWARM_KIND, PREWARM_SLEEP, PREWARM_LIMIT, PREWARM_FRESH, PREWARM_MAX_BATCHES. Origin comes from flag("site").
 import { appendFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -301,7 +301,6 @@ function githubSummary(text) {
   appendFileSync(file, text.endsWith("\n") ? text : `${text}\n`);
 }
 async function originOf() {
-  if (process.env.CATCHEM_ORIGIN) return String(process.env.CATCHEM_ORIGIN).replace(/\/$/, "");
   try {
     const { flag } = await import("./flags.mjs");
     return String(flag("site") || "https://catchemtcg.com").replace(/\/$/, "");
