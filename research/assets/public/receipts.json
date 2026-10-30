@@ -1,10 +1,10 @@
 {
- "asOf": "2026-10-29",
- "updatedAt": "2026-10-29T12:22:48.089Z",
+ "asOf": "2026-10-30",
+ "updatedAt": "2026-10-30T12:30:06.608Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
- "hitRate": null,
- "scored": 19,
- "hits": 0,
+ "hitRate": 5,
+ "scored": 20,
+ "hits": 1,
  "misses": 19,
  "rows": [
   {
@@ -464,24 +464,28 @@
    "changePct": 0
   },
   {
-   "id": "receipt-2026-10-27-single-sv8pt5-161",
+   "id": "receipt-2026-10-29-sealed-sv9-bb",
    "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon ex",
-   "headline": "Umbreon ex. Open.",
-   "price": 1412.72,
+   "result": "hit",
+   "kind": "sealed",
+   "name": "Journey Together Booster Bundle",
+   "headline": "Journey Together Booster Bundle. Hit.",
+   "price": 42.47,
    "source": "TCGplayer market",
-   "asOf": "2026-10-27",
-   "why": "Written down October 27, 2026 at $1,412.72. No earlier TCGplayer market price is stored, so this stays open.",
+   "asOf": "2026-10-30",
+   "why": "Written down October 29, 2026 at $43.45, after a higher one. Next TCGplayer market price on October 30, 2026 was $42.47. Same way.",
    "hist": [
     [
-     "2026-10-27",
-     1412.72
+     "2026-10-29",
+     43.45
+    ],
+    [
+     "2026-10-30",
+     42.47
     ]
    ],
    "href": "",
-   "changePct": null
+   "changePct": -2.3
   },
   {
    "id": "receipt-2026-10-28-single-swsh12-186",
@@ -504,26 +508,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-29-sealed-sv9-bb",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "Journey Together Booster Bundle",
-   "headline": "Journey Together Booster Bundle. Open.",
-   "price": 43.45,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-29",
-   "why": "Written down October 29, 2026 at $43.45. No later TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-29",
-     43.45
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-29-single-swsh7-218",
    "type": "receipt",
    "result": "open",
@@ -538,6 +522,46 @@
     [
      "2026-10-29",
      1255.44
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-30-sealed-sv6pt5-bb",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Shrouded Fable Booster Bundle",
+   "headline": "Shrouded Fable Booster Bundle. Open.",
+   "price": 53.71,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-30",
+   "why": "Written down October 30, 2026 at $53.71. No later TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-30",
+     53.71
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-30-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-30",
+   "why": "Written down October 30, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-30",
+     2283.14
     ]
    ],
    "href": "",
