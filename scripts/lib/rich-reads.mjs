@@ -6,7 +6,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
-import { nearestPoint, addDays, dateLabel, dayNum } from "./history-reads.mjs";
+import { nearestPoint, addDays, dateLabel, dayNum, oneNightMove } from "./history-reads.mjs";
+import { speakDates } from "./read-quality.mjs";
 
 const BAN = banGuard("rich reads");
 const LOW = new Set(["Common", "Uncommon", "Rare", "Code Card", "Promo", "None", ""]);
@@ -47,14 +48,19 @@ function shortSet(s) {
 }
 
 function rowBase(kind, id, name, headline, lines, asOf, source, extra = {}) {
-  const bits = [headline, source, extra.why || "", ...lines];
+  const spokenHead = speakDates(headline, asOf);
+  const spokenLines = lines.map((line) => speakDates(line, asOf));
+  const spokenSource = speakDates(source, asOf);
+  const why = extra.why ? speakDates(extra.why, asOf) : `From ${spokenSource}.`;
+  const bits = [spokenHead, spokenSource, why, ...spokenLines];
   if (bits.some((s) => s && !copyOk(s))) return null;
   return {
     id, sku: extra.sku || "", href: extra.href || "",
     readKind: kind, kind, board: "v3", family: kind, name,
-    headline, path: headline, lines: lines.slice(0, 6),
-    asOf, source, why: extra.why || `From ${source}.`,
+    headline: spokenHead, path: spokenHead, lines: spokenLines.slice(0, 6),
+    asOf, source: spokenSource, why,
     startDate: extra.startDate || "", endDate: extra.endDate || asOf,
+    windowDays: extra.windowDays,
     receipt: extra.receipt || {},
   };
 }
@@ -191,7 +197,7 @@ export function releaseCycleReads(cards, setsDoc, { asOf, max = 4 } = {}) {
     if (peerMed == null) continue;
     const headline = `${shortSet(set.name)} released ${dateLabel(set.release, asOf)}. On ${dateLabel(asOf, asOf)} that is ${age} days later. Chase cards moved a median ${signed(own.med)} (${own.n} cards). Earlier ${set.era} sets at ${age} days moved a median ${signed(peerMed)} (${peers.length} sets).`;
     const lines = [
-      `Release date ${set.release} from sets.json. Counted day is ${asOf}.`,
+      `Release date ${dateLabel(set.release, asOf)} from sets.json. Counted day is ${dateLabel(asOf, asOf)}.`,
       `This set: median ${signed(own.med)} on ${own.n} chase cards, ${dateLabel(own.early, asOf)} to ${dateLabel(own.late, asOf)}.`,
       `Earlier ${set.era} sets, same number of days after release: median ${signed(peerMed)} across ${peers.length} sets.`,
       `Chase cards are rarities above Rare. Prices are TCGplayer market.`,
@@ -209,23 +215,24 @@ export function releaseCycleReads(cards, setsDoc, { asOf, max = 4 } = {}) {
 export function mixedReads({ cards, sealedPool, listings, rotation, asOf, start, end, max = 8 } = {}) {
   const out = [];
   for (const c of cards || []) {
-    const week = spanMove(c, addDays(asOf, -7), asOf, 2, 1);
-    const year = spanMove(c, addDays(asOf, -365), asOf, 5, 2);
-    if (!week || !year || week.p1 < 5) continue;
-    if (Math.abs(week.pct) < 3 || Math.abs(year.pct) < 3) continue;
-    const headline = `${c.name}: ${money(week.p0)} on ${dateLabel(week.from, asOf)} to ${money(week.p1)} on ${dateLabel(week.to, asOf)} (${signed(week.pct)}). Over the year, ${money(year.p0)} on ${dateLabel(year.from, asOf)} to ${money(year.p1)} on ${dateLabel(year.to, asOf)} (${signed(year.pct)}).`;
+    const week = spanMove(c, addDays(asOf, -7), asOf, 0, 0);
+    if (!week || week.p1 < 5) continue;
+    if (dayNum(week.to) - dayNum(week.from) !== 7) continue;
+    if (oneNightMove(c.pts, week.from, week.to)) continue;
+    if (Math.abs(week.pct) < 3) continue;
+    const headline = `${c.name}: ${money(week.p0)} on ${dateLabel(week.from, asOf)} to ${money(week.p1)} on ${dateLabel(week.to, asOf)} (${signed(week.pct)}).`;
     const lines = [
-      `7-day prices: ${money(week.p0)} on ${week.from} and ${money(week.p1)} on ${week.to}.`,
-      `Year prices: ${money(year.p0)} on ${year.from} and ${money(year.p1)} on ${year.to}.`,
-      `Both windows are TCGplayer market for the same product id.`,
+      `7-day prices: ${money(week.p0)} on ${dateLabel(week.from, asOf)} and ${money(week.p1)} on ${dateLabel(week.to, asOf)}.`,
+      `That window is 7 days, ${dateLabel(week.from, asOf)} to ${dateLabel(week.to, asOf)}.`,
+      `The window is TCGplayer market for the same product id.`,
     ];
-    const read = rowBase("mixed", `mixed-card-${c.id}`, c.name, headline, lines, asOf, `TCGplayer market, ${year.from} to ${week.to}`, {
+    const read = rowBase("mixed", `mixed-card-${c.id}`, c.name, headline, lines, asOf, `TCGplayer market, ${week.from} to ${week.to}`, {
       sku: c.id, href: `/c/${c.id}`,
-      why: "One card, two dated windows from its own price file.",
-      startDate: year.from, endDate: week.to,
-      receipt: { week: round1(week.pct), year: round1(year.pct) },
+      why: "One card, one dated window from its own price file.",
+      startDate: week.from, endDate: week.to, windowDays: 7,
+      receipt: { week: round1(week.pct) },
     });
-    if (read) out.push({ ...read, rank: Math.abs(week.pct) + Math.abs(year.pct) });
+    if (read) out.push({ ...read, rank: Math.abs(week.pct) });
   }
   const priceStart = start || addDays(asOf, -7);
   const priceEnd = end || asOf;
@@ -240,6 +247,9 @@ export function mixedReads({ cards, sealedPool, listings, rotation, asOf, start,
     const listDate = lc.prev?.date;
     if (listFrom == null || !listDate) continue;
     if (dayNum(asOf) - dayNum(listDate) > LISTINGS_FRESH_DAYS + 7) continue;
+    const priceSpan = dayNum(priceEnd) - dayNum(priceStart);
+    const listSpan = dayNum(lc.date) - dayNum(listDate);
+    if (!(priceSpan > 0) || priceSpan !== listSpan) continue;
     if (Math.abs(pricePct) < 3 && Math.abs(lc.n - listFrom) < 4) continue;
     const listPct = listFrom > 0 ? ((lc.n - listFrom) / listFrom) * 100 : 0;
     let rot = "";
@@ -248,16 +258,16 @@ export function mixedReads({ cards, sealedPool, listings, rotation, asOf, start,
     if (hit?.status && rotation?.asOf) rot = `${hit.name} is ${hit.status} (rotation-status.json, ${rotation.asOf}).`;
     const headline = `${p.name}: market ${money(p.from)} on ${dateLabel(priceStart, asOf)} to ${money(p.to)} on ${dateLabel(priceEnd, asOf)} (${signed(pricePct)}). Listings counted ${listFrom} on ${dateLabel(listDate, asOf)} to ${lc.n} on ${dateLabel(lc.date, asOf)}.`;
     const lines = [
-      `Market ${money(p.from)} on ${priceStart} to ${money(p.to)} on ${priceEnd} (${signed(pricePct)}).`,
-      `Listings counted ${listFrom} on ${listDate} to ${lc.n} on ${lc.date}. A listing is not a sale.`,
+      `Market ${money(p.from)} on ${dateLabel(priceStart, asOf)} to ${money(p.to)} on ${dateLabel(priceEnd, asOf)} (${signed(pricePct)}).`,
+      `Listings counted ${listFrom} on ${dateLabel(listDate, asOf)} to ${lc.n} on ${dateLabel(lc.date, asOf)}. A listing is not a sale.`,
       rot,
     ].filter(Boolean);
     const read = rowBase("mixed", `mixed-sealed-${p.id}`, p.name, headline, lines, asOf, `TCGplayer market, ${priceStart} and ${priceEnd}; eBay listings counted, ${listDate} and ${lc.date}`, {
       sku: p.id, href: `/p/${p.id}`,
-      why: "The market prices and the listings counted are separate dated files.",
-      // Board day is the end of the read so a fresh price half is not marked stale.
-      startDate: listDate < priceStart ? listDate : priceStart,
+      why: "The market prices and the listings counted use the same dates.",
+      startDate: priceStart,
       endDate: priceEnd,
+      windowDays: priceSpan,
       receipt: { pricePct: round1(pricePct), listingsPct: round1(listPct), listingsFrom: listDate, listingsTo: lc.date, priceFrom: priceStart, priceTo: priceEnd },
     });
     if (read) out.push({ ...read, rank: Math.abs(pricePct) + Math.abs(listPct) });
@@ -283,9 +293,9 @@ export function ripReads(doc, { max = 6 } = {}) {
     const pull = pubs.length ? (pubs[0] === pubs.at(-1) ? `Pull rates dated ${dateLabel(pubs[0], asOf)}.` : `Pull rates dated ${dateLabel(pubs[0], asOf)} to ${dateLabel(pubs.at(-1), asOf)}.`) : "";
     const headline = `${r.name}: rip value ${money(r.contentsEV)} is ${pctOfPrice}% of the ${money(r.price)} market price on ${dateLabel(r.priceAsOf, asOf)}.`;
     const lines = [
-      `Rip value ${money(r.contentsEV)}. Market price ${money(r.price)} on ${r.priceAsOf}.`,
+      `Rip value ${money(r.contentsEV)}. Market price ${money(r.price)} on ${dateLabel(r.priceAsOf, asOf)}.`,
       r.packs ? `${r.packs} packs. ${pull}`.trim() : pull,
-      `Dated rip value file, price date ${r.priceAsOf}.`,
+      `Dated rip value file, price date ${dateLabel(r.priceAsOf, asOf)}.`,
     ].filter(Boolean);
     const read = rowBase("rip", `rip-${r.id}`, r.name, headline, lines.filter(Boolean), asOf, `rip value file, ${r.priceAsOf}`, {
       sku: r.id, href: `/p/${r.id}`,

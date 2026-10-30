@@ -2,6 +2,7 @@
 // Listings are never sales. A missing field is left out of the sentence.
 // Fill order is the order named for this job: movers, set moves, highs,
 // streaks, then plain price. Nothing else is boarded.
+import { oneNightMove } from "./history-reads.mjs";
 import { mentionsHeld } from "./price-hold-skip.mjs";
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
@@ -73,6 +74,18 @@ export function exactWindow(series, sku, asOf, days) {
   if (from == null || to == null || !start) return null;
   const pct = Math.round((((to - from) / from) * 100) * 10) / 10;
   if (!Number.isFinite(pct)) return null;
+  if (n === 7) {
+    const id = productId(sku);
+    const days = id && series?.get?.(id);
+    const rows = [];
+    if (days) {
+      for (let d = start; d && d <= asOf; d = shiftDay(d, 1)) {
+        const v = Number(days.get(d));
+        if (v > 0) rows.push([d, v]);
+      }
+    }
+    if (oneNightMove(rows, start, asOf)) return null;
+  }
   return { start, end: asOf, from, to, pct, days: n };
 }
 

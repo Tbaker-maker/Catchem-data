@@ -4,8 +4,8 @@
 //   research/assets/public/buckets/NN.json    our nightly TCGplayer market days
 // Same TCGplayer product id and the same printing on both sides. Nothing is
 // filled or interpolated. Every number in a line is a point on file, with its
-// own date. When a window has no point on its exact day, the nearest real point
-// within a few days is used and that point's own date is named.
+// own date. A named window uses the price on that exact day. A missing day is
+// not filled, and a one-night step is not called a week or a year.
 
 import { banGuard } from "./copy-rules.mjs";
 import { readFile, readdir } from "node:fs/promises";
@@ -30,6 +30,34 @@ export function monthYear(iso) { return `${MON[Number(iso.slice(5, 7)) - 1]} ${i
 export function dateLabel(iso, asOf) {
   const md = monthDay(iso);
   return iso.slice(0, 4) === String(asOf || "").slice(0, 4) ? md : `${md}, ${iso.slice(0, 4)}`;
+}
+// True when the window's whole move is one overnight step.
+// Flat days around that step do not make it a week.
+// A jump across a gap of more than one day is not called one night.
+export function oneNightMove(points, from, to) {
+  const start = String(from || "").slice(0, 10);
+  const end = String(to || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return false;
+  if (dayNum(end) - dayNum(start) < 2) return false;
+  const byDay = new Map();
+  for (const row of points || []) {
+    const iso = String(Array.isArray(row) ? row[0] : (row?.date || "")).slice(0, 10);
+    const price = Number(Array.isArray(row) ? row[1] : (row?.price ?? row?.n));
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso) || !Number.isFinite(price)) continue;
+    if (iso < start || iso > end) continue;
+    byDay.set(iso, price);
+  }
+  const rows = [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  if (rows.length < 2 || rows[rows.length - 1][0] !== end) return false;
+  let changes = 0;
+  let night = false;
+  for (let i = 1; i < rows.length; i += 1) {
+    if (Math.round(rows[i][1] * 100) === Math.round(rows[i - 1][1] * 100)) continue;
+    changes += 1;
+    if (changes > 1) return false;
+    night = dayNum(rows[i][0]) - dayNum(rows[i - 1][0]) === 1;
+  }
+  return changes === 1 && night;
 }
 const pctOf = (a, b) => ((b - a) / a) * 100;
 const shortSet = (s) => String(s || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
@@ -142,10 +170,14 @@ export function extremeRead(c, asOf, dir) {
   return { ...base(c, kind, headline, asOf, { startDate: (D || pts[0])[0], since: D ? { date: D[0], price: D[1] } : null, yearExtreme: { date: ext[0], price: ext[1] }, now: { date: asOf, price: last[1] } }, variants), strength: margin };
 }
 
-export function windowRead(c, asOf, { days, slack, minPct, minUsd, maxPct = Infinity, kind }) {
+export function windowRead(c, asOf, { days, minPct, minUsd, maxPct = Infinity, kind }) {
   const last = c.pts[c.pts.length - 1];
-  const p = nearestPoint(c.pts.slice(0, -1), addDays(asOf, -days), slack);
-  if (!p) return null;
+  if (!last || last[0] !== asOf) return null;
+  const target = addDays(asOf, -days);
+  const p = c.pts.find((row) => row[0] === target);
+  if (!p || p[0] === last[0]) return null;
+  if (dayNum(asOf) - dayNum(p[0]) !== days) return null;
+  if (days === 7 && oneNightMove(c.pts, p[0], last[0])) return null;
   const ch = pctOf(p[1], last[1]);
   if (Math.abs(ch) < minPct || Math.abs(ch) > maxPct || Math.abs(last[1] - p[1]) < minUsd) return null;
   const up = ch > 0;
@@ -195,7 +227,9 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
   const bySet = new Map();
   for (const c of cards) {
     const last = c.pts[c.pts.length - 1];
-    const p = nearestPoint(c.pts.slice(0, -1), addDays(asOf, -days), slack);
+    if (!last || last[0] !== asOf) continue;
+    const target = addDays(asOf, -days);
+    const p = c.pts.find((row) => row[0] === target);
     if (!p || !c.set) continue;
     if (!bySet.has(c.set)) bySet.set(c.set, []);
     bySet.get(c.set).push({ c, from: p[1], to: last[1], start: p[0] });
@@ -215,7 +249,7 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
     out.push({
       id: `set30-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), sku: lead.c.id, href: `/c/${lead.c.id}`, readKind: "set", kind: "set", board: HIST_TAG, family: "price",
       name: set, set, headline, path: headline, asOf, startDate: a, endDate: asOf,
-      source: `TCGplayer market, start points ${a} to ${b}, end ${asOf}`,
+      source: `TCGplayer market, start points ${dateLabel(a, asOf)} to ${dateLabel(b, asOf)}, end ${monthDay(asOf)}`,
       why: "TCGplayer market price on the two dates shown.",
       receipt: { set, priced: rows.length, up: up.length, down: down.length, startFirst: a, startLast: b, end: asOf, lead: { id: lead.c.id, from: lead.from, to: lead.to, start: lead.start } },
       variants: [`${up.length} up and ${down.length} down, 10% or more, among ${rows.length} priced cards in ${set} (${startText} to ${monthDay(asOf)}). Biggest: ${cardTitle(lead.c)}, ${usd(lead.from)} to ${usd(lead.to)}.`].filter(ok),

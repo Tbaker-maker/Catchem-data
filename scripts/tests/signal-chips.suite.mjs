@@ -9,7 +9,7 @@ const RULES = {
   max: 4,
   move: { flatAbs: 10, preferDays: [7, 21], slackDays: 1, minDays: 2 },
   supply: { minAbsPct: 5 },
-  gone: { cuts: [3, 10] },
+  gone: { cuts: [3, 10], minDrop: 5 },
   range: { minDays: 7 },
   momentum: { risingMin: 4, coolingMax: -4, recentDays: 7 },
   confidence: { cuts: [3, 8] },
@@ -241,7 +241,7 @@ export async function run() {
   const slumpRead = { id: "slump-tcgcsv-5", sku: "tcgcsv-5", name: "Rayquaza ex", kind: "single", asOf: "2026-10-19", price: 272.9, changePct: 70.1, windowDays: 944, source: "TCGplayer market" };
   const week = [["2026-10-12", 300], ["2026-10-13", 298], ["2026-10-14", 295], ["2026-10-15", 290], ["2026-10-16", 285], ["2026-10-17", 280], ["2026-10-18", 276], ["2026-10-19", 272.9]];
   const slumpTile = readSignals(slumpRead, { asOf: "2026-10-19", points: [["2024-02-18", 160.47], ...week], daily: week, counts: { prices: 200, recent: 18, since: "2024-02-18" } }, RULES).tiles?.price;
-  t("a long window read gets a 7 day price tile from daily prices", slumpTile && slumpTile.days === 7 && slumpTile.dir !== "up" && slumpTile.from === 300 && slumpTile.fromDate === "2026-10-12");
+  t("a long window read does not borrow a 7 day price tile", !slumpTile);
   const noWeek = readSignals(slumpRead, { asOf: "2026-10-19", points: [["2024-02-18", 160.47], ["2026-10-19", 272.9]], daily: [["2026-10-19", 272.9]], counts: { prices: 2, recent: 1, since: "2024-02-18" } }, RULES).tiles || {};
   t("with no short window price the tile is left out, not filled with an all time change", !noWeek.price);
   const heldPrice = { id: "move-tcgcsv-42354-7", sku: "tcgcsv-42354", name: "Raichu", kind: "single", href: "/c/tcgcsv-42354", asOf: "2026-10-19", price: 61.97, changePct: -4.8, windowDays: 7, headline: "Raichu is down 4.8% this week, from $65.07 to $61.97." };
@@ -252,6 +252,13 @@ export async function run() {
   const heldTiles = readSignals(heldPrice, { asOf: "2026-10-19", held: false, points: week, daily: week }, { ...RULES, move: { ...RULES.move, flatAbs: 1 } }).tiles || {};
   t("a priced held row still gets a 7 day price tile", heldTiles.price && heldTiles.price.days === 7 && heldTiles.price.pct === 4.8 && heldTiles.price.dir === "down" && !heldTiles.price.dash);
   const shortRead = readSignals({ ...slumpRead, id: "plain-tcgcsv-5", windowDays: 34, changePct: -15 }, { asOf: "2026-10-19", points: week, daily: week, counts: { prices: 8, recent: 8, since: "2026-10-12" } }, RULES).tiles?.price;
-  t("a read's own short window still sets the tile", shortRead && shortRead.days === 34 && shortRead.dir === "down");
+  t("a read does not invent a 34 day window from a week of prices", !shortRead);
+  const tinyGone = qualifyChips({ id: "gone-small", name: "Box", kind: "sealed", href: "/p/box", asOf: "2026-10-17" }, { asOf: "2026-10-17", listings: { n: 8, prev: 10, date: "2026-10-17" } }, RULES);
+  t("a drop of 10 listings to 8 is not listings gone", !tinyGone.some((chip) => chip.kind === "gone"));
+  const noMin = qualifyChips({ id: "gone-nomin", name: "Box", kind: "sealed", href: "/p/box", asOf: "2026-10-17" }, { asOf: "2026-10-17", listings: { n: 8, prev: 10, date: "2026-10-17" } }, { ...RULES, gone: { cuts: [3, 10] } });
+  t("gone stays off when the private minimum is missing", !noMin.some((chip) => chip.kind === "gone"));
+  const slackWeek = [["2026-10-09", 10], ["2026-10-17", 12]];
+  const slackMove = qualifyChips({ id: "slack-7", name: "Card", kind: "single", asOf: "2026-10-17", windowDays: 7, price: 12, changePct: 20 }, { asOf: "2026-10-17", points: slackWeek }, RULES);
+  t("a 7 day chip is not an 8 day span", !slackMove.some((chip) => chip.kind === "move" && /7 day|7D/.test(`${chip.text} ${chip.label}`)));
   return fail;
 }

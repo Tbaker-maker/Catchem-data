@@ -16,6 +16,7 @@ export const SEALED_MIN_CENTS = 500;
 export const SOLD_KINDS = new Set(["volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare"]);
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+const MONTH_LABEL = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MONTH_HIGH = new Set(["apr", "may", "jun", "jul", "sep"]);
 const LONG_RE = /6-month|90-day|90 days|\bApril\b|\bMay\b|\bJune\b|\bJuly\b|September high|\bSep high\b/i;
 
@@ -45,6 +46,18 @@ export function scrub(text) {
     .trim();
 }
 
+export function speakDay(iso, asOf) {
+  const s = String(iso || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return "";
+  const md = `${MONTH_LABEL[Number(s.slice(5, 7)) - 1]} ${Number(s.slice(8, 10))}`;
+  const year = s.slice(0, 4);
+  return year === String(asOf || s).slice(0, 4) ? md : `${md}, ${year}`;
+}
+
+export function speakDates(text, asOf) {
+  return String(text || "").replace(/\b(20\d{2}-\d{2}-\d{2})\b/g, (iso) => speakDay(iso, asOf) || iso);
+}
+
 export function priceForm({ name, set, num, to, from, end, start, pct }) {
   const who = pretty(name || "");
   const setName = pretty(set || "");
@@ -56,7 +69,7 @@ export function priceForm({ name, set, num, to, from, end, start, pct }) {
   const dir = Number(to) >= Number(from) ? "Up" : "Down";
   const delta = tcgAmount(Math.abs((centsOf(to) - centsOf(from)) / 100), money);
   const p = pct != null && pct !== "" ? formatPct(pct) : formatPct(((Number(to) - Number(from)) / Number(from)) * 100);
-  return `${who}${tail}. TCGplayer market: ${tcgAmount(to, money)} (${end}), from ${tcgAmount(from, money)} (${start}). ${dir} ${delta}, ${p}%.`;
+  return `${who}${tail}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(end, end)}), from ${tcgAmount(from, money)} (${speakDay(start, end)}). ${dir} ${delta}, ${p}%.`;
 }
 
 export function whyPlain(from, to) {
@@ -72,9 +85,10 @@ export function whyLeak(text) {
 
 export function quietNight(asOf, n) {
   const count = Number(n) || 0;
+  const day = speakDay(asOf, asOf) || String(asOf || "");
   if (count >= 3) return "";
-  if (count === 0) return `Quiet night, ${asOf}. No read cleared the bar. Missing days were not filled in.`;
-  return `Quiet night, ${asOf}. ${count} read cleared the bar. A thin board is the whole board.`;
+  if (count === 0) return `Quiet night, ${day}. No read cleared the bar. Missing days were not filled in.`;
+  return `Quiet night, ${day}. ${count} read cleared the bar. A thin board is the whole board.`;
 }
 
 export function floorOk(from, to, pct) {
@@ -275,7 +289,7 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
     if (!named?.name) continue;
     const weekDir = weekCents > 0 ? "up" : "down";
     const dayDir = dayCents > 0 ? "up" : "down";
-    const headline = `${pretty(named.name)}. TCGplayer market: ${tcgAmount(to, money)} (${asOf}), from ${tcgAmount(from, money)} (${start}). Last night it went from ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`;
+    const headline = `${pretty(named.name)}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(asOf, asOf)}), from ${tcgAmount(from, money)} (${speakDay(start, asOf)}). Last night it went from ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`;
     hits.push({
       id: `turned-${sku}`,
       sku,
@@ -305,8 +319,9 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
   return hits.slice(0, 1).map(({ _abs, ...row }) => row);
 }
 
-// The whole week's move came from one price step that is already 2+ days old
-// and the price has been flat since. That read already ran; do not repeat it.
+// The whole week's move came from one price step. If that step is already 2+
+// days old and the price has been flat since, the read already ran. If the
+// only step is last night, it is not a week move.
 export function staleOneStep(days, start, asOf) {
   let prev = null, steps = 0, stepDay = "";
   for (let d = start; d <= asOf; d = shiftDay(d, 1)) {
@@ -316,6 +331,21 @@ export function staleOneStep(days, start, asOf) {
     prev = v;
   }
   return steps === 1 && stepDay < shiftDay(asOf, -1);
+}
+
+export function lastNightOnly(days, start, asOf) {
+  let prev = null;
+  let prevDay = "";
+  let steps = 0;
+  let stepFrom = "";
+  for (let d = start; d <= asOf; d = shiftDay(d, 1)) {
+    const v = Number(days.get(d));
+    if (!(v > 0)) continue;
+    if (prev != null && centsOf(v) !== centsOf(prev)) { steps += 1; stepFrom = prevDay; }
+    prev = v;
+    prevDay = d;
+  }
+  return steps === 1 && stepFrom === shiftDay(asOf, -1);
 }
 
 export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
@@ -336,10 +366,10 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
     const moved = centsOf(to) - centsOf(from);
     const pct = Math.round(((to - from) / from) * 1000) / 10;
     if (Math.abs(moved) < SEALED_MIN_CENTS || Math.abs(pct) < 8 || Math.abs(pct) >= MOVER_MAX_PCT) continue;
-    if (staleOneStep(days, start, asOf)) continue;
+    if (staleOneStep(days, start, asOf) || lastNightOnly(days, start, asOf)) continue;
     const dir = moved >= 0 ? "Up" : "Down";
     const name = pretty(product.name || "");
-    const headline = `${name}. TCGplayer market: ${tcgAmount(to, money)} (${asOf}), from ${tcgAmount(from, money)} (${start}). ${dir} ${tcgAmount(Math.abs(moved) / 100, money)}.`;
+    const headline = `${name}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(asOf, asOf)}), from ${tcgAmount(from, money)} (${speakDay(start, asOf)}). ${dir} ${tcgAmount(Math.abs(moved) / 100, money)}.`;
     hits.push({
       id: `sealed-week-${product.id || id}`,
       sku: String(product.id || `tcgcsv-${id}`),
@@ -380,7 +410,7 @@ export function releaseReads({ radar, asOf }) {
     if (asOf !== date && asOf !== shiftDay(date, -7)) continue;
     const name = scrub(row?.name || "");
     if (!name || !updated) continue;
-    const headline = `${name} is dated ${date} on the release file (checked ${updated}). No price on this line.`;
+    const headline = `${name} is dated ${speakDay(date, asOf)} on the release file (checked ${speakDay(updated, asOf)}). No price on this line.`;
     if (/msrp|\$\s?\d/i.test(headline)) continue;
     hits.push({
       id: `release-${date}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40)}`,
@@ -429,7 +459,7 @@ export function printingSentence(row) {
   if (setName && number) tail = ` (${setName}) ${number}`;
   else if (setName) tail = ` (${setName})`;
   const day = String(row?.asOf || row?.date || "");
-  const dateBit = day ? ` (${day})` : "";
+  const dateBit = day ? ` (${speakDay(day, day)})` : "";
   const printingBit = picked.many || picked.name ? `${picked.name} ` : "";
   return `${name}${tail}. TCGplayer market: ${printingBit}${tcgAmount(picked.price, money)}${dateBit}.`;
 }

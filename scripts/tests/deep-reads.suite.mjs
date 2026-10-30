@@ -12,7 +12,7 @@ export async function run() {
   let fail = 0;
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
   const pts = [["2026-09-01", 10], ["2026-09-10", 20]];
-  t("valueOn uses the last real point inside 8 days", valueOn(pts, "2026-09-12") === 20 && valueOn(pts, "2026-09-30") == null);
+  t("valueOn uses the last real point inside 7 days", valueOn(pts, "2026-09-12") === 20 && valueOn(pts, "2026-09-17") === 20 && valueOn(pts, "2026-09-18") == null && valueOn(pts, "2026-09-30") == null);
   t("SV Illustration Rare stays IR, SIR stays SIR", realLabel({ rarity: "Illustration Rare", release: "2024-03-22" }) === "Illustration Rare" && realLabel({ rarity: "Special Illustration Rare", release: "2024-03-22" }) === "Special Illustration Rare");
   t("Alternate Art only on Sword & Shield", realLabel({ rarity: "Secret Rare", release: "2021-08-27" }, ["Alternate Art"]) === "Alternate Art" && realLabel({ rarity: "Ultra Rare", release: "2019-02-01" }, ["Alternate Art"]) === "Ultra Rare");
   t("SM Tag Team alt art is Tag Team (Alternate Art), never Alternate Art", realLabel({ rarity: "Ultra Rare", release: "2019-02-01" }, ["Tag Team (Alternate Art)", "Alternate Art", "Tag Team"]) === "Tag Team (Alternate Art)");

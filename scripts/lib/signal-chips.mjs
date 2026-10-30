@@ -2,6 +2,7 @@
 // This file only applies the rules it is given. It does not decide which reads exist.
 // An overall score is added only when the private rules name a proven signal.
 import { flagLine, isClean } from "./copy-rules.mjs";
+import { oneNightMove } from "./history-reads.mjs";
 
 export const CHIP_ORDER = Object.freeze([
   "supply", "move", "gone", "range", "momentum", "rotation", "art", "era", "confidence",
@@ -118,23 +119,35 @@ function held(read, ctx) {
   return /price being checked/i.test(head);
 }
 
-function moveChip(points, asOf, rules, checked) {
+function exactPoint(points, iso) {
+  return points.find((p) => p[0] === iso) || null;
+}
+
+function moveChip(points, asOf, rules, checked, windowDays) {
   if (checked) {
     return { kind: "move", dir: "dash", text: "", label: "Price being checked" };
   }
   const move = rules?.move;
   if (!move || !(num(move.flatAbs) >= 0)) return null;
-  const slack = num(move.slackDays);
-  const prefer = Array.isArray(move.preferDays) ? move.preferDays.map(num).filter((n) => n > 0) : [];
+  const asked = num(windowDays);
+  const prefer = asked > 0
+    ? [asked]
+    : (Array.isArray(move.preferDays) ? move.preferDays.map(num).filter((n) => n > 0) : []);
   let hit = null;
   for (const days of prefer) {
-    const now = nearest(points, asOf, slack);
-    const then = nearest(points, addDays(asOf, -days), slack);
-    if (now && then && now[0] !== then[0]) { hit = { days, now: now[1], then: then[1], thenDate: then[0], nowDate: now[0] }; break; }
+    const now = exactPoint(points, asOf);
+    const then = exactPoint(points, addDays(asOf, -days));
+    if (!now || !then || now[0] === then[0]) continue;
+    if (dayNum(now[0]) - dayNum(then[0]) !== days) continue;
+    if (days === 7 && oneNightMove(points, then[0], now[0])) continue;
+    hit = { days, now: now[1], then: then[1], thenDate: then[0], nowDate: now[0] };
+    break;
   }
-  if (!hit && points.length >= 2) {
+  if (!hit && !(asked > 0) && points.length >= 2 && points[points.length - 1][0] === asOf) {
     const days = dayNum(points[points.length - 1][0]) - dayNum(points[0][0]);
-    if (days >= num(move.minDays)) hit = { days, now: points[points.length - 1][1], then: points[0][1], thenDate: points[0][0], nowDate: points[points.length - 1][0] };
+    if (days >= num(move.minDays) && !(days === 7 && oneNightMove(points, points[0][0], points[points.length - 1][0]))) {
+      hit = { days, now: points[points.length - 1][1], then: points[0][1], thenDate: points[0][0], nowDate: points[points.length - 1][0] };
+    }
   }
   if (!hit) return null;
   const pct = ((hit.now - hit.then) / hit.then) * 100;
@@ -190,11 +203,13 @@ function nearestCount(series, iso, slack) {
 }
 
 function countWindow(series, asOf, days, slack) {
-  const now = nearestCount(series, asOf, slack);
-  const then = nearestCount(series, addDays(asOf, -days), slack);
+  // A named window uses the two calendar ends. Slack must not turn 7 days into 8.
+  void slack;
+  const now = nearestCount(series, asOf, 0);
+  const then = nearestCount(series, addDays(asOf, -days), 0);
   if (!now || !then || now.date === then.date || !(then.n > 0)) return null;
   const span = dayNum(now.date) - dayNum(then.date);
-  if (!(span > 0)) return null;
+  if (span !== days) return null;
   const pct = ((now.n - then.n) / then.n) * 100;
   if (!Number.isFinite(pct)) return null;
   return { pct, days: span };
@@ -305,6 +320,10 @@ function supplyChip(ctx, rules) {
 }
 
 function goneChip(ctx, rules) {
+  const minDrop = num(rules?.gone?.minDrop);
+  // No private minimum, no gone chip. The number stays out of this file.
+  if (!(minDrop > 0)) return null;
+  const minStart = num(rules?.gone?.minStart);
   const cuts = Array.isArray(rules?.gone?.cuts) ? rules.gone.cuts.map(num) : [];
   if (cuts.length < 2) return null;
   const row = ctx?.listings;
@@ -312,6 +331,8 @@ function goneChip(ctx, rules) {
   const n = num(row.n);
   const prev = num(row.prev);
   if (!(prev > 0) || !(n >= 0) || n >= prev) return null;
+  if (Number.isFinite(minStart) && minStart > 0 && prev < minStart) return null;
+  if (prev - n < minDrop) return null;
   const rate = ((prev - n) / prev) * 100;
   let dots = 3;
   if (rate < cuts[0]) dots = 1;
@@ -321,8 +342,8 @@ function goneChip(ctx, rules) {
 }
 
 // One range window for the chip and for a high claim on the same points.
-// 90 days, or the whole series when the window has fewer than 3 points.
-// "Today" is a point on asOf (within slack). An older last point is not today.
+// The window is the requested days, never the whole series when that window is short.
+// Today is the asOf point itself. An older last point is not today.
 export function priceRange(points, asOf, rules = {}) {
   const minDays = num(rules?.minDays ?? rules?.range?.minDays);
   const needDays = minDays > 0 ? minDays : 1;
@@ -331,12 +352,11 @@ export function priceRange(points, asOf, rules = {}) {
   const end = dayNum(asOf);
   if (!Number.isFinite(end)) return null;
   const windowDays = num(rules?.windowDays) > 0 ? num(rules.windowDays) : 90;
-  const window = list.filter((p) => end - dayNum(p[0]) <= windowDays && end - dayNum(p[0]) >= 0);
-  const rows = window.length >= 3 ? window : list;
+  const rows = list.filter((p) => end - dayNum(p[0]) <= windowDays && end - dayNum(p[0]) >= 0);
+  if (rows.length < 3) return null;
   const days = dayNum(rows[rows.length - 1][0]) - dayNum(rows[0][0]);
   if (!(days >= needDays)) return null;
-  const slack = Number.isFinite(num(rules?.slackDays)) ? num(rules.slackDays) : (Number.isFinite(num(rules?.move?.slackDays)) ? num(rules.move.slackDays) : 0);
-  const today = nearest(rows, asOf, slack);
+  const today = rows.find((p) => p[0] === String(asOf).slice(0, 10));
   if (!today) return null;
   let hi = rows[0];
   let lo = rows[0];
@@ -346,7 +366,10 @@ export function priceRange(points, asOf, rules = {}) {
   }
   if (!(hi[1] > lo[1])) return null;
   const pos = Math.round(((today[1] - lo[1]) / (hi[1] - lo[1])) * 100) / 100;
-  const place = pos < 0.34 ? "lower part" : pos > 0.66 ? "upper part" : "middle";
+  let place = pos < 0.34 ? "lower part" : pos > 0.66 ? "upper part" : "middle";
+  const todayCents = Math.round(today[1] * 100);
+  if (todayCents === Math.round(hi[1] * 100)) place = "upper part";
+  else if (todayCents === Math.round(lo[1] * 100)) place = "lower part";
   return {
     pos,
     days,
@@ -364,10 +387,14 @@ function money(n) {
   return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function rangeChip(points, asOf, rules) {
+function rangeChip(points, asOf, rules, windowDays) {
   const minDays = num(rules?.range?.minDays);
   if (!(minDays > 0)) return null;
-  const range = priceRange(points, asOf, { minDays, slackDays: rules?.move?.slackDays, windowDays: rules?.range?.windowDays });
+  const asked = num(windowDays);
+  const range = priceRange(points, asOf, {
+    minDays,
+    windowDays: asked > 0 ? asked : rules?.range?.windowDays,
+  });
   if (!range) return null;
   return {
     kind: "range",
@@ -681,32 +708,27 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
       asOf,
     };
   };
-  // The Price tile is a short window only. A read built on a long window (a
-  // high, a low, a first price) gets a 7 day tile from daily prices, or none.
-  // It never falls back to an all time change.
+  // The Price tile uses the read's own window. A long window does not borrow a
+  // 7 day tile, and a missing start day is not invented.
   const SHORT_MAX = 35;
-  const sevenDay = () => {
-    const now = nearest(daily, asOf, 2);
-    const then = nearest(daily, addDays(asOf, -7), 2);
-    if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
-    const span = dayNum(now[0]) - dayNum(then[0]);
-    if (!(span > 0) || span > SHORT_MAX) return null;
-    return priceTile(((now[1] - then[1]) / then[1]) * 100, 7, then[1], then[0]);
+  const exactEnds = (series, days) => {
+    const now = exactPoint(series, asOf);
+    const then = exactPoint(series, addDays(asOf, -days));
+    if (!now || !then || now[0] === then[0]) return null;
+    if (dayNum(now[0]) - dayNum(then[0]) !== days) return null;
+    if (days === 7 && oneNightMove(series, then[0], now[0])) return null;
+    return { now, then };
   };
   if (move && move.dir === "dash") {
     tiles.price = { dash: true, source: src, asOf };
   } else if (rw > 0 && rw <= SHORT_MAX && Number.isFinite(rp) && rnow > 0) {
-    // The read's own short window, so the tile matches the price line on the card.
-    const then = nearest(daily.length ? daily : cleanPoints(ctx.points), addDays(asOf, -rw), 2);
-    tiles.price = priceTile(rp, rw, then ? then[1] : rnow / (1 + rp / 100), then ? then[0] : addDays(asOf, -rw));
-  } else if (!(rw > SHORT_MAX) && move && move.days > 0 && move.days <= SHORT_MAX) {
+    const ends = exactEnds(daily.length ? daily : cleanPoints(ctx.points), rw);
+    if (ends) tiles.price = priceTile(rp, rw, ends.then[1], ends.then[0]);
+  } else if (!(rw > 0) && move && move.days > 0 && move.days <= SHORT_MAX && move.nowDate === asOf && dayNum(move.nowDate) - dayNum(move.thenDate) === move.days) {
     const t = priceTile(move.dir === "flat" ? 0 : (move.dir === "down" ? -move.pct : move.pct), move.days, move.then, move.thenDate || "");
     t.dir = move.dir;
     t.pct = move.dir === "flat" ? 0 : move.pct;
     tiles.price = t;
-  } else {
-    const seven = sevenDay();
-    if (seven) tiles.price = seven;
   }
   const listed = listingsTile(ctx, rules);
   if (listed) tiles.listings = listed;
@@ -722,15 +744,16 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
 export function qualifyChips(read, ctx = {}, rules = {}) {
   const asOf = String(ctx.asOf || read?.asOf || "").slice(0, 10);
   const checked = held(read, ctx);
+  const windowDays = num(read?.windowDays);
   const series = cleanPoints(ctx.points);
   const points = checked ? [] : (series.length ? series : cleanPoints(pointsFromRead(read)));
   const art = artBadge(read, ctx);
   const rotation = rotationChip(ctx);
   const chips = [
-    moveChip(points, asOf, rules, checked),
+    moveChip(points, asOf, rules, checked, windowDays),
     supplyChip(ctx, rules),
     goneChip(ctx, rules),
-    rangeChip(points, asOf, rules),
+    rangeChip(points, asOf, rules, windowDays),
     momentumChip(points, asOf, rules),
     rotation ? { ...rotation, months: num(ctx.rotationMonths) } : null,
     art ? { kind: "art", badge: art, label: artName(art) } : null,

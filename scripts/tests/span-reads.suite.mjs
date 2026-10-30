@@ -83,7 +83,7 @@ export async function run() {
   t("a year ago today names both dates and the percent", year && year.headline.startsWith("A year ago today it was $10.00 on Oct 13, 2025") && year.headline.includes("now $12.00 on Oct 13, 2026 (+20%)") && !year.headline.includes(" NM") && year.receipt.today === true);
   t("a point 2 days off does not say today", (() => {
     const read = yearAgoRead(item({ points: pts([["2025-10-11", 10], ["2026-10-13", 12]]) }), "2026-10-13");
-    return read && !/today/.test(read.headline) && read.headline.includes("Oct 11, 2025") && read.lines.some((l) => l.includes("2025-10-11"));
+    return read && !/today/.test(read.headline) && read.headline.includes("Oct 11, 2025") && read.lines.some((l) => l.includes("Oct 11, 2025")) && !read.lines.some((l) => /\b20\d{2}-\d{2}-\d{2}\b/.test(l));
   })());
   t("a point 4 days off is skipped", yearAgoRead(item({ points: pts([["2025-10-09", 10], ["2026-10-13", 12]]) }), "2026-10-13") == null);
   t("a move under 5% is skipped", yearAgoRead(item({ points: pts([["2025-10-13", 100], ["2026-10-13", 104.9]]) }), "2026-10-13") == null);
@@ -102,7 +102,7 @@ export async function run() {
     release: "2020-01-01",
     points: pts([["2025-09-13", 20], ["2025-10-13", 25], ["2026-10-13", 30]]),
   }), "2026-10-13");
-  t("season names last year's 30-day move and both dates", season && /same 30 days last year/.test(season.headline) && season.headline.includes("$20.00") && season.headline.includes("Sep 13, 2025") && season.headline.includes("(+25%)") && season.lines.some((l) => l.includes("2025-09-13") && l.includes("2025-10-13")));
+  t("season names last year's 30-day move and both dates", season && /same 30 days last year/.test(season.headline) && season.headline.includes("$20.00") && season.headline.includes("Sep 13, 2025") && season.headline.includes("(+25%)") && season.lines.some((l) => l.includes("Sep 13, 2025") && l.includes("Oct 13, 2025")) && !season.lines.some((l) => /\b20\d{2}-\d{2}-\d{2}\b/.test(l)));
   t("a season move under 5% is skipped", seasonItemRead(item({
     points: pts([["2025-09-13", 100], ["2025-10-13", 104], ["2026-10-13", 104]]),
   }), "2026-10-13") == null);
