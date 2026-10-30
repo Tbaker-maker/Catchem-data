@@ -1,5 +1,8 @@
-# After a successful public-data publish night, pace ?prewarm=html across every
-# product so FEED_KV product-html is warm for first user hits (cold p95 budget).
+# After a successful public-data publish, pace GET /p/{id} so the edge cache
+# is warm. One job is killed at six hours (Oct 28 and Oct 29, cancelled at
+# 7400 of 31021). Each batch is its own job, well under that cap, one request
+# at a time. A later run skips ids already warm for the same data version.
+# The concurrency group never overlaps another prewarm run.
 name: Prewarm product HTML
 on:
   workflow_run:
@@ -12,11 +15,19 @@ on:
         default: all
         type: string
       sleep_ms:
-        description: "Gap between requests (ms)"
+        description: "Gap between cold requests (ms)"
         default: "1200"
         type: string
       limit:
         description: "Max ids (0 = all)"
+        default: "0"
+        type: string
+      fresh:
+        description: "true drops the warm list and requests every page again"
+        default: "false"
+        type: string
+      max_batches:
+        description: "Max batches this run (0 = every batch that still has work, cap 240)"
         default: "0"
         type: string
 
@@ -24,27 +35,127 @@ concurrency:
   group: prewarm-product-html
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
-  prewarm:
+  plan:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success')
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 15
+    outputs:
+      batches: ${{ steps.plan.outputs.batches }}
+      batch_size: ${{ steps.plan.outputs.batch_size }}
+      sleep_ms: ${{ steps.plan.outputs.sleep_ms }}
+      version: ${{ steps.plan.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Pace prewarm=html for every product
+      - name: Restore warm ids
+        if: github.event.inputs.fresh != 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: prewarm-state/warm.json
+          key: prewarm-html-miss-${{ github.run_id }}
+          restore-keys: |
+            prewarm-html-
+      - name: Plan batches
+        id: plan
         env:
           CATCHEM_ORIGIN: https://catchemtcg.com
-        run: |
-          KIND="${{ github.event.inputs.kind || 'all' }}"
-          SLEEP="${{ github.event.inputs.sleep_ms || '1200' }}"
-          LIMIT="${{ github.event.inputs.limit || '0' }}"
-          if [ "$LIMIT" = "0" ]; then
-            node scripts/prewarm-product-pages.mjs --all --kind "$KIND" --sleep-ms "$SLEEP"
-          else
-            node scripts/prewarm-product-pages.mjs --limit "$LIMIT" --kind "$KIND" --sleep-ms "$SLEEP"
-          fi
+          PREWARM_KIND: ${{ github.event.inputs.kind || 'all' }}
+          PREWARM_SLEEP: ${{ github.event.inputs.sleep_ms || '1200' }}
+          PREWARM_LIMIT: ${{ github.event.inputs.limit || '0' }}
+          PREWARM_FRESH: ${{ github.event.inputs.fresh || 'false' }}
+          PREWARM_MAX_BATCHES: ${{ github.event.inputs.max_batches || '0' }}
+        run: node scripts/prewarm-product-pages.mjs --plan --out prewarm-state --state prewarm-state/warm.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prewarm-plan
+          path: |
+            prewarm-state/ids.json
+            prewarm-state/warm.json
+            prewarm-state/meta.json
+
+  warm:
+    needs: plan
+    if: needs.plan.outputs.batches != '[]' && needs.plan.outputs.batches != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        batch: ${{ fromJson(needs.plan.outputs.batches) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/download-artifact@v4
+        with:
+          name: prewarm-plan
+          path: prewarm-state
+      - name: Restore latest warm ids
+        uses: actions/cache/restore@v4
+        with:
+          path: prewarm-state/warm.json
+          key: prewarm-html-miss-${{ github.run_id }}-${{ matrix.batch }}
+          restore-keys: |
+            prewarm-html-
+      - name: Warm one batch
+        id: warm
+        env:
+          CATCHEM_ORIGIN: https://catchemtcg.com
+          PREWARM_SLEEP: ${{ needs.plan.outputs.sleep_ms }}
+        run: node scripts/prewarm-product-pages.mjs --batch ${{ matrix.batch }} --batch-size ${{ needs.plan.outputs.batch_size }} --sleep-ms ${{ needs.plan.outputs.sleep_ms }} --ids prewarm-state/ids.json --state prewarm-state/warm.json --report prewarm-state/batch-${{ matrix.batch }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prewarm-batch-${{ matrix.batch }}
+          path: prewarm-state/batch-${{ matrix.batch }}.json
+          if-no-files-found: warn
+      - name: Save warm ids
+        if: always() && hashFiles('prewarm-state/warm.json') != ''
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: prewarm-state/warm.json
+          key: prewarm-html-${{ steps.warm.outputs.version || needs.plan.outputs.version || 'unknown' }}-${{ github.run_id }}-${{ matrix.batch }}
+
+  join:
+    needs: [plan, warm]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/download-artifact@v4
+        with:
+          name: prewarm-plan
+          path: prewarm-state
+      - name: Download batch reports
+        id: reports
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: prewarm-batch-*
+          path: prewarm-state/reports
+          merge-multiple: true
+      - name: Merge warm ids and print batch runtimes
+        run: node scripts/prewarm-product-pages.mjs --join prewarm-state --reports prewarm-state/reports
+      - name: Save warm ids for the next run
+        if: hashFiles('prewarm-state/warm.json') != ''
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: prewarm-state/warm.json
+          key: prewarm-html-${{ needs.plan.outputs.version || 'unknown' }}-${{ github.run_id }}-join
