@@ -61,24 +61,28 @@ jobs:
         run: node scripts/fetch-tcgcsv-catalog.mjs
 
       - name: Commit today's TCGCSV day
-        # Commits only the day file. Never fails the job: three rejected pushes
-        # print a warning, and the price commit below pushes the local commit with it.
+        # Stages the day and the catalog built from that day. The price commit
+        # later also stages the catalog, but unit tests sit between them and
+        # fail-fast skips it. On 2026-10-31 the day was pushed and the catalog
+        # (moved to that day on disk) was left behind, so main went red.
+        # This step runs even when the day file is unchanged, because a rerun
+        # still has to commit the catalog rebuilt from the published day.
         if: always()
         continue-on-error: true
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          if ! git add data/history/tcgcsv-daily/; then
-            echo "::warning::Could not stage the TCGCSV day; the price commit below stages it again."
+          if ! git add data/history/tcgcsv-daily/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json; then
+            echo "::warning::Could not stage the TCGCSV day and catalog; the price commit below stages them again."
           fi
           if git diff --staged --quiet; then
-            echo "No new TCGCSV day."
+            echo "No new TCGCSV day or catalog."
           else
             git commit -m "data: tcgcsv day $(date -u +'%Y-%m-%d')"
             pushed=0
             for i in 1 2 3; do
               if git push; then pushed=1; break; fi
-              echo "push rejected (attempt $i) — rebasing onto moved main"
+              echo "push rejected (attempt $i). Rebasing onto moved main."
               git pull --rebase --autostash origin main || node scripts/resolve-listing-counts-conflict.mjs || true
             done
             if [ "$pushed" != "1" ]; then
