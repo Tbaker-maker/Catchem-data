@@ -19,11 +19,12 @@ export async function run() {
   t("a 52-week high needs a year of points", extremeRead(card([["2026-01-01", 10], [asOf, 20]]), asOf, 1) === null);
   t("a tiny new high is not a read", extremeRead(card([["2024-02-08", 50], ["2026-01-01", 100], [asOf, 101]]), asOf, 1) === null);
 
-  const yr = windowRead(card([["2025-10-12", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" });
+  const openBar = { flatDays: 100000, jumpPct: 100000 };
+  const yr = windowRead(card([["2025-10-12", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year", limits: openBar });
   t("one year on uses the exact start day", yr && yr.headline.includes("$20.00 (Oct 12, 2025) to $40.00 (Oct 12)") && !yr.headline.includes(" NM") && yr.startDate === "2025-10-12" && yr.windowDays === 365);
-  t("a point a few days off is not called one year", windowRead(card([["2025-10-09", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" }) === null);
-  t("no point near the day, no read", windowRead(card([["2025-09-01", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, minUsd: 5, kind: "year" }) === null);
-  t("an outsized jump is left out", windowRead(card([["2026-09-12", 2], [asOf, 40]]), asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain" }) === null);
+  t("a point a few days off is not called one year", windowRead(card([["2025-10-09", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year", limits: openBar }) === null);
+  t("no point near the day, no read", windowRead(card([["2025-09-01", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, minUsd: 5, kind: "year", limits: openBar }) === null);
+  t("an outsized jump is left out", windowRead(card([["2026-09-12", 2], [asOf, 40]]), asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain", limits: openBar }) === null);
 
   const back = backToRead(card([["2025-01-10", 30], ["2025-06-01", 60], [asOf, 30.2]]), asOf);
   t("back to its price names both dates and the swing", back && back.headline.includes("Back to its Jan 10, 2025 price") && back.headline.includes("$60.00 (Jun 1, 2025)") && !back.headline.includes(" NM") && back.receipt.returned === asOf);
@@ -33,7 +34,7 @@ export async function run() {
   const cards = Array.from({ length: 12 }, (_, i) => card([["2026-09-12", 20], [asOf, i < 6 ? 25 : 20]], { id: `tcgcsv-${i + 10}` }));
   const sr = setReads(cards, asOf);
   t("set read counts exactly", sr.length === 1 && sr[0].headline.includes("6 of 12 priced cards up 10% or more, 0 down"));
-  const all = historyReads(cards, asOf);
+  const all = historyReads(cards, asOf, { limits: openBar });
   t("history reads carry a real start date and the hist tag", Object.values(all.picked).flat().every((r) => r.board === "hist" && /^\d{4}-\d{2}-\d{2}$/.test(r.startDate)));
   t("no banned words or em dashes", Object.values(all.picked).flat().every((r) => !/[\u2014\u2013]/.test(r.headline) && !hasBannedWord(r.headline)));
 

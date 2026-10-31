@@ -36,14 +36,26 @@ export function limitsOk(doc) {
   return { flatDays, jumpPct };
 }
 
-// No private bar, no hold. Empty history is not a signal.
+// Missing private limits holds the read. Empty history is not a signal.
+let limitsMissLogged = false;
+
 export function holdWindow(points, from, to, limits) {
   const bar = limitsOk(limits);
   const rows = rowsOf(points);
   const start = String(from || "").slice(0, 10);
   const end = String(to || "").slice(0, 10);
-  if (!bar || rows.length < 2 || !ISO.test(start) || !ISO.test(end) || end < start) {
-    return { hold: false, flatDays: 0, jumpPct: 0, reason: rows.length < 2 ? "empty history" : "no private limits" };
+  if (rows.length < 2) {
+    return { hold: false, flatDays: 0, jumpPct: 0, reason: "empty history" };
+  }
+  if (!bar) {
+    if (!limitsMissLogged) {
+      console.error("read hold: private limits were not loaded, so the read is held");
+      limitsMissLogged = true;
+    }
+    return { hold: true, flatDays: 0, jumpPct: 0, reason: "no private limits" };
+  }
+  if (!ISO.test(start) || !ISO.test(end) || end < start) {
+    return { hold: false, flatDays: 0, jumpPct: 0, reason: "bad window" };
   }
   let flatDays = 0;
   let runStart = 0;

@@ -16,7 +16,14 @@ dragonite.push(["2026-10-29", 233.20], ["2026-10-30", 418.55]);
 
 export async function run() {
   t("empty history is not a signal", holdWindow([], "2026-10-23", asOf, { flatDays: 1, jumpPct: 1 }).hold === false && holdWindow([], "2026-10-23", asOf, { flatDays: 1, jumpPct: 1 }).reason === "empty history");
-  t("no private limits means no hold", holdWindow(dragonite, "2026-10-23", asOf, null).hold === false);
+  const missed = [];
+  const log = console.error;
+  console.error = (...args) => { missed.push(args.join(" ")); };
+  const heldMissing = holdWindow(dragonite, "2026-10-23", asOf, null);
+  const heldAgain = holdWindow(dragonite, "2026-10-23", asOf, {});
+  console.error = log;
+  t("missing private limits holds the read", heldMissing.hold === true && heldMissing.reason === "no private limits" && heldAgain.hold === true);
+  t("missing private limits logs one line", missed.length === 1 && missed[0] === "read hold: private limits were not loaded, so the read is held");
 
   const seen = holdWindow(dragonite, "2026-10-23", asOf, { flatDays: 1, jumpPct: 0.1 });
   t("Dragonite ex week touches the Oct 3 to 28 freeze and a one-day jump", seen.flatDays >= 26 && seen.jumpPct > 50 && seen.hold === true);
@@ -29,7 +36,8 @@ export async function run() {
 
   const cfg = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8")));
   const item = { id: "tcgcsv-84918", title: "Dragonite ex (EX Dragon) 90/97", pts: dragonite, asOf, set: "EX Dragon", release: "2003-11-24", sealed: false, kind: "deep:slump" };
-  const open = findings(item, { peers: new Map() }, cfg, null).some((row) => /\bin a week\b/.test(row.text || ""));
+  const openBar = { flatDays: seen.flatDays + 1, jumpPct: seen.jumpPct + 1 };
+  const open = findings(item, { peers: new Map() }, cfg, openBar).some((row) => /\bin a week\b/.test(row.text || ""));
   const held = findings(item, { peers: new Map() }, cfg, { flatDays: seen.flatDays, jumpPct: seen.jumpPct }).some((row) => /\bin a week\b/.test(row.text || ""));
   t("Dragonite ex would have said down in a week", open === true);
   t("Dragonite ex week is held once the shape bar is applied", held === false);
