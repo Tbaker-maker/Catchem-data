@@ -3,10 +3,41 @@ import { banGuard } from "./copy-rules.mjs";
 
 const COPY_BAN = banGuard("morning card");
 
+function moveRank(a, b) {
+  return Math.abs(Number(b.changePct)) - Math.abs(Number(a.changePct)) || String(a.id).localeCompare(String(b.id));
+}
+
+function isWeekMover(read) {
+  return read?.signal === "mover" || Number(read?.windowDays) === 7;
+}
+
+// Up to 3 week movers, largest first, with one up and one down when both exist.
+// When none qualify, the old pick stands: the single largest move of any window.
+function pickMovers(priced) {
+  const week = priced.filter(isWeekMover);
+  if (!week.length) return priced[0] ? [priced[0]] : [];
+  const up = week.find((read) => Number(read.changePct) > 0) || null;
+  const down = week.find((read) => Number(read.changePct) < 0) || null;
+  const picked = [];
+  const seen = new Set();
+  const take = (read) => {
+    if (!read || seen.has(read.id) || picked.length >= 3) return;
+    seen.add(read.id);
+    picked.push(read);
+  };
+  if (up && down) {
+    take(up);
+    take(down);
+  }
+  for (const read of week) take(read);
+  picked.sort(moveRank);
+  return picked;
+}
+
 export function pickMorning({ reads = [], news = [], asOf = "", supplyOn = false } = {}) {
   const priced = (reads || []).filter((read) => Number(read?.price) > 0 && Number.isFinite(Number(read?.changePct)) && read.headline);
-  priced.sort((a, b) => Math.abs(Number(b.changePct)) - Math.abs(Number(a.changePct)) || String(a.id).localeCompare(String(b.id)));
-  const mover = priced[0] || null;
+  priced.sort(moveRank);
+  const movers = pickMovers(priced);
   const highs = (reads || []).filter((read) => /6-month high/.test(String(read?.headline || "")));
   highs.sort((a, b) => Math.abs(Number(b.changePct) || 0) - Math.abs(Number(a.changePct) || 0));
   const high = highs[0] || null;
@@ -17,7 +48,7 @@ export function pickMorning({ reads = [], news = [], asOf = "", supplyOn = false
   upcoming.sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(b.title).length - String(a.title).length);
   const item = upcoming[0] || null;
   const lines = [];
-  if (mover) lines.push({ slot: "mover", text: mover.headline, href: mover.href || "", id: mover.id });
+  for (const mover of movers) lines.push({ slot: "mover", text: mover.headline, href: mover.href || "", id: mover.id });
   if (high) lines.push({ slot: "high", text: high.headline, href: high.href || "", id: high.id });
   if (supplyOn) lines.push({ slot: "supply", text: "", href: "" });
   if (setFact) lines.push({ slot: "fact", text: setFact.headline, href: setFact.href || "", id: setFact.id });
