@@ -312,6 +312,12 @@ def compose(rgb, fg, target_h):
 
 def cut_one(raw, target_h):
     im = Image.open(io.BytesIO(raw)).convert("RGB")
+    # Reject a stamp before the flood. A 200px source must not depend on which
+    # mask wins, and rembg must not be asked to invent a larger product.
+    if im.size[1] < MIN_SOURCE_H:
+        flags = blank_flags()
+        flags["tiny"] = True
+        return None, flags
     rgb = np.asarray(im)
     tried = []
     fg = flood_fg(rgb)
