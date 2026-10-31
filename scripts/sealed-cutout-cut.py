@@ -89,6 +89,8 @@ def flood_fg(rgb):
     fg = ndimage.binary_closing(fg, structure=np.ones((3, 3)))
     fg = detach_slivers(fg)
     fg = peel_white_rim(rgb, fg)
+    fg = punch_studio_pockets(rgb, fg)
+    fg = largest(fg)
     return fg
 
 
@@ -101,6 +103,96 @@ def peel_white_rim(rgb, fg):
             break
         fg = fg & ~edge
     return fg
+
+
+
+def punch_studio_pockets(rgb, fg):
+    """Drop flat near-white studio trapped inside the silhouette (flap gaps, corner mats)."""
+    if fg is None or not fg.any():
+        return fg
+    out = fg.copy()
+    bg = studio_bg(rgb)
+    rgb16 = rgb.astype(np.int16)
+    luma = (0.2126 * rgb16[:, :, 0] + 0.7152 * rgb16[:, :, 1] + 0.0722 * rgb16[:, :, 2]).astype(np.float32)
+    chroma = rgb.max(axis=2).astype(np.int16) - rgb.min(axis=2).astype(np.int16)
+    cand = out & (rgb.min(axis=2) > 242) & (chroma < 22)
+    if bg is not None:
+        dist = np.abs(rgb16 - bg.astype(np.int16)).sum(axis=2)
+        cand = cand | (out & (dist <= 40) & (luma > 200) & (chroma < 55))
+    labeled, n = ndimage.label(cand)
+    if n == 0:
+        return out
+    sizes = np.bincount(labeled.ravel())
+    min_area = max(80, int(out.sum() * 0.0004))
+    for i in range(1, n + 1):
+        area = int(sizes[i])
+        if area < min_area:
+            continue
+        mask = labeled == i
+        std = float(luma[mask].std())
+        if std > 9.0:
+            continue
+        ys, xs = np.where(mask)
+        sol = area / float(max(1, (ys.max() - ys.min() + 1) * (xs.max() - xs.min() + 1)))
+        # Keep thin letter strokes. Drop chunky mats and flap gaps.
+        if sol < 0.22 and area < 1800:
+            continue
+        out[mask] = False
+    return out
+
+
+def clean_rgba_pockets(im):
+    """Clear flat near-white that touches alpha, sits in an enclosed pocket, or hugs a corner."""
+    a = np.array(im.convert("RGBA"))
+    rgb = a[:, :, :3]
+    al = a[:, :, 3]
+    luma = 0.2126 * rgb[:, :, 0].astype(np.float32) + 0.7152 * rgb[:, :, 1] + 0.0722 * rgb[:, :, 2]
+    chroma = rgb.max(axis=2).astype(np.int16) - rgb.min(axis=2).astype(np.int16)
+    opaque = al > 160
+    cand = opaque & (rgb.min(axis=2) > 238) & (chroma < 28)
+    if cand.any():
+        labeled, n = ndimage.label(cand)
+        sizes = np.bincount(labeled.ravel())
+        ys_o, xs_o = np.where(opaque)
+        y0, y1 = int(ys_o.min()), int(ys_o.max())
+        x0, x1 = int(xs_o.min()), int(xs_o.max())
+        for i in range(1, n + 1):
+            area = int(sizes[i])
+            if area < 40:
+                continue
+            mask = labeled == i
+            std = float(luma[mask].std())
+            if std > 8.5:
+                continue
+            dil = ndimage.binary_dilation(mask) & ~mask
+            touch_alpha = bool((al[dil] < 80).any()) if dil.any() else False
+            enclosed = (
+                (not touch_alpha)
+                and area >= 100
+                and std <= 6.5
+                and float(rgb[mask].min(axis=1).mean()) > 248
+            )
+            my, mx = np.where(mask)
+            near_corner = (
+                ((my <= y0 + 14).any() and (mx <= x0 + 14).any())
+                or ((my <= y0 + 14).any() and (mx >= x1 - 14).any())
+                or ((my >= y1 - 14).any() and (mx <= x0 + 14).any())
+                or ((my >= y1 - 14).any() and (mx >= x1 - 14).any())
+            )
+            if touch_alpha or enclosed or (near_corner and float(rgb[mask].min(axis=1).mean()) > 245):
+                a[mask, 3] = 0
+    # Peel a pale studio rim against alpha. Interior white art stays.
+    for _ in range(14):
+        fg = a[:, :, 3] > 140
+        rim = ndimage.binary_dilation(~fg) & fg
+        pale = (a[:, :, :3].min(axis=2) > 232) & (
+            (a[:, :, :3].max(axis=2) - a[:, :, :3].min(axis=2)) < 30
+        )
+        edge = rim & pale
+        if not edge.any():
+            break
+        a[edge, 3] = 0
+    return Image.fromarray(a, "RGBA")
 
 
 def largest(fg):
@@ -277,6 +369,71 @@ def halo_ring(im):
     return ""
 
 
+
+def leftover_white(im):
+    """Flat near-white studio left in a pocket, on a mat, or in a corner. '' if clean."""
+    a = np.array(im.convert("RGBA"))
+    h, w, _ = a.shape
+    if h < 8 or w < 8:
+        return ""
+    rgb = a[:, :, :3]
+    al = a[:, :, 3]
+    luma = 0.2126 * rgb[:, :, 0].astype(np.float32) + 0.7152 * rgb[:, :, 1] + 0.0722 * rgb[:, :, 2]
+    chroma = rgb.max(axis=2).astype(np.int16) - rgb.min(axis=2).astype(np.int16)
+    opaque = al > 160
+    if not opaque.any():
+        return ""
+    # Strict blank paper. Soft product highlights usually have more chroma or variance.
+    cand = opaque & (rgb.min(axis=2) > 246) & (chroma < 14)
+    if not cand.any():
+        return ""
+    labeled, n = ndimage.label(cand)
+    sizes = np.bincount(labeled.ravel())
+    ys_o, xs_o = np.where(opaque)
+    y0, y1 = int(ys_o.min()), int(ys_o.max())
+    x0, x1 = int(xs_o.min()), int(xs_o.max())
+    box_area = max(1, (y1 - y0 + 1) * (x1 - x0 + 1))
+    min_enclosed = max(700, int(box_area * 0.004))
+    min_mat = max(220, int(box_area * 0.0012))
+    for i in range(1, n + 1):
+        area = int(sizes[i])
+        if area < min_mat:
+            continue
+        mask = labeled == i
+        std = float(luma[mask].std())
+        mean_min = float(rgb[mask].min(axis=1).mean())
+        if std > 4.0 or mean_min < 249:
+            continue
+        ys, xs = np.where(mask)
+        sol = area / float(max(1, (ys.max() - ys.min() + 1) * (xs.max() - xs.min() + 1)))
+        if sol < 0.35:
+            continue
+        dil = ndimage.binary_dilation(mask, iterations=2) & ~mask
+        touch_alpha = bool((al[dil] < 64).any()) if dil.any() else False
+        if dil.any():
+            dil_opaque = al[dil] > 160
+            enclosed = (
+                (not touch_alpha)
+                and float(dil_opaque.mean()) > 0.9
+                and float((~cand[dil]).mean()) > 0.7
+            )
+        else:
+            enclosed = False
+        near_corner = (
+            ((ys <= y0 + 18).any() and (xs <= x0 + 18).any())
+            or ((ys <= y0 + 18).any() and (xs >= x1 - 18).any())
+            or ((ys >= y1 - 18).any() and (xs <= x0 + 18).any())
+            or ((ys >= y1 - 18).any() and (xs >= x1 - 18).any())
+        )
+        if enclosed and area >= min_enclosed:
+            return "white-pocket"
+        if touch_alpha and near_corner and area >= min_mat and mean_min > 250:
+            return "white-corner"
+        if touch_alpha and area >= max(min_enclosed, 900) and mean_min > 250:
+            return "white-mat"
+    return ""
+
+
 def edge_fault(im):
     """A leftover mat on the frame, or a ragged alpha edge. A clean product returns ''."""
     a = np.array(im.convert("RGBA"))
@@ -329,6 +486,9 @@ def edge_fault(im):
     # Eaten art leaves specks in the outer band and a lacy silhouette.
     if sol < 0.75 and specks >= 6:
         return "ragged"
+    white = leftover_white(im)
+    if white:
+        return white
     return ""
 
 
@@ -351,7 +511,7 @@ def qa_rgba(im):
     if kind == "tiny":
         flags["tiny"] = True
     fault = edge_fault(im)
-    if fault == "mat":
+    if fault == "mat" or fault in ("white-pocket", "white-mat", "white-corner"):
         flags["leftover"] = True
     if fault == "ragged":
         flags["jagged"] = True
@@ -396,6 +556,7 @@ def compose(rgb, fg, target_h):
     scale = target_h / crop.size[1]
     resized = crop.resize((max(1, int(round(crop.size[0] * scale))), int(target_h)), Image.Resampling.LANCZOS)
     # No drop shadow. A shadow reads as a black box on the shelf.
+    resized = clean_rgba_pockets(resized)
     q = qa_rgba(resized)
     for key in ("leftover", "empty", "tiny", "jagged"):
         if q[key]:

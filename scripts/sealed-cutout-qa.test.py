@@ -119,9 +119,8 @@ def test_shipped():
     clean = [
         "sv1-pack.png",
         "me1-pack.png",
-        "sv2-booster-box.png",
-        "sv8-booster-box.png",
         "me1-enhanced-booster-box.png",
+        "sm9-booster-box.png",
     ]
     root = ROOT / "research" / "assets" / "public" / "cutouts"
     for name in clean:
@@ -133,9 +132,25 @@ def test_shipped():
         check(name + " has no mat and no ragged edge", fault == "", fault)
 
 
+
+def test_white_pockets():
+    """Enclosed white flaps and corner mats must fail. A recut Team Up must pass."""
+    fixture = ROOT / "scripts" / "fixtures" / "sm9-booster-box-white-pocket.png"
+    check("the old Team Up fixture is present", fixture.exists())
+    if fixture.exists():
+        fault = cut.leftover_white(Image.open(fixture).convert("RGBA"))
+        check("the old Team Up fixture fails the white-pocket check", fault != "", fault or "no fault")
+    root = ROOT / "research" / "assets" / "public" / "cutouts"
+    sm9 = root / "sm9-booster-box.png"
+    check("the shipped Team Up cutout is present", sm9.exists())
+    if sm9.exists():
+        fault = cut.leftover_white(Image.open(sm9).convert("RGBA"))
+        check("the shipped Team Up cutout has no white pocket", fault == "", fault)
+
 def main():
     test_synth()
     test_shipped()
+    test_white_pockets()
     if fail:
         print(f"{fail} failed")
         sys.exit(1)
