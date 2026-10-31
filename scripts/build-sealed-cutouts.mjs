@@ -1,11 +1,12 @@
-// Build transparent sealed cutouts for every priced product.
+// Build transparent sealed cutouts for every sealed product the public site
+// shows from the priced file, the public feed, and the named feed holes.
 // Factors are read from the private scale file. Without that file this exits
-// and does not invent sizes. A failed cut is listed and the old image stays.
-import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
+// and does not invent sizes. A failed cut is removed. It is not shipped.
+import { readFile, writeFile, mkdir, unlink, readdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { productTypeOf, nameAgrees, sourceFor, targetHeight, judgeCut, cutoutRow } from "./lib/sealed-cutouts.mjs";
+import { productTypeOf, nameAgrees, sourceFor, targetHeight, judgeCut, cutoutRow, showableProducts } from "./lib/sealed-cutouts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE_PX = 960;
@@ -31,6 +32,8 @@ function runPython(jobPath, outPath) {
 
 const scale = JSON.parse(await readFile(scalePath(), "utf8"));
 const prices = await loadJson(join(ROOT, "data/sealed-prices.json"));
+const catalog = await loadJson(join(ROOT, "data/sealed-products.json")).catch(() => []);
+const reads = await loadJson(join(ROOT, "research/assets/public/reads.json")).catch(() => ({ reads: [] }));
 let overrides = {};
 try { overrides = (await loadJson(join(ROOT, "data/image-overrides.json"))).products || {}; } catch { overrides = {}; }
 let crosscheck = {};
@@ -39,7 +42,8 @@ try {
   for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) crosscheck[e.id] = e.tcgPlayerId;
 } catch { crosscheck = {}; }
 
-const products = (prices.products || []).filter((p) => p && p.id && (!ONLY.size || ONLY.has(p.id)));
+const products = showableProducts(prices.products || [], Array.isArray(catalog) ? catalog : [], reads)
+  .filter((p) => p && p.id && (!ONLY.size || ONLY.has(p.id) || ONLY.has("tcgcsv-" + (Number(p.tcgPlayerId) || ""))));
 const job = [];
 const skipped = [];
 for (const product of products) {
@@ -79,15 +83,17 @@ for (const product of products) {
   const skip = skipped.find((s) => s.product.id === product.id);
   if (skip) {
     rows.push(cutoutRow(product, { pass: false, productType: skip.type || "" }));
-    review.push({ id: product.id, productType: skip.type || "", reason: skip.reason, kept: "old image" });
+    review.push({ id: product.id, productType: skip.type || "", reason: skip.reason, kept: "not shipped" });
     continue;
   }
   const hit = metrics[product.id] || {};
   const reasons = judgeCut(hit.flags || { download: false });
   const pass = reasons.length === 0 && hit.pass === true;
   if (!pass) {
+    await unlink(join(outDir, product.id + ".png")).catch(() => {});
+    await unlink(join(outDir, product.id + ".webp")).catch(() => {});
     rows.push(cutoutRow(product, { pass: false, productType: hit.productType || productTypeOf(product) }));
-    review.push({ id: product.id, productType: hit.productType || productTypeOf(product), reason: reasons.join(", ") || "no cutout", kept: "old image" });
+    review.push({ id: product.id, productType: hit.productType || productTypeOf(product), reason: reasons.join(", ") || "no cutout", kept: "not shipped" });
     continue;
   }
   rows.push(cutoutRow(product, {
@@ -104,14 +110,14 @@ rows.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 review.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 const doc = {
   asOf: String(prices.updatedAt || "").slice(0, 10),
-  note: "Cutouts for priced sealed products. A fail keeps the old image and is also on the review list. Pixel height already includes the shared scale. Factors are not in this repo.",
+  note: "Cutouts for sealed products the site can show. A fail is listed and the file is not shipped. Pixel height already includes the shared scale. Factors are not in this repo.",
   passed: rows.filter((r) => r.pass).length,
   failed: rows.filter((r) => !r.pass).length,
   products: rows,
 };
 const reviewDoc = {
   asOf: doc.asOf,
-  note: "These priced sealed products kept their old image. A broken cutout was not written.",
+  note: "These sealed products have no cutout. A broken cutout was not written.",
   count: review.length,
   products: review,
 };
@@ -122,4 +128,15 @@ await writeFile(join(ROOT, "research/assets/public/sealed-cutouts.json"), text);
 await writeFile(join(ROOT, "data/sealed-cutout-review.json"), JSON.stringify(reviewDoc, null, 2) + "\n");
 await unlink(jobPath).catch(() => {});
 await unlink(metricsPath).catch(() => {});
+if (!ONLY.size) {
+  const keep = new Set();
+  for (const row of rows) if (row.pass) {
+    keep.add(row.id + ".png");
+    keep.add(row.id + ".webp");
+  }
+  for (const name of await readdir(outDir)) {
+    if (!/^[A-Za-z0-9._-]+\.(png|webp)$/i.test(name)) continue;
+    if (!keep.has(name)) await unlink(join(outDir, name)).catch(() => {});
+  }
+}
 console.log(`passed ${doc.passed} review ${review.length} of ${products.length}`);

@@ -1,50 +1,40 @@
 {
-  "asOf": "2026-10-28",
-  "note": "v2 cutouts (birefnet-general + studio silhouette + ViTMatte + selective hull/pack-close + defringe/1px erode). A fail keeps the old image. Tyler approved 170 passes; 5 QA fails and 21 no-photo stay on the old image.",
-  "passed": 170,
-  "failed": 26,
+  "asOf": "2026-10-30",
+  "note": "Cutouts for sealed products the site can show. A fail is listed and the file is not shipped. Pixel height already includes the shared scale. Factors are not in this repo.",
+  "passed": 171,
+  "failed": 39,
   "products": [
     {
       "id": "base1-booster-box",
       "siteId": "tcgcsv-185731",
       "tcgPlayerId": 185731,
       "productType": "booster-box",
-      "pass": true,
-      "file": "cutouts/base1-booster-box.webp",
-      "png": "cutouts/base1-booster-box.png",
-      "width": 541,
-      "height": 480
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "base2-booster-box",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "booster-box",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "base3-booster-box",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "booster-box",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "bw1-booster-box",
       "siteId": "tcgcsv-98552",
       "tcgPlayerId": 98552,
       "productType": "booster-box",
-      "pass": true,
-      "file": "cutouts/bw1-booster-box.webp",
-      "png": "cutouts/bw1-booster-box.png",
-      "width": 200,
-      "height": 255
+      "pass": false
     },
     {
       "id": "cel25-etb",
@@ -54,30 +44,22 @@
       "pass": true,
       "file": "cutouts/cel25-etb.webp",
       "png": "cutouts/cel25-etb.png",
-      "width": 863,
-      "height": 825
+      "width": 784,
+      "height": 749
     },
     {
       "id": "cel25-upc",
       "siteId": "tcgcsv-245140",
       "tcgPlayerId": 245140,
       "productType": "upc",
-      "pass": true,
-      "file": "cutouts/cel25-upc.webp",
-      "png": "cutouts/cel25-upc.png",
-      "width": 900,
-      "height": 637
+      "pass": false
     },
     {
       "id": "hgss1-booster-box",
       "siteId": "tcgcsv-98531",
       "tcgPlayerId": 98531,
       "productType": "booster-box",
-      "pass": true,
-      "file": "cutouts/hgss1-booster-box.webp",
-      "png": "cutouts/hgss1-booster-box.png",
-      "width": 200,
-      "height": 263
+      "pass": false
     },
     {
       "id": "me1-bb",
@@ -87,8 +69,8 @@
       "pass": true,
       "file": "cutouts/me1-bb.webp",
       "png": "cutouts/me1-bb.png",
-      "width": 744,
-      "height": 1000
+      "width": 457,
+      "height": 614
     },
     {
       "id": "me1-booster-box",
@@ -98,8 +80,8 @@
       "pass": true,
       "file": "cutouts/me1-booster-box.webp",
       "png": "cutouts/me1-booster-box.png",
-      "width": 586,
-      "height": 800
+      "width": 703,
+      "height": 960
     },
     {
       "id": "me1-enhanced-booster-box",
@@ -109,18 +91,19 @@
       "pass": true,
       "file": "cutouts/me1-enhanced-booster-box.webp",
       "png": "cutouts/me1-enhanced-booster-box.png",
-      "width": 1000,
-      "height": 896
+      "width": 1072,
+      "height": 960
     },
     {
       "id": "me1-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/me1-etb.webp",
+      "png": "cutouts/me1-etb.png",
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me1-pack",
@@ -130,18 +113,15 @@
       "pass": true,
       "file": "cutouts/me1-pack.webp",
       "png": "cutouts/me1-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me1-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "me2-bb",
@@ -151,8 +131,8 @@
       "pass": true,
       "file": "cutouts/me2-bb.webp",
       "png": "cutouts/me2-bb.png",
-      "width": 744,
-      "height": 1000
+      "width": 457,
+      "height": 614
     },
     {
       "id": "me2-booster-box",
@@ -162,8 +142,8 @@
       "pass": true,
       "file": "cutouts/me2-booster-box.webp",
       "png": "cutouts/me2-booster-box.png",
-      "width": 731,
-      "height": 1000
+      "width": 701,
+      "height": 960
     },
     {
       "id": "me2-etb",
@@ -173,8 +153,8 @@
       "pass": true,
       "file": "cutouts/me2-etb.webp",
       "png": "cutouts/me2-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me2-pack",
@@ -184,8 +164,8 @@
       "pass": true,
       "file": "cutouts/me2-pack.webp",
       "png": "cutouts/me2-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me2-pc-etb",
@@ -195,8 +175,8 @@
       "pass": true,
       "file": "cutouts/me2-pc-etb.webp",
       "png": "cutouts/me2-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me2pt5-bb",
@@ -206,8 +186,8 @@
       "pass": true,
       "file": "cutouts/me2pt5-bb.webp",
       "png": "cutouts/me2pt5-bb.png",
-      "width": 681,
-      "height": 1000
+      "width": 418,
+      "height": 614
     },
     {
       "id": "me2pt5-etb",
@@ -217,8 +197,8 @@
       "pass": true,
       "file": "cutouts/me2pt5-etb.webp",
       "png": "cutouts/me2pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me2pt5-pack",
@@ -228,8 +208,8 @@
       "pass": true,
       "file": "cutouts/me2pt5-pack.webp",
       "png": "cutouts/me2pt5-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me2pt5-pc-etb",
@@ -239,18 +219,30 @@
       "pass": true,
       "file": "cutouts/me2pt5-pc-etb.webp",
       "png": "cutouts/me2pt5-pc-etb.png",
-      "width": 1000,
-      "height": 944
+      "width": 794,
+      "height": 749
     },
     {
       "id": "me2pt5-tin",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "tin",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/me2pt5-tin.webp",
+      "png": "cutouts/me2pt5-tin.png",
+      "width": 447,
+      "height": 557
+    },
+    {
+      "id": "me2pt5-tin-mega-meganium-ex",
+      "siteId": "tcgcsv-702498",
+      "tcgPlayerId": 702498,
+      "productType": "tin",
+      "pass": true,
+      "file": "cutouts/me2pt5-tin-mega-meganium-ex.webp",
+      "png": "cutouts/me2pt5-tin-mega-meganium-ex.png",
+      "width": 447,
+      "height": 557
     },
     {
       "id": "me3-bb",
@@ -260,8 +252,8 @@
       "pass": true,
       "file": "cutouts/me3-bb.webp",
       "png": "cutouts/me3-bb.png",
-      "width": 681,
-      "height": 1000
+      "width": 418,
+      "height": 614
     },
     {
       "id": "me3-booster-box",
@@ -271,8 +263,8 @@
       "pass": true,
       "file": "cutouts/me3-booster-box.webp",
       "png": "cutouts/me3-booster-box.png",
-      "width": 741,
-      "height": 1000
+      "width": 711,
+      "height": 960
     },
     {
       "id": "me3-etb",
@@ -282,8 +274,8 @@
       "pass": true,
       "file": "cutouts/me3-etb.webp",
       "png": "cutouts/me3-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me3-pack",
@@ -293,8 +285,8 @@
       "pass": true,
       "file": "cutouts/me3-pack.webp",
       "png": "cutouts/me3-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me3-pc-etb",
@@ -304,8 +296,8 @@
       "pass": true,
       "file": "cutouts/me3-pc-etb.webp",
       "png": "cutouts/me3-pc-etb.png",
-      "width": 874,
-      "height": 826
+      "width": 790,
+      "height": 749
     },
     {
       "id": "me4-bb",
@@ -315,8 +307,8 @@
       "pass": true,
       "file": "cutouts/me4-bb.webp",
       "png": "cutouts/me4-bb.png",
-      "width": 680,
-      "height": 1000
+      "width": 417,
+      "height": 614
     },
     {
       "id": "me4-booster-box",
@@ -326,8 +318,8 @@
       "pass": true,
       "file": "cutouts/me4-booster-box.webp",
       "png": "cutouts/me4-booster-box.png",
-      "width": 745,
-      "height": 1000
+      "width": 715,
+      "height": 960
     },
     {
       "id": "me4-etb",
@@ -337,8 +329,8 @@
       "pass": true,
       "file": "cutouts/me4-etb.webp",
       "png": "cutouts/me4-etb.png",
-      "width": 1000,
-      "height": 944
+      "width": 794,
+      "height": 749
     },
     {
       "id": "me4-pack",
@@ -348,8 +340,8 @@
       "pass": true,
       "file": "cutouts/me4-pack.webp",
       "png": "cutouts/me4-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me4-pc-etb",
@@ -359,8 +351,8 @@
       "pass": true,
       "file": "cutouts/me4-pc-etb.webp",
       "png": "cutouts/me4-pc-etb.png",
-      "width": 1000,
-      "height": 944
+      "width": 794,
+      "height": 749
     },
     {
       "id": "me5-bb",
@@ -370,8 +362,8 @@
       "pass": true,
       "file": "cutouts/me5-bb.webp",
       "png": "cutouts/me5-bb.png",
-      "width": 682,
-      "height": 1000
+      "width": 418,
+      "height": 614
     },
     {
       "id": "me5-booster-box",
@@ -381,8 +373,8 @@
       "pass": true,
       "file": "cutouts/me5-booster-box.webp",
       "png": "cutouts/me5-booster-box.png",
-      "width": 732,
-      "height": 1000
+      "width": 702,
+      "height": 960
     },
     {
       "id": "me5-etb",
@@ -392,8 +384,8 @@
       "pass": true,
       "file": "cutouts/me5-etb.webp",
       "png": "cutouts/me5-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "me5-pack",
@@ -403,8 +395,8 @@
       "pass": true,
       "file": "cutouts/me5-pack.webp",
       "png": "cutouts/me5-pack.png",
-      "width": 547,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "me5-pc-etb",
@@ -414,28 +406,22 @@
       "pass": true,
       "file": "cutouts/me5-pc-etb.webp",
       "png": "cutouts/me5-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "mega-forces-tin",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "tin",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "neo1-booster-box",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "booster-box",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "pgo-etb",
@@ -445,41 +431,41 @@
       "pass": true,
       "file": "cutouts/pgo-etb.webp",
       "png": "cutouts/pgo-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "rsv10pt5-bundle",
       "siteId": "tcgcsv-630696",
       "tcgPlayerId": 630696,
       "productType": "booster-bundle",
-      "pass": true,
-      "file": "cutouts/rsv10pt5-bundle.webp",
-      "png": "cutouts/rsv10pt5-bundle.png",
-      "width": 744,
-      "height": 1000
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "rsv10pt5-etb",
       "siteId": "tcgcsv-630689",
       "tcgPlayerId": 630689,
       "productType": "etb",
-      "pass": true,
-      "file": "cutouts/rsv10pt5-etb.webp",
-      "png": "cutouts/rsv10pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "rsv10pt5-wf-pc-etb",
       "siteId": "tcgcsv-630688",
       "tcgPlayerId": 630688,
       "productType": "pc-etb",
-      "pass": true,
-      "file": "cutouts/rsv10pt5-wf-pc-etb.webp",
-      "png": "cutouts/rsv10pt5-wf-pc-etb.png",
-      "width": 578,
-      "height": 549
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sm1-booster-box",
@@ -489,18 +475,15 @@
       "pass": true,
       "file": "cutouts/sm1-booster-box.webp",
       "png": "cutouts/sm1-booster-box.png",
-      "width": 600,
-      "height": 765
+      "width": 752,
+      "height": 960
     },
     {
       "id": "sm1-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "sm10-booster-box",
@@ -510,8 +493,8 @@
       "pass": true,
       "file": "cutouts/sm10-booster-box.webp",
       "png": "cutouts/sm10-booster-box.png",
-      "width": 788,
-      "height": 1000
+      "width": 756,
+      "height": 960
     },
     {
       "id": "sm10-etb",
@@ -521,8 +504,8 @@
       "pass": true,
       "file": "cutouts/sm10-etb.webp",
       "png": "cutouts/sm10-etb.png",
-      "width": 1000,
-      "height": 955
+      "width": 784,
+      "height": 749
     },
     {
       "id": "sm11-booster-box",
@@ -532,8 +515,8 @@
       "pass": true,
       "file": "cutouts/sm11-booster-box.webp",
       "png": "cutouts/sm11-booster-box.png",
-      "width": 540,
-      "height": 665
+      "width": 762,
+      "height": 960
     },
     {
       "id": "sm11-etb",
@@ -543,8 +526,8 @@
       "pass": true,
       "file": "cutouts/sm11-etb.webp",
       "png": "cutouts/sm11-etb.png",
-      "width": 494,
-      "height": 476
+      "width": 777,
+      "height": 749
     },
     {
       "id": "sm12-booster-box",
@@ -554,19 +537,15 @@
       "pass": true,
       "file": "cutouts/sm12-booster-box.webp",
       "png": "cutouts/sm12-booster-box.png",
-      "width": 726,
-      "height": 900
+      "width": 758,
+      "height": 960
     },
     {
       "id": "sm12-cosmic-etb",
       "siteId": "tcgcsv-199308",
       "tcgPlayerId": 199308,
       "productType": "etb",
-      "pass": true,
-      "file": "cutouts/sm12-cosmic-etb.webp",
-      "png": "cutouts/sm12-cosmic-etb.png",
-      "width": 284,
-      "height": 270
+      "pass": false
     },
     {
       "id": "sm12-etb",
@@ -576,8 +555,8 @@
       "pass": true,
       "file": "cutouts/sm12-etb.webp",
       "png": "cutouts/sm12-etb.png",
-      "width": 1000,
-      "height": 947
+      "width": 791,
+      "height": 749
     },
     {
       "id": "sm2-booster-box",
@@ -587,8 +566,8 @@
       "pass": true,
       "file": "cutouts/sm2-booster-box.webp",
       "png": "cutouts/sm2-booster-box.png",
-      "width": 460,
-      "height": 560
+      "width": 758,
+      "height": 960
     },
     {
       "id": "sm2-etb",
@@ -598,8 +577,8 @@
       "pass": true,
       "file": "cutouts/sm2-etb.webp",
       "png": "cutouts/sm2-etb.png",
-      "width": 500,
-      "height": 531
+      "width": 705,
+      "height": 749
     },
     {
       "id": "sm3-booster-box",
@@ -609,19 +588,15 @@
       "pass": true,
       "file": "cutouts/sm3-booster-box.webp",
       "png": "cutouts/sm3-booster-box.png",
-      "width": 789,
-      "height": 1000
+      "width": 757,
+      "height": 960
     },
     {
       "id": "sm3-etb",
       "siteId": "tcgcsv-133776",
       "tcgPlayerId": 133776,
       "productType": "etb",
-      "pass": true,
-      "file": "cutouts/sm3-etb.webp",
-      "png": "cutouts/sm3-etb.png",
-      "width": 284,
-      "height": 295
+      "pass": false
     },
     {
       "id": "sm35-etb",
@@ -631,8 +606,8 @@
       "pass": true,
       "file": "cutouts/sm35-etb.webp",
       "png": "cutouts/sm35-etb.png",
-      "width": 433,
-      "height": 450
+      "width": 717,
+      "height": 749
     },
     {
       "id": "sm4-booster-box",
@@ -642,8 +617,8 @@
       "pass": true,
       "file": "cutouts/sm4-booster-box.webp",
       "png": "cutouts/sm4-booster-box.png",
-      "width": 489,
-      "height": 618
+      "width": 758,
+      "height": 960
     },
     {
       "id": "sm4-etb",
@@ -653,8 +628,8 @@
       "pass": true,
       "file": "cutouts/sm4-etb.webp",
       "png": "cutouts/sm4-etb.png",
-      "width": 504,
-      "height": 533
+      "width": 706,
+      "height": 749
     },
     {
       "id": "sm5-booster-box",
@@ -664,18 +639,15 @@
       "pass": true,
       "file": "cutouts/sm5-booster-box.webp",
       "png": "cutouts/sm5-booster-box.png",
-      "width": 720,
-      "height": 900
+      "width": 754,
+      "height": 960
     },
     {
       "id": "sm5-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "sm6-booster-box",
@@ -685,8 +657,8 @@
       "pass": true,
       "file": "cutouts/sm6-booster-box.webp",
       "png": "cutouts/sm6-booster-box.png",
-      "width": 720,
-      "height": 900
+      "width": 758,
+      "height": 960
     },
     {
       "id": "sm6-etb",
@@ -696,8 +668,8 @@
       "pass": true,
       "file": "cutouts/sm6-etb.webp",
       "png": "cutouts/sm6-etb.png",
-      "width": 777,
-      "height": 742
+      "width": 787,
+      "height": 749
     },
     {
       "id": "sm7-booster-box",
@@ -707,8 +679,8 @@
       "pass": true,
       "file": "cutouts/sm7-booster-box.webp",
       "png": "cutouts/sm7-booster-box.png",
-      "width": 520,
-      "height": 657
+      "width": 754,
+      "height": 960
     },
     {
       "id": "sm7-etb",
@@ -718,8 +690,8 @@
       "pass": true,
       "file": "cutouts/sm7-etb.webp",
       "png": "cutouts/sm7-etb.png",
-      "width": 827,
-      "height": 791
+      "width": 782,
+      "height": 749
     },
     {
       "id": "sm75-etb",
@@ -729,8 +701,8 @@
       "pass": true,
       "file": "cutouts/sm75-etb.webp",
       "png": "cutouts/sm75-etb.png",
-      "width": 747,
-      "height": 712
+      "width": 789,
+      "height": 749
     },
     {
       "id": "sm8-booster-box",
@@ -740,8 +712,8 @@
       "pass": true,
       "file": "cutouts/sm8-booster-box.webp",
       "png": "cutouts/sm8-booster-box.png",
-      "width": 500,
-      "height": 634
+      "width": 756,
+      "height": 960
     },
     {
       "id": "sm8-etb",
@@ -751,8 +723,8 @@
       "pass": true,
       "file": "cutouts/sm8-etb.webp",
       "png": "cutouts/sm8-etb.png",
-      "width": 523,
-      "height": 500
+      "width": 784,
+      "height": 749
     },
     {
       "id": "sm9-booster-box",
@@ -762,8 +734,8 @@
       "pass": true,
       "file": "cutouts/sm9-booster-box.webp",
       "png": "cutouts/sm9-booster-box.png",
-      "width": 789,
-      "height": 1000
+      "width": 757,
+      "height": 960
     },
     {
       "id": "sm9-etb",
@@ -773,8 +745,8 @@
       "pass": true,
       "file": "cutouts/sm9-etb.webp",
       "png": "cutouts/sm9-etb.png",
-      "width": 398,
-      "height": 381
+      "width": 783,
+      "height": 749
     },
     {
       "id": "sv1-booster-box",
@@ -784,19 +756,15 @@
       "pass": true,
       "file": "cutouts/sv1-booster-box.webp",
       "png": "cutouts/sv1-booster-box.png",
-      "width": 751,
-      "height": 1000
+      "width": 720,
+      "height": 960
     },
     {
       "id": "sv1-bundle",
       "siteId": "tcgcsv-478258",
       "tcgPlayerId": 478258,
       "productType": "booster-bundle",
-      "pass": true,
-      "file": "cutouts/sv1-bundle.webp",
-      "png": "cutouts/sv1-bundle.png",
-      "width": 735,
-      "height": 984
+      "pass": false
     },
     {
       "id": "sv1-pack",
@@ -806,18 +774,15 @@
       "pass": true,
       "file": "cutouts/sv1-pack.webp",
       "png": "cutouts/sv1-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv1-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "sv10-bb",
@@ -827,8 +792,8 @@
       "pass": true,
       "file": "cutouts/sv10-bb.webp",
       "png": "cutouts/sv10-bb.png",
-      "width": 743,
-      "height": 1000
+      "width": 457,
+      "height": 614
     },
     {
       "id": "sv10-booster-box",
@@ -838,8 +803,8 @@
       "pass": true,
       "file": "cutouts/sv10-booster-box.webp",
       "png": "cutouts/sv10-booster-box.png",
-      "width": 730,
-      "height": 1000
+      "width": 700,
+      "height": 960
     },
     {
       "id": "sv10-etb",
@@ -849,8 +814,8 @@
       "pass": true,
       "file": "cutouts/sv10-etb.webp",
       "png": "cutouts/sv10-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv10-pack",
@@ -860,8 +825,8 @@
       "pass": true,
       "file": "cutouts/sv10-pack.webp",
       "png": "cutouts/sv10-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv10-pc-etb",
@@ -871,8 +836,8 @@
       "pass": true,
       "file": "cutouts/sv10-pc-etb.webp",
       "png": "cutouts/sv10-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv2-booster-box",
@@ -882,8 +847,8 @@
       "pass": true,
       "file": "cutouts/sv2-booster-box.webp",
       "png": "cutouts/sv2-booster-box.png",
-      "width": 723,
-      "height": 942
+      "width": 739,
+      "height": 960
     },
     {
       "id": "sv2-bundle",
@@ -893,8 +858,8 @@
       "pass": true,
       "file": "cutouts/sv2-bundle.webp",
       "png": "cutouts/sv2-bundle.png",
-      "width": 745,
-      "height": 1000
+      "width": 457,
+      "height": 614
     },
     {
       "id": "sv2-pack",
@@ -904,8 +869,8 @@
       "pass": true,
       "file": "cutouts/sv2-pack.webp",
       "png": "cutouts/sv2-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv2-pc-etb",
@@ -915,8 +880,8 @@
       "pass": true,
       "file": "cutouts/sv2-pc-etb.webp",
       "png": "cutouts/sv2-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv3-booster-box",
@@ -926,8 +891,8 @@
       "pass": true,
       "file": "cutouts/sv3-booster-box.webp",
       "png": "cutouts/sv3-booster-box.png",
-      "width": 711,
-      "height": 954
+      "width": 714,
+      "height": 960
     },
     {
       "id": "sv3-bundle",
@@ -937,8 +902,8 @@
       "pass": true,
       "file": "cutouts/sv3-bundle.webp",
       "png": "cutouts/sv3-bundle.png",
-      "width": 639,
-      "height": 852
+      "width": 456,
+      "height": 614
     },
     {
       "id": "sv3-pack",
@@ -948,8 +913,8 @@
       "pass": true,
       "file": "cutouts/sv3-pack.webp",
       "png": "cutouts/sv3-pack.png",
-      "width": 562,
-      "height": 1000
+      "width": 248,
+      "height": 442
     },
     {
       "id": "sv3-pc-etb",
@@ -959,8 +924,8 @@
       "pass": true,
       "file": "cutouts/sv3-pc-etb.webp",
       "png": "cutouts/sv3-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv3pt5-bb",
@@ -970,53 +935,44 @@
       "pass": true,
       "file": "cutouts/sv3pt5-bb.webp",
       "png": "cutouts/sv3pt5-bb.png",
-      "width": 740,
-      "height": 1000
+      "width": 352,
+      "height": 614
     },
     {
       "id": "sv3pt5-etb",
       "siteId": "tcgcsv-503313",
       "tcgPlayerId": 503313,
       "productType": "etb",
-      "pass": true,
-      "file": "cutouts/sv3pt5-etb.webp",
-      "png": "cutouts/sv3pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sv3pt5-pack",
       "siteId": "tcgcsv-504467",
       "tcgPlayerId": 504467,
       "productType": "booster-pack",
-      "pass": false,
-      "why": [
-        "pack missing crimp band top=0.30 bot=0.90",
-        "pack missing wrapper side L=0.12 R=0.09",
-        "pack missing top corner TL=0.00 TR=0.00"
-      ]
+      "pass": false
     },
     {
       "id": "sv3pt5-pc-etb",
       "siteId": "tcgcsv-501999",
       "tcgPlayerId": 501999,
       "productType": "pc-etb",
-      "pass": true,
-      "file": "cutouts/sv3pt5-pc-etb.webp",
-      "png": "cutouts/sv3pt5-pc-etb.png",
-      "width": 1000,
-      "height": 956
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sv3pt5-upc",
       "siteId": "tcgcsv-502005",
       "tcgPlayerId": 502005,
       "productType": "upc",
-      "pass": true,
-      "file": "cutouts/sv3pt5-upc.webp",
-      "png": "cutouts/sv3pt5-upc.png",
-      "width": 900,
-      "height": 637
+      "pass": false
     },
     {
       "id": "sv4-booster-box",
@@ -1026,8 +982,8 @@
       "pass": true,
       "file": "cutouts/sv4-booster-box.webp",
       "png": "cutouts/sv4-booster-box.png",
-      "width": 615,
-      "height": 832
+      "width": 703,
+      "height": 960
     },
     {
       "id": "sv4-bundle",
@@ -1037,8 +993,8 @@
       "pass": true,
       "file": "cutouts/sv4-bundle.webp",
       "png": "cutouts/sv4-bundle.png",
-      "width": 533,
-      "height": 715
+      "width": 457,
+      "height": 614
     },
     {
       "id": "sv4-pack",
@@ -1048,18 +1004,15 @@
       "pass": true,
       "file": "cutouts/sv4-pack.webp",
       "png": "cutouts/sv4-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv4-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "sv4pt5-bb",
@@ -1069,8 +1022,8 @@
       "pass": true,
       "file": "cutouts/sv4pt5-bb.webp",
       "png": "cutouts/sv4pt5-bb.png",
-      "width": 760,
-      "height": 1000
+      "width": 458,
+      "height": 614
     },
     {
       "id": "sv4pt5-etb",
@@ -1080,19 +1033,15 @@
       "pass": true,
       "file": "cutouts/sv4pt5-etb.webp",
       "png": "cutouts/sv4pt5-etb.png",
-      "width": 1000,
-      "height": 952
+      "width": 787,
+      "height": 749
     },
     {
       "id": "sv4pt5-pack",
       "siteId": "tcgcsv-528038",
       "tcgPlayerId": 528038,
       "productType": "booster-pack",
-      "pass": true,
-      "file": "cutouts/sv4pt5-pack.webp",
-      "png": "cutouts/sv4pt5-pack.png",
-      "width": 546,
-      "height": 1000
+      "pass": false
     },
     {
       "id": "sv4pt5-pc-etb",
@@ -1102,8 +1051,8 @@
       "pass": true,
       "file": "cutouts/sv4pt5-pc-etb.webp",
       "png": "cutouts/sv4pt5-pc-etb.png",
-      "width": 579,
-      "height": 546
+      "width": 787,
+      "height": 749
     },
     {
       "id": "sv5-bb",
@@ -1113,8 +1062,8 @@
       "pass": true,
       "file": "cutouts/sv5-bb.webp",
       "png": "cutouts/sv5-bb.png",
-      "width": 745,
-      "height": 1000
+      "width": 457,
+      "height": 614
     },
     {
       "id": "sv5-booster-box",
@@ -1124,18 +1073,19 @@
       "pass": true,
       "file": "cutouts/sv5-booster-box.webp",
       "png": "cutouts/sv5-booster-box.png",
-      "width": 736,
-      "height": 1000
+      "width": 706,
+      "height": 960
     },
     {
       "id": "sv5-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/sv5-etb.webp",
+      "png": "cutouts/sv5-etb.png",
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv5-pack",
@@ -1145,18 +1095,15 @@
       "pass": true,
       "file": "cutouts/sv5-pack.webp",
       "png": "cutouts/sv5-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv5-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "sv6-bb",
@@ -1166,8 +1113,8 @@
       "pass": true,
       "file": "cutouts/sv6-bb.webp",
       "png": "cutouts/sv6-bb.png",
-      "width": 729,
-      "height": 827
+      "width": 539,
+      "height": 614
     },
     {
       "id": "sv6-booster-box",
@@ -1177,8 +1124,8 @@
       "pass": true,
       "file": "cutouts/sv6-booster-box.webp",
       "png": "cutouts/sv6-booster-box.png",
-      "width": 745,
-      "height": 1000
+      "width": 715,
+      "height": 960
     },
     {
       "id": "sv6-etb",
@@ -1188,8 +1135,8 @@
       "pass": true,
       "file": "cutouts/sv6-etb.webp",
       "png": "cutouts/sv6-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv6-pack",
@@ -1199,8 +1146,8 @@
       "pass": true,
       "file": "cutouts/sv6-pack.webp",
       "png": "cutouts/sv6-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv6-pc-etb",
@@ -1210,8 +1157,8 @@
       "pass": true,
       "file": "cutouts/sv6-pc-etb.webp",
       "png": "cutouts/sv6-pc-etb.png",
-      "width": 883,
-      "height": 836
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv6pt5-bb",
@@ -1221,8 +1168,8 @@
       "pass": true,
       "file": "cutouts/sv6pt5-bb.webp",
       "png": "cutouts/sv6pt5-bb.png",
-      "width": 873,
-      "height": 1000
+      "width": 536,
+      "height": 614
     },
     {
       "id": "sv6pt5-etb",
@@ -1232,8 +1179,8 @@
       "pass": true,
       "file": "cutouts/sv6pt5-etb.webp",
       "png": "cutouts/sv6pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv6pt5-pack",
@@ -1243,8 +1190,8 @@
       "pass": true,
       "file": "cutouts/sv6pt5-pack.webp",
       "png": "cutouts/sv6pt5-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv6pt5-pc-etb",
@@ -1254,8 +1201,8 @@
       "pass": true,
       "file": "cutouts/sv6pt5-pc-etb.webp",
       "png": "cutouts/sv6pt5-pc-etb.png",
-      "width": 1000,
-      "height": 939
+      "width": 798,
+      "height": 749
     },
     {
       "id": "sv7-bb",
@@ -1265,8 +1212,8 @@
       "pass": true,
       "file": "cutouts/sv7-bb.webp",
       "png": "cutouts/sv7-bb.png",
-      "width": 640,
-      "height": 847
+      "width": 458,
+      "height": 614
     },
     {
       "id": "sv7-booster-box",
@@ -1276,8 +1223,8 @@
       "pass": true,
       "file": "cutouts/sv7-booster-box.webp",
       "png": "cutouts/sv7-booster-box.png",
-      "width": 730,
-      "height": 1000
+      "width": 700,
+      "height": 960
     },
     {
       "id": "sv7-etb",
@@ -1287,8 +1234,8 @@
       "pass": true,
       "file": "cutouts/sv7-etb.webp",
       "png": "cutouts/sv7-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv7-pack",
@@ -1298,8 +1245,8 @@
       "pass": true,
       "file": "cutouts/sv7-pack.webp",
       "png": "cutouts/sv7-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv7-pc-etb",
@@ -1309,18 +1256,19 @@
       "pass": true,
       "file": "cutouts/sv7-pc-etb.webp",
       "png": "cutouts/sv7-pc-etb.png",
-      "width": 885,
-      "height": 838
+      "width": 787,
+      "height": 749
     },
     {
       "id": "sv8-bb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "booster-bundle",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/sv8-bb.webp",
+      "png": "cutouts/sv8-bb.png",
+      "width": 535,
+      "height": 614
     },
     {
       "id": "sv8-booster-box",
@@ -1330,20 +1278,19 @@
       "pass": true,
       "file": "cutouts/sv8-booster-box.webp",
       "png": "cutouts/sv8-booster-box.png",
-      "width": 755,
-      "height": 1000
+      "width": 724,
+      "height": 960
     },
     {
       "id": "sv8-etb",
       "siteId": "tcgcsv-565630",
       "tcgPlayerId": 565630,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "halo-on-dark 0.09",
-        "white-fringe 0.09",
-        "covers much less than product sil 0.47"
-      ]
+      "pass": true,
+      "file": "cutouts/sv8-etb.webp",
+      "png": "cutouts/sv8-etb.png",
+      "width": 858,
+      "height": 749
     },
     {
       "id": "sv8-pack",
@@ -1353,41 +1300,37 @@
       "pass": true,
       "file": "cutouts/sv8-pack.webp",
       "png": "cutouts/sv8-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv8-pc-etb",
       "siteId": "tcgcsv-565632",
       "tcgPlayerId": 565632,
       "productType": "pc-etb",
-      "pass": true,
-      "file": "cutouts/sv8-pc-etb.webp",
-      "png": "cutouts/sv8-pc-etb.png",
-      "width": 1000,
-      "height": 953
+      "pass": false
     },
     {
       "id": "sv8pt5-bb",
       "siteId": "tcgcsv-600518",
       "tcgPlayerId": 600518,
       "productType": "booster-bundle",
-      "pass": true,
-      "file": "cutouts/sv8pt5-bb.webp",
-      "png": "cutouts/sv8pt5-bb.png",
-      "width": 621,
-      "height": 837
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sv8pt5-etb",
       "siteId": "tcgcsv-593355",
       "tcgPlayerId": 593355,
       "productType": "etb",
-      "pass": true,
-      "file": "cutouts/sv8pt5-etb.webp",
-      "png": "cutouts/sv8pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sv8pt5-pack",
@@ -1397,19 +1340,19 @@
       "pass": true,
       "file": "cutouts/sv8pt5-pack.webp",
       "png": "cutouts/sv8pt5-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv8pt5-pc-etb",
       "siteId": "tcgcsv-593324",
       "tcgPlayerId": 593324,
       "productType": "pc-etb",
-      "pass": true,
-      "file": "cutouts/sv8pt5-pc-etb.webp",
-      "png": "cutouts/sv8pt5-pc-etb.png",
-      "width": 881,
-      "height": 840
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "sv8pt5-sc",
@@ -1419,8 +1362,8 @@
       "pass": true,
       "file": "cutouts/sv8pt5-sc.webp",
       "png": "cutouts/sv8pt5-sc.png",
-      "width": 1000,
-      "height": 748
+      "width": 1078,
+      "height": 806
     },
     {
       "id": "sv9-bb",
@@ -1430,8 +1373,8 @@
       "pass": true,
       "file": "cutouts/sv9-bb.webp",
       "png": "cutouts/sv9-bb.png",
-      "width": 743,
-      "height": 1000
+      "width": 456,
+      "height": 614
     },
     {
       "id": "sv9-booster-box",
@@ -1441,8 +1384,8 @@
       "pass": true,
       "file": "cutouts/sv9-booster-box.webp",
       "png": "cutouts/sv9-booster-box.png",
-      "width": 729,
-      "height": 1000
+      "width": 699,
+      "height": 960
     },
     {
       "id": "sv9-etb",
@@ -1452,8 +1395,8 @@
       "pass": true,
       "file": "cutouts/sv9-etb.webp",
       "png": "cutouts/sv9-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     },
     {
       "id": "sv9-pack",
@@ -1463,8 +1406,8 @@
       "pass": true,
       "file": "cutouts/sv9-pack.webp",
       "png": "cutouts/sv9-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "sv9-pc-etb",
@@ -1474,8 +1417,8 @@
       "pass": true,
       "file": "cutouts/sv9-pc-etb.webp",
       "png": "cutouts/sv9-pc-etb.png",
-      "width": 872,
-      "height": 823
+      "width": 789,
+      "height": 749
     },
     {
       "id": "swsh-eevee-evolutions-premium",
@@ -1485,8 +1428,8 @@
       "pass": true,
       "file": "cutouts/swsh-eevee-evolutions-premium.webp",
       "png": "cutouts/swsh-eevee-evolutions-premium.png",
-      "width": 1000,
-      "height": 849
+      "width": 950,
+      "height": 806
     },
     {
       "id": "swsh1-booster-box",
@@ -1496,18 +1439,41 @@
       "pass": true,
       "file": "cutouts/swsh1-booster-box.webp",
       "png": "cutouts/swsh1-booster-box.png",
-      "width": 687,
-      "height": 887
+      "width": 741,
+      "height": 960
     },
     {
       "id": "swsh1-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh1-etb.webp",
+      "png": "cutouts/swsh1-etb.png",
+      "width": 783,
+      "height": 749
+    },
+    {
+      "id": "swsh1-etb-zacian",
+      "siteId": "tcgcsv-206038",
+      "tcgPlayerId": 206038,
+      "productType": "etb",
+      "pass": true,
+      "file": "cutouts/swsh1-etb-zacian.webp",
+      "png": "cutouts/swsh1-etb-zacian.png",
+      "width": 783,
+      "height": 749
+    },
+    {
+      "id": "swsh1-etb-zamazenta",
+      "siteId": "tcgcsv-206039",
+      "tcgPlayerId": 206039,
+      "productType": "etb",
+      "pass": true,
+      "file": "cutouts/swsh1-etb-zamazenta.webp",
+      "png": "cutouts/swsh1-etb-zamazenta.png",
+      "width": 789,
+      "height": 749
     },
     {
       "id": "swsh1-pack",
@@ -1517,8 +1483,8 @@
       "pass": true,
       "file": "cutouts/swsh1-pack.webp",
       "png": "cutouts/swsh1-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh10-booster-box",
@@ -1528,8 +1494,8 @@
       "pass": true,
       "file": "cutouts/swsh10-booster-box.webp",
       "png": "cutouts/swsh10-booster-box.png",
-      "width": 738,
-      "height": 1000
+      "width": 705,
+      "height": 960
     },
     {
       "id": "swsh10-pack",
@@ -1539,8 +1505,8 @@
       "pass": true,
       "file": "cutouts/swsh10-pack.webp",
       "png": "cutouts/swsh10-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 245,
+      "height": 442
     },
     {
       "id": "swsh10-pc-etb",
@@ -1550,8 +1516,8 @@
       "pass": true,
       "file": "cutouts/swsh10-pc-etb.webp",
       "png": "cutouts/swsh10-pc-etb.png",
-      "width": 1000,
-      "height": 954
+      "width": 785,
+      "height": 749
     },
     {
       "id": "swsh11-booster-box",
@@ -1561,8 +1527,8 @@
       "pass": true,
       "file": "cutouts/swsh11-booster-box.webp",
       "png": "cutouts/swsh11-booster-box.png",
-      "width": 602,
-      "height": 800
+      "width": 720,
+      "height": 960
     },
     {
       "id": "swsh11-bundle",
@@ -1572,8 +1538,8 @@
       "pass": true,
       "file": "cutouts/swsh11-bundle.webp",
       "png": "cutouts/swsh11-bundle.png",
-      "width": 738,
-      "height": 992
+      "width": 456,
+      "height": 614
     },
     {
       "id": "swsh11-etb",
@@ -1583,8 +1549,8 @@
       "pass": true,
       "file": "cutouts/swsh11-etb.webp",
       "png": "cutouts/swsh11-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh11-pack",
@@ -1594,8 +1560,8 @@
       "pass": true,
       "file": "cutouts/swsh11-pack.webp",
       "png": "cutouts/swsh11-pack.png",
-      "width": 546,
-      "height": 999
+      "width": 245,
+      "height": 442
     },
     {
       "id": "swsh11-pc-etb",
@@ -1605,8 +1571,8 @@
       "pass": true,
       "file": "cutouts/swsh11-pc-etb.webp",
       "png": "cutouts/swsh11-pc-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh12-booster-box",
@@ -1616,8 +1582,8 @@
       "pass": true,
       "file": "cutouts/swsh12-booster-box.webp",
       "png": "cutouts/swsh12-booster-box.png",
-      "width": 750,
-      "height": 1000
+      "width": 1042,
+      "height": 960
     },
     {
       "id": "swsh12-bundle",
@@ -1627,8 +1593,8 @@
       "pass": true,
       "file": "cutouts/swsh12-bundle.webp",
       "png": "cutouts/swsh12-bundle.png",
-      "width": 744,
-      "height": 995
+      "width": 456,
+      "height": 614
     },
     {
       "id": "swsh12-etb",
@@ -1638,8 +1604,8 @@
       "pass": true,
       "file": "cutouts/swsh12-etb.webp",
       "png": "cutouts/swsh12-etb.png",
-      "width": 992,
-      "height": 944
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh12-pack",
@@ -1649,8 +1615,8 @@
       "pass": true,
       "file": "cutouts/swsh12-pack.webp",
       "png": "cutouts/swsh12-pack.png",
-      "width": 545,
-      "height": 998
+      "width": 245,
+      "height": 442
     },
     {
       "id": "swsh12-pc-etb",
@@ -1660,18 +1626,19 @@
       "pass": true,
       "file": "cutouts/swsh12-pc-etb.webp",
       "png": "cutouts/swsh12-pc-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh12pt5-bb",
       "siteId": "tcgcsv-527562",
       "tcgPlayerId": 527562,
       "productType": "booster-bundle",
-      "pass": false,
-      "why": [
-        "covers much less than product sil 0.43"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh12pt5-bb.webp",
+      "png": "cutouts/swsh12pt5-bb.png",
+      "width": 561,
+      "height": 614
     },
     {
       "id": "swsh12pt5-etb",
@@ -1681,30 +1648,22 @@
       "pass": true,
       "file": "cutouts/swsh12pt5-etb.webp",
       "png": "cutouts/swsh12pt5-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh12pt5-pack",
       "siteId": "tcgcsv-453466",
       "tcgPlayerId": 453466,
       "productType": "booster-pack",
-      "pass": true,
-      "file": "cutouts/swsh12pt5-pack.webp",
-      "png": "cutouts/swsh12pt5-pack.png",
-      "width": 546,
-      "height": 1000
+      "pass": false
     },
     {
       "id": "swsh12pt5-pc-etb",
       "siteId": "tcgcsv-454246",
       "tcgPlayerId": 454246,
       "productType": "pc-etb",
-      "pass": true,
-      "file": "cutouts/swsh12pt5-pc-etb.webp",
-      "png": "cutouts/swsh12pt5-pc-etb.png",
-      "width": 1000,
-      "height": 851
+      "pass": false
     },
     {
       "id": "swsh12pt5-premium",
@@ -1714,8 +1673,8 @@
       "pass": true,
       "file": "cutouts/swsh12pt5-premium.webp",
       "png": "cutouts/swsh12pt5-premium.png",
-      "width": 1000,
-      "height": 779
+      "width": 1035,
+      "height": 806
     },
     {
       "id": "swsh2-booster-box",
@@ -1725,8 +1684,8 @@
       "pass": true,
       "file": "cutouts/swsh2-booster-box.webp",
       "png": "cutouts/swsh2-booster-box.png",
-      "width": 370,
-      "height": 500
+      "width": 709,
+      "height": 960
     },
     {
       "id": "swsh2-etb",
@@ -1736,8 +1695,8 @@
       "pass": true,
       "file": "cutouts/swsh2-etb.webp",
       "png": "cutouts/swsh2-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh2-pack",
@@ -1747,8 +1706,8 @@
       "pass": true,
       "file": "cutouts/swsh2-pack.webp",
       "png": "cutouts/swsh2-pack.png",
-      "width": 308,
-      "height": 564
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh3-booster-box",
@@ -1758,8 +1717,8 @@
       "pass": true,
       "file": "cutouts/swsh3-booster-box.webp",
       "png": "cutouts/swsh3-booster-box.png",
-      "width": 597,
-      "height": 800
+      "width": 716,
+      "height": 960
     },
     {
       "id": "swsh3-etb",
@@ -1769,8 +1728,8 @@
       "pass": true,
       "file": "cutouts/swsh3-etb.webp",
       "png": "cutouts/swsh3-etb.png",
-      "width": 647,
-      "height": 618
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh3-pack",
@@ -1780,8 +1739,8 @@
       "pass": true,
       "file": "cutouts/swsh3-pack.webp",
       "png": "cutouts/swsh3-pack.png",
-      "width": 499,
-      "height": 898
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh35-etb",
@@ -1791,18 +1750,19 @@
       "pass": true,
       "file": "cutouts/swsh35-etb.webp",
       "png": "cutouts/swsh35-etb.png",
-      "width": 600,
-      "height": 573
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh35-pack",
       "siteId": "tcgcsv-218789",
       "tcgPlayerId": 218789,
       "productType": "booster-pack",
-      "pass": false,
-      "why": [
-        "pack missing wrapper side L=0.18 R=0.24"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh35-pack.webp",
+      "png": "cutouts/swsh35-pack.png",
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh4-booster-box",
@@ -1812,8 +1772,8 @@
       "pass": true,
       "file": "cutouts/swsh4-booster-box.webp",
       "png": "cutouts/swsh4-booster-box.png",
-      "width": 615,
-      "height": 800
+      "width": 737,
+      "height": 960
     },
     {
       "id": "swsh4-etb",
@@ -1823,8 +1783,8 @@
       "pass": true,
       "file": "cutouts/swsh4-etb.webp",
       "png": "cutouts/swsh4-etb.png",
-      "width": 677,
-      "height": 647
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh4-pack",
@@ -1834,8 +1794,8 @@
       "pass": true,
       "file": "cutouts/swsh4-pack.webp",
       "png": "cutouts/swsh4-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh45-etb",
@@ -1845,8 +1805,8 @@
       "pass": true,
       "file": "cutouts/swsh45-etb.webp",
       "png": "cutouts/swsh45-etb.png",
-      "width": 647,
-      "height": 618
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh45-pack",
@@ -1856,8 +1816,8 @@
       "pass": true,
       "file": "cutouts/swsh45-pack.webp",
       "png": "cutouts/swsh45-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh5-booster-box",
@@ -1867,18 +1827,19 @@
       "pass": true,
       "file": "cutouts/swsh5-booster-box.webp",
       "png": "cutouts/swsh5-booster-box.png",
-      "width": 630,
-      "height": 800
+      "width": 755,
+      "height": 960
     },
     {
       "id": "swsh5-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh5-etb.webp",
+      "png": "cutouts/swsh5-etb.png",
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh5-pack",
@@ -1888,8 +1849,8 @@
       "pass": true,
       "file": "cutouts/swsh5-pack.webp",
       "png": "cutouts/swsh5-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh6-booster-box",
@@ -1899,18 +1860,19 @@
       "pass": true,
       "file": "cutouts/swsh6-booster-box.webp",
       "png": "cutouts/swsh6-booster-box.png",
-      "width": 625,
-      "height": 800
+      "width": 749,
+      "height": 960
     },
     {
       "id": "swsh6-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh6-etb.webp",
+      "png": "cutouts/swsh6-etb.png",
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh6-pack",
@@ -1920,18 +1882,15 @@
       "pass": true,
       "file": "cutouts/swsh6-pack.webp",
       "png": "cutouts/swsh6-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh6-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "swsh7-booster-box",
@@ -1941,18 +1900,19 @@
       "pass": true,
       "file": "cutouts/swsh7-booster-box.webp",
       "png": "cutouts/swsh7-booster-box.png",
-      "width": 597,
-      "height": 800
+      "width": 716,
+      "height": 960
     },
     {
       "id": "swsh7-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": true,
+      "file": "cutouts/swsh7-etb.webp",
+      "png": "cutouts/swsh7-etb.png",
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh7-pack",
@@ -1962,18 +1922,15 @@
       "pass": true,
       "file": "cutouts/swsh7-pack.webp",
       "png": "cutouts/swsh7-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh7-pc-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "pc-etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "swsh8-booster-box",
@@ -1983,8 +1940,8 @@
       "pass": true,
       "file": "cutouts/swsh8-booster-box.webp",
       "png": "cutouts/swsh8-booster-box.png",
-      "width": 613,
-      "height": 800
+      "width": 735,
+      "height": 960
     },
     {
       "id": "swsh8-etb",
@@ -1994,8 +1951,8 @@
       "pass": true,
       "file": "cutouts/swsh8-etb.webp",
       "png": "cutouts/swsh8-etb.png",
-      "width": 647,
-      "height": 618
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh8-pack",
@@ -2005,8 +1962,8 @@
       "pass": true,
       "file": "cutouts/swsh8-pack.webp",
       "png": "cutouts/swsh8-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 241,
+      "height": 442
     },
     {
       "id": "swsh8-pc-etb",
@@ -2016,8 +1973,8 @@
       "pass": true,
       "file": "cutouts/swsh8-pc-etb.webp",
       "png": "cutouts/swsh8-pc-etb.png",
-      "width": 1000,
-      "height": 956
+      "width": 784,
+      "height": 749
     },
     {
       "id": "swsh9-booster-box",
@@ -2027,8 +1984,8 @@
       "pass": true,
       "file": "cutouts/swsh9-booster-box.webp",
       "png": "cutouts/swsh9-booster-box.png",
-      "width": 759,
-      "height": 1000
+      "width": 728,
+      "height": 960
     },
     {
       "id": "swsh9-pack",
@@ -2038,51 +1995,173 @@
       "pass": true,
       "file": "cutouts/swsh9-pack.webp",
       "png": "cutouts/swsh9-pack.png",
-      "width": 546,
-      "height": 1000
+      "width": 245,
+      "height": 442
     },
     {
       "id": "swsh9-pc-etb",
       "siteId": "tcgcsv-256140",
       "tcgPlayerId": 256140,
       "productType": "pc-etb",
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
+    },
+    {
+      "id": "tcgcsv-123741",
+      "siteId": "tcgcsv-123741",
+      "tcgPlayerId": 123741,
+      "productType": "etb",
       "pass": true,
-      "file": "cutouts/swsh9-pc-etb.webp",
-      "png": "cutouts/swsh9-pc-etb.png",
-      "width": 647,
-      "height": 618
+      "file": "cutouts/tcgcsv-123741.webp",
+      "png": "cutouts/tcgcsv-123741.png",
+      "width": 708,
+      "height": 749
+    },
+    {
+      "id": "tcgcsv-133812",
+      "siteId": "tcgcsv-133812",
+      "tcgPlayerId": 133812,
+      "productType": "deck",
+      "pass": true,
+      "file": "cutouts/tcgcsv-133812.webp",
+      "png": "cutouts/tcgcsv-133812.png",
+      "width": 592,
+      "height": 672
+    },
+    {
+      "id": "tcgcsv-630614",
+      "siteId": "tcgcsv-630614",
+      "tcgPlayerId": 630614,
+      "productType": "special-collection",
+      "pass": true,
+      "file": "cutouts/tcgcsv-630614.webp",
+      "png": "cutouts/tcgcsv-630614.png",
+      "width": 878,
+      "height": 806
     },
     {
       "id": "tcgcsv-692583",
       "siteId": "tcgcsv-692583",
       "tcgPlayerId": 692583,
-      "productType": "special-collection",
+      "productType": "booster-bundle",
       "pass": true,
       "file": "cutouts/tcgcsv-692583.webp",
       "png": "cutouts/tcgcsv-692583.png",
-      "width": 982,
-      "height": 444
+      "width": 1406,
+      "height": 614
     },
     {
       "id": "tcgcsv-701600",
       "siteId": "tcgcsv-701600",
       "tcgPlayerId": 701600,
-      "productType": "special-collection",
+      "productType": "tin",
       "pass": true,
       "file": "cutouts/tcgcsv-701600.webp",
       "png": "cutouts/tcgcsv-701600.png",
-      "width": 971,
-      "height": 772
+      "width": 700,
+      "height": 557
     },
     {
       "id": "tcgcsv-702637",
       "siteId": "tcgcsv-702637",
       "tcgPlayerId": 702637,
+      "productType": "tin",
+      "pass": true,
+      "file": "cutouts/tcgcsv-702637.webp",
+      "png": "cutouts/tcgcsv-702637.png",
+      "width": 691,
+      "height": 557
+    },
+    {
+      "id": "tcgcsv-704143",
+      "siteId": "tcgcsv-704143",
+      "tcgPlayerId": 704143,
+      "productType": "etb",
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
+    },
+    {
+      "id": "tcgcsv-704169",
+      "siteId": "tcgcsv-704169",
+      "tcgPlayerId": 704169,
       "productType": "special-collection",
       "pass": false,
-      "why": [
-        "bg not removed"
-      ]
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
+    },
+    {
+      "id": "tcgcsv-704187",
+      "siteId": "tcgcsv-704187",
+      "tcgPlayerId": 704187,
+      "productType": "deck",
+      "pass": true,
+      "file": "cutouts/tcgcsv-704187.webp",
+      "png": "cutouts/tcgcsv-704187.png",
+      "width": 661,
+      "height": 672
+    },
+    {
+      "id": "tcgcsv-704188",
+      "siteId": "tcgcsv-704188",
+      "tcgPlayerId": 704188,
+      "productType": "deck",
+      "pass": true,
+      "file": "cutouts/tcgcsv-704188.webp",
+      "png": "cutouts/tcgcsv-704188.png",
+      "width": 661,
+      "height": 672
+    },
+    {
+      "id": "tcgcsv-704190",
+      "siteId": "tcgcsv-704190",
+      "tcgPlayerId": 704190,
+      "productType": "special-collection",
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
+    },
+    {
+      "id": "tcgcsv-712094",
+      "siteId": "tcgcsv-712094",
+      "tcgPlayerId": 712094,
+      "productType": "booster-box",
+      "pass": true,
+      "file": "cutouts/tcgcsv-712094.webp",
+      "png": "cutouts/tcgcsv-712094.png",
+      "width": 699,
+      "height": 960
+    },
+    {
+      "id": "tcgcsv-712108",
+      "siteId": "tcgcsv-712108",
+      "tcgPlayerId": 712108,
+      "productType": "blister",
+      "pass": true,
+      "file": "cutouts/tcgcsv-712108.webp",
+      "png": "cutouts/tcgcsv-712108.png",
+      "width": 323,
+      "height": 595
+    },
+    {
+      "id": "tcgcsv-712112",
+      "siteId": "tcgcsv-712112",
+      "tcgPlayerId": 712112,
+      "productType": "sleeved-pack",
+      "pass": true,
+      "file": "cutouts/tcgcsv-712112.webp",
+      "png": "cutouts/tcgcsv-712112.png",
+      "width": 277,
+      "height": 499
     },
     {
       "id": "xy12-booster-box",
@@ -2092,18 +2171,15 @@
       "pass": true,
       "file": "cutouts/xy12-booster-box.webp",
       "png": "cutouts/xy12-booster-box.png",
-      "width": 425,
-      "height": 544
+      "width": 746,
+      "height": 960
     },
     {
       "id": "xy12-etb",
       "siteId": "",
       "tcgPlayerId": null,
       "productType": "etb",
-      "pass": false,
-      "why": [
-        "no product photo (set logo only; no TCGplayer id)"
-      ]
+      "pass": false
     },
     {
       "id": "zsv10pt5-bb-pc-etb",
@@ -2113,19 +2189,19 @@
       "pass": true,
       "file": "cutouts/zsv10pt5-bb-pc-etb.webp",
       "png": "cutouts/zsv10pt5-bb-pc-etb.png",
-      "width": 582,
-      "height": 549
+      "width": 784,
+      "height": 749
     },
     {
       "id": "zsv10pt5-bundle",
       "siteId": "tcgcsv-630431",
       "tcgPlayerId": 630431,
       "productType": "booster-bundle",
-      "pass": true,
-      "file": "cutouts/zsv10pt5-bundle.webp",
-      "png": "cutouts/zsv10pt5-bundle.png",
-      "width": 744,
-      "height": 1000
+      "pass": false,
+      "file": null,
+      "png": null,
+      "width": null,
+      "height": null
     },
     {
       "id": "zsv10pt5-etb",
@@ -2135,8 +2211,8 @@
       "pass": true,
       "file": "cutouts/zsv10pt5-etb.webp",
       "png": "cutouts/zsv10pt5-etb.png",
-      "width": 1000,
-      "height": 953
+      "width": 786,
+      "height": 749
     }
   ]
 }
