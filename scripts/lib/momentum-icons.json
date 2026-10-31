@@ -1,0 +1,61 @@
+{
+  "about": "Plain labels for private momentum reads. No prices and no calls. The site and reads can reuse these ids later.",
+  "icons": [
+    {
+      "id": "momentum-picking-up",
+      "signal": "momentum",
+      "state": "picking-up",
+      "label": "Picking up",
+      "meaning": "The latest listings counted step is faster than the step before it."
+    },
+    {
+      "id": "momentum-slowing",
+      "signal": "momentum",
+      "state": "slowing",
+      "label": "Slowing",
+      "meaning": "The latest listings counted step is slower than the step before it."
+    },
+    {
+      "id": "momentum-flat",
+      "signal": "momentum",
+      "state": "flat",
+      "label": "Flat",
+      "meaning": "The latest listings counted step is not faster or slower than the step before it."
+    },
+    {
+      "id": "duration-longer",
+      "signal": "duration",
+      "state": "longer",
+      "label": "Longer than usual",
+      "meaning": "This move has lasted more days than the usual move for this product."
+    },
+    {
+      "id": "duration-shorter",
+      "signal": "duration",
+      "state": "shorter",
+      "label": "Shorter than usual",
+      "meaning": "This move has lasted fewer days than the usual move for this product."
+    },
+    {
+      "id": "duration-usual",
+      "signal": "duration",
+      "state": "usual",
+      "label": "About usual",
+      "meaning": "This move has lasted about as many days as the usual move for this product."
+    },
+    {
+      "id": "pattern-same",
+      "signal": "pattern",
+      "state": "same",
+      "label": "Same as last time",
+      "meaning": "The latest listings counted steps match the steps before them."
+    },
+    {
+      "id": "pattern-different",
+      "signal": "pattern",
+      "state": "different",
+      "label": "Different from last time",
+      "meaning": "The latest listings counted steps do not match the steps before them."
+    }
+  ]
+}

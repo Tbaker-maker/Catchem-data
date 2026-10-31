@@ -1,20 +1,20 @@
 {
  "asOf": "2026-10-30",
- "generatedAt": "2026-10-30T22:43:12.768Z",
+ "generatedAt": "2026-10-31T12:00:40.460Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
-   "date": "2026-10-30",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-10-31",
+   "ok": false,
+   "detail": "dated 2026-10-31"
   },
   {
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
-   "date": "2026-10-30",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-10-31",
+   "ok": false,
+   "detail": "dated 2026-10-31"
   },
   {
    "id": "reads",
@@ -32,6 +32,8 @@
   }
  ],
  "failures": [
+  "price-day",
+  "listings-counted",
   "scanner"
  ],
  "alerts": [],
