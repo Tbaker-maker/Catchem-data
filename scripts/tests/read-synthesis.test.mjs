@@ -3,9 +3,15 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
+import { findings as findingsAt, validSynth, loadContext, synthesizeReads as synthesizeAt, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
+
+// These checks measure synthesis, not a missing hold file. A missing hold
+// file holds the read, which read-proof.suite.mjs covers.
+const OPEN = { flatDays: 100000, jumpPct: 100000 };
+const findings = (item, ctx, cfg, limits = OPEN) => findingsAt(item, ctx, cfg, limits);
+const synthesizeReads = (reads, ctx, cfg, limits = OPEN) => synthesizeAt(reads, ctx, cfg, limits);
 
 let fail = 0;
 const t = (name, ok) => { if (ok) console.log("  ok  " + name); else { fail += 1; console.error("  FAIL " + name); } };

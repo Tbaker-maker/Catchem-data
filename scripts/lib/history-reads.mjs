@@ -14,6 +14,7 @@ import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
 import { loadHeldIds } from "./price-hold-skip.mjs";
+import { holdWindow } from "./read-proof.mjs";
 
 export const HIST_TAG = "hist";
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -170,7 +171,7 @@ export function extremeRead(c, asOf, dir) {
   return { ...base(c, kind, headline, asOf, { startDate: (D || pts[0])[0], since: D ? { date: D[0], price: D[1] } : null, yearExtreme: { date: ext[0], price: ext[1] }, now: { date: asOf, price: last[1] } }, variants), strength: margin };
 }
 
-export function windowRead(c, asOf, { days, minPct, minUsd, maxPct = Infinity, kind }) {
+export function windowRead(c, asOf, { days, minPct, minUsd, maxPct = Infinity, kind, limits = null }) {
   const last = c.pts[c.pts.length - 1];
   if (!last || last[0] !== asOf) return null;
   const target = addDays(asOf, -days);
@@ -178,6 +179,7 @@ export function windowRead(c, asOf, { days, minPct, minUsd, maxPct = Infinity, k
   if (!p || p[0] === last[0]) return null;
   if (dayNum(asOf) - dayNum(p[0]) !== days) return null;
   if (days === 7 && oneNightMove(c.pts, p[0], last[0])) return null;
+  if (holdWindow(c.pts, p[0], last[0], limits).hold) return null;
   const ch = pctOf(p[1], last[1]);
   if (Math.abs(ch) < minPct || Math.abs(ch) > maxPct || Math.abs(last[1] - p[1]) < minUsd) return null;
   const up = ch > 0;
@@ -271,14 +273,14 @@ function rotate(rows, day, take, salt) {
 
 // All long-history reads for one night. Strongest 12 per kind, rotated by day so
 // the board does not repeat. One card is used once.
-export function historyReads(cards, asOf, { perKind = 2 } = {}) {
+export function historyReads(cards, asOf, { perKind = 2, limits = null } = {}) {
   const want = (k) => (typeof perKind === "number" ? perKind : perKind[k] || 2);
   const live = cards.filter((c) => eligible(c, asOf));
   const kinds = {
     high: live.map((c) => extremeRead(c, asOf, 1)).filter(Boolean),
     low: live.map((c) => extremeRead(c, asOf, -1)).filter(Boolean),
-    year: live.map((c) => windowRead(c, asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" })).filter(Boolean),
-    plain: live.map((c) => windowRead(c, asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain" })).filter(Boolean),
+    year: live.map((c) => windowRead(c, asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year", limits })).filter(Boolean),
+    plain: live.map((c) => windowRead(c, asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain", limits })).filter(Boolean),
     backto: live.map((c) => backToRead(c, asOf)).filter(Boolean),
     set: setReads(live, asOf),
   };

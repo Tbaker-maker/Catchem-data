@@ -64,7 +64,7 @@ export async function run() {
     ["2026-10-28", 117.71],
   ];
   const etbItem = { id: "tcgcsv-704143", pts: etbPts, title: "30th Celebration Elite Trainer Box", asOf: "2026-10-28", set: "ME: 30th Celebration", setSlug: "me-30th", sealed: true };
-  const fs = findings(etbItem, { peers: new Map(), market: null }, CFG);
+  const fs = findings(etbItem, { peers: new Map(), market: null }, CFG, { flatDays: 100000, jumpPct: 100000 });
   const trend = fs.find((f) => f.tag === "trend" && f.type.startsWith("trend30"));
   t("30-day trend skips the Sep 27 spike baseline", trend && trend.nums.lead.from[0] === "2026-09-26" && Number(trend.nums.lead.from[1]) === 146.84);
   const pct30 = trend ? Math.round(Math.abs(trend.nums.lead.pct)) : null;
