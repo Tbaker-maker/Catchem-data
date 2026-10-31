@@ -17,13 +17,14 @@ spec.loader.exec_module(cut)
 fail = 0
 
 
-def check(name, cond):
+def check(name, cond, detail=""):
     global fail
     if cond:
         print(f"  ok  {name}")
     else:
         fail += 1
-        print(f"  FAIL {name}")
+        extra = " " + detail if detail else ""
+        print(f"  FAIL {name}{extra}")
 
 
 def textured(size, bg, box, color):
@@ -103,14 +104,33 @@ def test_shipped():
         kind = cut.halo_ring(im)
         if kind:
             reasons.append(kind)
+        fault = cut.edge_fault(im)
+        if fault:
+            reasons.append(fault)
         alpha = np.array(im)[:, :, 3]
         if float(alpha.mean()) < 6:
             reasons.append("empty")
         if reasons:
             bad.append(str(row.get("id")) + " " + ",".join(reasons))
-    check("every passed cutout is clean", not bad, )
+    check("every passed cutout is clean", not bad)
     if bad:
         print("   " + "; ".join(bad[:12]))
+    # Named clean cuts must stay clean. A mat or a ragged edge is a fail.
+    clean = [
+        "sv1-pack.png",
+        "me1-pack.png",
+        "sv2-booster-box.png",
+        "sv8-booster-box.png",
+        "me1-enhanced-booster-box.png",
+    ]
+    root = ROOT / "research" / "assets" / "public" / "cutouts"
+    for name in clean:
+        path = root / name
+        if not path.exists():
+            check(name + " is present", False)
+            continue
+        fault = cut.edge_fault(Image.open(path).convert("RGBA"))
+        check(name + " has no mat and no ragged edge", fault == "", fault)
 
 
 def main():

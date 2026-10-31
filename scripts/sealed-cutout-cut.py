@@ -47,6 +47,14 @@ def studio_bg(rgb):
         return np.array([255, 255, 255], dtype=np.float32)
     if black >= 0.42:
         return np.array([0, 0, 0], dtype=np.float32)
+    # A tinted pale frame is still a studio. A pure white frame already returned above.
+    luma = 0.2126 * sample[:, 0] + 0.7152 * sample[:, 1] + 0.0722 * sample[:, 2]
+    chroma = sample.max(axis=1) - sample.min(axis=1)
+    pale = (luma > 200) & (chroma < 80)
+    if float(pale.mean()) >= 0.55:
+        bg = np.median(sample[pale], axis=0).astype(np.float32)
+        if float(bg.mean()) < 248:
+            return bg
     return None
 
 
@@ -57,7 +65,12 @@ def flood_fg(rgb):
     if bg is None:
         return punch_holes(rgb)
     lum = float(bg.mean())
-    tol = 28 if lum >= 248 else 32
+    if lum >= 248:
+        tol = 28
+    elif lum <= 20:
+        tol = 32
+    else:
+        tol = 36
     dist = np.abs(rgb.astype(np.int16) - bg.astype(np.int16)).sum(axis=2)
     near = dist <= tol
     seeds = np.zeros((h, w), dtype=bool)
@@ -75,6 +88,18 @@ def flood_fg(rgb):
         return None
     fg = ndimage.binary_closing(fg, structure=np.ones((3, 3)))
     fg = detach_slivers(fg)
+    fg = peel_white_rim(rgb, fg)
+    return fg
+
+
+def peel_white_rim(rgb, fg):
+    """Drop a pure white studio rim. Stop at printed color, including a light card."""
+    pure = rgb.min(axis=2) > 248
+    for _ in range(10):
+        edge = ndimage.binary_dilation(~fg) & fg & pure
+        if not edge.any():
+            break
+        fg = fg & ~edge
     return fg
 
 
@@ -97,17 +122,27 @@ def detach_slivers(fg):
 
 
 def punch_holes(rgb):
-    """The package fills the photo. Remove small pure-white hang holes. Do not eat the printed package."""
+    """The package fills the photo. Remove a hang hole at the top. Do not eat printed type."""
     white = (rgb[:, :, 0] > 246) & (rgb[:, :, 1] > 246) & (rgb[:, :, 2] > 246)
     labeled, n = ndimage.label(white)
     fg = np.ones(white.shape, dtype=bool)
     if n == 0:
         return fg
     counts = np.bincount(labeled.ravel())
+    h, w = white.shape
     limit = max(500, int(white.size * 0.015))
     for i in range(1, n + 1):
-        if counts[i] < limit:
-            fg[labeled == i] = False
+        area = int(counts[i])
+        if area < 800 or area >= limit:
+            continue
+        ys, xs = np.where(labeled == i)
+        if float(ys.mean()) / h > 0.18:
+            continue
+        bh = int(ys.max() - ys.min() + 1)
+        bw = int(xs.max() - xs.min() + 1)
+        if area / float(bh * bw) < 0.45:
+            continue
+        fg[labeled == i] = False
     return fg
 
 
@@ -242,6 +277,61 @@ def halo_ring(im):
     return ""
 
 
+def edge_fault(im):
+    """A leftover mat on the frame, or a ragged alpha edge. A clean product returns ''."""
+    a = np.array(im.convert("RGBA"))
+    h, w, _ = a.shape
+    if h < 8 or w < 8:
+        return "tiny"
+    rgb = a[:, :, :3].astype(np.float32)
+    al = a[:, :, 3]
+    luma = 0.2126 * rgb[:, :, 0] + 0.7152 * rgb[:, :, 1] + 0.0722 * rgb[:, :, 2]
+    chroma = rgb.max(axis=2) - rgb.min(axis=2)
+    near_w = (al > 200) & (luma > 205) & (chroma < 70)
+    near_b = (al > 200) & (rgb.max(axis=2) < 26)
+    b = 8
+
+    def shares(mask):
+        return [
+            float(mask[:b].mean()),
+            float(mask[-b:].mean()),
+            float(mask[:, :b].mean()),
+            float(mask[:, -b:].mean()),
+        ]
+
+    # A mat wraps the frame. A dark crimp is only the short ends of a pack.
+    if sum(v > 0.62 for v in shares(near_w)) >= 3:
+        return "mat"
+    if sum(v > 0.75 for v in shares(near_b)) >= 3:
+        return "mat"
+    opaque = al > 160
+    band = 24
+    ring = np.zeros((h, w), dtype=bool)
+    ring[:band, :] = True
+    ring[-band:, :] = True
+    ring[:, :band] = True
+    ring[:, -band:] = True
+    labeled, n = ndimage.label(opaque & ring)
+    specks = 0
+    if n:
+        sizes = np.bincount(labeled.ravel())[1:]
+        specks = int((sizes < 100).sum())
+    labeled, n = ndimage.label(opaque)
+    sol = 1.0
+    if n:
+        sizes = np.bincount(labeled.ravel())
+        sizes[0] = 0
+        main = labeled == int(sizes.argmax())
+        ys, xs = np.where(main)
+        box = (int(xs.max() - xs.min() + 1)) * (int(ys.max() - ys.min() + 1))
+        if box:
+            sol = float(main.sum()) / float(box)
+    # Eaten art leaves specks in the outer band and a lacy silhouette.
+    if sol < 0.75 and specks >= 6:
+        return "ragged"
+    return ""
+
+
 def qa_rgba(im):
     """True alpha. A white or black box, a tiny canvas, or an empty mask fails."""
     flags = blank_flags()
@@ -260,6 +350,11 @@ def qa_rgba(im):
         flags["empty"] = True
     if kind == "tiny":
         flags["tiny"] = True
+    fault = edge_fault(im)
+    if fault == "mat":
+        flags["leftover"] = True
+    if fault == "ragged":
+        flags["jagged"] = True
     return flags
 
 
@@ -302,7 +397,7 @@ def compose(rgb, fg, target_h):
     resized = crop.resize((max(1, int(round(crop.size[0] * scale))), int(target_h)), Image.Resampling.LANCZOS)
     # No drop shadow. A shadow reads as a black box on the shelf.
     q = qa_rgba(resized)
-    for key in ("leftover", "empty", "tiny"):
+    for key in ("leftover", "empty", "tiny", "jagged"):
         if q[key]:
             flags[key] = True
     if any(flags[k] for k in ("centerEaten", "leftover", "jagged", "clipped", "blur", "empty", "tiny")):
