@@ -2,7 +2,7 @@
 // measured shape of the fixture, not the private bar.
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { headlineFromDate, holdWindow, proofAgrees, stampHistReceipt } from "../lib/read-proof.mjs";
+import { headlineFromDate, holdWindow, proofAgrees, resetHoldLimitLog, stampHistReceipt } from "../lib/read-proof.mjs";
 import { findings, validSynth } from "../lib/read-synthesis.mjs";
 import { speakDates } from "../lib/read-quality.mjs";
 
@@ -16,6 +16,9 @@ dragonite.push(["2026-10-29", 233.20], ["2026-10-30", 418.55]);
 
 export async function run() {
   t("empty history is not a signal", holdWindow([], "2026-10-23", asOf, { flatDays: 1, jumpPct: 1 }).hold === false && holdWindow([], "2026-10-23", asOf, { flatDays: 1, jumpPct: 1 }).reason === "empty history");
+  // Another suite in this process may already have logged the one line.
+  holdWindow(dragonite, "2026-10-23", asOf, null);
+  resetHoldLimitLog();
   const missed = [];
   const log = console.error;
   console.error = (...args) => { missed.push(args.join(" ")); };

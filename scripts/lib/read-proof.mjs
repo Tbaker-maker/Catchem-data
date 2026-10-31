@@ -37,7 +37,11 @@ export function limitsOk(doc) {
 }
 
 // Missing private limits holds the read. Empty history is not a signal.
+// The line is logged once per process, not once per read.
 let limitsMissLogged = false;
+export function resetHoldLimitLog() {
+  limitsMissLogged = false;
+}
 
 export function holdWindow(points, from, to, limits) {
   const bar = limitsOk(limits);
