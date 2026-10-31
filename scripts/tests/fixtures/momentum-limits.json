@@ -1,0 +1,19 @@
+{
+  "note": "Test fixture only. Live cutoffs are not in this repo.",
+  "flatAbsPerDay": 0.1,
+  "paceDeltaMin": 0.1,
+  "maxGapDays": 2,
+  "minPoints": 4,
+  "durationBandDays": 0,
+  "minPastMoves": 2,
+  "patternSteps": 2,
+  "forwardDays": 7,
+  "priceFlatAbsPct": 0.5,
+  "minN": 3,
+  "minLift": 0.05,
+  "calls": {
+    "momentum": { "picking-up": "opposite-listings", "slowing": "same-listings", "flat": "none" },
+    "duration": { "longer": "opposite-listings", "shorter": "same-listings", "usual": "none" },
+    "pattern": { "same": "opposite-listings", "different": "same-listings" }
+  }
+}
