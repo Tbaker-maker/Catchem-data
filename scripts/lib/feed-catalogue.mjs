@@ -69,6 +69,8 @@ export function sentenceShape(text, card) {
 export function sealedKindOf(card) {
   const sub = String(card?.subtype || card?.sealedKind || "").toLowerCase();
   const name = String(card?.name || "").toLowerCase();
+  // A case of bundles is a case. The word bundle in the name must not take the bundle seat.
+  if (sub === "case") return "other";
   if (sub === "box" || sub === "booster-box" || /\bbooster box\b/.test(name)) return "box";
   if (sub === "etb" || sub === "pc-etb" || /elite trainer/.test(name) || /\betb\b/.test(name)) return "etb";
   if (sub === "bundle" || sub === "booster-bundle" || /\bbundle\b/.test(name)) return "bundle";

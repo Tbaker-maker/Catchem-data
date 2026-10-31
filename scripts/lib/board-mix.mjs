@@ -699,7 +699,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   card.pool = (card.pool || []).filter((row) => !heldIds.has(`tcgcsv-${row.id}`));
   for (const id of Object.keys(card.risers || {})) if (heldIds.has(id)) delete card.risers[id];
 
-  const sealedProducts = await readJson(join(root, "data/sealed-products.json"), []);
+  const sealedProducts = (await readJson(join(root, "data/sealed-products.json"), [])).filter((row) => row && row.browse !== false);
   const histories = new Map();
   for (const p of sealedProducts) {
     const h = await readJson(join(root, `data/history/tcgplayer-market/${p.id}.json`));

@@ -14,6 +14,7 @@ import { loadHistoryCards } from "./history-reads.mjs";
 import { publicCopyOk } from "./year-patterns.mjs";
 import { speakDates } from "./read-quality.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
+import { siteGates, showsOnSite } from "./browse-hidden.mjs";
 
 const usd = (n) => tcgAmount(n, money);
 
@@ -504,6 +505,7 @@ export async function collectSpanReads({ root, asOf, series }) {
   const own = series || await loadOwnSeries(root);
   const fillMap = loadFillMap(root);
   const catalog = JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const gates = await siteGates(root);
   const setsDoc = JSON.parse(await readFile(join(root, "research/assets/public/sets.json"), "utf8"));
   let groups = {};
   try { groups = JSON.parse(await readFile(join(root, "data/tcgcsv-group-dates.json"), "utf8")); } catch { groups = {}; }
@@ -511,6 +513,7 @@ export async function collectSpanReads({ root, asOf, series }) {
   const rangeItems = [];
   const sealedAgo = [];
   for (const item of catalog.items || []) {
+    if (!showsOnSite(item, gates.pids, gates.costcoIds)) continue;
     const points = pointsFromSeries(own, item.tcgplayerProductId, fillMap);
     if (points.length < 2) continue;
     const meta = setByName.get(normName(pretty(item.set))) || {};

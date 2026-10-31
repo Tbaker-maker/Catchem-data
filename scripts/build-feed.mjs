@@ -15,6 +15,7 @@ import { buildBoardV3 } from "./lib/board-mix.mjs";
 import { loadSeriesOnce } from "./lib/series-cache.mjs";
 import { writeHealth } from "./write-health.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
+import { siteGates, showsOnSite } from "./lib/browse-hidden.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -74,8 +75,10 @@ function releaseFor(item) {
 
 const BAD_IMAGE = new Set([232881, 532629]);
 const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pids: [] }))).pids || []).map(Number));
+const hiddenGate = await siteGates(ROOT);
 const items = [];
 for (const item of catalog.items || []) {
+  if (!showsOnSite(item, hiddenGate.pids, hiddenGate.costcoIds)) continue;
   const days = series.get(Number(item.tcgplayerProductId));
   if (!days || days.size < 2) continue; // windows below decide what qualifies
   const hist = dropTiledCycles([...days.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1));
