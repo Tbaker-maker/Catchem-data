@@ -135,6 +135,17 @@ function base(c, kind, headline, asOf, receipt, variants) {
   };
 }
 
+// The board speaks dates in public lines ("Oct 30"). The hist receipt keeps
+// the ISO start date in source so the board test can prove the window.
+export function stampHistReceipt(read) {
+  if (!read || read.board !== HIST_TAG) return read;
+  const start = String(read.startDate || "");
+  const end = String(read.endDate || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || end !== String(read.asOf || "")) return read;
+  if (String(read.source || "").includes(start)) return read;
+  return { ...read, source: `TCGplayer market (tcgcsv daily archive and our nightly days), ${start} and ${end}` };
+}
+
 // 52-week high / highest since / highest on file. Low mirrors it.
 export function extremeRead(c, asOf, dir) {
   const pts = c.pts;
