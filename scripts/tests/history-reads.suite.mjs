@@ -1,5 +1,6 @@
 import { hasBannedWord } from "../lib/copy-rules.mjs";
-import { nearestPoint, extremeRead, windowRead, backToRead, setReads, historyReads, dateLabel } from "../lib/history-reads.mjs";
+import { nearestPoint, extremeRead, windowRead, backToRead, setReads, historyReads, dateLabel, stampHistReceipt } from "../lib/history-reads.mjs";
+import { speakDates } from "../lib/read-quality.mjs";
 import { parsePcPreordersApi } from "../lib/news-sources.mjs";
 import { listingReads, listingLevelReads, sealedChaseReads } from "../lib/board-mix.mjs";
 
@@ -54,5 +55,13 @@ export async function run() {
   const raw = new Map([[555, { group: "SV09: Journey Together" }]]);
   const sc = sealedChaseReads({ products: [{ id: "sv9-booster-box", name: "Journey Together Booster Box", tcgPlayerId: "555" }], histories: hist, rawProducts: raw, pool: [{ id: 9, group: "SV09: Journey Together", name: "N's Zoroark ex", from: 30, to: 40 }], start: "2026-10-05", end: asOf });
   t("sealed vs chase names both sides by id with both dates", sc.length === 1 && sc[0].receipt.chaseId === "tcgcsv-9" && sc[0].headline.includes("Oct 5 to Oct 12"));
+  {
+    const read = { board: "hist", readKind: "year", kind: "year", asOf: "2026-10-30", startDate: "2025-10-30", endDate: "2026-10-30", source: "TCGplayer market (tcgcsv daily archive and our nightly days), 2025-10-30 and 2026-10-30" };
+    const spoken = { ...read, source: speakDates(read.source, read.asOf) };
+    const boardOk = (r) => String(r.source || "").includes(r.startDate) && r.endDate === r.asOf;
+    t("a spoken hist source loses its ISO start date", boardOk(spoken) === false);
+    t("stamping the hist receipt puts the ISO start date back", boardOk(stampHistReceipt(spoken)) === true);
+    t("a non-hist read is left alone", stampHistReceipt({ ...spoken, board: "v3" }).source === spoken.source);
+  }
   return fail;
 }
