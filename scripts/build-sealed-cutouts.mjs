@@ -42,8 +42,14 @@ try {
   for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) crosscheck[e.id] = e.tcgPlayerId;
 } catch { crosscheck = {}; }
 
-const products = showableProducts(prices.products || [], Array.isArray(catalog) ? catalog : [], reads)
-  .filter((p) => p && p.id && (!ONLY.size || ONLY.has(p.id) || ONLY.has("tcgcsv-" + (Number(p.tcgPlayerId) || ""))));
+const wantsOnly = (p) => ONLY.has(p.id) || ONLY.has("tcgcsv-" + (Number(p.tcgPlayerId) || ""));
+const showable = showableProducts(prices.products || [], Array.isArray(catalog) ? catalog : [], reads);
+// ONLY_IDS may name catalogue ids that tonight's reads will show but the
+// checked-in reads file does not mention yet, so look them up in the catalogue too.
+const extraOnly = ONLY.size && Array.isArray(catalog)
+  ? catalog.filter((p) => p && p.id && wantsOnly(p) && !showable.some((s) => s.id === p.id))
+  : [];
+const products = showable.concat(extraOnly).filter((p) => p && p.id && (!ONLY.size || wantsOnly(p)));
 const job = [];
 const skipped = [];
 for (const product of products) {
@@ -106,6 +112,17 @@ for (const product of products) {
   }));
 }
 
+// ONLY_IDS rebuilds a few products. Keep every other row as it was instead of
+// writing a file that holds only those few.
+if (ONLY.size) {
+  const done = new Set(rows.map((r) => r.id));
+  let oldCuts = { products: [] };
+  let oldReview = { products: [] };
+  try { oldCuts = await loadJson(join(ROOT, "data/sealed-cutouts.json")); } catch {}
+  try { oldReview = await loadJson(join(ROOT, "data/sealed-cutout-review.json")); } catch {}
+  for (const row of oldCuts.products || []) if (!done.has(row.id)) rows.push(row);
+  for (const row of oldReview.products || []) if (!done.has(row.id)) review.push(row);
+}
 rows.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 review.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 const doc = {
