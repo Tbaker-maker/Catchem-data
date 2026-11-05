@@ -41,6 +41,8 @@ export async function run() {
   t("rows come soonest first", up.map((r) => r.date).join() === "2026-10-07,2026-11-06,2026-12-04");
   t("limit applies after sorting", upcomingRadar(radar, "2026-10-07", { limit: 1 })[0].name === "Today");
   t("verifiedOnly leaves single-source leads out", !upcomingRadar(radar, "2026-10-07", { verifiedOnly: true }).some((r) => r.confidence === "single-source"));
+  t("a pokemon.com news URL still confirms when the note once said no announcement", canConfirm({ confidence: "verified", note: "Not announced as of Oct 27. Sources: pokemon.com/us/news/example-happy-meals." }));
+  t("a bare pokemon.com index with a denial does not confirm", !canConfirm({ confidence: "verified", note: "TPC carries no announcement on pokemon.com. Sources: pokemon.com." }));
   t("verified without an official source is not public", upcomingRadar({ upcoming: [{ name: "Rumor", date: "2026-12-01", confidence: "verified", note: "Sources: PokeBeach." }] }, "2026-10-07", { verifiedOnly: true }).length === 0);
   t("an official pokemon.com page can confirm a row", canConfirm({ confidence: "verified", note: "Sources: pokemon.com/us/pokemon-tcg/product-gallery/example." }));
   t("a news index cited as missing the product does not confirm", !canConfirm({ confidence: "verified", note: "pokemon-card.com's news list carries no announcement. Sources add: pokemon-card.com/info." }));

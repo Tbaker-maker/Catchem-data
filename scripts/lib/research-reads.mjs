@@ -50,12 +50,15 @@ export function rowDate(row) {
 // (pokemoncenter.com / pokemon-center.com). A news index cited to say the
 // product is not on it does not count. PokeBeach, SNKRDUNK and retailer
 // trackers are not official.
-const OFFICIAL_HOST = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:pokemon\.com|pokemon-card\.com|pokemoncenter\.com|pokemon-center\.com)(?=\/|[^a-z0-9-]|$)/gi;
+// Host plus optional path/query so a news page is not treated as the bare
+ // index. The denial rule only drops hits when every hit is index-only.
+const OFFICIAL_HOST = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:pokemon\.com|pokemon-card\.com|pokemoncenter\.com|pokemon-center\.com)(?:\/[^\s"'<>)\]]*)?/gi;
 const SENTENCE_NEG = /\b(no|not|without|404|unconfirmed|provisional|rumor|rumour)\b/i;
 const DENIED_OFFICIAL = /carries no|no announcement|returns 404|lists no|not on pokemon|no pokemon-card\.com page|no tpc\/pokemon-card\.com page|no official/i;
 
 function officialHits(text) {
-  return [...String(text || "").matchAll(new RegExp(OFFICIAL_HOST.source, "gi"))].map((m) => m[0]);
+  return [...String(text || "").matchAll(new RegExp(OFFICIAL_HOST.source, "gi"))]
+    .map((m) => m[0].replace(/[.,;:]+$/g, ""));
 }
 
 function indexOnly(hit) {
