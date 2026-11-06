@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { cardInPool } from "../lib/pull-rate-pools.mjs";
 import {
   packsFor, productPacksOk, packEV, scoreProduct, bulkFloorForSet, buildSlots, bannedCopy, SIMS, median, poolMean,
+  historyFileDay,
 } from "../lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -143,6 +144,15 @@ export async function run() {
   const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
   const sealed = (catalog.items || []).find((item) => item.id === "tcgcsv-242436");
   t("published Evolving Skies box uses the catalog mean", ripBox && ripSecret && sealed && ripSecret.avgPrice === catalogMean && ripSecret.nCards === pricedSecret.length && ripBox.price === sealed.price && ripBox.priceAsOf === String(sealed.asOf).slice(0, 10) && ripBox.contentsEV > 200);
+  t("a later sealed price date does not reuse the singles day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "2026-11-06" }], "2026-10-30") === "2026-11-06");
+  t("the singles day is the history day when prices are from that day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "" }], "2026-10-30") === "2026-10-30");
+  const oldSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history/2026-10-30.json"), "utf8"));
+  const newSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history/2026-11-06.json"), "utf8"));
+  const oldBox = (oldSnap.rows || []).find((r) => r.id === "swsh7-booster-box");
+  const newBox = (newSnap.rows || []).find((r) => r.id === "swsh7-booster-box");
+  const sealedDay = String(sealed.asOf).slice(0, 10);
+  t("the Oct 30 rip history snapshot is not rewritten with today's sealed price", oldSnap.asOf === "2026-10-30" && oldBox && oldBox.priceAsOf !== sealedDay && oldBox.price !== sealed.price);
+  t("today's rip history is a new file and matches the sealed row", newSnap.asOf === historyFileDay(ripDoc.rows, ripDoc.asOf) && newBox && newBox.price === sealed.price && newBox.priceAsOf === sealedDay);
 
   return fail;
 }
