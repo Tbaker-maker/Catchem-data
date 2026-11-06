@@ -97,7 +97,8 @@ export async function runCatalogueMapTests() {
   const singles = catalog.items.filter((item) => item.kind === "single");
   const again = mapSingles({ groups: freshGroups.groups, sets: freshSets.sets, cards: catalogue.cards, items: singles });
   t("the file is the set-code map, not a hand list", again.mapped.length === doc.mapped.length && again.mapped.every((row, i) => row.id === doc.mapped[i].id && row.catalogueId === doc.mapped[i].catalogueId));
-  t("mapped plus skipped is every single", doc.mapped.length + doc.skipped.length === singles.length);
+  t("mapped plus skipped is every single", again.mapped.length + again.skipped.length === singles.length);
+  t("the committed map is caught up to the catalog", doc.mapped.length + doc.skipped.length === singles.length);
   const pattern = new Set(doc.skipped.filter((row) => row.reason === "pattern-card").map((row) => row.id));
   t("no pattern card is mapped", doc.mapped.every((row) => !pattern.has(row.id)));
   t("no mapped row is name-only", doc.mapped.every((row) => row.setId && row.number && row.catalogueId && (row.join === "set-id" || row.join === "ptcgo")));

@@ -23,6 +23,7 @@ jobs:
       contents: write # Needs write access to commit updated prices back
       actions: read # The failure summary reads this run's own step results
       issues: write # A refused or rolled back publish opens an issue
+      pull-requests: write # A red run opens one fix branch
     steps:
       - name: Checkout
         # The branch tip at checkout time, not the commit the run was queued on.
@@ -115,6 +116,10 @@ jobs:
           step build-tcgcsv-catalogue-map.mjs
           step build-premium-ratio.mjs
           step build-public-bundle.mjs
+          # Score rip value after the bundle applies price holds. A held card
+          # stays out. Writing rip only after the tests is why run 42245422004
+          # failed on a real catalog price.
+          step build-rip-roi.mjs
           # Long index history after the bundle rewrites indexes.json. Guard values
           # and the full series stay in catchem-data-private.
           step build-index-history.mjs
@@ -872,3 +877,19 @@ jobs:
               --jq '.jobs[].steps[] | select(.conclusion=="failure") | "- " + .name' || echo "- (could not read step results)"
             echo "Price data commits happen in their own step, so check main for today's data: commit before assuming the day is lost."
           } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update the prices stale issue
+        # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
+        # After the failure summary so the strict freshness check stays the last data step.
+        # Does not dispatch another run.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/prices-stale-issue.mjs
+
+      - name: Open a fix branch when this run is red
+        # One open pull request. The body is the failing test output.
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/open-price-fix.mjs

@@ -6,6 +6,7 @@ import {
   releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 import { loadHeldIds } from "../lib/price-hold-skip.mjs";
+import { catalogSetCount, setCountFollowsCatalog } from "../lib/set-quarantine.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = join(ROOT, "research/assets/public");
@@ -43,7 +44,10 @@ export async function run() {
   const publishedAsOf = JSON.parse(await readFile(join(PUB, "set-value", "base-set.json"), "utf8")).asOf;
   const recent = dayNames.slice(-2);
   t("set value is built from one of the two newest daily files", recent.includes(`${publishedAsOf}.json`));
-  const dayName = recent.includes(`${publishedAsOf}.json`) ? `${publishedAsOf}.json` : dayNames.at(-1);
+  // Compare prices to the daily file this publish names. A newer day file is
+  // the freshness check above, not an invented price.
+  const builtName = `${publishedAsOf}.json`;
+  const dayName = dayNames.includes(builtName) ? builtName : dayNames.at(-1);
   const day = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", dayName), "utf8"));
   const prices = new Map();
   for (const row of day.prices || []) if (Number(row.market) > 0) prices.set(Number(row.id), Number(row.market));
@@ -54,7 +58,7 @@ export async function run() {
   const catalogSetById = new Map();
   for (const item of catalog.items || []) if (item?.id) catalogSetById.set(String(item.id), item.set || "");
   const valueNames = (await readdir(join(PUB, "set-value"))).filter((name) => name.endsWith(".json")).sort();
-  t("published set count can grow when a new set is registered", slugs.length >= 205 && new Set(slugs).size === slugs.length);
+  t("published set count follows the catalog", setCountFollowsCatalog(slugs.length, catalogSetCount(catalog)) && new Set(slugs).size === slugs.length);
   t("one set-value file per published set plus shadowless", valueNames.length === slugs.length + 1 && slugs.every((slug) => valueNames.includes(`${slug}.json`)) && valueNames.includes("base-set-shadowless.json"));
 
   let badPrice = 0;
@@ -130,7 +134,11 @@ export async function run() {
   const verified = (radar.upcoming || []).filter((row) => row.confidence === "verified");
   const blob = JSON.stringify(releases);
   t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === row.name && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
-  t("release links and the checked date are copied from the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated && row.source && verified.find((src) => src.name === row.name).note.includes(row.source) && officialSource(verified.find((src) => src.name === row.name).note) === row.source));
+  t("release links are copied from the radar file", releases.releases.every((row) => {
+    const src = verified.find((item) => item.name === row.name);
+    return Boolean(src && row.source && src.note.includes(row.source) && officialSource(src.note) === row.source);
+  }));
+  t("release checked dates match the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated));
   t("a pokemon-card.com product page is an official release source", officialSource("Sources: pokemon-card.com/products/mega/mg.html, pokebeach.com/2026/10/example.") === "pokemon-card.com/products/mega/mg.html");
   t("JP Special Deck Set stays verified only with that product page", verified.some((row) => /Special Deck Set/.test(row.name) && row.confidence === "verified" && officialSource(row.note) === "pokemon-card.com/products/mega/mg.html"));
   t("releases carry no msrp", !/msrp/i.test(blob) && !blob.includes("$"));

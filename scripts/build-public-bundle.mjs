@@ -20,6 +20,7 @@ import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 import { loadFillMap, withFill } from "./lib/fill-history.mjs";
 import { pickSealedLine } from "./lib/sealed-line.mjs";
 import { registerMissingSets } from "./lib/set-logo-register.mjs";
+import { QUARANTINE_REASON, quarantineEntry, shouldQuarantine } from "./lib/set-quarantine.mjs";
 
 assertFolds();
 
@@ -472,6 +473,7 @@ function indexLine(list) {
 }
 
 const setIndex = [];
+const quarantined = [];
 const buckets = new Map();
 const search = [];
 let pricedSingles = 0;
@@ -511,6 +513,12 @@ for (const set of sets.values()) {
   const alsoSealed = set.items.filter((it) => it.kind === "sealed" && it.price).sort((a, b) => b.price - a.price).slice(0, 7).map((it) => ({ id: it.id, name: it.name }));
   for (const it of set.items) it.also = (it.kind === "sealed" && alsoSealed.length > 1 ? alsoSealed : also).filter((x) => x.id !== it.id).slice(0, it.kind === "sealed" ? 6 : 3);
   const logo = logoFor(set.slug);
+  if (await shouldQuarantine(ROOT, logo)) {
+    quarantined.push(quarantineEntry(set));
+    console.log(`quarantine: ${set.slug}: ${QUARANTINE_REASON}`);
+    await unlink(join(OUT, "sets", `${set.slug}.json`)).catch(() => {});
+    continue;
+  }
   const row = {
     slug: set.slug,
     name: set.name,
@@ -562,6 +570,13 @@ for (const set of sets.values()) {
   }
 }
 setIndex.sort((a, b) => a.era.localeCompare(b.era) || a.name.localeCompare(b.name));
+await mkdir(join(ROOT, "data/derived"), { recursive: true });
+await writeFile(join(ROOT, "data/derived/set-quarantine.json"), JSON.stringify({
+  asOf: catalog.asOf || "",
+  note: "Sets left out of this publish because they have no logo file and no tile. No placeholder was written.",
+  sets: quarantined,
+}, null, 2) + "\n");
+const heldSlugs = new Set(quarantined.map((row) => row.slug));
 for (const [b, rows] of buckets) {
   await writeFile(join(OUT, "buckets", `${b}.json`), JSON.stringify(rows));
 }
@@ -587,6 +602,7 @@ for (const [name, ids] of [...artistGroups.entries()].sort((a, b) => b[1].length
     const item = byId.get(id);
     if (!item) continue;
     const key = homeKey(item);
+    if (heldSlugs.has(setSlug.get(key) || "")) continue;
     const price = money(item.price) ? Number(item.price) : null;
     cards.push({
       id: item.id,
@@ -613,7 +629,7 @@ for (const [name, ids] of [...artistGroups.entries()].sort((a, b) => b[1].length
   }));
 }
 
-const published = [...sets.values()];
+const published = [...sets.values()].filter((set) => !heldSlugs.has(set.slug));
 const counts = {
   asOf: catalog.asOf,
   source: "TCGplayer market",
@@ -763,6 +779,7 @@ try {
 // fallback picked a product by name and is gone.
 
 for (const set of sets.values()) {
+  if (heldSlugs.has(set.slug)) continue;
   const bare = slug(String(set.raw || "").replace(/^[^:]+:\s*/, ""));
   if (bare && bare !== set.slug && !redirects.sets[bare]) redirects.sets[bare] = `/sets/${set.slug}`;
 }

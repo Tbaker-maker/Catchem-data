@@ -54,6 +54,43 @@ export function poolMean(xs) {
   return s.reduce((sum, n) => sum + n, 0) / s.length;
 }
 
+// An active price hold stays out of rip value. Unverified and vintage holds
+// both stay out, the same as headlines and reads. A catalog price enters
+// only when no hold remains. A null price is not counted as zero.
+export function resolvedMarket(published, catalogItem, holdReason = "") {
+  if (holdReason) return null;
+  const price = Number(catalogItem?.price);
+  const asOf = String(catalogItem?.asOf || "").slice(0, 10);
+  if (price > 0 && /^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { price, asOf };
+  const pub = Number(published?.price);
+  const pubDay = String(published?.asOf || "").slice(0, 10);
+  if (pub > 0 && /^\d{4}-\d{2}-\d{2}$/.test(pubDay)) return { price: pub, asOf: pubDay };
+  return null;
+}
+
+export function priceSingles(rows, catalogById, holdReasons = {}) {
+  const singles = [];
+  let asOf = "";
+  const reasonOf = (id) => (holdReasons instanceof Map ? holdReasons.get(id) : holdReasons?.[id]) || "";
+  for (const row of rows || []) {
+    if (!row || row.kind === "sealed" || !row.setSlug) continue;
+    const market = resolvedMarket(row, catalogById?.get?.(row.id) || null, reasonOf(row.id));
+    if (!market) continue;
+    if (market.asOf > asOf) asOf = market.asOf;
+    singles.push({
+      id: row.id,
+      name: row.name || "",
+      setSlug: row.setSlug,
+      rarity: row.rarity || "",
+      tags: row.tags || [],
+      price: market.price,
+      asOf: market.asOf,
+      printing: row.printing || "",
+    });
+  }
+  return { singles, asOf };
+}
+
 export function mulberry32(seed) {
   let a = seed >>> 0;
   return () => {
