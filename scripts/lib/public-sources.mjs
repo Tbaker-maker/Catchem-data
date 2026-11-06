@@ -12,7 +12,7 @@ export const READERS = [
   { file: "research/assets/public/sets.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/artists.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/indexes.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
-  { file: "research/assets/public/receipts.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
+  { file: "research/assets/public/receipts.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true, note: "Public stub only. Scored rows append to catchem-data-private data/private/reads-scorecard/receipts.jsonl." },
   { file: "research/assets/public/track-record.json", readers: ["site"], writer: "scripts/write-track-record.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/today.json", readers: ["site"], writer: "scripts/write-morning-card.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/feed/supply-lead.json", readers: ["site"], writer: "scripts/write-supply-lead.mjs", flag: "supply.leadReads", live: true, dateRequired: true },

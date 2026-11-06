@@ -9,6 +9,7 @@ import {
   bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
+import { storePrivateReceipts } from "./lib/private-receipts-store.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
@@ -785,6 +786,7 @@ for (const [gid, fold] of FOLD_GROUPS) {
 }
 
 const watchReads = [];
+let scoredReceipts = { scored: 0, hits: 0, misses: 0, hitRate: null };
 try {
   const log = await read("research/pulse/watch-log.json");
   const heat = await read("data/heat-history.json").catch(() => []);
@@ -793,7 +795,7 @@ try {
   const scored = scoreWatch({ entries: log.entries || [], heat, sealedNow });
   const pub = publicReceipts(scored);
   watchReads.push(...pub.rows);
-  counts.receipts = { scored: pub.scored, hits: pub.hits, misses: pub.misses, hitRate: pub.hitRate };
+  scoredReceipts = { scored: pub.scored, hits: pub.hits, misses: pub.misses, hitRate: pub.hitRate };
 } catch { /* receipts stay empty if the log is missing */ }
 
 let updatedAt = null;
@@ -869,13 +871,10 @@ await writeFile(join(OUT, "movers.json"), JSON.stringify({
   slabs: [],
 }, null, 1) + "\n");
 
-const receiptPub = {
-  scored: counts.receipts?.scored || 0,
-  hits: counts.receipts?.hits || 0,
-  misses: counts.receipts?.misses || 0,
-  hitRate: counts.receipts?.hitRate ?? null,
-};
-await writeFile(join(OUT, "receipts.json"), JSON.stringify({
+const receiptPub = scoredReceipts;
+let priorPublic = null;
+try { priorPublic = JSON.parse(await readFile(join(OUT, "receipts.json"), "utf8")); } catch { priorPublic = null; }
+const scoredDoc = {
   asOf: catalog.asOf,
   updatedAt,
   note: "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
@@ -884,6 +883,23 @@ await writeFile(join(OUT, "receipts.json"), JSON.stringify({
   hits: receiptPub.hits,
   misses: receiptPub.misses,
   rows: watchReads,
+};
+const stored = await storePrivateReceipts({
+  root: ROOT,
+  doc: scoredDoc,
+  token: process.env.PRIVATE_DATA_TOKEN || "",
+  priorPublic,
+});
+console.log(`private receipts: appended ${stored.appended} lines ${stored.lines} ${stored.reason || (stored.pushed ? "pushed" : "local")}`);
+await writeFile(join(OUT, "receipts.json"), JSON.stringify({
+  asOf: catalog.asOf,
+  updatedAt,
+  note: "Scored calls are kept in the private scorecard. This file has no rows.",
+  hitRate: null,
+  scored: 0,
+  hits: 0,
+  misses: 0,
+  rows: [],
 }, null, 1) + "\n");
 
 const allItems = [...sets.values()].flatMap((set) => set.items);
@@ -925,7 +941,7 @@ for (const set of setIndex) {
 
 const origin = "https://catchemtcg.com";
 const chunks = [];
-let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology", "/receipts", "/accuracy"];
+let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology", "/accuracy"];
 const pushUrl = (path) => {
   buf.push(path);
   if (buf.length >= 4500) { chunks.push(buf); buf = []; }
