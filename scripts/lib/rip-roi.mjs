@@ -8,6 +8,19 @@ export const SIMS = 10000;
 export const BULK_CARDS_PER_PACK = 9; // 10-card modern pack minus the rare slot
 export const RARE_SLOT = 1;
 
+// The history file is named for the newest sealed price date in this build.
+// The singles bucket date can be older. Writing into that older name replaces a past snapshot.
+export function historyFileDay(rows, singlesAsOf = "") {
+  let newest = "";
+  for (const row of rows || []) {
+    const day = String(row && row.priceAsOf || "").slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(day) && day > newest) newest = day;
+  }
+  const fallback = String(singlesAsOf || "").slice(0, 10);
+  if (!newest) return /^\d{4}-\d{2}-\d{2}$/.test(fallback) ? fallback : "";
+  return newest;
+}
+
 export function productPacksOk(product) {
   if (/\bhalf\b|\bdisplay\b|\bset of \d|\(set of|enhanced booster box/i.test(product.name || "")) return false;
   return true;

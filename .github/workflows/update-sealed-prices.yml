@@ -134,6 +134,36 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
+      - name: Refresh feed news before the test gate
+        # feed-news.json stopped on 2026-10-30. Unit tests failed on a new set
+        # with no logo, and Fetch TCG news sits after that gate, so the digest
+        # was never written again. Write it here. A blocked source is recorded
+        # and does not fail this step.
+        if: always()
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/fetch-tcg-news.mjs || true
+
+      - name: Commit the feed news digest
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add research/digests/feed-news.json research/digests/news.json research/digests/weekly-news.json
+          if git diff --staged --quiet; then
+            echo "No feed news changes."
+          else
+            git commit -m "data: feed news $(date -u +'%Y-%m-%d')"
+            for i in 1 2 3; do
+              if git push; then break; fi
+              echo "push rejected (attempt $i). Rebasing onto moved main."
+              git pull --rebase --autostash origin main || true
+              sleep 5
+            done
+          fi
+
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on tonight's rebuilt
         # artifacts. One retry tells a flaky test from a real regression.
@@ -481,10 +511,11 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          SET_PATHS="research/assets/public/sets.json research/assets/public/sets research/assets/public/buckets research/assets/public/artists research/assets/public/artists.json research/assets/public/search-lite.json research/assets/public/redirects.json research/assets/public/indexes.json research/assets/public/movers.json research/assets/public/receipts.json research/assets/public/accuracy.json research/assets/public/search-rank.mjs research/assets/public/sitemap.xml"
+          SET_PATHS="research/assets/public/sets.json research/assets/public/sets research/assets/public/buckets research/assets/public/artists research/assets/public/artists.json research/assets/public/search-lite.json research/assets/public/redirects.json research/assets/public/indexes.json research/assets/public/movers.json research/assets/public/receipts.json research/assets/public/accuracy.json research/assets/public/search-rank.mjs research/assets/public/sitemap.xml research/assets/public/set-logos.json research/assets/img/set-logo-tiles.json research/assets/img/set-logo-flags.json research/assets/img/set-logo-filled.json"
           if [ "${{ steps.setpages.outcome }}" = "success" ]; then
             for p in $SET_PATHS; do if [ -e "$p" ]; then git add "$p"; fi; done
             if compgen -G "research/assets/public/sitemap-*.xml" > /dev/null; then git add research/assets/public/sitemap-*.xml; fi
+            git add research/assets/img/*/logo.png || true
           else
             echo "::warning::Set-page rebuild failed; keeping yesterday's set pages."
             for p in $SET_PATHS; do git checkout -q -- "$p" 2>/dev/null || true; done

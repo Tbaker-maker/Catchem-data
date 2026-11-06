@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import {
   buildSetMaps, resolveSetSlug, buildSlots, bulkFloorForSet, rareSlotAvg,
-  packsFor, productPacksOk, scoreProduct, bannedCopy, SIMS, BULK_CARDS_PER_PACK,
+  packsFor, productPacksOk, scoreProduct, bannedCopy, historyFileDay, SIMS, BULK_CARDS_PER_PACK,
 } from "./lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -161,6 +161,8 @@ rows.length = 0;
 rows.push(...merged);
 
 const asOf = bucketAsOf || pull.updated || pull.sourceDate || new Date().toISOString().slice(0, 10);
+// A later sealed price date gets its own file. The singles date is left as it was.
+const historyDay = historyFileDay(rows, asOf);
 const doc = {
   asOf,
   label: "Rip value",
@@ -223,7 +225,7 @@ await mkdir(join(ROOT, "data/derived/rip-history"), { recursive: true });
 const publicDoc = scrub(doc);
 await writeFile(join(ROOT, "data/derived/rip-roi.json"), JSON.stringify(publicDoc, null, 1) + "\n");
 const history = {
-  asOf,
+  asOf: historyDay,
   label: "Rip value",
   count: publicDoc.rows.length,
   rows: publicDoc.rows.map((r) => ({
@@ -237,7 +239,7 @@ const history = {
     packs: r.packs,
   })),
 };
-await writeFile(join(ROOT, "data/derived/rip-history", `${asOf}.json`), JSON.stringify(history, null, 1) + "\n");
+await writeFile(join(ROOT, "data/derived/rip-history", `${historyDay}.json`), JSON.stringify(history, null, 1) + "\n");
 
 // Private ranking (full detail). Local data/private or catchem-data-private when token set.
 const token = process.env.PRIVATE_DATA_TOKEN || "";
