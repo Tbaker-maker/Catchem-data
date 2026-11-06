@@ -2,7 +2,7 @@
   "asOf": "2026-10-30",
   "note": "Cutouts for sealed products the site can show. A fail is listed and the file is not shipped. Pixel height already includes the shared scale. Factors are not in this repo.",
   "passed": 171,
-  "failed": 42,
+  "failed": 43,
   "products": [
     {
       "id": "base1-booster-box",
@@ -2183,6 +2183,13 @@
       "png": "cutouts/tcgcsv-712112.png",
       "width": 277,
       "height": 499
+    },
+    {
+      "id": "tcgcsv-98026",
+      "siteId": "tcgcsv-98026",
+      "tcgPlayerId": 98026,
+      "productType": "booster-box",
+      "pass": false
     },
     {
       "id": "xy12-booster-box",
