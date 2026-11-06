@@ -58,6 +58,9 @@ export async function run() {
   t("the blister is a blister", blister && blister.productType === "blister");
   const deck = [...byId.values()].find((r) => r.id === "tcgcsv-704188");
   t("the battle deck is a deck", deck && deck.productType === "deck");
+  const skies = byId.get("tcgcsv-98026");
+  const skiesWhy = why.get("tcgcsv-98026");
+  t("tcgcsv-98026 stays blocked: the catalog photo is 200 by 239, under the 360px floor", skies && skies.pass === false && !skies.file && !skies.png && skiesWhy && skiesWhy.reason === "source photo is too small" && skiesWhy.kept === "not shipped");
 
   const shippedFail = (cuts.products || []).filter((r) => r.pass === true && (!String(r.file || "").startsWith("cutouts/") || /\.jpe?g$/i.test(String(r.file || ""))));
   t("a pass row is a cutout image", shippedFail.length === 0);
