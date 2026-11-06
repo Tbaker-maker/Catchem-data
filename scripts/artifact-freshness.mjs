@@ -33,9 +33,19 @@ import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pulseAsOfStale } from "./lib/sealed-market-pulse.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WF = join(ROOT, ".github", "workflows");
+
+function publishedAsOf(rel) {
+  try {
+    const doc = JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
+    return String(doc.asOf || "").slice(0, 10);
+  } catch {
+    return "";
+  }
+}
 
 // crontab -> roughly how many hours between runs. Only the shapes this repo
 // uses; anything else is reported as unknown rather than guessed at.
@@ -284,6 +294,12 @@ if (suspect) {
   console.log("CHANGED anything — the way release-radar now writes checkedAt. If the file");
   console.log("genuinely moves on events rather than on a schedule, add it to SLOW with the");
   console.log("reason, which is a decision somebody makes on purpose rather than a silence.");
+  process.exit(1);
+}
+const pulseDay = publishedAsOf("research/assets/public/sealed-market-pulse.json");
+const countsDay = publishedAsOf("research/assets/public/counts.json");
+if (pulseAsOfStale(pulseDay, countsDay, 2)) {
+  console.log(`✗ pulse asOf ${pulseDay || "missing"} is more than 2 days older than counts.json ${countsDay || "missing"}`);
   process.exit(1);
 }
 console.log(`✓ artifact freshness: every promised artifact moved within ${SUSPECT} runs` +

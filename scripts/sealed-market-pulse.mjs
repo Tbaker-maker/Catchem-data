@@ -11,6 +11,7 @@ import { gunzipSync } from "node:zlib";
 import {
   assertLimits, monthEnds, mergePoints, changesFor, parseHistRow, monthSpan,
   median, buildFromSeries, pickRepresentative, joinMirror, archiveAbout,
+  releaseForSet, markUnreleased,
 } from "./lib/sealed-market-pulse.mjs";
 import { loadFillMap } from "./lib/fill-history.mjs";
 
@@ -271,7 +272,8 @@ function main() {
   for (const p of reps) {
     const joined = joinedFor(p);
     const ends = monthEnds(joined.points);
-    const changes = changesFor(ends, months, limits.flatAbsPct);
+    const release = releaseForSet(p.set, setsDoc.sets || []);
+    const changes = markUnreleased(changesFor(ends, months, limits.flatAbsPct), release);
     const listKey = p.tcgPlayerId != null ? `tcgcsv-${p.tcgPlayerId}` : "";
     for (const gap of joined.gaps) mirrorGaps.push({ id: p.id, set: p.set, ...gap });
     prepared.push({
@@ -285,6 +287,7 @@ function main() {
       points: joined.points,
       about: joined.about,
       usedMirror: joined.usedMirror,
+      release,
     });
   }
 
@@ -382,6 +385,7 @@ function main() {
     logo: r.logo && String(r.logo).includes("images.pokemontcg.io") ? r.logo : null,
     about: r.about,
     usedMirror: r.usedMirror,
+    release: r.release || null,
     cells: (r.cells || []).map((c) => ({
       month: c.month,
       pct: c.pct,
@@ -402,7 +406,7 @@ function main() {
     months: out.months,
     marketMedian: out.marketMedian,
     rows: pubRows,
-    note: "Month end is the last dated price in that calendar month. A blank month says No reading. Each figure is listings counted. Mirrored history is labeled on each cell.",
+    note: "Month end is the last dated price in that calendar month. A month with no price says No reading. A month before release is blank. Each figure is listings counted. Mirrored history is labeled on each cell.",
   };
   const pubDest = join(ROOT, "research/assets/public/sealed-market-pulse.json");
   mkdirSync(dirname(pubDest), { recursive: true });

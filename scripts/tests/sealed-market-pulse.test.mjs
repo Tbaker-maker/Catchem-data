@@ -6,6 +6,7 @@ import {
   median, mean, pctChange, monthEnds, changesFor, zScores, streakFrom, breadthBlock,
   whatChanged, buildFromSeries, assertLimits, limitsOk, dayNumberToIso, parseHistRow,
   directionOf, proseHasBanned, pickRepresentative, highBelow, joinMirror, archiveAbout, ownOnlyAbout, priceBasket, ownMonthSpan, yearAgo,
+  releaseForSet, markUnreleased, pulseAsOfStale,
 } from "../lib/sealed-market-pulse.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -192,6 +193,35 @@ t("script has no live cutoff numbers", (() => {
   const ago = yearAgo([{ date: "2025-10-24", price: 200 }, { date: "2026-10-24", price: 150 }]);
   t("same day one year earlier", ago.pct === -25 && ago.priorDate === "2025-10-24");
   t("a missing year stays missing", yearAgo([{ date: "2026-10-24", price: 150 }]).pct === null);
+  const earlyOnly = [{ date: "2098-12-20", price: 99, source: "own" }];
+  const kept = joinMirror(earlyOnly, [], fake);
+  t("no mirror keeps an own price from before the cutover", kept.usedMirror === false && kept.points.length === 1 && kept.points[0].price === 99 && kept.points[0].date === "2098-12-20");
+  const bothSides = [
+    { date: "2098-12-20", price: 50, source: "own" },
+    { date: "2099-01-20", price: 60, source: "own" },
+  ];
+  const bothJoin = joinMirror(bothSides, [], fake);
+  t("no mirror keeps own prices on both sides of the cutover", bothJoin.points.length === 2 && bothJoin.points[0].date === "2098-12-20" && bothJoin.points[1].price === 60 && bothJoin.usedMirror === false);
+  const sets = [
+    { name: "ME04: Chaos Rising", release: "2026-05-22" },
+    { name: "SM - Ultra Prism", release: "2018-02-02" },
+    { name: "SM Base Set", release: "2017-02-03" },
+    { name: "SV: Scarlet & Violet 151", release: "2023-09-22" },
+    { name: "Pokémon GO", release: "2022-07-01" },
+  ];
+  t("set release matches the sealed name", releaseForSet("Chaos Rising", sets) === "2026-05-22" && releaseForSet("Ultra Prism", sets) === "2018-02-02" && releaseForSet("Sun & Moon", sets) === "2017-02-03" && releaseForSet("151", sets) === "2023-09-22" && releaseForSet("Pokemon GO", sets) === "2022-07-01");
+  const marked = markUnreleased([
+    { month: "2026-04", pct: null, price: null, missing: "no price" },
+    { month: "2026-05", pct: 4, price: 200, missing: null },
+    { month: "2026-06", pct: null, price: null, missing: "no price" },
+  ], "2026-05-22");
+  t("a month before release is not a missing price", marked[0].missing === "before release" && marked[0].price === null && marked[0].pct === null);
+  t("a real percent before the street date is kept", marked[1].pct === 4 && marked[1].missing === null);
+  t("a month on or after release stays a real gap", marked[2].missing === "no price");
+  t("pulse asOf 2 days behind the rest of the published data is allowed", pulseAsOfStale("2026-10-28", "2026-10-30") === false);
+  t("pulse asOf more than 2 days older than the rest of the published data fails", pulseAsOfStale("2026-10-27", "2026-10-30") === true);
+  t("a missing pulse date fails the freshness check", pulseAsOfStale("", "2026-10-30") === true);
+  t("a newer pulse date is not stale", pulseAsOfStale("2026-10-30", "2026-10-27") === false);
 }
 
 if (failed) {

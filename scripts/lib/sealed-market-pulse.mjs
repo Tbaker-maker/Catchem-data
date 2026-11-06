@@ -88,9 +88,11 @@ export function joinMirror(own, mirrorRows, limits) {
     mirror.set(date, price);
   }
   const dropMirror = ownMonths >= limits.ownMonthsBeforeCutover;
+  // No mirror means our own prices are the only history, including days
+  // before the cutover. Dropping those days was a hole, not a second source.
   if (dropMirror || !mirror.size) {
-    if (!mine.length) return { points: [], usedMirror: false, ownMonths, gaps, about: ownOnlyAbout() };
-    return { points: mine, usedMirror: false, ownMonths, gaps, about: ownOnlyAbout() };
+    if (!mineAll.length) return { points: [], usedMirror: false, ownMonths, gaps, about: ownOnlyAbout() };
+    return { points: mineAll, usedMirror: false, ownMonths, gaps, about: ownOnlyAbout() };
   }
   // Gap check on shared dates in the mirror window (own prints that fell before cutover).
   for (const early of mineAll) {
@@ -117,6 +119,62 @@ export function joinMirror(own, mirrorRows, limits) {
     gaps,
     about: usedMirror ? archiveAbout(limits.archiveNoteDate) : ownOnlyAbout(),
   };
+}
+
+export function foldSetName(s) {
+  return String(s || "")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .replace(/&/g, " and ")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function setTail(name) {
+  const raw = String(name || "");
+  if (raw.includes(":")) return raw.split(":").slice(1).join(":");
+  if (raw.includes(" - ")) return raw.split(" - ").slice(1).join(" - ");
+  return raw;
+}
+
+export function releaseForSet(name, sets) {
+  const want = foldSetName(name);
+  if (!want) return null;
+  let best = null;
+  for (const row of sets || []) {
+    if (!row || !/^\d{4}-\d{2}-\d{2}$/.test(String(row.release || ""))) continue;
+    const tail = foldSetName(setTail(row.name)).replace(/ base set$/, "");
+    const full = foldSetName(row.name);
+    let ok = tail === want || full === want;
+    if (want === "sun and moon" && (tail === "sm base set" || full === "sm base set")) ok = true;
+    if (want === "151" && /\b151\b/.test(full) && !full.includes("promo")) ok = true;
+    if (!ok) continue;
+    const len = tail.length || full.length;
+    if (!best || len < best.len) best = { release: String(row.release), len };
+  }
+  return best ? best.release : null;
+}
+
+// A month before release with no percent is not a missing price. A real percent stays.
+export function markUnreleased(changes, release) {
+  if (!release || !/^\d{4}-\d{2}-\d{2}$/.test(String(release))) return changes || [];
+  const ym = String(release).slice(0, 7);
+  return (changes || []).map((c) => {
+    if (!c || !c.month || c.month >= ym) return c;
+    if (c.pct != null && Number.isFinite(Number(c.pct))) return c;
+    return { ...c, missing: "before release" };
+  });
+}
+
+// True when the pulse date is more than maxDays older than the rest of the published data.
+export function pulseAsOfStale(pulseAsOf, publishedAsOf, maxDays = 2) {
+  const a = String(pulseAsOf || "").slice(0, 10);
+  const b = String(publishedAsOf || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(a) || !/^\d{4}-\d{2}-\d{2}$/.test(b)) return true;
+  const days = Math.round((Date.parse(b + "T00:00:00Z") - Date.parse(a + "T00:00:00Z")) / 86400000);
+  return days > maxDays;
 }
 
 export function yearAgo(points) {
@@ -600,6 +658,7 @@ export function buildFromSeries({ products, eras, months, marketChanges, limits,
       ebayUrl: p.searchQuery ? `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(p.searchQuery)}` : null,
       about: p.about || null,
       usedMirror: p.usedMirror === true,
+      release: p.release || null,
       streak,
       cells,
     });

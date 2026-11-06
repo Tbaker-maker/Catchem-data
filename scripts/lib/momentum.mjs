@@ -391,3 +391,18 @@ export function summarize(events, universe, limits) {
   }
   return signals;
 }
+
+// Public heatmap labels. The pulse flag stays off until a caller turns it on.
+// Only a signal already scored proven may be copied, and the copy is the label.
+export function publicMomentumIcons(read, signals, flag) {
+  if (flag !== "on") return [];
+  const out = [];
+  for (const name of ["momentum", "duration", "pattern"]) {
+    if (!signals || !signals[name] || signals[name].proven !== true) continue;
+    const part = read && read[name];
+    const row = part && part.icon ? iconFor(part.icon) : null;
+    if (!row || row.signal !== name) continue;
+    out.push({ id: row.id, label: row.label, proven: true });
+  }
+  return out;
+}
