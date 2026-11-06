@@ -159,7 +159,7 @@ const doc = {
   note: "Expected contents of opening a pack or sealed product, minus the product price. History-based estimates from dated pull rates and our singles prices. Not advice.",
   method: {
     pullRates: "data/pull-rates.json. A row is written only when the source states the rate, with its link and date.",
-    singles: "Catalog market price and day when the card has one. A vintage hold stays out. A card with no market price is left out. Names and pools come from the public buckets.",
+    singles: "Catalog market price and day when no price hold is active. An unverified or vintage hold stays out. A card with no market price is left out. Names and pools come from the public buckets.",
     bulkFloor: `Trimmed mean of Common and Uncommon on asOf, times ${BULK_CARDS_PER_PACK} cards per pack. Under 20 prices, the median is used. The median is stored beside the mean.`,
     rareSlot: "Median Rare / Holo Rare / Double Rare in the set × 1 rare slot per pack.",
     hitSlot: "Mean of the priced cards in the published pool. The rate is any one of those cards. A card with no market price is left out. The median is not used.",

@@ -116,9 +116,9 @@ jobs:
           step build-tcgcsv-catalogue-map.mjs
           step build-premium-ratio.mjs
           step build-public-bundle.mjs
-          # Score rip value from the buckets just written. The suite compares
-          # the published box to those buckets. Writing it only after the tests
-          # is why run 42245422004 failed on a real catalog price.
+          # Score rip value after the bundle applies price holds. A held card
+          # stays out. Writing rip only after the tests is why run 42245422004
+          # failed on a real catalog price.
           step build-rip-roi.mjs
           # Long index history after the bundle rewrites indexes.json. Guard values
           # and the full series stay in catchem-data-private.

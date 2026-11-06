@@ -54,11 +54,11 @@ export function poolMean(xs) {
   return s.reduce((sum, n) => sum + n, 0) / s.length;
 }
 
-// The catalog market is the verified price. A null bucket is the price-hold
-// wipe after that copy, not a missing market. A vintage hold stays out.
-// A later catalog price replaces a null or older published price.
+// An active price hold stays out of rip value. Unverified and vintage holds
+// both stay out, the same as headlines and reads. A catalog price enters
+// only when no hold remains. A null price is not counted as zero.
 export function resolvedMarket(published, catalogItem, holdReason = "") {
-  if (holdReason === "vintage") return null;
+  if (holdReason) return null;
   const price = Number(catalogItem?.price);
   const asOf = String(catalogItem?.asOf || "").slice(0, 10);
   if (price > 0 && /^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { price, asOf };
