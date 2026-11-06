@@ -874,6 +874,8 @@ await writeFile(join(OUT, "movers.json"), JSON.stringify({
 const receiptPub = scoredReceipts;
 let priorPublic = null;
 try { priorPublic = JSON.parse(await readFile(join(OUT, "receipts.json"), "utf8")); } catch { priorPublic = null; }
+let priorAccuracy = null;
+try { priorAccuracy = JSON.parse(await readFile(join(OUT, "accuracy.json"), "utf8")); } catch { priorAccuracy = null; }
 const scoredDoc = {
   asOf: catalog.asOf,
   updatedAt,
@@ -884,13 +886,28 @@ const scoredDoc = {
   misses: receiptPub.misses,
   rows: watchReads,
 };
+const accuracyRows = watchReads.filter((row) => row.result === "hit" || row.result === "miss").map((row) => ({
+  name: row.name, result: row.result, date: row.asOf,
+}));
+const accuracyDoc = {
+  asOf: catalog.asOf,
+  updatedAt,
+  scored: receiptPub.scored,
+  hits: receiptPub.hits,
+  misses: receiptPub.misses,
+  hitRate: receiptPub.hitRate,
+  note: "Scored only when a direction was written down first and a later price exists. A hit rate stays hidden until 20. Crowd votes are not in this file. No sold list is in this catalog.",
+  rows: accuracyRows,
+};
 const stored = await storePrivateReceipts({
   root: ROOT,
   doc: scoredDoc,
   token: process.env.PRIVATE_DATA_TOKEN || "",
   priorPublic,
+  accuracyDoc,
+  priorAccuracy,
 });
-console.log(`private receipts: appended ${stored.appended} lines ${stored.lines} ${stored.reason || (stored.pushed ? "pushed" : "local")}`);
+console.log(`private receipts: appended ${stored.appended} lines ${stored.lines} accuracy ${stored.accuracyLines} ${stored.reason || (stored.pushed ? "pushed" : "local")}`);
 await writeFile(join(OUT, "receipts.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
@@ -923,14 +940,12 @@ await copyFile(new URL("./lib/collector-search.mjs", import.meta.url), join(OUT,
 await writeFile(join(OUT, "accuracy.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
-  scored: receiptPub.scored,
-  hits: receiptPub.hits,
-  misses: receiptPub.misses,
-  hitRate: receiptPub.hitRate,
-  note: "Scored only when a direction was written down first and a later price exists. A hit rate stays hidden until 20. Crowd votes are not in this file. No sold list is in this catalog.",
-  rows: watchReads.filter((row) => row.result === "hit" || row.result === "miss").map((row) => ({
-    name: row.name, result: row.result, date: row.asOf,
-  })),
+  scored: 0,
+  hits: 0,
+  misses: 0,
+  hitRate: null,
+  note: "Scored calls are kept in the private scorecard. This file has no rows.",
+  rows: [],
 }, null, 1) + "\n");
 
 for (const set of setIndex) {
@@ -941,7 +956,7 @@ for (const set of setIndex) {
 
 const origin = "https://catchemtcg.com";
 const chunks = [];
-let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology", "/accuracy"];
+let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology"];
 const pushUrl = (path) => {
   buf.push(path);
   if (buf.length >= 4500) { chunks.push(buf); buf = []; }

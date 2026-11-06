@@ -46,6 +46,30 @@ test("a public stub with no rows is not treated as history", () => {
   assert.deepEqual(JSON.parse(lines[0]), next);
 });
 
+test("accuracy history appends on its own log and does not rewrite the receipts line", () => {
+  const receipts = foldReceipts("", next, prior);
+  const accuracyPrior = {
+    asOf: "2026-10-30",
+    scored: 20,
+    hits: 1,
+    misses: 19,
+    hitRate: 5,
+    rows: [{ name: "Celebrations Ultra Premium Collection", result: "miss", date: "2026-09-27" }],
+  };
+  const accuracyNext = {
+    ...accuracyPrior,
+    asOf: "2026-11-06",
+    rows: [...accuracyPrior.rows, { name: "Pokemon GO Elite Trainer Box", result: "hit", date: "2026-11-06" }],
+  };
+  const acc = foldReceipts("", accuracyNext, accuracyPrior);
+  const again = foldReceipts(acc.text, accuracyNext, accuracyPrior);
+  assert.equal(receipts.text.trim().split("\n")[0], JSON.stringify(prior));
+  assert.equal(acc.text.trim().split("\n").length, 2);
+  assert.deepEqual(JSON.parse(acc.text.trim().split("\n")[0]), accuracyPrior);
+  assert.equal(again.text.trim().split("\n")[0], acc.text.trim().split("\n")[0]);
+  assert.equal(again.appended, false);
+});
+
 test("grading is unchanged: same way is a hit, the other way is a miss, a flat print is a miss", () => {
   assert.equal(gradeRead({ start: 10, later: 12, direction: "up" }), "hit");
   assert.equal(gradeRead({ start: 10, later: 8, direction: "up" }), "miss");
