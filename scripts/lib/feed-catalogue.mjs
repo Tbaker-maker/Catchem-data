@@ -7,6 +7,7 @@ import {
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
 import { gateReads, loadReadThinData, writeReadFlags } from "./read-thin-data.mjs";
+import { rotateLead } from "./feed-rank.mjs";
 
 const JUNK = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
 
@@ -608,7 +609,7 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "", cooled = null }) {
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "", cooled = null, leadMargin = null }) {
   const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior);
   applyShelf(cards, shelf);
   const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
@@ -734,6 +735,12 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   // A card still inside the rotation cooldown is skipped here, so the next
   // qualifier takes its place instead of the lead going empty later.
   const picked = selectLead(Object.values(cards).filter((card) => !cooled || !cooled.has(String(card.sku || ""))));
+  let leadDays = [];
+  try {
+    const prevLead = JSON.parse(await readFile(join(outDir, "feed", "lead-order.json"), "utf8"));
+    leadDays = Array.isArray(prevLead?.days) ? prevLead.days : [];
+  } catch { leadDays = []; }
+  picked.lead = rotateLead(picked.lead, leadDays, asOf, leadMargin);
   if (rewriteDir) {
     await appendPathRewrites(rewriteDir, asOf, picked.rewrites);
     const halfDir = join(dirname(rewriteDir), "half-copies");

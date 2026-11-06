@@ -102,7 +102,7 @@ export function lowValueMove(read, cfg) {
   return m.price < cheap && m.dollars < tiny;
 }
 
-export function leadIds(reads, cfg, n = 8) {
+export function leadIds(reads, cfg, n = 8, turn = null) {
   const rows = (reads || []).filter((row) => row && row.id && !lowValueMove(row, cfg));
   rows.sort((a, b) => interestScore(b) - interestScore(a) || String(a.id).localeCompare(String(b.id)));
   const out = [];
@@ -111,8 +111,83 @@ export function leadIds(reads, cfg, n = 8) {
     const id = String(row.id);
     if (seen.has(id) || !(interestScore(row) > 0)) continue;
     seen.add(id);
-    out.push(id);
+    out.push(row);
     if (out.length >= n) break;
   }
-  return out;
+  const history = turn && Array.isArray(turn.history) ? turn.history : null;
+  const asOf = turn && turn.asOf ? turn.asOf : "";
+  const margin = turn && turn.margin != null ? turn.margin : cfg?.leadMargin;
+  const turned = history ? rotateLead(out, history, asOf, margin) : out;
+  return turned.map((row) => String(row.id));
+}
+
+function shiftDay(iso, n) {
+  const t = Date.parse(`${String(iso || "").slice(0, 10)}T00:00:00Z`);
+  if (!Number.isFinite(t)) return "";
+  return new Date(t + n * 86400000).toISOString().slice(0, 10);
+}
+
+export function leadKey(row) {
+  if (row == null) return "";
+  if (typeof row === "string") return row;
+  return String(row.sku || row.id || "");
+}
+
+export function leadMove(read) {
+  const m = readMove(read);
+  if (m.dollars > 0 && m.pct > 0) return m.dollars * m.pct;
+  const pct = Math.abs(Number(read?.changePct) || 0);
+  const from = Number(read?.fromPrice);
+  const price = Number(read?.price);
+  const dollars = from > 0 && price > 0 ? Math.abs(price - from) : 0;
+  if (dollars > 0 && pct > 0) return dollars * pct;
+  return pct;
+}
+
+// How many days in a row this card already led, ending yesterday.
+export function leadStreak(history, key, asOf) {
+  const id = String(key || "");
+  const end = String(asOf || "").slice(0, 10);
+  if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return 0;
+  const byDay = new Map();
+  for (const row of history || []) {
+    const on = String(row?.on || "").slice(0, 10);
+    const stored = String(row?.id || "");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(on) || on >= end || !stored) continue;
+    byDay.set(on, stored);
+  }
+  let n = 0;
+  let day = shiftDay(end, -1);
+  while (day && byDay.get(day) === id) {
+    n += 1;
+    day = shiftDay(end, -(n + 1));
+  }
+  return n;
+}
+
+// A card that already led the last 2 days does not lead again, unless its
+// move is the biggest by the caller's margin. The margin is never stored here.
+export function rotateLead(rows, history, asOf, margin) {
+  const list = Array.isArray(rows) ? rows.slice() : [];
+  if (!list.length) return list;
+  const key = leadKey(list[0]);
+  if (leadStreak(history, key, asOf) < 2) return list;
+  const next = list.find((row) => leadKey(row) && leadKey(row) !== key);
+  if (!next) return list;
+  const gap = Number(margin);
+  const topMove = leadMove(list[0]);
+  const nextMove = leadMove(next);
+  if (gap > 1 && nextMove > 0 && topMove >= nextMove * gap) return list;
+  return [next, ...list.filter((row) => row !== next)];
+}
+
+export function rememberLeadDay(days, key, asOf) {
+  const end = String(asOf || "").slice(0, 10);
+  const id = String(key || "");
+  const kept = (days || []).filter((row) => row && /^\d{4}-\d{2}-\d{2}$/.test(String(row.on || "")) && row.on !== end && (!/^\d{4}-\d{2}-\d{2}$/.test(end) || row.on < end));
+  const cut = /^\d{4}-\d{2}-\d{2}$/.test(end) ? shiftDay(end, -21) : "";
+  const recent = cut ? kept.filter((row) => row.on >= cut) : kept;
+  if (id && /^\d{4}-\d{2}-\d{2}$/.test(end)) recent.push({ id, on: end });
+  recent.sort((a, b) => (a.on < b.on ? -1 : a.on > b.on ? 1 : String(a.id).localeCompare(String(b.id))));
+  return recent;
 }

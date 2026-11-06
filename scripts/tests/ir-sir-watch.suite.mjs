@@ -33,7 +33,7 @@ export async function run() {
   const c = { name: "N's Reshiram - 167/159", set: "SV09: Journey Together", num: "167/159", kind: "IR", release: "2025-03-28", age: 570, facts: { price: 14.23, date: "2026-10-19", ch7: { pct: 11.1, from: { price: 12.81, date: "2026-10-12" } }, ch30: { pct: -4.5 }, vs30: -0.2, vs90: -12.5, stage: { word: "Reversing", dir: "up" } }, listings: { n: 20, date: "2026-10-19", from: { n: 25, date: "2026-10-12" } } };
   const lines = readLines(c, { n: 11, ch30: -15.3 });
   t("read names the card, price and date", /^N's Reshiram \(Journey Together\) 167\/159, Illustration Rare: \$14\.23 on Oct 19, up 11% from \$12\.81 on Oct 12\.$/.test(lines[0]));
-  t("read says listings gone, never sold", lines.some((l) => /5 listings gone/.test(l)) && lines.every((l) => !/\bsold\b|\bsales?\b/i.test(l)));
+  t("read says listings counted, never sold", lines.some((l) => /5 fewer listings counted/.test(l)) && lines.every((l) => !/\bsold\b|\bsales?\b/i.test(l)) && lines.every((l) => !/listings gone/i.test(l)));
   t("read lines pass the copy rules", lines.every(clean));
   t("copy check blocks dashes and advice", !clean("Up 5% \u2014 nice") && !clean("Load up before the move"));
   const bcards = [{ id: "p", kind: "IR", setSlug: "x", release: "2025-01-01", name: "A", pts: line(200, (i) => 10 + i) }, { id: "q", kind: "IR", setSlug: "x", release: "2025-01-01", name: "B", pts: line(200, () => 10) }];

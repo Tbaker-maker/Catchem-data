@@ -15,6 +15,7 @@ import { buildBoardV3 } from "./lib/board-mix.mjs";
 import { loadSeriesOnce } from "./lib/series-cache.mjs";
 import { writeHealth } from "./write-health.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
+import { loadFeedFloor } from "./lib/feed-floor.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -130,6 +131,7 @@ try {
   }
 } catch { /* snapshot is optional until it is on this branch */ }
 const cooled = cooledSet(await loadRotation(ROOT), catalog.asOf || "");
+const floor = await loadFeedFloor(ROOT);
 const result = await publishFeed({
   cooled,
   items,
@@ -144,6 +146,7 @@ const result = await publishFeed({
   gapPids: [...GAP_IMAGE],
   soldBySku,
   root: ROOT,
+  leadMargin: floor?.leadMargin,
 });
 console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length, lead: result.lead, halfExcluded: result.halfExcluded, halfCheap: result.halfCheap, soldFacts: soldBySku.size }));
 

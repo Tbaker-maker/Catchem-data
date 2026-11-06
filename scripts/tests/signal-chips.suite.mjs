@@ -260,5 +260,28 @@ export async function run() {
   const slackWeek = [["2026-10-09", 10], ["2026-10-17", 12]];
   const slackMove = qualifyChips({ id: "slack-7", name: "Card", kind: "single", asOf: "2026-10-17", windowDays: 7, price: 12, changePct: 20 }, { asOf: "2026-10-17", points: slackWeek }, RULES);
   t("a 7 day chip is not an 8 day span", !slackMove.some((chip) => chip.kind === "move" && /7 day|7D/.test(`${chip.text} ${chip.label}`)));
+  const fiveUp = [
+    ["2026-10-01", 10.1],
+    ["2026-10-08", 10.2],
+    ["2026-10-15", 10.3],
+    ["2026-10-22", 10.4],
+    ["2026-10-29", 10.5],
+    ["2026-11-03", 10.6],
+    ["2026-11-04", 10.6],
+    ["2026-11-05", 10.6],
+  ];
+  const fiveRules = { ...RULES, momentum: { risingMin: 4, coolingMax: -4, recentDays: 7, flatRecentDays: 3 } };
+  const fiveChip = readSignals(
+    { id: "rayquaza", sku: "tcgcsv-ray", name: "Rayquaza", kind: "single", asOf: "2026-11-05", price: 10.6, changePct: 1, windowDays: 7 },
+    { asOf: "2026-11-05", points: fiveUp, daily: fiveUp },
+    fiveRules,
+  ).signals.find((chip) => chip.kind === "momentum");
+  t("five straight up weeks are Rising, not Flat", fiveChip && fiveChip.word === "Rising" && fiveChip.label === "Momentum Rising");
+  const counted = qualifyChips(
+    { id: "gone-plain", name: "Box", kind: "sealed", href: "/p/box", asOf: "2026-10-17" },
+    { asOf: "2026-10-17", listings: { n: 40, prev: 100, date: "2026-10-17" } },
+    RULES,
+  ).find((chip) => chip.kind === "gone");
+  t("the listings chip counts listings and never says gone or sold", counted && counted.label === "Listings counted down, 100 to 40" && !/gone|\bsold\b/i.test(counted.label));
   return fail;
 }

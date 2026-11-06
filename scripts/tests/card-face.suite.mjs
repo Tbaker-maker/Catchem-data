@@ -1,9 +1,25 @@
-import { barLabel, cardTitle, ebayAskPhrase, hasNumber, insertNumber, labelPrices, tcgPriceLine, CONDITION_NOTE } from "../lib/card-face.mjs";
+import { barLabel, cardTitle, ebayAskPhrase, hasNumber, insertNumber, labelPrices, nameWithTags, tcgPriceLine, CONDITION_NOTE } from "../lib/card-face.mjs";
+import { cardLabel } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
   t("title keeps the full collector number", cardTitle({ name: "Lugia EX (Team Plasma)", set: "Plasma Storm", number: "108/135" }) === "Lugia EX (Team Plasma) (Plasma Storm) 108/135");
+  t("a variant tag and a set are added only once", cardTitle({
+    name: "Thundurus EX (Full Art) (Next Destinies) (Plasma Storm) (Legendary Treasures) (Dark Explorers)",
+    set: "BW: Plasma Storm",
+    number: "110/108",
+  }) === "Thundurus EX (Full Art) (Plasma Storm) 110/108");
+  t("Golbat keeps one variant and its own set", nameWithTags("Golbat (Delta Species) (Fossil) (Skyridge) (Expedition)", "SK: Skyridge") === "Golbat (Delta Species) (Skyridge)");
+  t("Rayquaza does not stack the same set", cardLabel({
+    name: "Rayquaza VMAX (Alternate Art) (Shining Fates) (Shining Fates)",
+    set: "Shining Fates",
+    number: "198/189",
+  }) === "Rayquaza VMAX (Alternate Art) (Shining Fates) 198/189");
+  t("calling the name builder twice does not stack parentheses", (() => {
+    const once = cardTitle({ name: "Thundurus EX", set: "Plasma Storm", number: "110/108" });
+    return cardTitle({ name: once, set: "Plasma Storm", number: "110/108" }) === once && (once.match(/\(/g) || []).length === 1;
+  })());
   t("a full art number is not shortened to the left side", cardTitle({ name: "Mega Gengar ex - 284/217", set: "Ascended Heroes", number: "284/217" }) === "Mega Gengar ex (Ascended Heroes) 284/217");
   t("bar labels shorten the name and keep the number", barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).endsWith(" SWSH144") && !barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).includes("SWSH14") === false || barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).endsWith("SWSH144"));
   const bar = barLabel({ name: "Special Delivery Charizard", number: "284/217" }, 12);

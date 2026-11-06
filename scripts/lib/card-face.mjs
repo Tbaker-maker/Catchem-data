@@ -19,16 +19,79 @@ export function fullNumber(num) {
 }
 
 function shortSet(set) {
-  return String(set || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
+  return String(set || "")
+    .replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "")
+    .replace(/^[A-Z]{1,8}\d*:\s+/, "")
+    .trim();
+}
+
+const VARIANT_TAG = /^(?:special illustration rare|illustration rare|tag team \(alternate art\)|alternate art|alternate full art|trainer gallery|galarian gallery|full art|secret rare|delta species|cosmos holo|cracked ice holo|poke ball pattern|pok[eé] ball pattern|master ball pattern|team plasma)$/i;
+
+function normTag(text) {
+  return String(text || "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function isVariantTag(text) {
+  return VARIANT_TAG.test(String(text || "").trim());
+}
+
+function setMatches(paren, set) {
+  const a = normTag(paren);
+  const b = normTag(shortSet(set));
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.startsWith(`${b} `) || a.endsWith(` ${b}`)) return true;
+  if (b.startsWith(`${a} `) || b.endsWith(` ${a}`)) return true;
+  return false;
+}
+
+// One variant tag, and the card's own set, each once. Extra set
+// parentheses (the same card named in four sets) are not stacked on.
+export function nameWithTags(name, set) {
+  const raw = String(name || "").replace(/\s+/g, " ").trim();
+  const setName = shortSet(set);
+  const re = /\(([^)]*)\)/g;
+  let last = 0;
+  let m;
+  let base = "";
+  const variants = [];
+  const variantSeen = new Set();
+  const extras = [];
+  let matchedSet = "";
+  while ((m = re.exec(raw))) {
+    base += raw.slice(last, m.index);
+    last = m.index + m[0].length;
+    const tag = String(m[1] || "").trim();
+    if (!tag) continue;
+    if (isVariantTag(tag)) {
+      const key = normTag(tag);
+      if (!variantSeen.has(key)) {
+        variantSeen.add(key);
+        variants.push(tag);
+      }
+      continue;
+    }
+    if (setName && setMatches(tag, setName)) {
+      if (!matchedSet) matchedSet = setName;
+      continue;
+    }
+    extras.push(tag);
+  }
+  base += raw.slice(last);
+  base = base.replace(/\s+/g, " ").trim();
+  const tags = variants.map((tag) => `(${tag})`);
+  if (setName) tags.push(`(${matchedSet || setName})`);
+  else if (extras.length) tags.push(`(${extras[0]})`);
+  return [base, ...tags].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 }
 
 export function cardTitle(card) {
-  const name = cleanCardName(card?.name);
   const set = shortSet(card?.set);
   const num = fullNumber(card?.number ?? card?.num);
+  let name = cleanCardName(card?.name);
+  if (num && name.endsWith(num)) name = name.slice(0, -num.length).replace(/[\s#-]+$/, "").trim();
   if (!name) return num;
-  let title = name;
-  if (set && !title.toLowerCase().includes(`(${set.toLowerCase()})`)) title = `${title} (${set})`;
+  let title = nameWithTags(name, set);
   if (num && !hasNumber(title, num)) title = `${title} ${num}`;
   return title;
 }

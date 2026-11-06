@@ -6,6 +6,7 @@
 import { priceAt, rotationChip, days, KIND_LABEL } from "./ir-cycle.mjs";
 import { runStage } from "./seller-stage.mjs";
 import { popularity } from "./popular-pokemon.mjs";
+import { nameWithTags } from "./card-face.mjs";
 import { isClean } from "./copy-rules.mjs";
 
 const DAY = 86400000;
@@ -166,7 +167,7 @@ export const shortSet = (set) => String(set || "").replace(/^[A-Z0-9.]+:\s*/, ""
 export function readLines(c, peer) {
   const f = c.facts;
   const lines = [];
-  const head = `${shortName(c.name)} (${shortSet(c.set)}) ${c.num}, ${KIND_LABEL[c.kind]}: ${money(f.price)} on ${mdy(f.date)}`;
+  const head = `${nameWithTags(shortName(c.name), shortSet(c.set))} ${c.num}, ${KIND_LABEL[c.kind]}: ${money(f.price)} on ${mdy(f.date)}`;
   lines.push(f.ch7 && Math.round(f.ch7.pct) !== 0 ? `${head}, ${way(f.ch7.pct)} ${pct(f.ch7.pct)} from ${money(f.ch7.from.price)} on ${mdy(f.ch7.from.date)}.` : `${head}.`);
   if (f.stage) lines.push(`Run stage ${f.stage.word} ${f.stage.dir === "up" ? "▲" : "▼"}: ${STAGE_TEXT[f.stage.word](f.stage.dir)}.`);
   const avg = [];
@@ -174,7 +175,7 @@ export function readLines(c, peer) {
   if (f.vs90 != null && Math.round(f.vs90) !== 0) avg.push(`${pct(f.vs90)} ${f.vs90 < 0 ? "under" : "over"} its 90 day average`);
   if (avg.length) lines.push(`${avg.join(", ")[0].toUpperCase()}${avg.join(", ").slice(1)}.`);
   if (f.ch30 && peer?.ch30 != null && peer.n >= 3) lines.push(`30 days: this card ${way(f.ch30.pct)} ${pct(f.ch30.pct)}, the median ${c.kind} in ${shortSet(c.set)} ${way(peer.ch30)} ${pct(peer.ch30)} (${peer.n} cards).`);
-  if (c.listings?.from) lines.push(`Listings counted: ${c.listings.n} on ${mdy(c.listings.date)}, from ${c.listings.from.n} on ${mdy(c.listings.from.date)}${c.listings.n < c.listings.from.n ? ` (${c.listings.from.n - c.listings.n} listings gone)` : ""}.`);
+  if (c.listings?.from) lines.push(`Listings counted: ${c.listings.n} on ${mdy(c.listings.date)}, from ${c.listings.from.n} on ${mdy(c.listings.from.date)}${c.listings.n < c.listings.from.n ? ` (${c.listings.from.n - c.listings.n} fewer listings counted)` : ""}.`);
   else if (c.listings) lines.push(`Listings counted: ${c.listings.n} on ${mdy(c.listings.date)}.`);
   if (c.seller?.word) lines.push(`Sellers: ${c.seller.word} (top 2 sellers hold ${c.seller.share}% of listings counted, usual ${c.seller.usual}%).`);
   if (c.rotation?.text) lines.push(`${c.rotation.text}.`);

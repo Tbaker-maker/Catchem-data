@@ -1,6 +1,6 @@
 // Feed lead rank and the cheap-move floor. Fixture cutoffs only.
 import { readFileSync } from "node:fs";
-import { interestScore, leadIds, lowValueMove, readMove } from "../lib/feed-rank.mjs";
+import { interestScore, leadIds, leadMove, lowValueMove, readMove, rotateLead } from "../lib/feed-rank.mjs";
 
 export async function run() {
   let fail = 0;
@@ -43,7 +43,15 @@ export async function run() {
   t("no floor means no drop", lowValueMove(cent, null) === false);
   const ids = leadIds([cent, mid, box, { id: "news-1", readKind: "news", headline: "A note." }], floor, 8);
   t("the lead ids skip the cheap move and open on the sealed read", ids[0] === "sealed-box" && ids[1] === "single-mid" && !ids.includes("solddown-cheap") && !ids.includes("news-1"));
+  const umbreon = { id: "umbreon", sku: "tcgcsv-umbreon", name: "Umbreon", price: 40, changePct: 20, fromPrice: 30, readKind: "single", receipt: { from: 30, to: 40 } };
+  const golbat = { id: "golbat", sku: "tcgcsv-golbat", name: "Golbat", price: 40, changePct: 100, fromPrice: 20, readKind: "single", receipt: { from: 20, to: 40 } };
+  const prior = [{ id: "tcgcsv-umbreon", on: "2026-11-03" }, { id: "tcgcsv-umbreon", on: "2026-11-04" }];
+  const held = rotateLead([umbreon, golbat], prior, "2026-11-05", 1.5);
+  t("the same card does not lead a third day", held[0].sku === "tcgcsv-golbat" && leadMove(umbreon) < leadMove(golbat) * 1.5);
+  const clear = { ...umbreon, price: 80, fromPrice: 20, changePct: 300, receipt: { from: 20, to: 80 } };
+  t("a clear margin keeps the biggest move in the lead", rotateLead([clear, golbat], prior, "2026-11-05", 1.5)[0].sku === "tcgcsv-umbreon" && leadMove(clear) >= leadMove(golbat) * 1.5);
+  t("one prior day is not a rotation", rotateLead([umbreon, golbat], [{ id: "tcgcsv-umbreon", on: "2026-11-04" }], "2026-11-05", 1.5)[0].sku === "tcgcsv-umbreon");
   const src = readFileSync(new URL("../lib/feed-rank.mjs", import.meta.url), "utf8") + readFileSync(new URL("../lib/feed-floor.mjs", import.meta.url), "utf8");
-  t("public rank files do not bake a cutoff", !/maxCheapPrice\s*[:=]\s*\d/.test(src) && !/maxCheapMove\s*[:=]\s*\d/.test(src));
+  t("public rank files do not bake a cutoff", !/maxCheapPrice\s*[:=]\s*\d/.test(src) && !/maxCheapMove\s*[:=]\s*\d/.test(src) && !/leadMargin\s*[:=]\s*\d/.test(src));
   return fail;
 }

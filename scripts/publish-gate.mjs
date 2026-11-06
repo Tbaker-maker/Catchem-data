@@ -9,7 +9,7 @@ import { gateReads, RULES, checkMeter, unpublishMeter } from "./lib/publish-gate
 import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
-import { leadIds } from "./lib/feed-rank.mjs";
+import { leadIds, leadKey, rememberLeadDay } from "./lib/feed-rank.mjs";
 import { applyModelSpec } from "./lib/model-spec.mjs";
 import { boosterBoxFlagGap } from "./lib/premium-ratio.mjs";
 import { ARCHIVE_SOURCE, backfillUnitJumps, loadSanityBound } from "./lib/premium-history.mjs";
@@ -158,6 +158,8 @@ if (!check) {
   const board = finishBoard(res.kept);
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: board, count: board.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
   for (const [f, kept] of writes) await writeFile(f, JSON.stringify(kept) + "\n");
-  const ids = leadIds(res.kept, floor, 8);
-  await writeFile(join(PUB, "feed/lead-order.json"), JSON.stringify({ asOf: asOf || "", ids }, null, 1) + "\n");
+  const ids = leadIds(res.kept, floor, 8, { history: (await J(join(PUB, "feed/lead-order.json"), {})).days || [], asOf: asOf || "", margin: floor?.leadMargin });
+  const winner = (res.kept || []).find((row) => row && row.id === ids[0]);
+  const days = rememberLeadDay((await J(join(PUB, "feed/lead-order.json"), {})).days || [], leadKey(winner), asOf || "");
+  await writeFile(join(PUB, "feed/lead-order.json"), JSON.stringify({ asOf: asOf || "", ids, days }, null, 1) + "\n");
 }

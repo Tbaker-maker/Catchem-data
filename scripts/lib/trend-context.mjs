@@ -64,12 +64,13 @@ function nearest(points, target, slack) {
   return best ? best.p : null;
 }
 
-export function weekStats(points, asOf) {
+function weekEnds(points, asOf) {
+  const own = ownSeries(points).filter((p) => !asOf || p.date <= asOf);
   const ends = [];
   const used = new Set();
   for (let k = 0; k <= MAX_WEEKS; k += 1) {
     const target = addDays(asOf, -7 * k);
-    const p = nearest(points, target, WEEK_SLACK_DAYS);
+    const p = nearest(own, target, WEEK_SLACK_DAYS);
     if (!p || used.has(p.date)) break;
     // A week step is 7 days, plus or minus one. A wider gap is not called a week.
     if (ends.length) {
@@ -79,6 +80,11 @@ export function weekStats(points, asOf) {
     used.add(p.date);
     ends.push(p);
   }
+  return ends;
+}
+
+export function weekStats(points, asOf) {
+  const ends = weekEnds(points, asOf);
   let up = 0;
   let down = 0;
   let flat = 0;
@@ -90,6 +96,26 @@ export function weekStats(points, asOf) {
     else flat += 1;
   }
   return { steps: Math.max(0, ends.length - 1), up, down, flat };
+}
+
+// "up" or "down" only when the newest N week steps all move that way.
+// A flat last night does not erase a straight weekly run.
+export function straightWeeks(points, asOf, need = 5) {
+  const n = Math.round(Number(need));
+  if (!(n >= 2)) return "";
+  const ends = weekEnds(points, asOf);
+  if (ends.length < n + 1) return "";
+  let up = 0;
+  let down = 0;
+  for (let i = 0; i < n; i += 1) {
+    const newer = Math.round(ends[i].price * 100);
+    const older = Math.round(ends[i + 1].price * 100);
+    if (newer > older) up += 1;
+    else if (newer < older) down += 1;
+  }
+  if (up === n) return "up";
+  if (down === n) return "down";
+  return "";
 }
 
 export function direction7(points, asOf) {
