@@ -26,6 +26,7 @@ jobs:
     permissions:
       contents: write # push retry log to bot/recovery-log (main is protected)
       actions: write # to re-dispatch the daily job exactly once
+      issues: write # one PRICES STALE issue, updated, never a second dispatch
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,6 +36,14 @@ jobs:
         id: hb
         continue-on-error: true
         run: node scripts/heartbeat.mjs
+
+      - name: Prices stale issue
+        # The daily job can die in tests and leave sealed-prices.json old.
+        # This only opens or updates one issue. It does not dispatch a run.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/prices-stale-issue.mjs
 
       # Recovery log lives on bot/recovery-log, not main — main is protected
       # and rejects the direct push (GH006 / required "tests" check), which

@@ -49,6 +49,24 @@ export async function run() {
   const sv = triage(log("── feature suites ──", "  FAIL set value counts match priced singles", "  ✗ feature-data.suite.mjs — 1 failed"));
   t("a set value failure withholds only set value files", sv.blocked.length === 0 && sv.paths.every((p) => /set-value/.test(p)));
 
+  const logo = triage(log("── feature suites ──", "  FAIL every set on /sets has a logo file mcdonald-s-promos-2026", "  ✗ image-coverage.suite.mjs — 1 failed"));
+  t("a missing logo is a warning and does not block prices", logo.blocked.length === 0 && logo.warning.length === 1 && /Warning only/.test(describe(logo)));
+  const logoPr = triage(log("── feature suites ──", "  FAIL every set on /sets has a logo file mcdonald-s-promos-2026", "  ✗ image-coverage.suite.mjs — 1 failed"), "pr");
+  t("a missing logo does not block a pull request", logoPr.blocked.length === 0 && logoPr.warning.length === 1);
+  const thin = triage(log("── feature suites ──", "  FAIL no thin item in the first three", "  ✗ public-bundle.suite.mjs — 1 failed"));
+  t("a thin lead is a warning, not a price block", thin.blocked.length === 0 && thin.warning.length === 1);
+  const mixedLogo = triage(log("── feature suites ──", "  FAIL every set on /sets has a logo file x", "  FAIL prices disagree with the file", "  ✗ image-coverage.suite.mjs — 2 failed"));
+  t("a real failure next to a logo warning still blocks", mixedLogo.blocked.length === 1 && mixedLogo.warning.length === 0);
+  const nmLogo = triage(log("── feature suites ──", "  FAIL every set on /sets has a logo file and shows NM", "  ✗ image-coverage.suite.mjs — 1 failed"));
+  t("a condition label next to a logo line still blocks", nmLogo.blocked.length === 1);
+
+  const lateValue = triage(log("── feature suites ──", "  FAIL set value is built from one of the two newest daily files", "  ✗ feature-data.suite.mjs — 1 failed"), "pr");
+  t("a late set-value file does not block a pull request", lateValue.blocked.length === 0 && lateValue.monitor.length === 1);
+  const invented = triage(log("── feature suites ──", "  FAIL set value is built from one of the two newest daily files", "  FAIL top 10 prices are today's market and nothing is invented", "  ✗ feature-data.suite.mjs — 2 failed"), "pr");
+  t("an invented price still blocks beside a late file", invented.blocked.length === 1);
+  const stamp = triage(log("── feature suites ──", "  FAIL release checked dates match the radar file", "  ✗ feature-data.suite.mjs — 1 failed"), "pr");
+  t("a radar stamp lag does not block a pull request", stamp.blocked.length === 0 && stamp.monitor.length === 1);
+
   const rb = (line) => ["── rebuild ──", line, "", "9 passed · 1 failed"].join("\n");
   const two = triage([log("── price trust ──", "  ✓ ok"), rb("  ✗ rebuild: build-feed.mjs")]);
   t("a feed builder failure withholds reads, prices still publish", two.blocked.length === 0 && two.withheld[0]?.key === "reads");
@@ -63,6 +81,10 @@ export async function run() {
   t("withheld files are put back before the feed commit", at("scripts/withhold-artifacts.mjs") > 0 && at("scripts/withhold-artifacts.mjs") < at("- name: Commit the rebuilt feed"));
   t("withheld files are put back before the publish", at("scripts/withhold-artifacts.mjs") < at("publish-public-data.mjs --push"));
   t("a failed or degraded nightly updates one issue", at("scripts/nightly-issue.mjs") > 0);
+  t("stale prices open one issue and do not dispatch a second run", at("scripts/prices-stale-issue.mjs") > 0 && at("scripts/prices-stale-issue.mjs") < at("- name: Failure summary"));
+  t("a red price run opens one fix branch", /open-price-fix\.mjs/.test(wf) && /pull-requests: write/.test(wf));
+  const dog = await readFile(new URL("../../.github/workflows/watchdog.yml", import.meta.url), "utf8");
+  t("the watchdog alarms on stale prices and does not gain a new dispatch", /prices-stale-issue\.mjs/.test(dog) && dog.split("createWorkflowDispatch").length === 2);
   t("the nightly checks out the branch tip, not the queued commit", /uses: actions\/checkout@v4\n\s+with:\n\s+ref: \$\{\{ github\.ref_name \}\}/.test(wf));
   t("a later feed crash withholds reads instead of stopping the publish", /build-feed\.mjs \|\| node scripts\/withhold-group\.mjs reads/.test(wf));
   const pre = await readFile(new URL("../../.github/workflows/nightly-precheck.yml", import.meta.url), "utf8");

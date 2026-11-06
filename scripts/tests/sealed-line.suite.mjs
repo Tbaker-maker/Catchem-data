@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isOrdinaryPack, pickSealedLine, specialPrintings } from "../lib/sealed-line.mjs";
+import { catalogSetCount, setCountFollowsCatalog } from "../lib/set-quarantine.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -66,7 +67,8 @@ export async function run() {
       if (gaps.includes(point.d) && point.v !== null) filled += 1;
     }
   }
-  t("every published set uses the sealed line rule", names.length >= 205 && mismatch === 0);
+  t("every published set uses the sealed line rule", mismatch === 0);
+  t("published set count follows the catalog", setCountFollowsCatalog(names.length, catalogSetCount(catalog)));
   const baseDoc = JSON.parse(await readFile(join(dir, "base-set.json"), "utf8"));
   t("Base Set is not the 1st Edition Shadowless pack", baseDoc.sealedLine && baseDoc.sealedLine.id !== "tcgcsv-138132" && baseDoc.sealedLine.id === "tcgcsv-138130");
   t("the five missing days stay null on set indexes", filled === 0);

@@ -9,6 +9,8 @@
 //   monitor  main's own artifact freshness. The nightly is what fixes a stale
 //            main, so a stale main must never stop the nightly (the Oct 23 to
 //            Oct 26 deadlock) or any pull request.
+//   warning  cosmetic. A missing logo or a thin lead. Does not stop the nightly
+//            or a pull request. A price or a copy rule stays in block.
 //
 // No limits or cutoffs live here. This file only names tests and paths.
 
@@ -22,6 +24,16 @@ export const MONITOR_TESTS = [
   /reader files are within \d+ days of the nightly date/i,
   /files? (are |is )?more than \d+ runs? stale/i,
   /^artifact freshness/i,
+  /set value is built from one of the two newest daily files/i,
+  /release checked dates match the radar file/i,
+];
+
+// Cosmetic. A missing logo or a thin lead must not stop the price commit.
+// A price that is wrong, or a copy rule, stays in block via SAFETY_WORDS.
+export const WARNING_TESTS = [
+  /every set on \/sets has a logo file/i,
+  /no thin item in the first three/i,
+  /no logo or tile/i,
 ];
 
 // Group order matters: the first match wins.
@@ -120,6 +132,7 @@ export function tierOf(failure) {
   if (names.some((n) => SAFETY_WORDS.test(n))) return { tier: "block" };
   const leaves = failure.inner && failure.inner.length ? failure.inner : [failure.name];
   if (leaves.every((n) => MONITOR_TESTS.some((re) => re.test(n)))) return { tier: "monitor" };
+  if (leaves.every((n) => WARNING_TESTS.some((re) => re.test(n)))) return { tier: "warning" };
   const g = groupOf(failure.name);
   if (g) return { tier: "withhold", group: g };
   return { tier: "block" };
@@ -127,13 +140,13 @@ export function tierOf(failure) {
 
 /**
  * The whole run. mode "nightly": safety blocks, groups withhold, freshness is
- * reported only. mode "pr": everything but freshness blocks, because a pull
+ * reported only. mode "pr": everything but freshness and warnings blocks, because a pull
  * request must be fully green on its own code, and main's staleness is not its code.
  */
 export function triage(text, mode = "nightly") {
   if (Array.isArray(text)) return mergeTriage(text.map((x) => triage(x, mode)), mode);
   const { failures, finished } = parseLog(text);
-  const out = { mode, finished, blocked: [], withheld: [], monitor: [], paths: [] };
+  const out = { mode, finished, blocked: [], withheld: [], monitor: [], warning: [], paths: [] };
   if (!finished) {
     out.blocked.push({ name: "the test runner stopped before its summary line", inner: [] });
     return out;
@@ -142,6 +155,7 @@ export function triage(text, mode = "nightly") {
   for (const f of failures) {
     const r = tierOf(f);
     if (r.tier === "monitor") { out.monitor.push(f); continue; }
+    if (r.tier === "warning") { out.warning.push(f); continue; }
     if (r.tier === "withhold" && mode === "nightly") {
       if (!byGroup.has(r.group.key)) byGroup.set(r.group.key, { key: r.group.key, label: r.group.label, paths: r.group.paths, tests: [] });
       byGroup.get(r.group.key).tests.push(f);
@@ -170,16 +184,18 @@ export function describe(result) {
     for (const f of g.tests) lines.push(`- ${names(f)}`);
   }
   for (const f of result.monitor) lines.push(`Freshness only, not blocking: ${names(f)}`);
-  if (!result.blocked.length && !result.withheld.length && !result.monitor.length) lines.push("Every test passed. Nothing withheld.");
+  for (const f of result.warning || []) lines.push(`Warning only, not blocking: ${names(f)}`);
+  if (!result.blocked.length && !result.withheld.length && !result.monitor.length && !(result.warning || []).length) lines.push("Every test passed. Nothing withheld.");
   return lines.join("\n");
 }
 
 function mergeTriage(parts, mode) {
-  const out = { mode, finished: parts.every((p) => p.finished), blocked: [], withheld: [], monitor: [], paths: [] };
+  const out = { mode, finished: parts.every((p) => p.finished), blocked: [], withheld: [], monitor: [], warning: [], paths: [] };
   const byGroup = new Map();
   for (const p of parts) {
     out.blocked.push(...p.blocked);
     out.monitor.push(...p.monitor);
+    out.warning.push(...(p.warning || []));
     for (const g of p.withheld) {
       if (!byGroup.has(g.key)) byGroup.set(g.key, { ...g, tests: [] });
       byGroup.get(g.key).tests.push(...g.tests);
