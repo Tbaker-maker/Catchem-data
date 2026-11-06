@@ -26,6 +26,7 @@ export const MONITOR_TESTS = [
   /^artifact freshness/i,
   /set value is built from one of the two newest daily files/i,
   /release checked dates match the radar file/i,
+  /the committed map is caught up to the catalog/i,
 ];
 
 // Cosmetic. A missing logo or a thin lead must not stop the price commit.

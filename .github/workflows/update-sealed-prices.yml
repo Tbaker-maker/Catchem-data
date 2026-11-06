@@ -861,21 +861,6 @@ jobs:
         # the run red without stopping tonight's data. Same check, no warn mode.
         run: node scripts/write-health.mjs > /tmp/health-after.json
 
-      - name: Open or update the prices stale issue
-        # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
-        # Does not dispatch another run.
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node scripts/prices-stale-issue.mjs
-
-      - name: Open a fix branch when this run is red
-        # One open pull request. The body is the failing test output.
-        if: failure()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node scripts/open-price-fix.mjs
-
       - name: Failure summary
         if: failure()
         env:
@@ -888,3 +873,19 @@ jobs:
               --jq '.jobs[].steps[] | select(.conclusion=="failure") | "- " + .name' || echo "- (could not read step results)"
             echo "Price data commits happen in their own step, so check main for today's data: commit before assuming the day is lost."
           } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update the prices stale issue
+        # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
+        # After the failure summary so the strict freshness check stays the last data step.
+        # Does not dispatch another run.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/prices-stale-issue.mjs
+
+      - name: Open a fix branch when this run is red
+        # One open pull request. The body is the failing test output.
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/open-price-fix.mjs

@@ -66,6 +66,10 @@ export async function run() {
   t("an invented price still blocks beside a late file", invented.blocked.length === 1);
   const stamp = triage(log("── feature suites ──", "  FAIL release checked dates match the radar file", "  ✗ feature-data.suite.mjs — 1 failed"), "pr");
   t("a radar stamp lag does not block a pull request", stamp.blocked.length === 0 && stamp.monitor.length === 1);
+  const mapLag = triage(log("── feature suites ──", "  FAIL the committed map is caught up to the catalog", "  ✗ tcgcsv catalogue map suite — 1 failed"), "pr");
+  t("a catalogue map that lags a new set does not block a pull request", mapLag.blocked.length === 0 && mapLag.monitor.length === 1);
+  const mapHole = triage(log("── feature suites ──", "  FAIL mapped plus skipped is every single", "  ✗ tcgcsv catalogue map suite — 1 failed"), "pr");
+  t("a mapper that drops a single still blocks", mapHole.blocked.length === 1);
 
   const rb = (line) => ["── rebuild ──", line, "", "9 passed · 1 failed"].join("\n");
   const two = triage([log("── price trust ──", "  ✓ ok"), rb("  ✗ rebuild: build-feed.mjs")]);
@@ -81,7 +85,7 @@ export async function run() {
   t("withheld files are put back before the feed commit", at("scripts/withhold-artifacts.mjs") > 0 && at("scripts/withhold-artifacts.mjs") < at("- name: Commit the rebuilt feed"));
   t("withheld files are put back before the publish", at("scripts/withhold-artifacts.mjs") < at("publish-public-data.mjs --push"));
   t("a failed or degraded nightly updates one issue", at("scripts/nightly-issue.mjs") > 0);
-  t("stale prices open one issue and do not dispatch a second run", at("scripts/prices-stale-issue.mjs") > 0 && at("scripts/prices-stale-issue.mjs") < at("- name: Failure summary"));
+  t("stale prices open one issue and do not dispatch a second run", at("scripts/prices-stale-issue.mjs") > at("- name: Failure summary") && !wf.includes("createWorkflowDispatch"));
   t("a red price run opens one fix branch", /open-price-fix\.mjs/.test(wf) && /pull-requests: write/.test(wf));
   const dog = await readFile(new URL("../../.github/workflows/watchdog.yml", import.meta.url), "utf8");
   t("the watchdog alarms on stale prices and does not gain a new dispatch", /prices-stale-issue\.mjs/.test(dog) && dog.split("createWorkflowDispatch").length === 2);
