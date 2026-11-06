@@ -7,7 +7,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { monthDay } from "./outlier-dive-reads.mjs";
 import { VOLUME_FILE, VOLUME_SOURCE, fullWindow, shiftDay } from "./tcgplayer-volume.mjs";
-import { cleanCardName } from "./card-face.mjs";
+import { cleanCardName, nameWithTags } from "./card-face.mjs";
 
 export const VOLUME_EMPTY_NOTE = "No count is on file, so no volume read ships.";
 export const VOLUME_NOTE = `Near Mint listings counted on TCGplayer over 30 and 7 days, from ${VOLUME_FILE}. ${VOLUME_SOURCE}.`;
@@ -51,8 +51,7 @@ export function volumeRead(row, item) {
   if (!has7 || !(row.sold7d > row.sold30d * 7 / 30)) return null;
   const whereSet = String(item.set || "").trim();
   const whereNum = String(item.number || "").trim();
-  let title = name;
-  if (whereSet && !title.toLowerCase().includes(`(${whereSet.toLowerCase()})`)) title = `${title} (${whereSet})`;
+  let title = nameWithTags(name, whereSet);
   if (whereNum && !title.includes(whereNum)) title = `${title} ${whereNum}`;
   let sentence = `${title}: ${plural(row.sold30d, "Near Mint listing counted", "Near Mint listings counted")} on TCGplayer in the 30 days ${r30}`;
   sentence += has7 ? `, ${row.sold7d} of them in the last 7 (${range(row.window7d)}).` : ".";

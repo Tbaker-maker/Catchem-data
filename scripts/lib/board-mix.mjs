@@ -8,6 +8,8 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
+import { nameWithTags } from "./card-face.mjs";
+import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
 
@@ -18,7 +20,6 @@ export function markCited(set, doc) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(c)) return `checked ${LONG_MONTHS[Number(c.slice(5, 7)) - 1]} ${Number(c.slice(8, 10))}, ${c.slice(0, 4)}`;
   return `our list, ${monthDay(doc.asOf)}`;
 }
-import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads, dayNum, stampHistReceipt } from "./history-reads.mjs";
@@ -501,7 +502,7 @@ export function polishPriceRead(r) {
   if (!(from > 0)) return r;
   const name = cleanName(r.name);
   const set = shortSet(r.set);
-  const who = set && r.readKind !== "sealed" ? `${name} (${set})` : name;
+  const who = set && r.readKind !== "sealed" ? nameWithTags(name, set) : name;
   const span = `${money(from)} (${monthDay(r.startDate)}) to ${money(to)} (${monthDay(r.endDate)})`;
   const up = to > from;
   const p = Math.round(Math.abs(pct(from, to)));

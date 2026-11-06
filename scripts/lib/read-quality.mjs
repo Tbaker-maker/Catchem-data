@@ -1,7 +1,7 @@
 // Read quality, from a user's eyes. Prices come from the row or the daily
 // file passed in. A missing day is not filled. Listings are not sales.
 import { bannedWord, money, pretty } from "./public-bundle.mjs";
-import { tcgAmount } from "./card-face.mjs";
+import { nameWithTags, tcgAmount } from "./card-face.mjs";
 
 export const FOOTER = "An ask is a listing price. A listing is not a sale.";
 export const CONDITION_NOTE = "A condition is shown only when the price is for that condition. Graded and played copies can differ.";
@@ -468,13 +468,12 @@ export function printingSentence(row) {
   const name = pretty(row?.name || "Card");
   const setName = pretty(row?.set || "");
   const number = String(row?.number || "").trim();
-  let tail = "";
-  if (setName && number) tail = ` (${setName}) ${number}`;
-  else if (setName) tail = ` (${setName})`;
+  let title = nameWithTags(name, setName);
+  if (number && !title.includes(number) && !title.includes(`#${number}`)) title = `${title} ${number}`;
   const day = String(row?.asOf || row?.date || "");
   const dateBit = day ? ` (${speakDay(day, day)})` : "";
   const printingBit = picked.many || picked.name ? `${picked.name} ` : "";
-  return `${name}${tail}. TCGplayer market: ${printingBit}${tcgAmount(picked.price, money)}${dateBit}.`;
+  return `${title}. TCGplayer market: ${printingBit}${tcgAmount(picked.price, money)}${dateBit}.`;
 }
 
 export function priceOnExactDay(dayDoc, productId, price) {

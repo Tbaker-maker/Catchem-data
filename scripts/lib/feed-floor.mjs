@@ -16,6 +16,8 @@ function valid(cfg) {
   const pct = Number(cfg?.minSealedLeadPct);
   if (usd > 0) out.minSealedLeadUsd = usd;
   if (pct > 0) out.minSealedLeadPct = pct;
+  const leadMargin = Number(cfg?.leadMargin);
+  if (leadMargin > 1) out.leadMargin = leadMargin;
   return out;
 }
 

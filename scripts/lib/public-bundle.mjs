@@ -1,6 +1,7 @@
 // Public catalog helpers. Prices here are TCGplayer market or eBay asks.
 // Never PPT keys (tcgMarket, unopenedPrice, pptMarket, priceRatio).
 import { banGuard } from "./copy-rules.mjs";
+import { nameWithTags } from "./card-face.mjs";
 
 // Shared advice-phrase rules (rules/advice-phrases.json). FILLER_BAN below is a style rule.
 export const BANNED = banGuard("public bundle");
@@ -1052,10 +1053,9 @@ export function cardLabel(read) {
   const num = String(read.number || "").trim();
   const asOf = read.toDate || read.asOf || "2026-09-28";
   const year = olderThanFiveYears(read.release || read.year, asOf) ? Number(String(read.release || read.year).slice(0, 4)) : 0;
-  let base = name;
-  if (year && set) base = `${name} (${set}, ${year})`;
-  else if (set) base = `${name} (${set})`;
-  else if (year) base = `${name} (${year})`;
+  let base = set ? nameWithTags(name, set) : name;
+  if (year && set && base.includes(`(${set})`)) base = base.replace(`(${set})`, `(${set}, ${year})`);
+  else if (year && !set && !base.includes(`(${year})`)) base = `${base} (${year})`;
   if (num && !base.includes(num) && !base.includes(`#${num}`)) base = `${base} ${num}`;
   return base;
 }

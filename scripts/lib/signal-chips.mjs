@@ -3,6 +3,7 @@
 // An overall score is added only when the private rules name a proven signal.
 import { flagLine, isClean } from "./copy-rules.mjs";
 import { oneNightMove } from "./history-reads.mjs";
+import { straightWeeks } from "./trend-context.mjs";
 
 export const CHIP_ORDER = Object.freeze([
   "supply", "move", "gone", "range", "momentum", "rotation", "art", "era", "confidence",
@@ -15,7 +16,6 @@ const ART_BADGE = Object.freeze({
 });
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const GONE_WORD = ["", "light", "steady", "fast"];
 
 export function dayNum(iso) {
   const t = Date.parse(`${String(iso || "").slice(0, 10)}T00:00:00Z`);
@@ -337,8 +337,8 @@ function goneChip(ctx, rules) {
   let dots = 3;
   if (rate < cuts[0]) dots = 1;
   else if (rate < cuts[1]) dots = 2;
-  const word = GONE_WORD[dots];
-  return { kind: "gone", dots, word, rate, label: `Listings gone, ${word}` };
+  const label = `Listings counted down, ${prev} to ${n}`;
+  return { kind: "gone", dots, rate, prev, n, label };
 }
 
 // One range window for the chip and for a high claim on the same points.
@@ -443,6 +443,11 @@ function momentumChip(points, asOf, rules) {
   const then = nearest(points, addDays(asOf, -days), soft);
   if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
   const pct = ((now[1] - then[1]) / then[1]) * 100;
+  const run = straightWeeks(points, asOf, 5);
+  if (run === "up" || run === "down") {
+    const word = run === "up" ? "Rising" : "Cooling";
+    return { kind: "momentum", word, mag: Math.abs(pct), label: `Momentum ${word}` };
+  }
   const flatN = num(m.flatRecentDays);
   if (flatN >= 2 && trailingFlat(points, asOf, flatN, 0)) {
     return { kind: "momentum", word: "Flat", mag: 0, label: "Momentum Flat", settled: true };
@@ -549,7 +554,10 @@ function blurbFor(chip, asOf) {
     const word = chip.dir === "up" ? "up" : "down";
     return `Listings counted are ${word} ${pct}%${days}${dated}.`;
   }
-  if (chip.kind === "gone") return `Listings gone are ${GONE_WORD[chip.dots] || "steady"}.`;
+  if (chip.kind === "gone") {
+    if (num(chip.prev) > 0 && num(chip.n) >= 0) return `Listings counted went from ${chip.prev} to ${chip.n}.`;
+    return "Listings counted are down.";
+  }
   if (chip.kind === "range") return `Today sits in the ${chip.days} day range.`;
   if (chip.kind === "momentum") return `Momentum is ${chip.word}.`;
   if (chip.kind === "rotation") return `Rotates in ${String(chip.text || "").replace(" mo", " months")}.`;
@@ -567,7 +575,7 @@ function publish(chip) {
   if (!chip) return null;
   if (chip.kind === "move") return { kind: "move", dir: chip.dir, text: chip.text, label: chip.label };
   if (chip.kind === "supply") return { kind: "listings", dir: chip.dir, text: chip.text, label: chip.label };
-  if (chip.kind === "gone") return { kind: "gone", dots: chip.dots, word: chip.word || GONE_WORD[chip.dots] || "steady", label: chip.label };
+  if (chip.kind === "gone") return { kind: "gone", dots: chip.dots, label: chip.label };
   if (chip.kind === "range") return { kind: "range", pos: chip.pos, days: chip.days, high: chip.high, highOn: chip.highOn, label: chip.label };
   if (chip.kind === "momentum") return { kind: "momentum", word: chip.word, label: chip.label };
   if (chip.kind === "rotation") return { kind: "rotation", text: chip.text, label: chip.label };
