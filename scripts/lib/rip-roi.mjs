@@ -34,6 +34,13 @@ export function median(xs) {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
 
+// One card from the pool. The mean counts a chase card. The median does not.
+export function poolMean(xs) {
+  const s = xs.filter((x) => Number.isFinite(x) && x > 0);
+  if (!s.length) return null;
+  return s.reduce((sum, n) => sum + n, 0) / s.length;
+}
+
 export function mulberry32(seed) {
   let a = seed >>> 0;
   return () => {
@@ -147,7 +154,7 @@ export function buildSlots(pullRows, singles, setSlug) {
   for (const r of pullRows.filter((row) => row.setSlug === setSlug)) {
     if (r.rip === false) continue;
     const pool = r.pool ? pricesForPool(setCards, r.pool) : rarityPool(singles, setSlug, r.rarity, r.tag || null);
-    const avg = median(pool);
+    const avg = poolMean(pool);
     if (!(avg > 0) || !(r.pct > 0)) continue;
     const rate = Math.round((r.pct / 100) * 1e8) / 1e8;
     slots.push({
@@ -179,7 +186,7 @@ export function packEV(slots, bulk, rare) {
 }
 
 // Monte Carlo over independent Bernoulli draws per published rarity rate.
-// Each sim draws whether each slot hits, then uses that slot's average price (not a random card).
+// Each sim draws whether each slot hits, then adds that slot's mean price.
 export function monteCarlo({ slots, bulk, rare, packs, productPrice, sims = SIMS, seed }) {
   const rnd = mulberry32(seed >>> 0);
   const packBulk = (bulk.perCard > 0 ? bulk.perCard * bulk.cardsPerPack : 0) + (rare.avg > 0 ? rare.avg : 0);

@@ -1,9 +1,9 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cardInPool } from "../lib/pull-rate-pools.mjs";
 import {
-  packsFor, productPacksOk, packEV, scoreProduct, bulkFloorForSet, buildSlots, bannedCopy, SIMS, median,
+  packsFor, productPacksOk, packEV, scoreProduct, bulkFloorForSet, buildSlots, bannedCopy, SIMS, median, poolMean,
 } from "../lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -78,6 +78,71 @@ export async function run() {
   t("gold pool is the item and the gold V, not the alt", inPool("swsh-gold").sort().join(",") === "Quick Ball (Secret),Zacian V (Secret)");
   const lone = [{ name: "Alcremie VMAX (Secret)", rarity: "Secret Rare", tags: [], price: 3, num: "73" }];
   t("a lone VMAX secret is the gold card", cardInPool(lone[0], "swsh-gold", lone) === true && cardInPool(lone[0], "swsh-rainbow", lone) === false);
+
+  // Evolving Skies secret alts, catalog prices on 2026-10-30. The middle card
+  // is Leafeon at 373.32. Umbreon at 2209.75 and Rayquaza at 1241.76 are in the
+  // same pool. A median slot price drops both chase cards.
+  const esSecret = [293.31, 361.5, 373.32, 1241.76, 2209.75].map((price, i) => ({
+    setSlug: "swsh07-evolving-skies",
+    rarity: "Secret Rare",
+    tags: ["Alternate Art"],
+    name: `Alt VMAX ${i}`,
+    price,
+  }));
+  const esPull = [{
+    setSlug: "swsh07-evolving-skies",
+    rarity: "Secret Rare",
+    tag: "Alternate Art",
+    articleRarity: "Alt-Art Pokémon VMAX",
+    pct: 0.3,
+    sourceUrl: "https://www.tcgplayer.com/content/article/Pokemon-TCG-Evolving-Skies-Pull-Rates/6a743d7b-e5ee-4fd6-9d18-64a636990e8c/",
+    published: "2024-08-27",
+  }];
+  const esSlots = buildSlots(esPull, esSecret, "swsh07-evolving-skies").slots;
+  const esMean = poolMean(esSecret.map((c) => c.price));
+  const esMed = median(esSecret.map((c) => c.price));
+  t("Evolving Skies secret alt slot is the mean", esSlots.length === 1 && esSlots[0].nCards === 5 && esSlots[0].avgPrice === Math.round(esMean * 100) / 100 && esSlots[0].avgPrice === 895.93);
+  t("Evolving Skies secret alt slot is not the median", esSlots[0].avgPrice !== 373.32 && esMed === 373.32 && esSlots[0].ev > 2);
+  const esBox = scoreProduct({
+    product: { id: "swsh7-booster-box", name: "Evolving Skies Booster Box", set: "Evolving Skies", setId: "swsh7", setSlug: "swsh07-evolving-skies", subtype: "booster-box" },
+    price: 2147.19,
+    packs: 36,
+    slots: esSlots,
+    bulk: { perCard: 0.12, cardsPerPack: 9 },
+    rare: { avg: 0.25, n: 39 },
+    seed: 1,
+  });
+  const esPack = packEV(esSlots, { perCard: 0.12, cardsPerPack: 9 }, { avg: 0.25 });
+  t("Evolving Skies box rip value uses that mean", esBox.contentsEV === Math.round(esPack.total * 36 * 100) / 100 && esBox.contentsEV > 120);
+
+  const bucketDir = join(ROOT, "research/assets/public/buckets");
+  const bucketFiles = (await readdir(bucketDir)).filter((n) => n.endsWith(".json"));
+  const esCards = [];
+  for (const name of bucketFiles) {
+    const rows = JSON.parse(await readFile(join(bucketDir, name), "utf8"));
+    for (const row of rows) {
+      if (row.setSlug !== "swsh07-evolving-skies" || row.kind === "sealed") continue;
+      esCards.push(row);
+    }
+  }
+  const pricedSecret = esCards.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art") && c.price > 0);
+  const unpricedSecret = esCards.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art") && !(c.price > 0));
+  const umbreon = esCards.find((c) => c.id === "tcgcsv-246723");
+  const pullDoc = JSON.parse(await readFile(join(ROOT, "data/pull-rates.json"), "utf8"));
+  const catalogSlots = buildSlots(pullDoc.rows, esCards.map((c) => ({
+    id: c.id, name: c.name || "", setSlug: c.setSlug, rarity: c.rarity || "", tags: c.tags || [], price: c.price,
+  })), "swsh07-evolving-skies").slots;
+  const catalogSecret = catalogSlots.find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
+  const catalogMean = Math.round(poolMean(pricedSecret.map((c) => c.price)) * 100) / 100;
+  t("catalog Umbreon alt has a market price", umbreon && umbreon.name === "Umbreon VMAX (Alternate Art Secret)" && umbreon.price > 1000 && umbreon.asOf === "2026-10-30");
+  t("unpriced alt is left out", unpricedSecret.some((c) => c.id === "tcgcsv-246754") && catalogSecret && catalogSecret.nCards === pricedSecret.length && !pricedSecret.some((c) => c.id === "tcgcsv-246754"));
+  t("catalog secret alt slot matches the priced mean", catalogSecret && catalogSecret.avgPrice === catalogMean && catalogMean > 800 && catalogSecret.avgPrice !== median(pricedSecret.map((c) => c.price)));
+  const ripDoc = JSON.parse(await readFile(join(ROOT, "data/derived/rip-roi.json"), "utf8"));
+  const ripBox = (ripDoc.rows || []).find((r) => r.id === "swsh7-booster-box");
+  const ripSecret = (ripBox?.slots || []).find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
+  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const sealed = (catalog.items || []).find((item) => item.id === "tcgcsv-242436");
+  t("published Evolving Skies box uses the catalog mean", ripBox && ripSecret && sealed && ripSecret.avgPrice === catalogMean && ripSecret.nCards === pricedSecret.length && ripBox.price === sealed.price && ripBox.priceAsOf === String(sealed.asOf).slice(0, 10) && ripBox.contentsEV > 200);
 
   return fail;
 }
