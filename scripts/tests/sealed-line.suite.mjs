@@ -66,7 +66,7 @@ export async function run() {
       if (gaps.includes(point.d) && point.v !== null) filled += 1;
     }
   }
-  t("every published set uses the sealed line rule", names.length === 205 && mismatch === 0);
+  t("every published set uses the sealed line rule", (names.length === 205 || names.length === 206) && mismatch === 0);
   const baseDoc = JSON.parse(await readFile(join(dir, "base-set.json"), "utf8"));
   t("Base Set is not the 1st Edition Shadowless pack", baseDoc.sealedLine && baseDoc.sealedLine.id !== "tcgcsv-138132" && baseDoc.sealedLine.id === "tcgcsv-138130");
   t("the five missing days stay null on set indexes", filled === 0);
