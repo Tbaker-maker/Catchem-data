@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import {
   buildSetMaps, resolveSetSlug, buildSlots, bulkFloorForSet, rareSlotAvg,
-  packsFor, productPacksOk, scoreProduct, bannedCopy, historyFileDay, SIMS, BULK_CARDS_PER_PACK,
+  packsFor, productPacksOk, scoreProduct, bannedCopy, historyFileDay, priceSingles, SIMS, BULK_CARDS_PER_PACK,
 } from "./lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -14,29 +14,17 @@ const J = async (p, d = null) => { try { return JSON.parse(await readFile(join(R
 
 const ALLOWED = new Set(["booster-pack", "booster-box", "booster-bundle", "etb", "pc-etb"]);
 
-async function loadSinglesFromBuckets() {
+async function loadBucketRows() {
   const dir = join(ROOT, "research/assets/public/buckets");
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json"));
-  const singles = [];
-  let asOf = "";
+  const rows = [];
   for (const f of files) {
-    const rows = await J(`research/assets/public/buckets/${f}`, []);
-    for (const r of rows || []) {
-      if (r.kind === "sealed") continue;
-      if (!(r.price > 0) || !r.setSlug) continue;
-      if (r.asOf && r.asOf > asOf) asOf = String(r.asOf).slice(0, 10);
-      singles.push({
-        id: r.id,
-        name: r.name || "",
-        setSlug: r.setSlug,
-        rarity: r.rarity || "",
-        tags: r.tags || [],
-        price: r.price,
-        printing: r.printing || "",
-      });
+    const doc = await J(`research/assets/public/buckets/${f}`, []);
+    for (const r of doc || []) {
+      if (r && r.kind !== "sealed" && r.setSlug) rows.push(r);
     }
   }
-  return { singles, asOf };
+  return rows;
 }
 
 function productPrice(catalogByPid, sealedPrices, product) {
@@ -63,12 +51,14 @@ const products = await J("data/sealed-products.json", []);
 const sealedPrices = await J("data/sealed-prices.json", { products: [] });
 const catalog = await J("data/catalog/tcgcsv-latest.json", { items: [] });
 const catalogByPid = new Map();
+const catalogById = new Map();
 for (const item of catalog.items || []) {
-  const pid = Number(item.tcgplayerProductId);
+  if (item?.id) catalogById.set(item.id, item);
+  const pid = Number(item?.tcgplayerProductId);
   if (pid > 0) catalogByPid.set(pid, item);
 }
-
-const { singles, asOf: bucketAsOf } = await loadSinglesFromBuckets();
+const holdDoc = await J("research/assets/public/price-hold.json", { ids: {} });
+const { singles, asOf: bucketAsOf } = priceSingles(await loadBucketRows(), catalogById, holdDoc.ids || {});
 const maps = buildSetMaps(setsPub, pull.rows);
 const ratesBySlug = new Map();
 for (const r of pull.rows) {
@@ -169,7 +159,7 @@ const doc = {
   note: "Expected contents of opening a pack or sealed product, minus the product price. History-based estimates from dated pull rates and our singles prices. Not advice.",
   method: {
     pullRates: "data/pull-rates.json. A row is written only when the source states the rate, with its link and date.",
-    singles: "research/assets/public/buckets, TCGplayer market on asOf.",
+    singles: "Catalog market price and day when the card has one. A vintage hold stays out. A card with no market price is left out. Names and pools come from the public buckets.",
     bulkFloor: `Trimmed mean of Common and Uncommon on asOf, times ${BULK_CARDS_PER_PACK} cards per pack. Under 20 prices, the median is used. The median is stored beside the mean.`,
     rareSlot: "Median Rare / Holo Rare / Double Rare in the set × 1 rare slot per pack.",
     hitSlot: "Mean of the priced cards in the published pool. The rate is any one of those cards. A card with no market price is left out. The median is not used.",

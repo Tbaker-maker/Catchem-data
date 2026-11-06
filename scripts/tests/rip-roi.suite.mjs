@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { cardInPool } from "../lib/pull-rate-pools.mjs";
 import {
   packsFor, productPacksOk, packEV, scoreProduct, bulkFloorForSet, buildSlots, bannedCopy, SIMS, median, poolMean,
-  historyFileDay,
+  historyFileDay, resolvedMarket, priceSingles,
 } from "../lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -116,6 +116,14 @@ export async function run() {
   const esPack = packEV(esSlots, { perCard: 0.12, cardsPerPack: 9 }, { avg: 0.25 });
   t("Evolving Skies box rip value uses that mean", esBox.contentsEV === Math.round(esPack.total * 36 * 100) / 100 && esBox.contentsEV > 120);
 
+  const wasNull = { id: "was-null", name: "Example VMAX (Alternate Art Secret)", setSlug: "swsh07-evolving-skies", rarity: "Secret Rare", tags: ["Alternate Art"], price: null, asOf: "2026-10-30" };
+  const gained = resolvedMarket(wasNull, { id: "was-null", price: 20, asOf: "2026-11-06", kind: "single" }, "unverified");
+  const gainedSlots = buildSlots(esPull, [{ ...wasNull, price: gained?.price }], "swsh07-evolving-skies").slots;
+  t("a previously unpriced card gains a valid catalog price", gained?.price === 20 && gained?.asOf === "2026-11-06" && gainedSlots.length === 1 && gainedSlots[0].nCards === 1 && gainedSlots[0].avgPrice === 20);
+  t("a card with no catalog market price stays out of the pool", resolvedMarket({ price: null, asOf: "2026-10-30" }, { price: null, asOf: "2026-11-06" }, "unverified") == null && resolvedMarket({ price: null }, { price: 9 }, "vintage") == null);
+  const stillOut = buildSlots(esPull, [wasNull], "swsh07-evolving-skies").slots;
+  t("a null price is not counted as zero", stillOut.length === 0);
+
   const bucketDir = join(ROOT, "research/assets/public/buckets");
   const bucketFiles = (await readdir(bucketDir)).filter((n) => n.endsWith(".json"));
   const esCards = [];
@@ -126,23 +134,30 @@ export async function run() {
       esCards.push(row);
     }
   }
-  const pricedSecret = esCards.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art") && c.price > 0);
-  const unpricedSecret = esCards.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art") && !(c.price > 0));
-  const umbreon = esCards.find((c) => c.id === "tcgcsv-246723");
+  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const hold = JSON.parse(await readFile(join(ROOT, "research/assets/public/price-hold.json"), "utf8"));
+  const catalogById = new Map((catalog.items || []).filter((item) => item && item.id).map((item) => [item.id, item]));
+  const { singles: pricedEs } = priceSingles(esCards, catalogById, hold.ids || {});
+  const secretAlts = esCards.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art"));
+  const pricedSecret = pricedEs.filter((c) => c.rarity === "Secret Rare" && (c.tags || []).includes("Alternate Art"));
+  const umbreon = pricedSecret.find((c) => c.id === "tcgcsv-246723");
+  const duraludon = pricedSecret.find((c) => c.id === "tcgcsv-246754");
   const pullDoc = JSON.parse(await readFile(join(ROOT, "data/pull-rates.json"), "utf8"));
-  const catalogSlots = buildSlots(pullDoc.rows, esCards.map((c) => ({
-    id: c.id, name: c.name || "", setSlug: c.setSlug, rarity: c.rarity || "", tags: c.tags || [], price: c.price,
-  })), "swsh07-evolving-skies").slots;
+  const catalogSlots = buildSlots(pullDoc.rows, pricedEs, "swsh07-evolving-skies").slots;
   const catalogSecret = catalogSlots.find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
   const catalogMean = Math.round(poolMean(pricedSecret.map((c) => c.price)) * 100) / 100;
-  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
-  const catalogUmbreon = (catalog.items || []).find((item) => item.id === "tcgcsv-246723");
-  // Published price and day must equal the catalog market. A frozen 2026-10-30
-  // stamp is not the check. Run 42245422004 failed it after the bundle wrote
-  // the catalog day and market price, which is a real price, not a missing one.
+  const catalogUmbreon = catalogById.get("tcgcsv-246723");
+  const catalogDuraludon = catalogById.get("tcgcsv-246754");
+  // The bundle copies the catalog market, then an unverified hold clears the
+  // bucket. That hold is a rating peer check, not a missing price. The pool
+  // follows the catalog market and day. A frozen bucket price is not the check.
   t("catalog Umbreon alt has a market price", umbreon && catalogUmbreon && umbreon.name === "Umbreon VMAX (Alternate Art Secret)" && Number(catalogUmbreon.price) > 1000 && umbreon.price === Number(catalogUmbreon.price) && umbreon.asOf === String(catalogUmbreon.asOf).slice(0, 10));
-  t("unpriced alt is left out", unpricedSecret.some((c) => c.id === "tcgcsv-246754") && catalogSecret && catalogSecret.nCards === pricedSecret.length && !pricedSecret.some((c) => c.id === "tcgcsv-246754"));
-  t("catalog secret alt slot matches the priced mean", catalogSecret && catalogSecret.avgPrice === catalogMean && catalogMean > 800 && catalogSecret.avgPrice !== median(pricedSecret.map((c) => c.price)));
+  t("Duraludon alt uses the catalog market", duraludon && catalogDuraludon && duraludon.name === "Duraludon VMAX (Alternate Art Secret)" && Number(catalogDuraludon.price) > 0 && duraludon.price === Number(catalogDuraludon.price) && duraludon.asOf === String(catalogDuraludon.asOf).slice(0, 10) && (hold.ids || {})["tcgcsv-246754"] === "unverified");
+  t("secret alt pool membership follows the catalog market", secretAlts.length === pricedSecret.length && pricedSecret.every((c) => {
+    const market = resolvedMarket(secretAlts.find((row) => row.id === c.id), catalogById.get(c.id), (hold.ids || {})[c.id] || "");
+    return market && c.price === market.price && c.asOf === market.asOf && c.price === Number(catalogById.get(c.id).price);
+  }));
+  t("catalog secret alt slot matches the priced mean", catalogSecret && catalogSecret.avgPrice === catalogMean && catalogSecret.nCards === pricedSecret.length && catalogMean !== median(pricedSecret.map((c) => c.price)));
   const ripDoc = JSON.parse(await readFile(join(ROOT, "data/derived/rip-roi.json"), "utf8"));
   const ripBox = (ripDoc.rows || []).find((r) => r.id === "swsh7-booster-box");
   const ripSecret = (ripBox?.slots || []).find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
