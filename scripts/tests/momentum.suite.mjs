@@ -15,6 +15,7 @@ import {
   readProduct,
   signalOn,
   summarize,
+  publicMomentumIcons,
 } from "../lib/momentum.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -109,6 +110,20 @@ t("a later price inside the flat band is not a hit direction", flatLater.directi
 const call = callFor("momentum", { state: "picking-up", direction: "down" }, limits);
 t("picking up while listings counted fall calls the later price up", call === "up");
 t("a flat state is not a call", callFor("momentum", flat.momentum, limits) == null);
+const provenSignals = {
+  momentum: { proven: true },
+  duration: { proven: false },
+  pattern: { proven: true },
+};
+const iconRead = {
+  momentum: { icon: "momentum-picking-up", state: "picking-up" },
+  duration: { icon: "duration-longer", state: "longer" },
+  pattern: { icon: "pattern-same", state: "same" },
+};
+const offIcons = publicMomentumIcons(iconRead, provenSignals, "off");
+const onIcons = publicMomentumIcons(iconRead, provenSignals, "on");
+t("the pulse flag off publishes no momentum labels", offIcons.length === 0);
+t("only a proven signal can be public", onIcons.length === 2 && onIcons[0].id === "momentum-picking-up" && onIcons[0].label === "Picking up" && onIcons[1].label === "Same as last time" && !JSON.stringify(onIcons).includes("minLift") && !JSON.stringify(onIcons).includes("minN"));
 
 const icons = iconKey();
 t("the icon key has one row per state", icons.icons.length === 8 && icons.icons.every((row) => iconFor(row.id) === row));
