@@ -135,13 +135,17 @@ export async function run() {
   })), "swsh07-evolving-skies").slots;
   const catalogSecret = catalogSlots.find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
   const catalogMean = Math.round(poolMean(pricedSecret.map((c) => c.price)) * 100) / 100;
-  t("catalog Umbreon alt has a market price", umbreon && umbreon.name === "Umbreon VMAX (Alternate Art Secret)" && umbreon.price > 1000 && umbreon.asOf === "2026-10-30");
+  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const catalogUmbreon = (catalog.items || []).find((item) => item.id === "tcgcsv-246723");
+  // Published price and day must equal the catalog market. A frozen 2026-10-30
+  // stamp is not the check. Run 42245422004 failed it after the bundle wrote
+  // the catalog day and market price, which is a real price, not a missing one.
+  t("catalog Umbreon alt has a market price", umbreon && catalogUmbreon && umbreon.name === "Umbreon VMAX (Alternate Art Secret)" && Number(catalogUmbreon.price) > 1000 && umbreon.price === Number(catalogUmbreon.price) && umbreon.asOf === String(catalogUmbreon.asOf).slice(0, 10));
   t("unpriced alt is left out", unpricedSecret.some((c) => c.id === "tcgcsv-246754") && catalogSecret && catalogSecret.nCards === pricedSecret.length && !pricedSecret.some((c) => c.id === "tcgcsv-246754"));
   t("catalog secret alt slot matches the priced mean", catalogSecret && catalogSecret.avgPrice === catalogMean && catalogMean > 800 && catalogSecret.avgPrice !== median(pricedSecret.map((c) => c.price)));
   const ripDoc = JSON.parse(await readFile(join(ROOT, "data/derived/rip-roi.json"), "utf8"));
   const ripBox = (ripDoc.rows || []).find((r) => r.id === "swsh7-booster-box");
   const ripSecret = (ripBox?.slots || []).find((s) => s.rarity === "Secret Rare" && s.tag === "Alternate Art");
-  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
   const sealed = (catalog.items || []).find((item) => item.id === "tcgcsv-242436");
   t("published Evolving Skies box uses the catalog mean", ripBox && ripSecret && sealed && ripSecret.avgPrice === catalogMean && ripSecret.nCards === pricedSecret.length && ripBox.price === sealed.price && ripBox.priceAsOf === String(sealed.asOf).slice(0, 10) && ripBox.contentsEV > 200);
   t("a later sealed price date does not reuse the singles day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "2026-11-06" }], "2026-10-30") === "2026-11-06");

@@ -70,6 +70,8 @@ export async function run() {
   t("a catalogue map that lags a new set does not block a pull request", mapLag.blocked.length === 0 && mapLag.monitor.length === 1);
   const mapHole = triage(log("── feature suites ──", "  FAIL mapped plus skipped is every single", "  ✗ tcgcsv catalogue map suite — 1 failed"), "pr");
   t("a mapper that drops a single still blocks", mapHole.blocked.length === 1);
+  const ripBox = triage(log("── feature suites ──", "  FAIL published Evolving Skies box uses the catalog mean", "  ✗ rip-roi.suite.mjs — 1 failed"), "pr");
+  t("a wrong Evolving Skies box price or mean still blocks", ripBox.blocked.length === 1 && ripBox.monitor.length === 0 && ripBox.warning.length === 0);
 
   const rb = (line) => ["── rebuild ──", line, "", "9 passed · 1 failed"].join("\n");
   const two = triage([log("── price trust ──", "  ✓ ok"), rb("  ✗ rebuild: build-feed.mjs")]);
