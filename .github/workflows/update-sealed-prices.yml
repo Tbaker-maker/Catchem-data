@@ -135,28 +135,28 @@ jobs:
           FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
       - name: Unit tests (fail-fast)
-        # Pure-math tests on scripts/lib + contract checks on tonight's rebuilt
-        # artifacts. One retry tells a flaky test from a real regression.
-        # Then scripts/triage-tests.mjs sorts what is still red
-        # (scripts/lib/test-tiers.mjs):
-        #   price safety (prices, copy rules, sealed condition labels, private
-        #   values, and any test in no group) kills the run HERE, before quota burns;
-        #   a reads or feature test only withholds that group's public files,
-        #   and prices still fetch, commit and publish;
-        #   main's own freshness is reported, never blocking (the nightly is the fix).
+        # The same suites as a pull request, on tonight's rebuilt bundle.
+        # One run. A failure opens "Nightly run failed <date>" and stops.
+        # Nothing is retried and nothing is published after a red test.
         id: tests
         env:
           FEED_FRESHNESS_WARN_ONLY: "1" # staleness is checked strict after the refresh
+          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p data/derived
-          if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then
-            tail -5 /tmp/tests-1.log; cp /tmp/tests-1.log /tmp/tests.log
-          else
-            echo "::warning::Unit tests failed once; retrying to rule out a flake."
-            grep -E "✗|FAIL" /tmp/tests-1.log | head -20 || true
-            node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1 || cat /tmp/tests.log
-          fi
+          set +e
+          node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1
+          code=$?
           node scripts/triage-tests.mjs /tmp/tests.log /tmp/rebuild.log --mode nightly --out data/derived/test-triage.json
+          status=$?
+          set -e
+          if [ "$code" != 0 ]; then
+            node scripts/nightly-issue.mjs data/derived/test-triage.json || true
+          fi
+          if [ "$status" != 0 ]; then
+            echo "Nightly tests failed. Not retrying and not publishing."
+            exit 1
+          fi
 
       - name: Note PPT run start
         continue-on-error: true

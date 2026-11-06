@@ -14,6 +14,7 @@ import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange } from "./signal-chips.mjs";
 import { speakDates } from "./read-quality.mjs";
+import { headlineFromDate, holdWindow, proofAgrees } from "./read-proof.mjs";
 
 export const HEADLINE_MAX = 300;
 
@@ -133,7 +134,7 @@ function isBaselineSpike(pts, idx, cfg, last) {
   return mid / Math.max(left, right) >= ratioMin;
 }
 
-function changeAt(pts, asOf, days, cfg) {
+function changeAt(pts, asOf, days, cfg, limits) {
   const last = pts[pts.length - 1];
   if (!last || last[0] !== asOf) return null;
   const prior = pts.slice(0, -1);
@@ -150,6 +151,7 @@ function changeAt(pts, asOf, days, cfg) {
   if (!(span > 0)) return null;
   // A week is 7 days. A point one day off is a different window, not a week.
   if (span === 7 && oneNightMove(pts, p[0], last[0])) return null;
+  if (holdWindow(pts, p[0], last[0], limits).hold) return null;
   return { days: span, asked: days, from: p, to: last, pct: pct(p[1], last[1]) };
 }
 
@@ -174,14 +176,14 @@ function movedDays(pts, asOf) {
 }
 
 // Every finding for one item. Each has a weight score, a signal tag, a sentence and the numbers behind it.
-export function findings(item, ctx, cfg) {
+export function findings(item, ctx, cfg, limits = null) {
   const { pts, title, asOf } = item;
   const out = [];
   const last = pts[pts.length - 1];
   if (!last || last[0] !== asOf) return out;
   const span = dayNum(asOf) - dayNum(pts[0][0]);
   const ch = {};
-  for (const w of WINDOWS) ch[w] = changeAt(pts, asOf, w, cfg);
+  for (const w of WINDOWS) ch[w] = changeAt(pts, asOf, w, cfg, limits);
   const prior = pts.slice(0, -1);
   // Range
   if (prior.length && span >= cfg.longMinDays) {
@@ -533,17 +535,18 @@ function speakRead(read) {
 }
 
 // Rewrite the item reads. Returns the new list and a report.
-export function synthesizeReads(reads, ctx, cfg) {
+export function synthesizeReads(reads, ctx, cfg, limits = null) {
   const items = reads.filter(isItemRead);
   const used = { total: items.length, byType: new Map() };
-  const report = { item: items.length, rewritten: 0, kept: 0 };
-  const out = reads.map((r) => {
-    if (!isItemRead(r)) return r;
+  const report = { item: items.length, rewritten: 0, kept: 0, held: 0 };
+  const out = [];
+  for (const r of reads) {
+    if (!isItemRead(r)) { out.push(r); continue; }
     const item = itemOf(r, ctx);
-    if (!item) { report.kept += 1; return r; }
-    const fs = findings(item, ctx, cfg);
+    if (!item) { report.kept += 1; if (proofAgrees(r)) out.push(r); else report.held += 1; continue; }
+    const fs = findings(item, ctx, cfg, limits);
     const got = compose(item, fs, cfg, used);
-    if (!got) { report.kept += 1; return r; }
+    if (!got) { report.kept += 1; if (proofAgrees(r)) out.push(r); else report.held += 1; continue; }
     report.rewritten += 1;
     const lead = got.lead;
     // A lead price read keeps its TCGplayer market headline; the summary is its lead line.
@@ -567,7 +570,15 @@ export function synthesizeReads(reads, ctx, cfg) {
       next.why = whyLead;
       next.whyItMatters = whyLead;
     }
-    return speakRead(next);
-  });
+    next = speakRead(next);
+    const from = headlineFromDate(next.headline, next.asOf);
+    if (from) {
+      next.startDate = from;
+      next.endDate = String(next.asOf || r.asOf || "");
+      next.source = `TCGplayer market, ${from} and ${next.endDate}`;
+    }
+    if (!proofAgrees(next)) { report.held += 1; continue; }
+    out.push(next);
+  }
   return { reads: out, report };
 }

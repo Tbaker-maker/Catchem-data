@@ -1,4 +1,4 @@
-import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
+import { applyImageGaps, applyShelf, assignSections, sealedKindOf, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
 import { BAD_DATE, BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies, statesBothMoves } from "../lib/public-bundle.mjs";
 
 export async function run() {
@@ -203,6 +203,8 @@ export async function run() {
   const shipped = [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)];
   t("a lead does not use a banned step phrase", shipped.every((line) => !leadBan.test(line)));
   t("a read names two prices and one percent", [named, soldLine].every((line) => (line.match(/\$[0-9,.]+/g) || []).length === 2 && (line.match(/%/g) || []).length === 1 && /latest price/.test(line)));
+  t("a booster bundle case is not a bundle", sealedKindOf({ name: "Crown Zenith Booster Bundle Case", subtype: "case", kind: "sealed" }) === "other");
+  t("a booster bundle stays a bundle", sealedKindOf({ name: "Crown Zenith Booster Bundle", subtype: "booster-bundle", kind: "sealed" }) === "bundle");
 
   return fail;
 }

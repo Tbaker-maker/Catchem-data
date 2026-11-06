@@ -13,6 +13,7 @@ import {
 } from "./common.mjs";
 import { presentDetections, rankExtremes, replayItems, rotationMembership, scoreGates } from "./engine.mjs";
 import { buildScannerReads } from "./reads.mjs";
+import { siteGates, showsOnSite } from "../browse-hidden.mjs";
 
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
 
@@ -207,7 +208,12 @@ function tally(rows, field) {
 export async function collectScannerReads({ root, asOf, series, catalog, token = process.env.PRIVATE_DATA_TOKEN || "" }) {
   const started = Date.now();
   const score = await loadScoreItems(root, asOf, series);
-  const scan = scanItemsFrom(catalog || { items: [] }, series, asOf, score.items);
+  const site = await siteGates(root);
+  const scanCatalog = {
+    ...(catalog || {}),
+    items: ((catalog && catalog.items) || []).filter((item) => showsOnSite(item, site.pids, site.costcoIds)),
+  };
+  const scan = scanItemsFrom(scanCatalog, series, asOf, score.items);
   const replayStarted = Date.now();
   const replay = replayItems(score.items, asOf);
   const gates = scoreGates(replay.detections, replay.base, asOf);

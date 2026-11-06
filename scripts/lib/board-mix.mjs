@@ -23,6 +23,7 @@ import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads, dayNum, stampHistReceipt } from "./history-reads.mjs";
 import { speakDates } from "./read-quality.mjs";
+import { loadHoldLimits, stampHistReceipt } from "./read-proof.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
@@ -698,7 +699,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   card.pool = (card.pool || []).filter((row) => !heldIds.has(`tcgcsv-${row.id}`));
   for (const id of Object.keys(card.risers || {})) if (heldIds.has(id)) delete card.risers[id];
 
-  const sealedProducts = await readJson(join(root, "data/sealed-products.json"), []);
+  const sealedProducts = (await readJson(join(root, "data/sealed-products.json"), [])).filter((row) => row && row.browse !== false);
   const histories = new Map();
   for (const p of sealedProducts) {
     const h = await readJson(join(root, `data/history/tcgplayer-market/${p.id}.json`));
@@ -710,7 +711,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   try {
     const { cards } = await loadHistoryCards(root);
     histCards = cards.filter((row) => !heldIds.has(row.id));
-    hist = historyReads(histCards, end, { perKind: { high: 30, low: 10, year: 40, plain: 60, backto: 40, set: 30 } });
+    const holdLimits = await loadHoldLimits(root);
+    hist = historyReads(histCards, end, { perKind: { high: 30, low: 10, year: 40, plain: 60, backto: 40, set: 30 }, limits: holdLimits });
   } catch { hist = { counts: {}, picked: {} }; }
   await writeFile(join(pub, "feed/not-moved.json"), JSON.stringify({
     asOf: end, start, end, on,

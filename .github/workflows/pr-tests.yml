@@ -10,7 +10,7 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,6 +30,35 @@ jobs:
         # the nightly issue and the watchdog report a stale main.
         if: github.event_name != 'pull_request'
         run: node scripts/artifact-freshness.mjs
+      - name: Rebuild the public bundle
+        # The nightly tests the bundle it just built. A pull request used to
+        # test yesterday's committed reads.json, go green, and then break that
+        # rebuild. Same builders, same order, before the suites.
+        run: |
+          : > /tmp/rebuild.log
+          echo "── rebuild ──" >> /tmp/rebuild.log
+          ok=0; bad=0
+          step() {
+            if node "scripts/$1" > /tmp/rebuild-step.log 2>&1; then ok=$((ok+1)); echo "  ✓ rebuild: $1" >> /tmp/rebuild.log
+            else bad=$((bad+1)); tail -20 /tmp/rebuild-step.log; echo "  ✗ rebuild: $1" >> /tmp/rebuild.log; fi
+          }
+          step build-tcgcsv-catalogue-map.mjs
+          step build-premium-ratio.mjs
+          step build-public-bundle.mjs
+          step build-index-history.mjs
+          step build-condition-ladder.mjs
+          step build-feed.mjs
+          step build-feed.mjs
+          step check-board-sync.mjs
+          step write-morning-card.mjs
+          step write-feature-data.mjs
+          echo "" >> /tmp/rebuild.log
+          echo "$ok passed · $bad failed" >> /tmp/rebuild.log
+          cat /tmp/rebuild.log
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1"
       - name: Full test suite
         # Every failing test blocks a PR except main's own freshness checks
         # (scripts/lib/test-tiers.mjs, pr mode).
