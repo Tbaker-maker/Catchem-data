@@ -24,7 +24,7 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # commit the retry log; a read-only job cannot, so the next run redispatches
+      contents: write # push retry log to bot/recovery-log (main is protected)
       actions: write # to re-dispatch the daily job exactly once
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +35,21 @@ jobs:
         id: hb
         continue-on-error: true
         run: node scripts/heartbeat.mjs
+
+      # Recovery log lives on bot/recovery-log, not main — main is protected
+      # and rejects the direct push (GH006 / required "tests" check), which
+      # turned every successful retry into a red Watchdog run.
+      - name: Load recovery log from bot branch
+        if: steps.hb.outcome == 'failure'
+        continue-on-error: true
+        run: |
+          git fetch origin bot/recovery-log:refs/remotes/origin/bot/recovery-log 2>/dev/null || true
+          if git show origin/bot/recovery-log:data/recovery-log.json > data/recovery-log.json 2>/dev/null; then
+            echo "Loaded recovery log from bot/recovery-log."
+          else
+            echo "No bot/recovery-log yet (first retry will create it)."
+            rm -f data/recovery-log.json
+          fi
 
       - name: Decide — retry once, or escalate
         if: steps.hb.outcome == 'failure'
@@ -73,6 +88,8 @@ jobs:
 
       - name: Record the retry
         if: steps.hb.outcome == 'failure' && steps.decide.outputs.already-retried == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           node -e '
             const fs = require("fs");
@@ -81,10 +98,21 @@ jobs:
             l.attempts = (l.attempts || []).concat([{ at: new Date().toISOString(), reason: "heartbeat red at watchdog", dispatched: "update-sealed-prices.yml" }]).slice(-50);
             fs.writeFileSync("data/recovery-log.json", JSON.stringify(l, null, 1));
           '
-          git config user.name "catchem-bot"
-          git config user.email "bot@catchem.app"
-          git add data/recovery-log.json
-          git diff --staged --quiet || { git commit -m "recovery: retry dispatched after a red heartbeat"; git push; }
+          # Push only the log on bot/recovery-log from a temp repo so main's
+          # required checks never apply, and this workspace stays intact for Discord.
+          TMP=$(mktemp -d)
+          mkdir -p "$TMP/data"
+          cp data/recovery-log.json "$TMP/data/recovery-log.json"
+          git -C "$TMP" init -q
+          git -C "$TMP" checkout -b bot/recovery-log
+          git -C "$TMP" config user.name "catchem-bot"
+          git -C "$TMP" config user.email "bot@catchem.app"
+          git -C "$TMP" add data/recovery-log.json
+          git -C "$TMP" commit -qm "recovery: retry dispatched after a red heartbeat"
+          git -C "$TMP" remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -C "$TMP" push -f origin bot/recovery-log
+          rm -rf "$TMP"
+          echo "Recorded retry on bot/recovery-log."
 
       # If the heartbeat says something is silent, say so somewhere a human
       # looks. Guarded on the secret so a fork or a fresh clone skips it
@@ -93,8 +121,8 @@ jobs:
       # ── ONE RETRY, THEN ESCALATE — NEVER A LOOP ──────────────────────────
       # A job that failed for a REASON will fail again, and a system that keeps
       # rebooting it burns budget and buries the cause under its own noise.
-      # data/recovery-log.json records the attempt so the NEXT watchdog can see
-      # one was already tried and escalate instead of retrying again.
+      # data/recovery-log.json on bot/recovery-log records the attempt so the
+      # NEXT watchdog can see one was already tried and escalate instead of retrying again.
       #
       # Today proves the point: the 04:00 run fired and died in the fail-fast
       # unit tests because a test asserted a card file whose data we had
