@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-31",
- "generatedAt": "2026-11-06T09:53:17.846Z",
+ "asOf": "2026-11-06",
+ "generatedAt": "2026-11-06T13:48:59.819Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
-   "date": "2026-10-31",
+   "date": "2026-11-06",
    "ok": true,
    "detail": "fresh"
   },
@@ -13,8 +13,8 @@
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
    "date": "2026-11-06",
-   "ok": false,
-   "detail": "dated 2026-11-06"
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "reads",
@@ -32,19 +32,10 @@
   }
  ],
  "failures": [
-  "listings-counted",
   "reads",
   "scanner"
  ],
- "alerts": [
-  {
-   "id": "price-day-stale",
-   "priceDay": "2026-10-31",
-   "today": "2026-11-06",
-   "ageDays": 6,
-   "alert": "price day 2026-10-31 is 6 days behind 2026-11-06"
-  }
- ],
+ "alerts": [],
  "reran": [],
  "note": "Reads rebuild is not rerun here. It belongs to the nightly feed, which has to fit the 20 minute test job."
 }
