@@ -43,7 +43,9 @@ export async function run() {
   const flags = workflow.split("\n").filter((line) => /^\s*continue-on-error:\s*true\b/.test(line));
   // 31: the IR and SIR watch step (private scoring plus feed/ir-sir.json) is soft.
   // 32: the eBay fetch is soft (Oct 20), so a 429 cannot block TCGCSV, PPT or publish.
-  t("the price workflow still has 32 continue-on-error flags", flags.length === 32, String(flags.length));
+  // 33: feed news is written before unit tests, so a new-set failure cannot freeze the digest.
+  // 34: that news commit is soft, so a push race cannot block the price run.
+  t("the price workflow still has 34 continue-on-error flags", flags.length === 34, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");

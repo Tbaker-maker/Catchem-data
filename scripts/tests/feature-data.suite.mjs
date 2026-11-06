@@ -54,7 +54,7 @@ export async function run() {
   const catalogSetById = new Map();
   for (const item of catalog.items || []) if (item?.id) catalogSetById.set(String(item.id), item.set || "");
   const valueNames = (await readdir(join(PUB, "set-value"))).filter((name) => name.endsWith(".json")).sort();
-  t("published sets stay at 205, or 206 with mcdonald-s-promos-2026", slugs.length === 205 || (slugs.length === 206 && slugs.includes("mcdonald-s-promos-2026")));
+  t("published set count can grow when a new set is registered", slugs.length >= 205 && new Set(slugs).size === slugs.length);
   t("one set-value file per published set plus shadowless", valueNames.length === slugs.length + 1 && slugs.every((slug) => valueNames.includes(`${slug}.json`)) && valueNames.includes("base-set-shadowless.json"));
 
   let badPrice = 0;

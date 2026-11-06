@@ -18,6 +18,7 @@ import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings,
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 import { loadFillMap, withFill } from "./lib/fill-history.mjs";
 import { pickSealedLine } from "./lib/sealed-line.mjs";
+import { registerMissingSets } from "./lib/set-logo-register.mjs";
 
 assertFolds();
 
@@ -479,6 +480,18 @@ try {
   const holdDoc = JSON.parse(await readFile(join(ROOT, "research/assets/public/price-hold.json"), "utf8"));
   heldIds = new Set(Object.keys(holdDoc.ids || {}));
 } catch { heldIds = new Set(); }
+try {
+  const registered = await registerMissingSets({
+    root: ROOT,
+    sets: [...sets.values()].map((set) => ({ slug: set.slug, name: set.name })),
+    logos: setLogos,
+  });
+  if (registered.registered.length || registered.flagged.length) {
+    console.log(JSON.stringify({ setLogos: { registered: registered.registered, flagged: registered.flagged.length } }));
+  }
+} catch (err) {
+  console.error(`set logo register skipped: ${String(err.message || err).slice(0, 200)}`);
+}
 for (const set of sets.values()) {
   for (const it of set.items) {
     if (it.kind !== "single" || !heldIds.has(it.id)) continue;
