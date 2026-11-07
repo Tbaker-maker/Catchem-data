@@ -34,6 +34,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pulseAsOfStale } from "./lib/sealed-market-pulse.mjs";
+import { collectGitAddPaths } from "./lib/git-add-paths.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WF = join(ROOT, ".github", "workflows");
@@ -59,17 +60,6 @@ function cadenceHours(cron) {
   }
   if (dow !== "*" && dom === "*") return 24 * 7;
   return null;
-}
-
-const SHELL = new Set(["fi", "then", "else", "elif", "do", "done", "if", "esac", "in"]);
-
-function cleanAddToken(raw) {
-  let p = String(raw || "").trim();
-  if (!p) return "";
-  if ((p.startsWith("\"") && p.endsWith("\"")) || (p.startsWith("'") && p.endsWith("'"))) p = p.slice(1, -1);
-  p = p.replace(/;+$/g, "");
-  if (!p || p === "\\" || p.startsWith("-") || p.startsWith(">") || SHELL.has(p)) return "";
-  return p;
 }
 
 function lineNo(src, index) {
@@ -139,16 +129,17 @@ for (const f of wfFiles) {
   // produces — the write-vs-commit law in CLAUDE.md means an unlisted file
   // evaporates, so the git-add list IS the artifact list.
   // A shell word is not a path. `git add grades-*.json; fi` used to report
-  // a file named "fi" and the unexpanded glob as never committed.
+  // a file named "fi". `git add research/assets/img/*/logo.png || true`
+  // used to report "||" and "true" as never committed, because both strings
+  // occur inside the scripts that workflow runs.
   const scripts = invokedText(src);
   const paths = [];
   const unwired = [];
   const seen = new Set();
   for (const match of src.matchAll(/git add ([^\n]+)/g)) {
     const line = lineNo(src, match.index);
-    for (const token of match[1].split(/\s+/)) {
-      const cleaned = cleanAddToken(token);
-      if (!cleaned || seen.has(cleaned)) continue;
+    for (const cleaned of collectGitAddPaths(match[1])) {
+      if (seen.has(cleaned)) continue;
       seen.add(cleaned);
       const expanded = /[*?\[]/.test(cleaned) ? (newestTracked(cleaned) || cleaned) : cleaned;
       const entry = { path: expanded, line, from: cleaned };
