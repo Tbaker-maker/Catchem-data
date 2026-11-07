@@ -2,7 +2,8 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  QUARANTINE_REASON, catalogSetCount, logoOnDisk, quarantineEntry, setCountFollowsCatalog, shouldQuarantine,
+  QUARANTINE_REASON, catalogSetCount, isRejectedLogoSha, logoOnDisk, quarantineEntry,
+  REJECT_SHA256, resolveSetLogo, setCountFollowsCatalog, shouldQuarantine,
 } from "../lib/set-quarantine.mjs";
 
 export async function run() {
@@ -20,6 +21,20 @@ export async function run() {
     await writeFile(join(root, "research/assets/img/mcd26/logo.png"), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
     t("a logo file on disk is kept", await logoOnDisk(root, "/img/mcd26/logo.png") && !(await shouldQuarantine(root, "/img/mcd26/logo.png")));
     t("a remote logo is not a file", !(await logoOnDisk(root, "https://images.pokemontcg.io/mcd26/logo.png")));
+    const stale = {
+      "base-set": { setId: "base1", slug: "base-set", name: "Base Set", logo: "/img/baseset/logo.png", src: "/img/baseset/logo.png" },
+    };
+    const catalogueImages = { base1: "/img/base1/logo.png", "base-set": "/img/base1/logo.png" };
+    await mkdir(join(root, "research/assets/img/baseset"), { recursive: true });
+    await writeFile(join(root, "research/assets/img/baseset/logo.png"), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+    const seen = await resolveSetLogo("base-set", { logos: stale, catalogueImages, root });
+    t("a registered file wins over the startup catalogue path", seen === "/img/baseset/logo.png" && !(await shouldQuarantine(root, seen)));
+    const missing = await resolveSetLogo("base-set", {
+      logos: { "base-set": { setId: "base1", slug: "base-set", logo: "/img/base1/logo.png" } },
+      catalogueImages,
+      root,
+    });
+    t("a missing startup path is still quarantined", missing === "/img/base1/logo.png" && await shouldQuarantine(root, missing));
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -34,6 +49,8 @@ export async function run() {
   t("one new set still follows the catalog", setCountFollowsCatalog(206, 218) && setCountFollowsCatalog(219, 219));
   t("a floor alone does not hide a mass under-publish", !setCountFollowsCatalog(150, 218) && setCountFollowsCatalog(198, 218) && !setCountFollowsCatalog(197, 218));
   t("an empty publish does not follow the catalog", !setCountFollowsCatalog(0, 218) && !setCountFollowsCatalog(400, 218));
+  t("rejectSha256 generic images are not logos", isRejectedLogoSha(REJECT_SHA256.genericSet) && isRejectedLogoSha(REJECT_SHA256.genericPromo));
+  t("the generic pokemontcg.io prefixes are not logos", isRejectedLogoSha(`${"d2055b7a"}${"ab".repeat(28)}`) && isRejectedLogoSha(`${"31c11685"}${"cd".repeat(28)}`) && !isRejectedLogoSha("ab".repeat(32)));
   return fail;
 }
 

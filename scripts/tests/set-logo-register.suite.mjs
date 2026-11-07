@@ -1,5 +1,6 @@
 // New catalog sets get one logo tile, or a flagged text tile. No network in this file.
 import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import sharp from "sharp";
@@ -11,6 +12,7 @@ import {
   registrationFor,
   tileIdFor,
 } from "../lib/set-logo-register.mjs";
+import { isRejectedLogoSha, REJECT_SHA256 } from "../lib/set-quarantine.mjs";
 
 const ROOT = join(new URL("../../", import.meta.url).pathname);
 
@@ -95,6 +97,29 @@ export async function run() {
   t("an allowed logo is cropped and stored with its sha256", official.registered[0] === "example-promos" && cropped.kind === "official" && cropped.id === "examp" && cropped.name === "Example Promos" && cropped.sha256.length === 64 && cropped.width > 0 && cropped.height > 0 && croppedLogo.sha256 === cropped.sha256 && croppedLogo.text !== true && croppedLogo.kind !== "tile" && cropped.source === "https://images.pokemontcg.io/examp/logo.png" && !JSON.stringify(croppedLogo).includes("images.pokemontcg.io"));
   t("the allowed fetch stays on images.pokemontcg.io", calls.some((url) => url.startsWith("https://images.pokemontcg.io/examp/logo.png")) && calls.every((url) => url.startsWith("https://images.pokemontcg.io/") || url.startsWith("https://api.pokemontcg.io/")));
 
+  const croppedPng = await sharp(png).ensureAlpha().trim({ threshold: 1 }).png({ compressionLevel: 9 }).toBuffer();
+  const croppedSha = createHash("sha256").update(croppedPng).digest("hex");
+  const dirReject = await mkdtemp(join(tmpdir(), "set-logo-reject-"));
+  await mkdir(join(dirReject, "data"), { recursive: true });
+  await mkdir(join(dirReject, "research/assets/public"), { recursive: true });
+  await writeFile(join(dirReject, "data/set-logos.json"), JSON.stringify({
+    sets: { examp: { name: "Example Promos", logo: "https://images.pokemontcg.io/examp/logo.png" } },
+  }));
+  await writeFile(join(dirReject, "research/assets/public/set-logos.json"), JSON.stringify({
+    rejectSha256: { genericSet: croppedSha, genericPromo: REJECT_SHA256.genericPromo },
+    logos: {},
+  }));
+  const rejected = await registerMissingSets({
+    root: dirReject,
+    sets: [{ slug: "example-promos", name: "Example Promos" }],
+    fetchImpl,
+    pace,
+  });
+  const rejectedTile = JSON.parse(await readFile(join(dirReject, "research/assets/img/set-logo-tiles.json"), "utf8")).tiles[0];
+  const rejectedLogo = JSON.parse(await readFile(join(dirReject, "research/assets/public/set-logos.json"), "utf8")).logos["example-promos"];
+  t("a rejectSha256 image becomes a branded tile, not the generic file", rejected.registered[0] === "example-promos" && rejectedTile.kind === "text" && rejectedTile.sha256 !== croppedSha && rejectedLogo.sha256 !== croppedSha && rejectedLogo.logo === "/img/examplepromos/logo.png" && !JSON.stringify(rejectedLogo).includes("images.pokemontcg.io") && !JSON.stringify(rejectedLogo).includes("images.scrydex.com"));
+  t("rejectSha256 genericSet and genericPromo are rejected", isRejectedLogoSha(REJECT_SHA256.genericSet) && isRejectedLogoSha(REJECT_SHA256.genericPromo) && isRejectedLogoSha(croppedSha, { genericSet: croppedSha }));
+
   const dir3 = await mkdtemp(join(tmpdir(), "set-logo-block-"));
   await mkdir(join(dir3, "data"), { recursive: true });
   await writeFile(join(dir3, "data/set-logos.json"), JSON.stringify({
@@ -122,6 +147,7 @@ export async function run() {
   await rm(dir, { recursive: true, force: true });
   await rm(dir2, { recursive: true, force: true });
   await rm(dir3, { recursive: true, force: true });
+  await rm(dirReject, { recursive: true, force: true });
   return fail;
 }
 

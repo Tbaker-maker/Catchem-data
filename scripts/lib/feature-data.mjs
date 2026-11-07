@@ -79,6 +79,16 @@ export function nonEmptyDoc(doc) {
   return Object.keys(doc).length > 0;
 }
 
+// Missing file is optional. Any other read error still fails the caller.
+export async function readOptionalJson(path) {
+  try {
+    return JSON.parse(await readFile(path, "utf8"));
+  } catch (err) {
+    if (err && err.code === "ENOENT") return null;
+    throw err;
+  }
+}
+
 export function officialSource(note) {
   const hits = String(note || "").match(SOURCE_PATH) || [];
   const path = hits.map((hit) => hit.replace(/[.)]+$/g, "")).find((hit) => hit.includes("/"));
