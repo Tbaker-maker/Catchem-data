@@ -5,11 +5,10 @@ import { createHash } from "node:crypto";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
+import { isRejectedLogoSha } from "./set-quarantine.mjs";
 
 export const ALLOWED_LOGO_HOSTS = ["images.pokemontcg.io"];
 const API = "https://api.pokemontcg.io/v2/sets";
-// images.pokemontcg.io art that is the shared TCG logo or the promo star, not a set.
-const GENERIC_SHA = ["d2055b7a", "31c11685"];
 const PACE_MS = 400;
 
 const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
@@ -156,6 +155,15 @@ function logoPath(id) {
   return `/img/${id}/logo.png`;
 }
 
+function publishEntry(target, entry) {
+  if (!target || typeof target !== "object") return;
+  target[entry.slug] = entry;
+  if (entry.setId) target[entry.setId] = entry;
+  for (const [key, row] of Object.entries(target)) {
+    if (row && row.slug === entry.slug) target[key] = entry;
+  }
+}
+
 export function registrationFor(slug, { logos = {}, tiles = [] } = {}) {
   const logo = logos[slug];
   const tile = (tiles || []).find((row) => row && row.slug === slug);
@@ -258,8 +266,11 @@ export async function registerMissingSets({
       const existingPath = String(existing?.logo || "");
       const existingId = existingPath.match(/^\/img\/([A-Za-z0-9]+)\/logo\.png$/)?.[1] || "";
       if (existingId && await fileExists(join(root, "research/assets/img", existingId, "logo.png"))) {
-        result.skipped.push(slug);
-        continue;
+        const buf = await readFile(join(root, "research/assets/img", existingId, "logo.png"));
+        if (!isRejectedLogoSha(sha256(buf), logoDoc.rejectSha256)) {
+          result.skipped.push(slug);
+          continue;
+        }
       }
       if (networked) await pace(PACE_MS);
       networked = true;
@@ -269,10 +280,11 @@ export async function registerMissingSets({
       if (officialHit && !idTaken(officialHit.id, slug, map, tileDoc.tiles)) {
         const got = await fetchLogo(officialHit.url, fetchImpl);
         if (got.ok) {
+          const rawDigest = sha256(got.raw);
           const cropped = await cropPng(got.raw);
           const digest = sha256(cropped.png);
-          if (GENERIC_SHA.some((prefix) => digest.startsWith(prefix))) {
-            flag = "images.pokemontcg.io returned the generic logo for this id, not a set logo";
+          if (isRejectedLogoSha(rawDigest, logoDoc.rejectSha256) || isRejectedLogoSha(digest, logoDoc.rejectSha256)) {
+            flag = "the allowed host returned the generic logo for this id, not a set logo";
           } else {
             chosen = { id: officialHit.id, ...cropped, kind: "official", source: officialHit.url, digest };
           }
@@ -313,7 +325,8 @@ export async function registerMissingSets({
         entry.flag = chosen.flag;
       }
       map[slug] = entry;
-      logoDoc.logos[slug] = entry;
+      publishEntry(map, entry);
+      if (logoDoc.logos !== map) publishEntry(logoDoc.logos, entry);
       const tile = {
         slug,
         id: chosen.id,

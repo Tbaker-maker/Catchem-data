@@ -1,9 +1,10 @@
-import { readdir, readFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   assignMarks, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
-  releaseMarketItem, rotationStatus, shouldWrite,
+  readOptionalJson, releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 import { loadHeldIds } from "../lib/price-hold-skip.mjs";
 import { catalogSetCount, setCountFollowsCatalog } from "../lib/set-quarantine.mjs";
@@ -37,6 +38,17 @@ export async function run() {
     if (cond) console.log(`  ok  ${name}`);
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
+
+  const optionalDir = await mkdtemp(join(tmpdir(), "set-value-opt-"));
+  try {
+    const missing = await readOptionalJson(join(optionalDir, "base-set.json"));
+    t("a missing base set file skips the optional shadowless read", missing === null);
+    await writeFile(join(optionalDir, "base-set.json"), "{\"slug\":\"base-set\"}\n");
+    const present = await readOptionalJson(join(optionalDir, "base-set.json"));
+    t("a present base set file is still read", present && present.slug === "base-set");
+  } finally {
+    await rm(optionalDir, { recursive: true, force: true });
+  }
 
   // Check set-value against the daily file it was built from. The tcgcsv day job commits
   // the newest daily file before the nightly republishes, so "newest file" is not yet published.
