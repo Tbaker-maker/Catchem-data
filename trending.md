@@ -1,7 +1,7 @@
 # Catch'Em Trending — 2026-11-08
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-11-08T16:27:00Z
+asOf: 2026-11-08T16:35:00Z
 
 **First play:** none.
 No Fill.
@@ -19,10 +19,11 @@ Evolving Skies ~9% above low.
 
 Markets from public TCGPlayer product pages 2026-11-08.
 Unopened English.
-3m snapshot returned 0 on all (pages showed Total Sold 0 / no low-high).
+Infinite-api not accessible (403).
 No solds invented.
 Junk ignored.
 Carried prior solds.
+3m snapshots returned 0 on pages.
 
 ## Board
 
