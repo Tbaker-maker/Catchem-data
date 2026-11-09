@@ -1,7 +1,7 @@
-# Catch'Em Trending — 2026-11-08
+# Catch'Em Trending — 2026-11-09
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-11-08T16:35:00Z
+asOf: 2026-11-09T16:30:00Z
 
 **First play:** none.
 No Fill.
@@ -17,7 +17,7 @@ Evolving Skies ~9% above low.
 * Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
 * No FORCE in this run. No Fill locked.
 
-Markets from public TCGPlayer product pages 2026-11-08.
+Markets from public TCGPlayer product pages 2026-11-09.
 Unopened English.
 Infinite-api not accessible (403).
 No solds invented.
@@ -28,7 +28,7 @@ Carried prior solds.
 ## Board
 
 **Destined Rivals Booster Box** — Wait
-Market $382.84.
+Market $382.08.
 Quarter sold carried 1003, 11/day, low $244.99.
 Not a new cut in the last 3 days.
 About 56% above the low.
@@ -36,9 +36,9 @@ Still in play.
 Turns into Fill if: set leaves play, the $244.99 low stops cutting and holds, solds exhaust, market within 8%.
 
 **Destined Rivals ETB** — Wait
-Market $106.65.
+Market $107.34.
 Quarter sold carried 4631, 50/day, low $91.00.
-About 17% above.
+About 18% above.
 Still in play.
 Turns into Fill if: left-play + higher-low 8+ days + solds exhaust + within 8%.
 
