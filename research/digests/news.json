@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-10T20:37:08.320Z",
+  "updated": "2026-11-10T23:17:56.122Z",
   "timezone": "America/Vancouver",
   "asOf": "2026-11-10",
   "defaultWindowDays": 14,
@@ -22368,17 +22368,6 @@
       "items": 25
     },
     {
-      "source": "ICv2",
-      "url": "https://icv2.com/rss",
-      "items": 0,
-      "skipped": "page had no titled items"
-    },
-    {
-      "source": "PokeGuardian",
-      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
-      "items": 2
-    },
-    {
       "source": "Pokémon Center Support",
       "url": "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json",
       "items": 14
@@ -22389,20 +22378,31 @@
       "items": 128
     },
     {
+      "source": "PokeGuardian",
+      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
+      "items": 2
+    },
+    {
       "source": "Gematsu",
       "url": "https://www.gematsu.com/companies/the-pokemon-company",
       "items": 29
     },
     {
-      "source": "Victory Road",
-      "url": "https://victoryroad.pro/feed/",
-      "items": 5
+      "source": "ICv2",
+      "url": "https://icv2.com/rss",
+      "items": 0,
+      "skipped": "page had no titled items"
     },
     {
       "source": "Pokémon Card (Asia)",
       "url": "https://asia.pokemon-card.com/sg/",
       "items": 24,
       "note": "The list stated titles and links. It did not state a publication date."
+    },
+    {
+      "source": "Victory Road",
+      "url": "https://victoryroad.pro/feed/",
+      "items": 5
     },
     {
       "source": "PokeGuardian",
@@ -22445,8 +22445,8 @@
   "runs": [
     {
       "day": "2026-11-10",
-      "slot": "midday",
-      "at": "2026-11-10T20:37:08.320Z",
+      "slot": "nightly",
+      "at": "2026-11-10T23:17:56.122Z",
       "path": "research/digests/news.json"
     }
   ]
