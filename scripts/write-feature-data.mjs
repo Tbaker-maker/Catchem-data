@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   assignMarks, buildListings, buildReleases, buildSetValueDoc, datedDay, idsForCatalogSet,
-  loadPriceMap, nonEmptyDoc, ROTATION_SOURCES, ROTATION_EXPECTED, shouldWrite,
+  loadPriceMap, nonEmptyDoc, readOptionalJson, ROTATION_SOURCES, ROTATION_EXPECTED, shouldWrite,
 } from "./lib/feature-data.mjs";
 import { loadHeldIds } from "./lib/price-hold-skip.mjs";
 
@@ -45,18 +45,20 @@ async function writeSetValues(skipIds) {
     if (row.slug === "base-set") baseValue = doc;
     wrote.setValue = true;
   }
-  const baseDoc = JSON.parse(await readFile(join(pub, "sets", "base-set.json"), "utf8"));
-  const shadow = buildSetValueDoc(baseDoc, map, date, {
-    onlyIds: shadowIds,
-    catalogSet: "Base Set (Shadowless)",
-    slug: "base-set-shadowless",
-    name: "Base Set (Shadowless)",
-    skipIds,
-  });
-  if (datedDay(shadow.asOf) && nonEmptyDoc(shadow) && shadow.master.inSet > 0) {
-    await writeFile(join(valueDir, "base-set-shadowless.json"), JSON.stringify(shadow) + "\n");
-    shadowValue = shadow;
-    wrote.setValue = true;
+  const baseDoc = await readOptionalJson(join(pub, "sets", "base-set.json"));
+  if (baseDoc) {
+    const shadow = buildSetValueDoc(baseDoc, map, date, {
+      onlyIds: shadowIds,
+      catalogSet: "Base Set (Shadowless)",
+      slug: "base-set-shadowless",
+      name: "Base Set (Shadowless)",
+      skipIds,
+    });
+    if (datedDay(shadow.asOf) && nonEmptyDoc(shadow) && shadow.master.inSet > 0) {
+      await writeFile(join(valueDir, "base-set-shadowless.json"), JSON.stringify(shadow) + "\n");
+      shadowValue = shadow;
+      wrote.setValue = true;
+    }
   }
 }
 await writeSetValues(skipIds);

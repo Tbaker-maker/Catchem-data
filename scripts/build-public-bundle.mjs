@@ -20,7 +20,7 @@ import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 import { loadFillMap, withFill } from "./lib/fill-history.mjs";
 import { pickSealedLine } from "./lib/sealed-line.mjs";
 import { registerMissingSets } from "./lib/set-logo-register.mjs";
-import { QUARANTINE_REASON, quarantineEntry, shouldQuarantine } from "./lib/set-quarantine.mjs";
+import { QUARANTINE_REASON, quarantineEntry, resolveSetLogo, shouldQuarantine } from "./lib/set-quarantine.mjs";
 
 assertFolds();
 
@@ -291,14 +291,9 @@ for (const item of items) {
 }
 // Catalogue path from research/assets/public/set-logos.json, by set id.
 // A remote logo URL is not published. No logo is kept from a previous file.
-function logoFor(slugName) {
-  const row = setLogos[slugName];
-  const fromRow = row && typeof row.logo === "string" ? row.logo.trim() : "";
-  const byId = row && row.setId ? cataloguePath(catalogueImages, row.setId) : "";
-  const path = byId || cataloguePath(catalogueImages, slugName);
-  if (path) return path;
-  if (/^\/img\/[^/]+\/logo\.png$/.test(fromRow)) return fromRow;
-  return "";
+// A logo registered earlier in this run is on disk and wins over the startup map.
+async function logoFor(slugName) {
+  return resolveSetLogo(slugName, { logos: setLogos, catalogueImages, root: ROOT });
 }
 
 const slugUsed = new Map();
@@ -492,6 +487,16 @@ try {
   if (registered.registered.length || registered.flagged.length) {
     console.log(JSON.stringify({ setLogos: { registered: registered.registered, flagged: registered.flagged.length } }));
   }
+  for (const slug of registered.registered || []) {
+    const row = setLogos[slug];
+    const path = row && typeof row.logo === "string" ? row.logo.trim() : "";
+    if (!/^\/img\/[A-Za-z0-9._-]+\/logo\.png$/.test(path)) continue;
+    catalogueImages[slug] = path;
+    if (row.setId) catalogueImages[row.setId] = path;
+    for (const [key, other] of Object.entries(setLogos)) {
+      if (other && other.slug === slug) catalogueImages[key] = path;
+    }
+  }
 } catch (err) {
   console.error(`set logo register skipped: ${String(err.message || err).slice(0, 200)}`);
 }
@@ -512,7 +517,7 @@ for (const set of sets.values()) {
   // Sealed pages relate to other sealed products from the same set, not singles.
   const alsoSealed = set.items.filter((it) => it.kind === "sealed" && it.price).sort((a, b) => b.price - a.price).slice(0, 7).map((it) => ({ id: it.id, name: it.name }));
   for (const it of set.items) it.also = (it.kind === "sealed" && alsoSealed.length > 1 ? alsoSealed : also).filter((x) => x.id !== it.id).slice(0, it.kind === "sealed" ? 6 : 3);
-  const logo = logoFor(set.slug);
+  const logo = await logoFor(set.slug);
   if (await shouldQuarantine(ROOT, logo)) {
     quarantined.push(quarantineEntry(set));
     console.log(`quarantine: ${set.slug}: ${QUARANTINE_REASON}`);

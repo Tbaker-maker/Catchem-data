@@ -1,9 +1,10 @@
-import { readdir, readFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   assignMarks, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
-  releaseMarketItem, rotationStatus, shouldWrite,
+  readOptionalJson, releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 import { loadHeldIds } from "../lib/price-hold-skip.mjs";
 import { catalogSetCount, setCountFollowsCatalog } from "../lib/set-quarantine.mjs";
@@ -37,6 +38,17 @@ export async function run() {
     if (cond) console.log(`  ok  ${name}`);
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
+
+  const optionalDir = await mkdtemp(join(tmpdir(), "set-value-opt-"));
+  try {
+    const missing = await readOptionalJson(join(optionalDir, "base-set.json"));
+    t("a missing base set file skips the optional shadowless read", missing === null);
+    await writeFile(join(optionalDir, "base-set.json"), "{\"slug\":\"base-set\"}\n");
+    const present = await readOptionalJson(join(optionalDir, "base-set.json"));
+    t("a present base set file is still read", present && present.slug === "base-set");
+  } finally {
+    await rm(optionalDir, { recursive: true, force: true });
+  }
 
   // Check set-value against the daily file it was built from. The tcgcsv day job commits
   // the newest daily file before the nightly republishes, so "newest file" is not yet published.
@@ -181,9 +193,18 @@ export async function run() {
   const fixtureRelease = { name: "Delta Reign (ME06)", type: "main-set" };
   const picked = releaseMarketItem(fixtureRelease, fixtureItems, fixtureDays);
   t("release markets follow the type order and the daily file", marketBad === 0 && releases.releases.filter((row) => row.market).every((row) => row.market.date && row.market.price > 0));
-  t("Delta Reign never returns a blister", Boolean(delta && delta.market && delta.market.id === "tcgcsv-712094" && !/blister/i.test(delta.market.name) && picked && picked.item.id === "tcgcsv-50" && picked.date === "2026-09-02" && releaseMarketItem(fixtureRelease, [fixtureItems[0]], fixtureDays) == null));
+  // Radar rows leave the list once the release date passes (Delta Reign and the UPC
+  // wave left on 2026-11-07), so a live row is checked only while the radar still has it.
+  // The fixtures below cover the same rule with rows that cannot expire.
+  t("Delta Reign never returns a blister", Boolean((!delta || (delta.market && delta.market.id === "tcgcsv-712094" && !/blister/i.test(delta.market.name))) && picked && picked.item.id === "tcgcsv-50" && picked.date === "2026-09-02" && releaseMarketItem(fixtureRelease, [fixtureItems[0]], fixtureDays) == null));
   t("an unmatched row returns no market", releaseMarketItem({ name: "Nothing In The Catalogue", type: "product" }, fixtureItems, fixtureDays) == null);
-  t("the UPC row is not the Ditto collection", Boolean(upc && upc.market && upc.market.id === "tcgcsv-704190" && /ultra-premium/i.test(upc.market.name) && !/ditto/i.test(upc.market.name)));
+  const upcItems = [
+    { id: "tcgcsv-10", tcgplayerProductId: 10, groupId: 7, name: "30th Celebration Ditto Collection", kind: "sealed", subtype: null, set: "CEL: 30th Celebration" },
+    { id: "tcgcsv-20", tcgplayerProductId: 20, groupId: 7, name: "30th Celebration Ultra-Premium Collection [Day]", kind: "sealed", subtype: null, set: "CEL: 30th Celebration" },
+  ];
+  const upcDays = [{ date: "2026-09-02", prices: [{ id: 10, market: 90 }, { id: 20, market: 500 }] }];
+  const upcPick = releaseMarketItem({ name: "30th Celebration: Day & Night UPCs, Ditto Premium", type: "wave" }, upcItems, upcDays);
+  t("the UPC row is not the Ditto collection", Boolean((!upc || (upc.market && upc.market.id === "tcgcsv-704190" && /ultra-premium/i.test(upc.market.name) && !/ditto/i.test(upc.market.name))) && upcPick && upcPick.item.id === "tcgcsv-20" && !/ditto/i.test(upcPick.item.name)));
 
   const gap = listingsFromHistory([
     { date: "2026-10-01", filteredTotal: 10 },
