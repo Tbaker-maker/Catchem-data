@@ -1,7 +1,7 @@
 # Catch'Em Trending — 2026-11-10
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-11-10T16:31:29Z
+asOf: 2026-11-10T16:35:00Z
 
 **First play:** none. No Fill. Destined Rivals still in play. Perfect Order still flowing. Evolving Skies ~9% above low.
 
