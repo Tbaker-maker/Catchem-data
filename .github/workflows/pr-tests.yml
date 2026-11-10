@@ -20,6 +20,8 @@ jobs:
           node-version: "22"
       - name: Install
         run: npm install --no-audit --no-fund
+      - name: Pages publish size
+        run: node scripts/check-pages-size.mjs
       - name: Patch guard audit for CI
         run: node scripts/patch-guard-audit-ci.mjs
       - name: Guard audit
