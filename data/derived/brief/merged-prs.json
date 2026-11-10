@@ -1,185 +1,101 @@
 {
- "asOf": "2026-10-30",
+ "asOf": "2026-11-08",
  "repo": "Catchem-data",
  "prs": [
   {
-   "number": 438,
-   "title": "Price since release and era paths (LIFECYCLE off)",
-   "mergedAt": "2026-10-30T12:31:02-07:00",
+   "number": 496,
+   "title": "Skip a watchdog retry while the nightly is already running",
+   "mergedAt": "2026-11-06T21:03:28-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 469,
-   "title": "Fail the founder brief when a late Sunday writes nothing.",
-   "mergedAt": "2026-10-30T12:30:58-07:00",
+   "number": 495,
+   "title": "Stop treating || and true as artifact paths.",
+   "mergedAt": "2026-11-06T18:14:58-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 467,
-   "title": "Cap read headlines and floor the sealed lead",
-   "mergedAt": "2026-10-29T16:49:23-07:00",
+   "number": 493,
+   "title": "Keep one new set from freezing the price publish",
+   "mergedAt": "2026-11-06T15:06:20-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 465,
-   "title": "fix: set source on mktmove reads",
-   "mergedAt": "2026-10-28T17:35:09-07:00",
+   "number": 494,
+   "title": "Keep the reads scorecard off the public bundle",
+   "mergedAt": "2026-11-06T12:11:20-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 463,
-   "title": "fix: synth why dollars match the lead window",
-   "mergedAt": "2026-10-28T14:12:02-07:00",
+   "number": 492,
+   "title": "Register new set logos and refresh feed news before the test gate",
+   "mergedAt": "2026-11-06T11:40:22-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 462,
-   "title": "Count flat momentum on calendar nights, not sparse spark rows.",
-   "mergedAt": "2026-10-28T10:36:58-07:00",
+   "number": 486,
+   "title": "Count a chase card in the rip value.",
+   "mergedAt": "2026-11-06T08:38:02-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 461,
-   "title": "Prewarm catalog via plain /p/{id} (edge fill)",
-   "mergedAt": "2026-10-28T09:24:01-07:00",
+   "number": 490,
+   "title": "Keep Watchdog green when recording a retry.",
+   "mergedAt": "2026-11-06T08:37:31-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 460,
-   "title": "Fix four reads accuracy bugs from the Oct 28 check.",
-   "mergedAt": "2026-10-28T09:23:49-07:00",
+   "number": 489,
+   "title": "Nightly unblock: McDonald's Promos 2026 tile logo and set-count lock",
+   "mergedAt": "2026-11-06T08:30:16-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 459,
-   "title": "Ship 170 sealed product cutouts (v2)",
-   "mergedAt": "2026-10-28T08:49:45-07:00",
+   "number": 439,
+   "title": "Read ledger, misses kept (READ_LEDGER off)",
+   "mergedAt": "2026-11-05T19:23:52-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 457,
-   "title": "Run paced product HTML prewarm after each successful publish",
-   "mergedAt": "2026-10-28T07:47:27-07:00",
+   "number": 488,
+   "title": "Keep own pulse prices when there is no mirror, and mark months before release.",
+   "mergedAt": "2026-11-05T19:23:49-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 455,
-   "title": "Fix nightly wipe of curated sealed TCGplayer mapping rows",
-   "mergedAt": "2026-10-28T05:01:38-07:00",
+   "number": 487,
+   "title": "Fix Nov 5 read copy: trend chip, stacked names, lead rotation, listings counted.",
+   "mergedAt": "2026-11-05T19:23:11-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 452,
-   "title": "Treat watch/cool/heat feed shards as rotating for publish",
-   "mergedAt": "2026-10-27T19:35:55-07:00",
+   "number": 485,
+   "title": "Block the Roaring Skies booster box cutout.",
+   "mergedAt": "2026-11-05T19:23:08-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 447,
-   "title": "Set logos from images.pokemontcg.io only",
-   "mergedAt": "2026-10-27T17:01:36-07:00",
+   "number": 484,
+   "title": "Nightly fix: block UPC case cutout and keep official news URLs",
+   "mergedAt": "2026-11-05T16:09:47-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 449,
-   "title": "Sealed heatmap: Oct 14 cutover, public cells, accuracy tests",
-   "mergedAt": "2026-10-27T16:53:18-07:00",
+   "number": 481,
+   "title": "Nightly fix: block two bad sealed cutouts so the cutout check passes",
+   "mergedAt": "2026-11-03T04:25:03-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 448,
-   "title": "Hold The Spread when sealed prices are TCGplayer market",
-   "mergedAt": "2026-10-27T16:27:24-07:00",
+   "number": 479,
+   "title": "Keep the ISO start date on hist read receipts after dates are spoken",
+   "mergedAt": "2026-11-02T04:02:45-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 446,
-   "title": "Sealed prices are TCGplayer market; eBay is listings counted only",
-   "mergedAt": "2026-10-27T12:20:04-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 442,
-   "title": "Nightly checkout keeps commit history so file dates are real",
-   "mergedAt": "2026-10-27T08:24:30-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 445,
-   "title": "Costco test checks each price against the TCGCSV day",
-   "mergedAt": "2026-10-27T04:08:23-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 437,
-   "title": "Set value uses the held ids left after the card rating build",
-   "mergedAt": "2026-10-26T00:21:55-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 434,
-   "title": "Fix update-sealed-prices YAML: quote run line with colon (broke workflow after #432)",
-   "mergedAt": "2026-10-26T00:11:22-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 432,
-   "title": "Nightly degrades instead of dying: price safety blocks, reads and feature tests withhold",
-   "mergedAt": "2026-10-25T23:35:30-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 430,
-   "title": "Publish: break the stale-pulse deadlock and stop counting rotating read files as lost",
-   "mergedAt": "2026-10-25T19:13:25-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 428,
-   "title": "Reads: price reads at most one third after every drop, clean synth lead lines",
-   "mergedAt": "2026-10-25T09:13:09-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 426,
-   "title": "publish-public-data: raise git maxBuffer (fixes ENOBUFS)",
-   "mergedAt": "2026-10-24T21:54:42-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 425,
-   "title": "eBay median ask: a real set under the proven minimum of 5 falls back to the robust median",
-   "mergedAt": "2026-10-24T21:54:39-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 418,
-   "title": "Read synthesis: honest set comparison and spike-proof peaks",
-   "mergedAt": "2026-10-24T01:23:51-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 417,
-   "title": "Reads: one family spacer that never leaves two of a family side by side when an order exists; test names the pair",
-   "mergedAt": "2026-10-24T00:41:30-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 416,
-   "title": "eBay median ask: reject small real sets far from robust or TCGplayer median (sv3pt5-upc $185 wrong-product)",
-   "mergedAt": "2026-10-23T22:15:18-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 415,
-   "title": "Item reads: synthesized summary from every signal on file, led by the most notable finding",
-   "mergedAt": "2026-10-23T21:39:36-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 414,
-   "title": "Catalogue guard: give every unpriced card a reason; only real gaps fail the build",
-   "mergedAt": "2026-10-23T16:38:58-07:00",
+   "number": 477,
+   "title": "Prefer this week's movers on the Today card.",
+   "mergedAt": "2026-10-31T18:05:12-07:00",
    "repo": "Catchem-data"
   }
  ]
