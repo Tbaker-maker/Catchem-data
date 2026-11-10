@@ -10,7 +10,10 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Rebuild + the full suite takes about 70-100 minutes in the nightly
+    # (rebuild ~50-80 min, tests ~20 min). 30 minutes would kill the job
+    # during the rebuild.
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,6 +33,16 @@ jobs:
         # the nightly issue and the watchdog report a stale main.
         if: github.event_name != 'pull_request'
         run: node scripts/artifact-freshness.mjs
+      - name: Rebuild outputs on today's day (before the tests)
+        # The tests compare outputs against today's builders. Without this
+        # step, stale committed files made PR checks red on #500 and on main
+        # even when a clean rebuild passed 251/0. Same script as the nightly.
+        # Rebuilt files stay in the runner; this job does not commit them.
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this step refreshes
+        run: bash scripts/rebuild-outputs-for-tests.sh
       - name: Full test suite
         # Every failing test blocks a PR except main's own freshness checks
         # (scripts/lib/test-tiers.mjs, pr mode).
