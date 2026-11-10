@@ -189,7 +189,10 @@ export async function run() {
   t("a later sealed price date does not reuse the singles day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "2026-11-06" }], "2026-10-30") === "2026-11-06");
   t("the singles day is the history day when prices are from that day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "" }], "2026-10-30") === "2026-10-30");
   const oldSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history/2026-10-30.json"), "utf8"));
-  const newSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history/2026-11-06.json"), "utf8"));
+  // Today's snapshot is named for the newest sealed price day in the build. A fixed
+  // day went stale the night the sealed price day moved past it.
+  const todayDay = historyFileDay(ripDoc.rows, ripDoc.asOf);
+  const newSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history", `${todayDay}.json`), "utf8"));
   const oldBox = (oldSnap.rows || []).find((r) => r.id === "swsh7-booster-box");
   const newBox = (newSnap.rows || []).find((r) => r.id === "swsh7-booster-box");
   const sealedDay = String(sealed.asOf).slice(0, 10);
