@@ -1,7 +1,7 @@
 {
-  "updated": "2026-11-09T23:11:49.159Z",
+  "updated": "2026-11-10T13:31:19.797Z",
   "timezone": "America/Vancouver",
-  "asOf": "2026-11-09",
+  "asOf": "2026-11-10",
   "defaultWindowDays": 14,
   "defaultCap": 8,
   "items": [
@@ -2142,21 +2142,6 @@
           "source": "Serebii",
           "date": "2026-08-12",
           "statedDate": "12-08-2026 01:00 BST / 20:00 EDT",
-          "kind": "news",
-          "tags": [
-            "video-games"
-          ],
-          "fileTags": [
-            "video game"
-          ],
-          "listUrl": "https://www.serebii.net/news/"
-        },
-        {
-          "title": "Tuesday: Pokémon Pokopia Bubbly Basin - Coverage Day 7 + Pokémon GO",
-          "url": "https://www.serebii.net/news/2026/11-August-2026.shtml",
-          "source": "Serebii",
-          "date": "2026-08-11",
-          "statedDate": "11-08-2026 06:08 BST / 01:08 EDT",
           "kind": "news",
           "tags": [
             "video-games"
@@ -22363,11 +22348,6 @@
       "skipped": "HTTP 403: page blocked the fetch"
     },
     {
-      "source": "Siliconera",
-      "url": "https://www.siliconera.com/tag/pokemon/feed/",
-      "items": 15
-    },
-    {
       "source": "Pokémon Card (Japan)",
       "url": "https://www.pokemon-card.com/info/",
       "items": 402
@@ -22378,20 +22358,9 @@
       "items": 57
     },
     {
-      "source": "Pokémon Card (Asia)",
-      "url": "https://asia.pokemon-card.com/sg/",
-      "items": 24,
-      "note": "The list stated titles and links. It did not state a publication date."
-    },
-    {
       "source": "Limitless",
       "url": "https://limitlesstcg.com/tournaments",
       "items": 25
-    },
-    {
-      "source": "Serebii",
-      "url": "https://www.serebii.net/card/english.shtml",
-      "items": 128
     },
     {
       "source": "Victory Road",
@@ -22399,9 +22368,24 @@
       "items": 5
     },
     {
+      "source": "Siliconera",
+      "url": "https://www.siliconera.com/tag/pokemon/feed/",
+      "items": 15
+    },
+    {
       "source": "Pokémon Center Support",
       "url": "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json",
       "items": 14
+    },
+    {
+      "source": "PokeGuardian",
+      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
+      "items": 2
+    },
+    {
+      "source": "Serebii",
+      "url": "https://www.serebii.net/card/english.shtml",
+      "items": 128
     },
     {
       "source": "ICv2",
@@ -22410,9 +22394,10 @@
       "skipped": "page had no titled items"
     },
     {
-      "source": "PokeGuardian",
-      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
-      "items": 2
+      "source": "Pokémon Card (Asia)",
+      "url": "https://asia.pokemon-card.com/sg/",
+      "items": 24,
+      "note": "The list stated titles and links. It did not state a publication date."
     },
     {
       "source": "Gematsu",
@@ -22459,9 +22444,9 @@
   ],
   "runs": [
     {
-      "day": "2026-11-09",
+      "day": "2026-11-10",
       "slot": "nightly",
-      "at": "2026-11-10T01:54:40.065Z",
+      "at": "2026-11-10T13:31:19.797Z",
       "path": "research/digests/news.json"
     }
   ]
