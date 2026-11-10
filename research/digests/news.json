@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-10T13:31:19.797Z",
+  "updated": "2026-11-10T20:37:08.320Z",
   "timezone": "America/Vancouver",
   "asOf": "2026-11-10",
   "defaultWindowDays": 14,
@@ -2282,6 +2282,18 @@
       "listUrl": "https://rk9.gg/events/pokemon"
     },
     {
+      "title": "Teams, results and all info from the 2027 Taiwan Premier Ball League!",
+      "url": "https://victoryroad.pro/2027-taiwan-pbl/",
+      "source": "Victory Road",
+      "date": "2026-11-10",
+      "sentence": "Teams, results and all info from the 2027 Taiwan Premier Ball League!",
+      "kind": "news",
+      "tags": [
+        "tournaments"
+      ],
+      "published": "2026-11-10T12:30:00.000Z"
+    },
+    {
       "title": "Save the dates for next Season’s Community Days!",
       "url": "https://pokemongo.com/news/save-the-date-s25",
       "source": "Pokémon GO",
@@ -2345,18 +2357,6 @@
       "sentence": "Teams, results and all info from the VR November Challenge #1!",
       "kind": "news",
       "published": "2026-11-08T18:35:00.000Z"
-    },
-    {
-      "title": "Chiu Chih-Hung is the 2027 Taiwan PBL Champion!",
-      "url": "https://victoryroad.pro/2027-taiwan-pbl/",
-      "source": "Victory Road",
-      "date": "2026-11-08",
-      "sentence": "Chiu Chih-Hung is the 2027 Taiwan PBL Champion!",
-      "kind": "news",
-      "tags": [
-        "tournaments"
-      ],
-      "published": "2026-11-08T08:50:00.000Z"
     },
     {
       "title": "Sunday: Pokémon Sleep - New Moon Day",
@@ -22348,6 +22348,11 @@
       "skipped": "HTTP 403: page blocked the fetch"
     },
     {
+      "source": "Siliconera",
+      "url": "https://www.siliconera.com/tag/pokemon/feed/",
+      "items": 15
+    },
+    {
       "source": "Pokémon Card (Japan)",
       "url": "https://www.pokemon-card.com/info/",
       "items": 402
@@ -22363,19 +22368,10 @@
       "items": 25
     },
     {
-      "source": "Victory Road",
-      "url": "https://victoryroad.pro/feed/",
-      "items": 5
-    },
-    {
-      "source": "Siliconera",
-      "url": "https://www.siliconera.com/tag/pokemon/feed/",
-      "items": 15
-    },
-    {
-      "source": "Pokémon Center Support",
-      "url": "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json",
-      "items": 14
+      "source": "ICv2",
+      "url": "https://icv2.com/rss",
+      "items": 0,
+      "skipped": "page had no titled items"
     },
     {
       "source": "PokeGuardian",
@@ -22383,26 +22379,30 @@
       "items": 2
     },
     {
+      "source": "Pokémon Center Support",
+      "url": "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json",
+      "items": 14
+    },
+    {
       "source": "Serebii",
       "url": "https://www.serebii.net/card/english.shtml",
       "items": 128
     },
     {
-      "source": "ICv2",
-      "url": "https://icv2.com/rss",
-      "items": 0,
-      "skipped": "page had no titled items"
+      "source": "Gematsu",
+      "url": "https://www.gematsu.com/companies/the-pokemon-company",
+      "items": 29
+    },
+    {
+      "source": "Victory Road",
+      "url": "https://victoryroad.pro/feed/",
+      "items": 5
     },
     {
       "source": "Pokémon Card (Asia)",
       "url": "https://asia.pokemon-card.com/sg/",
       "items": 24,
       "note": "The list stated titles and links. It did not state a publication date."
-    },
-    {
-      "source": "Gematsu",
-      "url": "https://www.gematsu.com/companies/the-pokemon-company",
-      "items": 29
     },
     {
       "source": "PokeGuardian",
@@ -22445,8 +22445,8 @@
   "runs": [
     {
       "day": "2026-11-10",
-      "slot": "nightly",
-      "at": "2026-11-10T13:31:19.797Z",
+      "slot": "midday",
+      "at": "2026-11-10T20:37:08.320Z",
       "path": "research/digests/news.json"
     }
   ]
