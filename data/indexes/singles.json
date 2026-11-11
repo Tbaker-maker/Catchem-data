@@ -1,14 +1,14 @@
 {
   "id": "singles",
   "name": "Singles Index",
-  "asOf": "2026-10-30",
+  "asOf": "2026-11-10",
   "source": "TCGplayer market price (TCGCSV daily files)",
   "anchorRequested": "2026-03-31",
   "anchorUsed": "2026-09-26",
   "anchorLevel": 100,
   "anchorReason": "First TCGCSV singles day on file is 2026-09-26. March 31 was not invented. Missing days are gaps.",
   "method": "Chain-linked. A card printing joins on its first priced day and does not move the level that day. Each day's move is the trimmed geometric mean of price changes of printings priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped. Cards under $1 are left out. Sealed products are not in this index.",
-  "basket": 14786,
+  "basket": 14911,
   "series": {
     "base": 100,
     "points": [
@@ -308,6 +308,66 @@
         "entered": 60,
         "equalMovePct": 0.0066,
         "valueMovePct": 0.0706
+      },
+      {
+        "date": "2026-10-31",
+        "from": "2026-10-30",
+        "equal": 99.1,
+        "value": 101.5,
+        "matched": 14236,
+        "entered": 48,
+        "equalMovePct": 0.0115,
+        "valueMovePct": 0.0364
+      },
+      {
+        "date": "2026-11-06",
+        "from": "2026-10-31",
+        "equal": 99.3,
+        "value": 101.7,
+        "matched": 14194,
+        "entered": 139,
+        "equalMovePct": 0.1679,
+        "valueMovePct": 0.2598
+      },
+      {
+        "date": "2026-11-07",
+        "from": "2026-11-06",
+        "equal": 99.3,
+        "value": 102.1,
+        "matched": 14286,
+        "entered": 40,
+        "equalMovePct": 0.0006,
+        "valueMovePct": 0.341
+      },
+      {
+        "date": "2026-11-08",
+        "from": "2026-11-07",
+        "equal": 99.3,
+        "value": 102.2,
+        "matched": 14298,
+        "entered": 37,
+        "equalMovePct": 0.0058,
+        "valueMovePct": 0.1345
+      },
+      {
+        "date": "2026-11-09",
+        "from": "2026-11-08",
+        "equal": 99.3,
+        "value": 102.3,
+        "matched": 14298,
+        "entered": 18,
+        "equalMovePct": -0.0044,
+        "valueMovePct": 0.1015
+      },
+      {
+        "date": "2026-11-10",
+        "from": "2026-11-09",
+        "equal": 99.3,
+        "value": 102.4,
+        "matched": 14284,
+        "entered": 45,
+        "equalMovePct": 0.0024,
+        "valueMovePct": 0.0173
       }
     ],
     "gaps": [
@@ -327,6 +387,12 @@
         "from": "2026-10-03",
         "to": "2026-10-05",
         "missingDays": 1,
+        "note": "No price was invented for the days in between."
+      },
+      {
+        "from": "2026-10-31",
+        "to": "2026-11-06",
+        "missingDays": 5,
         "note": "No price was invented for the days in between."
       }
     ]

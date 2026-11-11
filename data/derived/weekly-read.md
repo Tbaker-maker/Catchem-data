@@ -1,4 +1,4 @@
-# Weekly Read, 2026-10-30
+# Weekly Read, 2026-11-11
 
 Video outline. Same parts every week. Do not say a name is a move to make.
 
@@ -9,16 +9,6 @@ Video outline. Same parts every week. Do not say a name is a move to make.
 - Journey Together Booster Bundle: Hot
 - Shining Legends Elite Trainer Box: Hot
 - Surging Sparks Booster Pack: Hot
-
-## Keeps showing up
-Status: building history
-
-Sealed
-- Ascended Heroes Booster Bundle: 4 in 7 days, 13 in 30, streak 0
-- Ascended Heroes Booster Pack: 3 in 7 days, 10 in 30, streak 0
-- Pitch Black Elite Trainer Box: 3 in 7 days, 10 in 30, streak 0
-- Prismatic Evolutions Elite Trainer Box: 3 in 7 days, 10 in 30, streak 2
-- Pitch Black Booster Pack: 1 in 7 days, 10 in 30, streak 0
 
 ## Sealed line and chase line
 These are two lines. They are not one number.

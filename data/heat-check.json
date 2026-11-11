@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-30",
+  "asOf": "2026-11-11",
   "method": "Each input is a z-score against that product's own trailing 90 days. Weights: listings 0.40, TCGplayer market momentum 0.30, Google Trends 0.20, new YouTube videos 0.10. A missing input is left out and the score is marked partial. 50 is the middle.",
   "eligibility": "Scored when at least one input has 30 days: 30 one-day listing changes, or 30 TCGplayer market prices with 30 momentum readings. Listing changes across a gap in our eBay history are not counted.",
   "marketHistory": {
@@ -7,7 +7,7 @@
     "tcgcsvProducts": 173,
     "pptProducts": 0,
     "first": "2026-09-25",
-    "last": "2026-10-29"
+    "last": "2026-10-30"
   },
   "skipped": {
     "trends": "Google Trends was not called. The pytrends package is not installed, so this input is empty.",
@@ -29,8 +29,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -54,8 +54,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -79,8 +79,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -104,8 +104,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -129,8 +129,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -154,8 +154,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -179,8 +179,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -204,8 +204,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -252,8 +252,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -300,8 +300,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -348,8 +348,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -373,8 +373,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -398,8 +398,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -446,8 +446,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -471,8 +471,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -519,8 +519,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -544,8 +544,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -569,8 +569,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -640,8 +640,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -665,8 +665,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -690,8 +690,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -715,8 +715,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -740,8 +740,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -788,8 +788,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -813,8 +813,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -838,8 +838,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -863,8 +863,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -888,8 +888,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -913,8 +913,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -961,8 +961,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -986,8 +986,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1011,8 +1011,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1036,8 +1036,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1084,8 +1084,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1132,8 +1132,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1157,8 +1157,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1182,8 +1182,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1207,8 +1207,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1255,8 +1255,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1280,8 +1280,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1305,8 +1305,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1330,8 +1330,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1355,8 +1355,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1380,8 +1380,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1428,8 +1428,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1476,8 +1476,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1501,8 +1501,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1526,8 +1526,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1574,8 +1574,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
@@ -1599,8 +1599,8 @@
         "listingDays": 30,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 27,
-        "tcgplayerStaleSince": null,
+        "tcgplayerDays": 28,
+        "tcgplayerStaleSince": "2026-10-30",
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
