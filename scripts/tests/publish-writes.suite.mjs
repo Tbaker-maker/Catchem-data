@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { assessWrites, checkPublishWrites, GAP_DAYS } from "../check-publish-writes.mjs";
 import { publishLogo } from "../set-logo-index.mjs";
+import { receiptsProblem } from "../lib/receipts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -22,6 +23,11 @@ export async function run() {
   };
   t("a real write passes", assessWrites({ reads, search, index }).length === 0);
   t("empty reads fails", assessWrites({ reads: { reads: [] }, search, index }).includes("reads wrote nothing"));
+  t("receipts: tracked reads pass", !receiptsProblem({ entries: [{ date: "2026-11-10" }], reads: [{ id: "a" }], weekAgo: "2026-11-04" }).fail);
+  t("receipts: picks in the window but no read fails", receiptsProblem({ entries: [{ date: "2026-11-10" }], reads: [], weekAgo: "2026-11-04" }).fail === true);
+  const stale = receiptsProblem({ entries: [{ date: "2026-10-30" }], reads: [], weekAgo: "2026-11-04" });
+  t("receipts: a stale log warns and does not fail", stale.fail === false && stale.warn.includes("2026-10-30"));
+  t("receipts: no log at all warns and does not fail", receiptsProblem({ entries: [], reads: [], weekAgo: "2026-11-04" }).fail === false);
   t("empty search fails", assessWrites({ reads, search: { items: [] }, index }).includes("search wrote nothing"));
   t("an empty index fails", assessWrites({ reads, search, index: { singles: [], sealed: index.sealed } }).includes("index singles wrote nothing"));
   t("a filled gap fails", assessWrites({

@@ -3,7 +3,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gradeRead, movePct, summarizeReads } from "./lib/receipts.mjs";
+import { gradeRead, movePct, receiptsProblem, summarizeReads } from "./lib/receipts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
@@ -69,7 +69,9 @@ const out = join(ROOT, "data/private/receipts-weekly.json");
 await mkdir(dirname(out), { recursive: true });
 await writeFile(out, JSON.stringify(doc, null, 1) + "\n");
 console.log(`receipts: tracked ${summary.tracked}, graded ${summary.graded}, hit rate ${summary.hitRate}`);
-if (!Array.isArray(doc.reads) || doc.reads.length === 0) {
+const verdict = receiptsProblem({ entries: log.entries, reads: doc.reads, weekAgo });
+if (verdict.warn) console.log(`::warning::${verdict.warn}`);
+if (verdict.fail) {
   console.error("reads wrote nothing");
   process.exit(1);
 }
