@@ -1,5 +1,5 @@
 {
- "nightlyDay": "2026-10-30",
+ "nightlyDay": "2026-11-11",
  "note": "A live file with a date more than 2 days behind nightlyDay fails the nightly check. Files with no date say so in note.",
  "files": [
   {
@@ -11,7 +11,7 @@
    "live": false,
    "dateRequired": true,
    "note": "Ids whose price is not a headline. No thresholds.",
-   "asOf": "2026-10-29"
+   "asOf": "2026-11-09"
   },
   {
    "file": "research/assets/public/condition-prices.json",
@@ -22,7 +22,7 @@
    "live": false,
    "dateRequired": true,
    "note": "Per printing, per condition. Empty until a TCGplayer row names the condition.",
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/movers.json",
@@ -33,7 +33,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/accuracy.json",
@@ -44,7 +44,8 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "note": "Public stub only. Scored rows append to catchem-data-private data/private/reads-scorecard/accuracy.jsonl.",
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/counts.json",
@@ -54,7 +55,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/sets.json",
@@ -64,7 +65,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/artists.json",
@@ -74,7 +75,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/indexes.json",
@@ -84,7 +85,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/receipts.json",
@@ -94,7 +95,8 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "note": "Public stub only. Scored rows append to catchem-data-private data/private/reads-scorecard/receipts.jsonl.",
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/public/track-record.json",
@@ -104,7 +106,7 @@
    "writer": "scripts/write-track-record.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-29"
+   "asOf": "2026-10-30"
   },
   {
    "file": "research/assets/public/today.json",
@@ -114,7 +116,7 @@
    "writer": "scripts/write-morning-card.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-10"
   },
   {
    "file": "research/assets/public/feed/supply-lead.json",
@@ -207,7 +209,7 @@
    "writer": "scripts/fetch-sealed-prices.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-10"
   },
   {
    "file": "data/derived/weekly-read.json",
@@ -217,7 +219,7 @@
    "writer": "scripts/compute-weekly-read.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/assets/the-pulse.html",
@@ -237,7 +239,7 @@
    "writer": "scripts/write-run-report.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-30"
+   "asOf": "2026-11-11"
   },
   {
    "file": "research/pulse/pulse-feed.json",
@@ -248,7 +250,7 @@
    "live": true,
    "dateRequired": true,
    "note": "tests/rehearse_raffle_001.py only. Not a live cog.",
-   "asOf": "2026-10-29"
+   "asOf": "2026-10-30"
   },
   {
    "file": "data/card-attrs.json",
