@@ -43,3 +43,18 @@ function publicRead(r) {
     movePct: r.movePct,
   };
 }
+
+// Decides whether an empty receipts file is a failure. An empty file fails only
+// when the watch log had picks inside the window and none of them became a read.
+// A log with no pick in the window is stale, not broken: the log is committed by
+// the late "Commit updated prices" step, which cannot run while an earlier step
+// keeps the job red. Failing here on a stale log held that loop shut from
+// 2026-10-31 on. Nothing is filled in; the file stays empty and a warning names
+// the newest log day.
+export function receiptsProblem({ entries, reads, weekAgo }) {
+  if (Array.isArray(reads) && reads.length > 0) return { fail: false, warn: "" };
+  const inWindow = (entries || []).filter((e) => e?.date && e.date >= weekAgo);
+  if (inWindow.length > 0) return { fail: true, warn: "" };
+  const newest = (entries || []).map((e) => e?.date).filter(Boolean).sort().pop() || "none";
+  return { fail: false, warn: `watch log has no pick since ${weekAgo} (newest day ${newest}); receipts left empty` };
+}
