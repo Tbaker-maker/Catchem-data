@@ -1,0 +1,242 @@
+# DRESS REHEARSAL of update-sealed-prices.yml, generated from it at main.
+# No eBay, no PPT fetch, no Discord, no issues, no mirror, no app rebuild trigger.
+# Every git push is blocked (persist-credentials false + pushInsteadOf to a dead host).
+# The publish step builds the same orphan commit and runs the same guard + smoke,
+# against the live public-data tip, and pushes nothing. Every step continues on
+# error so one run lists every failure. Tail only: ci/rehearsal-tail.
+name: 'Rehearsal tail: post-publish steps on committed outputs (no push)'
+on:
+  push:
+    branches:
+    - ci/rehearsal-tail
+  workflow_dispatch:
+concurrency:
+  group: rehearsal-tail
+  cancel-in-progress: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  tail:
+    name: tail (publish dry + steps after publish)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        filter: blob:none
+        persist-credentials: false
+    - name: Rehearsal setup (block every push, start memory monitor)
+      run: bash .github/rehearsal/setup.sh
+    - name: Setup Node 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Install dependencies (resvg — cards rasterize to PNG in CI)
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        npm install --no-audit --no-fund
+        REH_EOF
+        bash .github/rehearsal/r.sh "Install dependencies (resvg — cards rasterize to PNG in CI)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Mount private PPT history
+      continue-on-error: true
+      env:
+        PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/mount-private-ppt.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Mount private PPT history" /tmp/reh/cur.sh
+    - name: 'Publish the public-data branch (DRY: guard + smoke, no push)'
+      id: publish
+      env:
+        PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node .github/rehearsal/publish-dry.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Publish the public-data branch (DRY)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Fetch TCG news
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/fetch-tcg-news.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Fetch TCG news" /tmp/reh/cur.sh
+      env:
+        PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+      continue-on-error: true
+    - name: Write the weekly letter
+      continue-on-error: true
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/compute-weekly-read.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Write the weekly letter" /tmp/reh/cur.sh
+    - name: Grade repo jobs
+      continue-on-error: true
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/audit-repo-bots.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Grade repo jobs" /tmp/reh/cur.sh
+    - name: Append shelf counts to the private log
+      continue-on-error: true
+      env:
+        PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/append-shelf.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Append shelf counts to the private log" /tmp/reh/cur.sh
+    - name: Generate Morning Pulse
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/generate-pulse.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Generate Morning Pulse" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Generate The Board
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/generate-board.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Generate The Board" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Build creator pages
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/build-creators-page.mjs
+        RT node scripts/build-editor.mjs
+        RT node scripts/build-faq.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Build creator pages" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Mint the share cards
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/mint-cards.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Mint the share cards" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Rasterize cards to PNG (embeds images first)
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/rasterize-cards.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Rasterize cards to PNG (embeds images first)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Dated reads, rip value, and status
+      env:
+        PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/build-condition-prices.mjs || true
+        RT node scripts/build-weekly.mjs || true
+        RT node scripts/build-market-signals.mjs || true
+        RT node scripts/build-variant-flags.mjs || true
+        RT node scripts/build-rip-roi.mjs || true
+        RT node scripts/coverage-bot.mjs || true
+        RT node scripts/grade-heading-votes.mjs || true
+        RT node scripts/scanner-weekly.mjs || true
+        RT node scripts/price-sanity.mjs || true
+        RT node scripts/freshness-bot.mjs || true
+        RT node scripts/build-limits.mjs || true
+        RT node scripts/build-post-office-catalogue.mjs || true
+        RT node scripts/publish-gate.mjs --preview-only || true
+        RT node scripts/build-custom-reads.mjs || true
+        RT node scripts/build-release-scout.mjs || true
+        RT node scripts/build-canada-gap.mjs || true
+        REH_EOF
+        bash .github/rehearsal/r.sh "Dated reads, rip value, and status" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Commit updated prices
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        git config user.name "catchem-bot"
+        git config user.email "bot@catchem.app"
+        mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
+        git add data/ppt/run-report.json data/buyout-tape.json
+        # Complete write-vs-commit matrix (audited 2026-08-19): every file a
+        # step writes is listed here. A file written in CI but not added
+        # evaporates at job end — the class that froze the app feed and ate
+        # era/catalyst history daily.
+        git add config/fill-sources.json data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history-tcg.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/raw/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/assets/public/reads-preview.json research/digests/news.json research/digests/weekly-news.json research/digests/feed-news.json
+        if compgen -G "data/learning/grades-*.json" > /dev/null; then git add data/learning/grades-*.json; fi
+        if git diff --staged --quiet; then
+          echo "No price changes to commit."
+        else
+          git commit -m "Update sealed prices ($(date -u +'%Y-%m-%d'))"
+          # Race-hardened push (v2.1): tonight's lesson — a mid-run push to main
+          # rejected our push. Rebase our one data commit onto the moved tip and
+          # retry, up to 3 times, before giving up.
+          for i in 1 2 3; do
+            echo "[rehearsal] push skipped" && break
+            echo "push rejected (attempt $i) — rebasing onto moved main"
+            # --autostash: an unlisted written file must never strand the
+            # data commit (2026-08-22 run 32547010842: corrections.html was
+            # written-but-unadded and the retry rebase refused to run)
+            git pull --rebase --autostash origin main || RT node scripts/resolve-listing-counts-conflict.mjs || exit 1
+            sleep 5
+          done
+        fi
+        REH_EOF
+        bash .github/rehearsal/r.sh "Commit updated prices" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Live page smoke (the published Pages URL)
+      continue-on-error: true
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/live-page-smoke.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Live page smoke (the published Pages URL)" /tmp/reh/cur.sh
+    - name: Smoke test (live site + feed + rendered app)
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/smoke-test.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Smoke test (live site + feed + rendered app)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Mode honesty (figure multiset identical across modes)
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/mode-diff-test.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "Mode honesty (figure multiset identical across modes)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: PPT safety check
+      if: always()
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/check-ppt-safety.mjs
+        REH_EOF
+        bash .github/rehearsal/r.sh "PPT safety check" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Freshness check after the refresh (strict)
+      run: |
+        cat > /tmp/reh/cur.sh <<'REH_EOF'
+        RT node scripts/write-health.mjs > /tmp/health-after.json
+        REH_EOF
+        bash .github/rehearsal/r.sh "Freshness check after the refresh (strict)" /tmp/reh/cur.sh
+      continue-on-error: true
+    - name: Rehearsal summary (every failed step + memory/time)
+      if: always()
+      env:
+        REH_JOB: tail
+      run: bash .github/rehearsal/summary.sh
+    - name: Upload rehearsal logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: rehearsal-tail
+        path: |-
+          /tmp/reh/
+          /tmp/rebuild.log
+          /tmp/tests.log
+          /tmp/tests-1.log
+          data/derived/test-triage.json
+        if-no-files-found: warn
+        retention-days: 5
