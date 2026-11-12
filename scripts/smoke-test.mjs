@@ -22,10 +22,29 @@
 //       negative test (pointing SMOKE_APP at a non-React page must FAIL).
 //       CHROME_PATH overrides browser discovery.
 import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 
 const SITE = process.env.SMOKE_SITE || "https://catchemtcg.com";
 const APP = process.env.SMOKE_APP || "https://app.catchemtcg.com";
-const FEED = process.env.SMOKE_FEED || "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/main/research/pulse/pulse-feed.json";
+const FEED_MAIN = "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/main/research/pulse/pulse-feed.json";
+// raw.githubusercontent.com caches a branch URL for 300 s and ignores query
+// strings, so the smoke step seconds after "Commit updated prices" can read the
+// copy from before the push. After 12 days without a publish that copy was
+// 300 h old and the check would fail a good run. When this checkout's HEAD is
+// already on origin/main, read the feed at that exact commit: same public file,
+// no stale cache. Otherwise (local runs, a push that did not land) read main.
+function pinnedFeedUrl(sha, onMain) {
+  return /^[0-9a-f]{40}$/.test(sha || "") && onMain ? FEED_MAIN.replace("/main/", `/${sha}/`) : FEED_MAIN;
+}
+function feedUrl() {
+  if (process.env.SMOKE_FEED) return process.env.SMOKE_FEED;
+  try {
+    const sha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    const remotes = execFileSync("git", ["branch", "-r", "--contains", sha], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    return pinnedFeedUrl(sha, /(^|\s)origin\/main$/m.test(remotes));
+  } catch { return FEED_MAIN; }
+}
+const FEED = feedUrl();
 
 let failures = 0;
 const ok = (name) => console.log(`  ✓ ${name}`);
@@ -64,6 +83,7 @@ await page(SITE + "/p/sv9-booster-box", ["Journey Together Booster Box", 'data-c
 await page(SITE + "/board", ["<h1>Movers</h1>", 'id="singles"'], "board");
 
 console.log("── 2 · feed contract ──");
+console.log(`  feed: ${FEED}`);
 try {
   const r = await fetchWithTimeout(FEED, { headers: { "cache-control": "no-cache" } });
   if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
