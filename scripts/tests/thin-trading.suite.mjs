@@ -88,7 +88,7 @@ export async function run() {
   const blockedText = JSON.stringify(blocked);
   t("an unbacked thin card cannot lead the chase list or its total", blocked.length === 1 && !blockedText.includes("Lugia") && !blockedText.includes("2,717.32") && blocked[0].headline.includes("1,050.00"));
   const shown = chaseLists([lugiaCard, ...others], tags, { asOf: ASOF, lowOf: (c) => (c.id === "tcgcsv-86916" ? 2849.99 : null) });
-  t("a backed thin card still leads and carries the line", shown.length === 1 && shown[0].lines[0].includes("Lugia EX") && shown[0].lines[1] === LINE && shown[0].lines.at(-1).startsWith("TCGplayer market,") && shown[0].headline.includes("3,717.32") && shown[0].lines.length <= 6);
+  t("a backed thin card still leads and carries the line", shown.length === 1 && shown[0].lines[0].includes("Lugia EX") && shown[0].lines[0].endsWith(` ${LINE}`) && !shown[0].lines.slice(1).includes(LINE) && shown[0].lines.at(-1).startsWith("TCGplayer market,") && shown[0].headline.includes("3,717.32") && shown[0].lines.length <= 6);
 
   const storyOff = cardStories([lugiaCard], { asOf: ASOF, lowOf: () => null });
   const storyOn = cardStories([lugiaCard], { asOf: ASOF, lowOf: () => 2849.99 });
