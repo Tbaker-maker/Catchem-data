@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
+import { clonePrivate } from "./private-clone.mjs";
 
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
 
@@ -29,7 +30,7 @@ export async function openPrivate({ root, token = "", git = run, env = process.e
   const childEnv = { ...env, GIT_TERMINAL_PROMPT: "0" };
   await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
   const cleanup = async () => { await rm(netrc, { force: true }).catch(() => {}); await rm(clone, { recursive: true, force: true }).catch(() => {}); };
-  const cloned = await git("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+  const cloned = await clonePrivate(git, REMOTE, clone, childEnv);
   if (cloned.code !== 0) { await cleanup(); throw new Error(`private repo was not cloned (${redact(cloned.err, token)})`); }
   const dir = join(clone, "data/private");
   await mkdir(dir, { recursive: true });

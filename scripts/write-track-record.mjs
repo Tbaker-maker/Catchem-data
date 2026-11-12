@@ -10,6 +10,7 @@ import { buildTrackRecord, publicTrackPage, priorReads } from "./lib/track-recor
 import { openPrivate } from "./lib/private-store.mjs";
 import { shipPriceMap } from "./lib/second-library.mjs";
 import { buildPremiumProof } from "./lib/premium-proof.mjs";
+import { clonePrivate } from "./lib/private-clone.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -37,7 +38,7 @@ export async function pushTrackRecord({ token, text, env = process.env, git = ru
   const childEnv = { ...env, GIT_TERMINAL_PROMPT: "0" };
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
-    const cloned = await git("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+    const cloned = await clonePrivate(git, REMOTE, clone, childEnv);
     if (cloned.code !== 0) return { pushed: false, reason: `Private repo was not cloned (${redact(cloned.err, token) || "clone failed"}).` };
     const file = join(clone, PRIVATE_REL);
     await mkdir(dirname(file), { recursive: true });

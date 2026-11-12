@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { redact, restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
 import { mountPrivate } from "../mount-private-ppt.mjs";
+import { clonePrivate, PRIVATE_SPARSE } from "../lib/private-clone.mjs";
 
 export async function runPrivatePptTests() {
   let fail = 0;
@@ -83,6 +84,16 @@ export async function runPrivatePptTests() {
   t("watchdog can write the retry log", /contents:\s*write/.test(watchdog));
   t("watchdog does not swallow a failed push", !watchdog.includes("git push || true"));
   await rm(root, { recursive: true, force: true });
+  // Private clones skip raw/ (about 19 GB by 2026-11-11). Run 43111961381 lost its runner in the rebuild.
+  const calls = [];
+  const okGit = async (cmd, args) => { calls.push(args); return { code: 0, err: "", out: "" }; };
+  const cloned = await clonePrivate(okGit, "https://example.invalid/private.git", "/tmp/x", {});
+  t("a private clone is shallow and fetches no blobs up front", cloned.code === 0 && calls[0].includes("--depth") && calls[0].includes("--filter=blob:none") && calls[0].includes("--no-checkout"));
+  t("a private clone leaves raw/ out of the checkout", calls[1].join(" ").includes("sparse-checkout set --no-cone") && PRIVATE_SPARSE.includes("!/raw/") && calls[2].at(-1) === "checkout");
+  const failCalls = [];
+  const badGit = async (cmd, args) => { failCalls.push(args); return { code: 128, err: "auth failed", out: "" }; };
+  const failed = await clonePrivate(badGit, "https://example.invalid/private.git", "/tmp/x", {});
+  t("a failed private clone stops before the checkout", failed.code === 128 && failCalls.length === 1);
   return fail;
 }
 
