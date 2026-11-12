@@ -107,12 +107,22 @@ export async function run() {
     const missing90 = !(await has(day(90)));
     const rows = reads.reads || [];
     const withPic = new Set(rows.filter((row) => row.image && (row.sku || row.sourceLine)).flatMap((row) => [row.sku, row.sourceLine].filter(Boolean)));
-    const empty = Object.values(cat.cards || {}).filter((card) => withPic.has(card.sku) && !card.image).length;
+    const cards = Object.values(cat.cards || {});
+    const empty = cards.filter((card) => withPic.has(card.sku) && !card.image).length;
+    const filled = cards.filter((card) => card.image).length;
     if (missing7 && missing90) {
       t("with a missing day 7 back and no 90-day file, the catalogue is still more than 12 and the board is 200 to 400", (cat.count || 0) > 12 && rows.length >= 200 && rows.length <= 400);
-      t("built feed: 0 empty feed images where reads.json has one", empty === 0);
     } else {
       console.log("  - this checkout has the day 7 file or the 90-day file");
+    }
+    // The file on main is the 02:47Z publish: every feed image is still blank.
+    // That is the bug this PR fixes. The publishFeed case above is the proof.
+    // Once the committed catalogue has any picture, a read that has one cannot
+    // sit on a blank feed card.
+    if (filled > 0) {
+      t("built feed: 0 empty feed images where reads.json has one", empty === 0);
+    } else {
+      console.log("  - committed catalogue images are still blank; the publishFeed case is the check");
     }
   } catch {
     console.log("  - built feed files are not in this checkout");
