@@ -47,7 +47,10 @@ function dayDiff(a, b) {
 
 // files: Map name -> { size, text? } for the new build (names relative to research/assets/public).
 // before: array of names on the current public-data tip (same relative form), or null.
-export function checkBuild({ files, before, cfg, today }) {
+// removed: names a merged pull request deleted from main on purpose
+// (reviewedRemovals in publish-public-data.mjs). They are not counted toward
+// maxDroppedFiles. Every other drop still counts.
+export function checkBuild({ files, before, cfg, today, removed = new Set() }) {
   const problems = [];
   if (!cfg) return ["publish limits not loaded from catchem-data-private"];
   for (const name of REQUIRED) {
@@ -58,7 +61,7 @@ export function checkBuild({ files, before, cfg, today }) {
   for (const [name, f] of files) if (!(f.size > 0)) problems.push(`${name} is empty`);
   if (Array.isArray(before) && before.length) {
     const now = new Set(files.keys());
-    const gone = before.filter((n) => !now.has(n) && !ROTATING.some((d) => n.startsWith(d)));
+    const gone = before.filter((n) => !now.has(n) && !ROTATING.some((d) => n.startsWith(d)) && !removed.has(n));
     if (gone.length > cfg.maxDroppedFiles) problems.push(`${gone.length} files would disappear from the site`);
   }
   for (const [name, key] of Object.entries(DATED)) {
