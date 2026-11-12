@@ -19,9 +19,10 @@ export function parseWorkflowSteps(yaml) {
   let inSteps = false;
   let inRun = false;
   let runIndent = 0;
+  let inEnv = false;
   const steps = [];
   let cur = null;
-  const push = () => { if (cur) steps.push(cur); cur = null; };
+  const push = () => { if (cur) steps.push(cur); cur = null; inEnv = false; };
   for (const line of lines) {
     if (!inSteps) {
       if (/^    steps:\s*$/.test(line)) inSteps = true;
@@ -42,11 +43,26 @@ export function parseWorkflowSteps(yaml) {
         uses: "",
         continueOnError: false,
         if: "",
+        env: {},
       };
       continue;
     }
     if (!cur) continue;
     if (/^  \S/.test(line) || /^[^ ]/.test(line)) { push(); inSteps = false; continue; }
+    if (inEnv) {
+      const em = line.match(/^          ([A-Za-z0-9_]+):\s*(.*)$/);
+      if (em) {
+        let val = em[2].trim();
+        const quoted = val.match(/^"([^"]*)"/) || val.match(/^'([^']*)'/);
+        if (quoted) val = quoted[1];
+        else val = val.replace(/\s+#.*$/, "").trim();
+        val = val.replace(/\$\{\{\s*secrets\.[^}]+\}\}/g, "");
+        val = val.replace(/\$\{\{\s*github\.[^}]+\}\}/g, "");
+        cur.env[em[1]] = val;
+        continue;
+      }
+      inEnv = false;
+    }
     const id = line.match(/^        id:\s*(.+)$/);
     if (id) cur.id = id[1].trim();
     const uses = line.match(/^        uses:\s*(.+)$/);
@@ -54,6 +70,7 @@ export function parseWorkflowSteps(yaml) {
     if (/^        continue-on-error:\s*true\s*$/.test(line)) cur.continueOnError = true;
     const iff = line.match(/^        if:\s*(.+)$/);
     if (iff) cur.if = iff[1].trim();
+    if (/^        env:\s*$/.test(line)) { inEnv = true; continue; }
     if (/^        run:\s*\|\s*$/.test(line)) { inRun = true; runIndent = 10; cur.run = ""; continue; }
     const inline = line.match(/^        run:\s*(\S.*)$/);
     if (inline) cur.run = inline[1];
@@ -100,8 +117,29 @@ function evalExpr(expr, ctx) {
   return !ctx.hardFailed;
 }
 
+export function expandGha(script, ctx) {
+  return String(script || "").replace(/\$\{\{\s*([^}]+)\s*\}\}/g, (_, raw) => {
+    const e = raw.trim();
+    const step = e.match(/^steps\.([A-Za-z0-9_-]+)\.(outcome|conclusion)$/);
+    if (step) return ctx.outcomes[step[1]] || "";
+    if (e === "github.repository") return process.env.GITHUB_REPOSITORY || "Tbaker-maker/Catchem-data";
+    if (e === "github.run_id") return process.env.GITHUB_RUN_ID || "0";
+    if (e === "github.run_attempt") return process.env.GITHUB_RUN_ATTEMPT || "1";
+    if (e === "github.sha") return process.env.GITHUB_SHA || "dress";
+    if (e === "github.ref") return process.env.GITHUB_REF || "refs/heads/dress-rehearsal-throwaway";
+    if (e === "github.server_url") return "https://github.com";
+    if (e === "github.workflow") return "Nightly dress rehearsal";
+    if (e === "github.job") return "rehearse";
+    if (e === "github.actor") return process.env.GITHUB_ACTOR || "dress-rehearsal";
+    return "";
+  });
+}
+
 export function shouldRun(expr, ctx) {
-  if (!String(expr || "").trim()) return !ctx.hardFailed;
+  // A blank if still runs after an earlier failure. The nightly stops there,
+  // so a broken step hides the next one until the following night. This run
+  // keeps going and names the first hard failure at the end.
+  if (!String(expr || "").trim()) return true;
   return evalExpr(expr, ctx);
 }
 
@@ -113,7 +151,7 @@ function runShell(script, env) {
 }
 
 export async function rehearse(steps, env, run = runShell) {
-  const ctx = { hardFailed: false, failedStep: "", soft: [], outcomes: {} };
+  const ctx = { hardFailed: false, failedStep: "", failures: [], soft: [], outcomes: {} };
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     const key = step.id || `n${i}`;
@@ -127,9 +165,12 @@ export async function rehearse(steps, env, run = runShell) {
       ctx.outcomes[key] = "success";
       continue;
     }
-    const script = dressRun(step.run);
+    const script = expandGha(dressRun(step.run), ctx);
     console.log(`\n===== STEP: ${step.name} =====`);
-    const code = script.trim() ? await run(script, env) : 0;
+    const stepEnv = { ...env, ...(step.env || {}), EBAY_REPLAY: "1", DRESS_REHEARSAL: "1" };
+    stepEnv.EBAY_APP_ID = "";
+    stepEnv.EBAY_CERT_ID = "";
+    const code = script.trim() ? await run(script, stepEnv) : 0;
     if (code === 0) {
       ctx.outcomes[key] = "success";
       continue;
@@ -141,12 +182,15 @@ export async function rehearse(steps, env, run = runShell) {
       continue;
     }
     if (!ctx.failedStep) ctx.failedStep = step.name;
+    ctx.failures.push(step.name);
     ctx.hardFailed = true;
     console.error(`DRESS REHEARSAL FAILED at step: ${step.name} (exit ${code})`);
   }
   if (ctx.soft.length) console.error("continue-on-error failures:\n" + ctx.soft.map((n) => "- " + n).join("\n"));
-  if (ctx.hardFailed) console.error(`DRESS REHEARSAL FAILED at step: ${ctx.failedStep}`);
-  else console.log("DRESS REHEARSAL PASSED");
+  if (ctx.hardFailed) {
+    console.error(`DRESS REHEARSAL FAILED at step: ${ctx.failedStep}`);
+    console.error("All hard failures:\n" + ctx.failures.map((n) => "- " + n).join("\n"));
+  } else console.log("DRESS REHEARSAL PASSED");
   return ctx;
 }
 

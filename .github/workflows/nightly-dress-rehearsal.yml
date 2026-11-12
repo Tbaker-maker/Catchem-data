@@ -2,7 +2,8 @@ name: Nightly dress rehearsal
 
 # Full nightly price pipeline on current code, without touching the live site.
 # eBay is replayed from the newest saved response. Publish runs without --push.
-# Commits stay on a throwaway branch. The first hard step failure is named in the log.
+# Commits stay on a throwaway branch. Every step still runs after a failure.
+# The job exits naming the first hard step, and the log lists the rest.
 on:
   pull_request:
     paths:

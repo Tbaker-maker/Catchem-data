@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseWorkflowSteps, dressRun, shouldRun, rehearse } from "./nightly-dress-rehearsal.mjs";
+import { parseWorkflowSteps, dressRun, expandGha, shouldRun, rehearse } from "./nightly-dress-rehearsal.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const yaml = readFileSync(join(root, ".github/workflows/update-sealed-prices.yml"), "utf8");
@@ -19,6 +19,10 @@ for (const name of [
 ]) assert.ok(names.includes(name), name);
 
 const pub = steps.find((s) => s.name.startsWith("Publish the public-data"));
+const tests = steps.find((s) => s.id === "tests");
+assert.equal(tests.env.FEED_FRESHNESS_WARN_ONLY, "1");
+const ebay = steps.find((s) => s.name.startsWith("Fetch sealed prices"));
+assert.equal(ebay.env.EBAY_APP_ID, "");
 assert.match(pub.run, /--push/);
 assert.doesNotMatch(dressRun(pub.run), /--push/);
 assert.match(dressRun(pub.run), /publish-public-data\.mjs/);
@@ -45,11 +49,13 @@ assert.equal(shouldRun("always()", green), true);
 assert.equal(shouldRun("always() && steps.tests.outcome == 'success'", green), true);
 assert.equal(shouldRun("steps.setpages.outcome == 'success'", green), true);
 const red = { hardFailed: true, failedStep: "Unit tests (fail-fast)", outcomes: { tests: "failure", publish: "failure" } };
-assert.equal(shouldRun("", red), false);
+assert.equal(shouldRun("", red), true);
 assert.equal(shouldRun("failure()", red), true);
 assert.equal(shouldRun("always()", red), true);
 assert.equal(shouldRun("failure() && steps.publish.outcome == 'failure'", red), true);
 assert.equal(shouldRun("success()", red), false);
+assert.equal(expandGha("echo ${{ steps.tests.outcome }} ${{ github.repository }}", red), "echo failure Tbaker-maker/Catchem-data");
+assert.equal(expandGha("echo ${{ secrets.EBAY_APP_ID }}", red), "echo ");
 
 const fake = [
   { name: "ok", id: "a", run: "true", uses: "", continueOnError: false, if: "" },
@@ -64,8 +70,9 @@ const ctx = await rehearse(fake, {}, async (script) => {
   ran.push(body);
   return body.startsWith("exit") ? Number(body.split(" ")[1]) : 0;
 });
-assert.deepEqual(ran, ["true", "exit 3", "exit 4", "true"]);
+assert.deepEqual(ran, ["true", "exit 3", "exit 4", "exit 9", "true"]);
 assert.equal(ctx.failedStep, "hard");
+assert.deepEqual(ctx.failures, ["hard", "later"]);
 assert.deepEqual(ctx.soft, ["soft"]);
 
 const preload = await import("./dress-rehearsal-preload.mjs");
