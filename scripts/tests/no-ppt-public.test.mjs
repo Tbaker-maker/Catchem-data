@@ -1,5 +1,6 @@
-// Guard: PokemonPriceTracker (PPT) history never reaches the public repo or its outputs.
+// Guard: PokemonPriceTracker (PPT) and PkmnPrices (PPP) raw prices never reach the public repo or its outputs.
 // Licence: PPT data stays private until a PPT Business plan and a written yes.
+// PPP raw stays private until a written yes to display it.
 // 1. No PPT history folder or file is tracked in this repo.
 // 2. Every price point in the public buckets, sparks and quick-sheet inputs is a
 //    TCGCSV day we publish (data/history/tcgcsv-daily or data/history/tcgplayer-market).
@@ -22,6 +23,8 @@ export const BANNED_PATHS = [
   "data/history/ppt-sealed/",
   "data/history/ppt-sealed-private/",
   "ppt-raw-private/",
+  "ppp-raw-private/",
+  "data/history/ppp-sealed-private/",
   // PPT-valued files moved to catchem-data-private on 2026-10-10.
   "data/derived/tcgplayer-volume.json",
   "data/singles-enrichment.json",
@@ -33,11 +36,21 @@ export const BANNED_PATHS = [
 
 // A public JSON file must not carry PPT-sourced values. Names and ids may stay.
 export const PPT_SOURCE_RE = /pokemon\s*price\s*tracker|pokemonpricetracker/i;
+export const PPP_SOURCE_RE = /pkmnprices|pkmn\s*prices/i;
 export const VALUE_KEYS = /^(market|low|high|mid|price|sold7d|sold30d|vol30|recentSales|conditions|tcgMarket|tcgPrice)$/;
 export function pptValuedDoc(doc) {
   // true when the top-level source names PPT and any nested object holds a value key
   const src = `${doc?.source || ""} ${doc?.provenance || ""}`;
   if (!PPT_SOURCE_RE.test(src)) return false;
+  let hit = false;
+  const walk = (v, d) => { if (hit || d > 6 || !v || typeof v !== "object") return; for (const [k, x] of Object.entries(v)) { if (VALUE_KEYS.test(k) && (typeof x === "number" || (x && typeof x === "object"))) { hit = true; return; } walk(x, d + 1); } };
+  walk(doc.cards || doc.rows || doc.entries || doc, 0);
+  return hit;
+}
+
+export function pppValuedDoc(doc) {
+  const src = `${doc?.source || ""} ${doc?.provenance || ""}`;
+  if (!PPP_SOURCE_RE.test(src)) return false;
   let hit = false;
   const walk = (v, d) => { if (hit || d > 6 || !v || typeof v !== "object") return; for (const [k, x] of Object.entries(v)) { if (VALUE_KEYS.test(k) && (typeof x === "number" || (x && typeof x === "object"))) { hit = true; return; } walk(x, d + 1); } };
   walk(doc.cards || doc.rows || doc.entries || doc, 0);
@@ -100,10 +113,13 @@ export async function runNoPptPublicTests() {
     t("a different value on a public day fails", unexplainedPoints([{ pid: 1, hist: [["2026-10-10", 3]] }], allowed).length === 1);
   }
   t("a rarebox singles file is a banned path", pptPathsIn(["data/history/singles-rarebox/swsh2-200.json"]).length === 1);
+  t("a raw PPP folder is a banned path", pptPathsIn(["ppp-raw-private/2026-11-12/sealed-1.json", "data/history/tcgcsv-daily/2026-11-12.json"]).length === 1);
   {
     const flags = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8")).flags;
     t("ppt.publicDisplay flag is off (no PPT numbers in public until Business plan + written yes)", flags["ppt.publicDisplay"]?.value === false, `value=${flags["ppt.publicDisplay"]?.value}`);
+    t("ppp.publicDisplay flag is off (no PkmnPrices numbers in public until a written yes)", flags["ppp.publicDisplay"]?.value === false, `value=${flags["ppp.publicDisplay"]?.value}`);
     t("CATCHEM_PPT_LICENSED is not forcing PPT on", process.env.CATCHEM_PPT_LICENSED !== "1");
+    t("CATCHEM_PPP_LICENSED is not forcing PPP on", process.env.CATCHEM_PPP_LICENSED !== "1");
     const importer = await readFile(join(ROOT, "scripts/import-history-backfill.mjs"), "utf8");
     t("history importer never writes rarebox singles under data/", !/join\(ROOT,\s*"data\/history\/singles-rarebox"/.test(importer));
   }
@@ -114,15 +130,22 @@ export async function runNoPptPublicTests() {
 
   t("a PPT-sourced doc with prices is flagged", pptValuedDoc({ source: "pokemonpricetracker v2", cards: [{ raw: { market: 2 } }] }));
   t("a PPT-named ids-only map is not flagged", !pptValuedDoc({ source: "build-crosscheck-map.mjs vs pokemonpricetracker v2", entries: [{ id: "a", tcgPlayerId: "1" }] }));
+  t("a PPP-sourced doc with prices is flagged", pppValuedDoc({ source: "pkmnprices", cards: [{ raw: { market: 2 } }] }));
+  t("a PPP id map is not flagged", !pppValuedDoc({ source: "PkmnPrices id map", sealed: { "644298": 1946 }, cards: {} }));
   const pptValued = [];
+  const pppValued = [];
   for (const f of tracked.filter((n) => /^(data|research\/assets)\/.*\.json$/.test(n) && !n.startsWith("data/history/"))) {
     try {
       const raw = await readFile(join(ROOT, f), "utf8");
-      if (raw.length > 30_000_000 || !PPT_SOURCE_RE.test(raw.slice(0, 4000))) continue;
-      if (pptValuedDoc(JSON.parse(raw))) pptValued.push(f);
+      const head = raw.slice(0, 4000);
+      if (raw.length > 30_000_000) continue;
+      const doc = (PPT_SOURCE_RE.test(head) || PPP_SOURCE_RE.test(head)) ? JSON.parse(raw) : null;
+      if (doc && PPT_SOURCE_RE.test(head) && pptValuedDoc(doc)) pptValued.push(f);
+      if (doc && PPP_SOURCE_RE.test(head) && pppValuedDoc(doc)) pppValued.push(f);
     } catch {}
   }
   t("no tracked public JSON carries PPT-sourced values", pptValued.length === 0, pptValued.slice(0, 5).join(", "));
+  t("no tracked public JSON carries PPP-sourced values", pppValued.length === 0, pppValued.slice(0, 5).join(", "));
   let volumeReads = [];
   try { volumeReads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8")).reads.filter((r) => r.readKind === "volume" || r.kind === "volume"); } catch {}
   t("volume reads are off until PPT's written yes", volumeReads.length === 0, `${volumeReads.length} volume reads`);
