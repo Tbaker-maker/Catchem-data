@@ -1,0 +1,44 @@
+name: Nightly dress rehearsal
+
+# Full nightly price pipeline on current code, without touching the live site.
+# eBay is replayed from the newest saved response. Publish runs without --push.
+# Commits stay on a throwaway branch. The first hard step failure is named in the log.
+on:
+  pull_request:
+    paths:
+      - "scripts/**"
+      - ".github/workflows/**"
+      - "config/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-dress-rehearsal-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Parser test
+        run: node scripts/nightly-dress-rehearsal.test.mjs
+
+      - name: Dress rehearsal
+        env:
+          EBAY_REPLAY: "1"
+          DRESS_REHEARSAL: "1"
+        run: node scripts/nightly-dress-rehearsal.mjs

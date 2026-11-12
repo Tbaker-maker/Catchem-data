@@ -13,7 +13,7 @@
 //   EBAY_CERT_ID  — your eBay developer Cert ID (Client Secret)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -599,6 +599,19 @@ async function mapConcurrent(items, fn, concurrency) {
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 async function main() {
+  if (process.env.EBAY_REPLAY === "1") {
+    const dir = join(DATA_DIR, "raw", "ebay-sealed");
+    let files = [];
+    try { files = (await readdir(dir)).filter((name) => /^\d{4}-\d{2}-\d{2}\.json\.gz$/.test(name)).sort(); }
+    catch { files = []; }
+    const latest = files.at(-1);
+    if (!latest) {
+      console.error("EBAY_REPLAY: no saved data/raw/ebay-sealed/YYYY-MM-DD.json.gz");
+      process.exit(1);
+    }
+    console.log(`EBAY_REPLAY: using saved ${latest} (no eBay API call)`);
+    process.exit(0);
+  }
   console.log("📦 Loading product list...");
   const catalog = JSON.parse(await readFile(PRODUCTS_FILE, "utf-8"));
   // menu-listing guard corpus: distinct catalog set names, ≥6 chars —
