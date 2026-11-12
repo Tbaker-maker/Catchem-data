@@ -53,5 +53,10 @@ data/enrichment-distilled.json
 # Track record is private. Nightly still computes it here; it is not published.
 data/private/
 
-# Raw PkmnPrices payloads. Public repo gets derived files only (research/assets/public/market-depth).
+# Raw PkmnPrices payloads. Public repo gets derived market-depth, counts-only usage, and id maps.
 ppp-raw-private/
+data/history/ppp-sealed-private/
+
+# Per-run PPP status. The public log is data/meta/ppp-usage.json.
+data/ppp/mount-status.json
+data/ppp/push-status.json

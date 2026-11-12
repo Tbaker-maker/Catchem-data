@@ -9,6 +9,13 @@
       "trigger": "PPT Business plan plus PPT's written yes for public and paid display.",
       "env": "CATCHEM_PPT_LICENSED"
     },
+    "ppp.publicDisplay": {
+      "value": false,
+      "owner": "scripts/ppp-refresh.mjs + scripts/tests/no-ppt-public.test.mjs",
+      "why": "OFF for every public output. PkmnPrices current prices are pulled privately for a dual-run against PPT and TCGCSV. Raw responses and dollar figures stay in catchem-data-private. The public repo may hold counts-only usage, an id map, and percent-agreement summaries.",
+      "trigger": "A written yes to display PkmnPrices numbers publicly.",
+      "env": "CATCHEM_PPP_LICENSED"
+    },
     "spread.headline": {
       "value": false,
       "owner": "scripts/compute-derived.mjs",

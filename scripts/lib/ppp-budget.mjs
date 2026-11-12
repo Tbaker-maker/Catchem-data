@@ -54,3 +54,37 @@ export function laneMeter(name, budget = loadBudget(), already = 0) {
 export function ledgerFor(ledger, day) {
   return ledger && ledger.day === day ? ledger : { day, lanes: {} };
 }
+
+// Caps plus reserve, so a reviewer can see the plan never exceeds the daily limit.
+export function plannedSpend(budget = loadBudget()) {
+  const lanes = Object.fromEntries(
+    Object.entries(budget.lanes || {}).map(([name, lane]) => [name, Number(lane.cap) || 0]),
+  );
+  const laneSum = Object.values(lanes).reduce((sum, n) => sum + n, 0);
+  const reserve = Number(budget.reserve) || 0;
+  const dailyCredits = Number(budget.dailyCredits) || 0;
+  return { lanes, laneSum, reserve, dailyCredits, total: laneSum + reserve };
+}
+
+// How many credits the current-price refresh may still spend today.
+// usageAlready is only the current lane (from a previous refresh log), never all-lane spend.
+export function currentRunBudget(budget, ledger, day, { usageAlready = 0 } = {}) {
+  const base = ledgerFor(ledger, day);
+  const lanes = { ...(base.lanes || {}) };
+  const already = Math.max(Number(lanes.current) || 0, Number(usageAlready) || 0);
+  lanes.current = already;
+  const cap = laneCap("current", budget);
+  const total = Object.values(lanes).reduce((sum, n) => sum + (Number(n) || 0), 0);
+  const dailyRoom = Math.max(0, Number(budget.dailyCredits) - Number(budget.reserve || 0) - total);
+  const laneRoom = Math.max(0, cap - already);
+  return {
+    already,
+    cap,
+    budget: Math.min(laneRoom, dailyRoom),
+    ledger: { day, lanes },
+    total,
+    dailyRoom,
+    laneRoom,
+  };
+}
+
