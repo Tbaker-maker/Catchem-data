@@ -52,3 +52,23 @@ data/enrichment-distilled.json
 
 # Track record is private. Nightly still computes it here; it is not published.
 data/private/
+
+# GitHub Pages publishes this branch tip. These files are not fetched.
+# Card scans for four Mega sets: the site asks images.pokemontcg.io, not these pngs.
+# Logos stay. Historical pulse rasters stay out; latest-*.png is what the app fetches.
+research/assets/img/me2pt5/*
+!research/assets/img/me2pt5/logo.png
+research/assets/img/me3/*
+!research/assets/img/me3/logo.png
+research/assets/img/me4/*
+!research/assets/img/me4/logo.png
+research/assets/img/me5/*
+!research/assets/img/me5/logo.png
+research/assets/img/binder-page-*.png
+research/pulse/cards/[0-9][0-9][0-9][0-9]-*.png
+research/pulse/cards/composite.png
+research/pulse/cards/seam-*.png
+research/pulse/cards/verify-*.png
+research/pulse/cards/magmar-*.png
+research/assets/private/
+
