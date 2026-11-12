@@ -1,8 +1,8 @@
 {
  "generated": "2026-11-11",
- "rule": "msrpUsd set only from a page stating the amount for this exact TCGplayer productId; high = cited launch source also opened and shows the amount; medium = cited source is a Pokémon Center listing that could not be opened (bot challenge). Blank = unsourced. Gap fill 2026-11-11: high also = a distributor page, official sell sheet, Pokémon Center listing capture, or launch press article states the amount for this product; medium also = per-pack MSRP derived from a stated case or display MSRP divided by its stated pack count (method says so). All amounts are US MSRP in USD.",
+ "rule": "msrpUsd set only from a page stating the amount for this exact TCGplayer productId; high = cited launch source also opened and shows the amount; medium = cited source is a Pokémon Center listing that could not be opened (bot challenge). Blank = unsourced. Gap fill 2026-11-11: high also = a distributor page, official sell sheet, Pokémon Center listing capture, or launch press article states the amount for this product; medium also = per-pack MSRP derived from a stated case or display MSRP divided by its stated pack count (method says so). All amounts are US MSRP in USD. Gap fill 2026-11-11 evening: Ascended Heroes Tin, Mega Forces Tin, and Crown Zenith Special Collection—Unown V & Lugia V, each from a press page that states the amount.",
  "catalogCount": 227,
- "sourced": 193,
+ "sourced": 196,
  "products": {
   "swsh5-pack": {
    "name": "Battle Styles Booster Pack",
@@ -2705,6 +2705,48 @@
    "method": "Pokémon Center listing price, captured in a USPTO office-action exhibit (image page, read from the rendered page)",
    "note": "\"Scarlet & Violet-151 Booster Bundle\" $26.94",
    "tcgPlayerId": "502000"
+  },
+  "me2pt5-tin": {
+   "name": "Ascended Heroes Tin",
+   "msrpUsd": 21.99,
+   "currency": "USD",
+   "sourceUrl": "https://www.pokeguardian.com/3232111_ascended-heroes-tin-revealed",
+   "citedPrimarySource": "https://www.pokeguardian.com/3232111_ascended-heroes-tin-revealed",
+   "primaryVerified": "yes",
+   "dateChecked": "2026-11-11",
+   "confidence": "high",
+   "method": "press coverage at launch states this MSRP for the tin (all three art variants)",
+   "note": "same amount already sourced on the Mega Emboar ex, Mega Feraligatr ex, and Mega Meganium ex rows",
+   "tcgPlayerId": "",
+   "region": "US"
+  },
+  "mega-forces-tin": {
+   "name": "Mega Forces Tin",
+   "msrpUsd": 21.99,
+   "currency": "USD",
+   "sourceUrl": "https://icv2.com/articles/news/view/62607/pokemon-tcg-mega-forces-tins-incoming",
+   "citedPrimarySource": "https://icv2.com/articles/news/view/62607/pokemon-tcg-mega-forces-tins-incoming",
+   "primaryVerified": "yes",
+   "dateChecked": "2026-11-11",
+   "confidence": "high",
+   "method": "trade press at launch states these tins will retail for $21.99 each",
+   "note": "covers the Mega Dragonite ex, Mega Darkrai ex, and Mega Zeraora ex arts",
+   "tcgPlayerId": "",
+   "region": "US"
+  },
+  "swsh12pt5-premium": {
+   "name": "Crown Zenith Special Collection",
+   "msrpUsd": 39.99,
+   "currency": "USD",
+   "sourceUrl": "https://www.pokeguardian.com/1356645_crown-zenith-special-collection-unown-v-lugia-v-revealed",
+   "citedPrimarySource": "https://www.pokeguardian.com/1356645_crown-zenith-special-collection-unown-v-lugia-v-revealed",
+   "primaryVerified": "yes",
+   "dateChecked": "2026-11-11",
+   "confidence": "high",
+   "method": "press coverage reports the GameStop US launch listing price for this collection",
+   "note": "GameStop USA listed $39.99 USD (GameStop Canada $49.99 CAD) before the August 2023 release. Replaces a $59.99 aggregator amount that was not on its cited page.",
+   "tcgPlayerId": "505916",
+   "region": "US"
   }
  }
 }
