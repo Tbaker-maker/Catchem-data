@@ -279,6 +279,13 @@ console.log("── publish gate ──");
   t("publish gate suite", n === 0, `${n} failed`);
 }
 
+console.log("── feed moves end near the catalogue day ──");
+{
+  const { run } = await import("./feed-stale-moves.suite.mjs");
+  const n = await run();
+  t("feed stale moves suite", n === 0, `${n} failed`);
+}
+
 console.log("── feed lead rank ──");
 {
   const { run } = await import("./feed-rank.suite.mjs");
