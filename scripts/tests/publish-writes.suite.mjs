@@ -53,7 +53,10 @@ export async function run() {
   // 34: that news commit is soft, so a push race cannot block the price run.
   // 35: Dated reads, rip value, and status is soft and time-capped (run 43126099936
   //     hung there and every later step, the price commit included, was skipped).
-  t("the price workflow still has 35 continue-on-error flags", flags.length === 35, String(flags.length));
+  // 36-38: Mount private PPP state, PPP budgeted refresh, and push raw PPP to the
+  //     private repo. Soft so a missing key or a down private repo cannot drop
+  //     the price commit.
+  t("the price workflow still has 38 continue-on-error flags", flags.length === 38, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");
