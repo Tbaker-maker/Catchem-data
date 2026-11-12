@@ -279,6 +279,13 @@ console.log("── publish gate ──");
   t("publish gate suite", n === 0, `${n} failed`);
 }
 
+console.log("── feed moves end near the catalogue day ──");
+{
+  const { run } = await import("./feed-stale-moves.suite.mjs");
+  const n = await run();
+  t("feed stale moves suite", n === 0, `${n} failed`);
+}
+
 console.log("── feed lead rank ──");
 {
   const { run } = await import("./feed-rank.suite.mjs");
@@ -465,6 +472,13 @@ console.log("── feature suites ──");
   }
 }
 
+console.log("── set reads carry no card-only chips ──");
+{
+  const { run } = await import("./set-read-chips.suite.mjs");
+  const n = await run();
+  t("set read chips suite", n === 0, `${n} failed`);
+}
+
 console.log("── set source groups ──");
 {
   const { auditGroups, foreignGroups } = await import("../lib/set-audit.mjs");
@@ -489,6 +503,13 @@ console.log("── set source groups ──");
   const others = [...auditGroups(live.items).sets.values()].map((x) => x.items[0].set).filter((n) => eraOf(n) === "Other");
   t("every set from the catalog has a named era", others.length === 0, others.join(", "));
   t("vintage and POP sets sit in their era", eraOf("Skyridge") === "Original" && eraOf("POP Series 5") === "Promos and extras");
+}
+
+console.log("── catch-all group keeps the card's own tag ──");
+{
+  const { run } = await import("./misc-set-title.suite.mjs");
+  const n = await run();
+  t("misc set title suite", n === 0, `${n} failed`);
 }
 
 console.log("── IR and SIR watch ──");

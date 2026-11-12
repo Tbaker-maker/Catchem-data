@@ -438,7 +438,21 @@ export function applyImageGaps(cards, gapPids) {
   return n;
 }
 
-export function assembleCatalogue(items, prior = []) {
+// A move must end within this many days of the catalogue day. A product whose
+// prices stopped (TCGplayer moved it to another group) kept its last week as
+// "down 29.2% this week" eleven days later (Pikachu ex #107, Oct 31 on Nov 11,
+// already $41.36 under its new group).
+export const FEED_STALE_DAYS = 2;
+
+export function staleMove(toDate, asOf, days = FEED_STALE_DAYS) {
+  const end = Date.parse(`${String(toDate || "").slice(0, 10)}T00:00:00Z`);
+  const day = Date.parse(`${String(asOf || "").slice(0, 10)}T00:00:00Z`);
+  if (!Number.isFinite(day)) return false;
+  if (!Number.isFinite(end)) return true;
+  return (day - end) / 86400000 > days;
+}
+
+export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
   const priorBySku = new Map();
   for (const row of prior || []) {
     if (!row?.sku_id) continue;
@@ -459,7 +473,7 @@ export function assembleCatalogue(items, prior = []) {
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "cheap-copy", dropped: split.dropped.length });
     }
     const raw = split.keep;
-    const windows = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` })).filter(Boolean);
+    const windows = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` })).filter((move) => move && !staleMove(move.toDate, asOf));
     if (!windows.length) continue;
     const kind = item.kind === "sealed" ? "sealed" : "single";
     const thin = isThinSeries(raw, windows[0].toDate);
@@ -610,7 +624,7 @@ export function trackedRows(prior, priceBySku) {
 }
 
 export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "", cooled = null, leadMargin = null }) {
-  const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior);
+  const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior, { asOf });
   applyShelf(cards, shelf);
   const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
   for (const card of Object.values(cards)) {
