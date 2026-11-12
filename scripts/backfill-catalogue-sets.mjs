@@ -9,7 +9,8 @@
 // Rules: only sets with zero catalogue cards are added. No existing row is
 // changed or removed. No price is written (the GitHub dataset has none).
 // card-images.json gets the image URL the dataset publishes only when the host
-// is images.pokemontcg.io. A TCGplayer id is set only when the TCGCSV group for
+// is images.pokemontcg.io, for the new cards and for older catalogue ids that
+// never got an entry. A TCGplayer id is set only when the TCGCSV group for
 // the set has exactly one product with the same collector number and the same
 // name (TCGplayer writes energy types as one letter: W, G, R, ..., the female
 // and male signs as F and M, and adds (Left) or (Right) to two-card stadiums).
@@ -26,7 +27,7 @@ const DRY = process.argv.includes("--dry");
 // Set id -> TCGCSV group id, only for sets whose group was checked by hand.
 const GROUPS = { me6: 24831 };
 // Published by the dataset but 404 at images.pokemontcg.io (large and small) on 2026-11-11.
-const IMAGE_404 = new Set(["hsp-HGSS18"]);
+const IMAGE_404 = new Set(["hsp-HGSS18", "svp-102", "mcd17-1", "mcd17-2", "mcd17-3", "mcd17-4", "mcd17-5", "mcd17-6", "mcd17-7", "mcd17-8", "mcd17-9", "mcd17-10", "mcd17-11", "mcd17-12"]);
 const ENERGY = { Grass: "G", Fire: "R", Water: "W", Lightning: "L", Psychic: "P", Fighting: "F", Darkness: "D", Metal: "M" };
 
 const getJson = async (url) => {
@@ -85,16 +86,33 @@ for (const set of todo) {
     source: `${SRC}/cards/en/${set.id}.json` };
   report.push(`${set.id} ${set.name}: +${setAdded}`);
 }
+// Pass 2: catalogue ids that are in the dataset with an images.pokemontcg.io URL
+// but have no card-images entry (card-images was last built 2026-09-26).
+const gapSets = [...new Set(Object.entries(cat.cards).filter(([id]) => !img.images[id]).map(([, c]) => c.setId))];
+let gapFilled = 0;
+for (const setId of gapSets) {
+  let cards = null;
+  try { cards = await getJson(`${SRC}/cards/en/${setId}.json`); } catch { continue; }
+  await sleep(500);
+  for (const c of cards) {
+    if (!cat.cards[c.id] || img.images[c.id] || IMAGE_404.has(c.id)) continue;
+    const large = c.images?.large || null, small = c.images?.small || null;
+    const ok = (u) => u && new URL(u).hostname === "images.pokemontcg.io";
+    if (ok(large) && ok(small)) { img.images[c.id] = { small, large }; gapFilled++; }
+  }
+}
+images += gapFilled;
+report.push(`card-images gaps filled in existing sets: ${gapFilled}`);
 cat.coverage = { ...cat.coverage, cards: Object.keys(cat.cards).length,
   cardsWithArtist: Object.values(cat.cards).filter((c) => c.artist).length,
   setsComplete: Object.values(cat.sets).filter((s) => s.complete).length };
-cat.setBackfill = { at: today, source: "https://github.com/PokemonTCG/pokemon-tcg-data", sets: todo.map((s) => s.id), cards: added,
+if (todo.length) cat.setBackfill = { at: today, source: "https://github.com/PokemonTCG/pokemon-tcg-data", sets: todo.map((s) => s.id), cards: added,
   note: "Sets that had 0 cards after the api ingest. Metadata only, no prices." };
 img.cards = Object.keys(img.images).length;
 console.log(report.join("\n"));
 console.log(`added ${added} cards in ${todo.length} sets, ${images} pokemontcg.io images, ${linked} TCGplayer ids`);
 if (!DRY) {
-  await writeFile(catPath, JSON.stringify(cat));
+  if (todo.length) await writeFile(catPath, JSON.stringify(cat));
   // Same layout as build-card-images.mjs output: one image per line.
   const { images: map, ...head } = img;
   const lines = Object.entries(map).map(([k, v]) => JSON.stringify(k) + ":" + JSON.stringify(v));
