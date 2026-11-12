@@ -45,9 +45,21 @@ function dayDiff(a, b) {
   return Math.round((Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) / 86400000);
 }
 
+// A long nightly job can start on one UTC day and reach publish on the next.
+// Age is dated against the run's start day in that case, not the wall clock
+// at the publish step, so a 11-12 run that slips to 11-13 UTC is not refused
+// for yesterday's asOf. Only one midnight crossing is excused; a run two UTC
+// days late still uses the clock. runDay, CATCHEM_PUBLISH_DAY, or
+// GITHUB_RUN_STARTED_AT (YYYY-MM-DD prefix) supply the start day.
+export function effectivePublishDay(today, runDay) {
+  const raw = String(runDay ?? process.env.CATCHEM_PUBLISH_DAY ?? process.env.GITHUB_RUN_STARTED_AT ?? "").slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(today) && /^\d{4}-\d{2}-\d{2}$/.test(raw) && dayDiff(today, raw) === 1) return raw;
+  return today;
+}
+
 // files: Map name -> { size, text? } for the new build (names relative to research/assets/public).
 // before: array of names on the current public-data tip (same relative form), or null.
-export function checkBuild({ files, before, cfg, today }) {
+export function checkBuild({ files, before, cfg, today, runDay }) {
   const problems = [];
   if (!cfg) return ["publish limits not loaded from catchem-data-private"];
   for (const name of REQUIRED) {
@@ -61,6 +73,7 @@ export function checkBuild({ files, before, cfg, today }) {
     const gone = before.filter((n) => !now.has(n) && !ROTATING.some((d) => n.startsWith(d)));
     if (gone.length > cfg.maxDroppedFiles) problems.push(`${gone.length} files would disappear from the site`);
   }
+  const publishDay = effectivePublishDay(today, runDay);
   for (const [name, key] of Object.entries(DATED)) {
     const f = files.get(name);
     if (!f?.text) continue;
@@ -68,7 +81,7 @@ export function checkBuild({ files, before, cfg, today }) {
     try { doc = JSON.parse(f.text); } catch { problems.push(`${name} is not valid JSON`); continue; }
     const day = String(doc?.[key] || "").slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) problems.push(`${name} has no day`);
-    else if (dayDiff(today, day) > cfg.maxAgeDays) problems.push(`${name} is dated ${day}, too old`);
+    else if (dayDiff(publishDay, day) > cfg.maxAgeDays) problems.push(`${name} is dated ${day}, too old`);
     if (name === "reads.json") {
       const n = Array.isArray(doc?.reads) ? doc.reads.length : 0;
       if (n < cfg.minReads || n > cfg.maxReads) problems.push(`reads.json has ${n} reads, outside the expected range`);

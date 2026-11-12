@@ -38,6 +38,24 @@ t("rotating watch cool heat shards may vanish", checkBuild({ files: files(3), be
 t("stable files still count when read files rotate", checkBuild({ files: files(3), before: ["feed/facts/a.json", "a", "b", "reads.json"], cfg: CFG, today: DAY }).some((p) => /2 files would disappear/.test(p)));
 t("one vanished file is allowed", checkBuild({ files: files(3), before: ["a", "reads.json"], cfg: CFG, today: DAY }).length === 0);
 
+const CFG1 = validChecks({ maxDroppedFiles: 1, minReads: 2, maxReads: 9, maxAgeDays: 1, liveWaitSec: 0 });
+t("with a 1-day limit, yesterday's data is accepted today", checkBuild({ files: files(3, "2026-10-22"), before: null, cfg: CFG1, today: "2026-10-23" }).length === 0);
+t("with a 1-day limit, two-day-old data is refused", checkBuild({ files: files(3, "2026-10-21"), before: null, cfg: CFG1, today: "2026-10-23" }).some((p) => /too old/.test(p)));
+t("a run that slips one UTC day still accepts data that was in range at start", checkBuild({ files: files(3, "2026-10-21"), before: null, cfg: CFG1, today: "2026-10-23", runDay: "2026-10-22" }).length === 0);
+t("a slipped run still refuses data older than the limit from the run start", checkBuild({ files: files(3, "2026-10-20"), before: null, cfg: CFG1, today: "2026-10-23", runDay: "2026-10-22" }).some((p) => /too old/.test(p)));
+t("a run two UTC days late does not extend the window", checkBuild({ files: files(3, "2026-10-21"), before: null, cfg: CFG1, today: "2026-10-23", runDay: "2026-10-21" }).some((p) => /too old/.test(p)));
+{
+  const prev = process.env.CATCHEM_PUBLISH_DAY;
+  process.env.CATCHEM_PUBLISH_DAY = "2026-10-22";
+  try {
+    t("CATCHEM_PUBLISH_DAY is used when runDay is omitted", checkBuild({ files: files(3, "2026-10-21"), before: null, cfg: CFG1, today: "2026-10-23" }).length === 0);
+  } finally {
+    if (prev == null) delete process.env.CATCHEM_PUBLISH_DAY;
+    else process.env.CATCHEM_PUBLISH_DAY = prev;
+  }
+}
+
+
 const fake = (tipSha, asOf, status = 200) => async (url) => {
   if (url.includes("api.github.com")) return { ok: true, json: async () => ({ commit: { sha: tipSha } }) };
   if (url.includes("raw.githubusercontent")) return { ok: true, json: async () => ({ asOf }) };
