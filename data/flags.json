@@ -103,6 +103,13 @@
       "why": "On since 2026-10-12 (reads board v3: group climbs, set heat, releases, sourced news, rotation, Pokemon facts, eBay listing counts, not-moved-yet lists). Tightening and Building still need an exact 7-day pair of filteredTotal. Set false to turn every non-price read off without a deploy.",
       "trigger": "Exact 7-day filteredTotal pairs exist and RD writes the sentence for them.",
       "env": "CATCHEM_READS_LIBRARY"
+    },
+    "ppp.reads": {
+      "value": true,
+      "owner": "scripts/lib/ppp-reads/collect.mjs",
+      "why": "Fact reads from PkmnPrices rows (eBay sold comps, sales counts, graded population, Cardmarket, Japanese prices, a year of TCGplayer history, sold vs sourced MSRP). On since Tyler asked for read pathways on the new data (2026-11-11). Each read states its numbers, dates and source and goes through the board fit, reads guard, thin-data drop and copy rules. No hit rate is shown until the scanner gate passes. Set false to drop these reads from the board; the private log keeps running.",
+      "trigger": "Tyler turns PkmnPrices reads off, or the PkmnPrices plan ends.",
+      "env": "CATCHEM_PPP_READS"
     }
   }
 }

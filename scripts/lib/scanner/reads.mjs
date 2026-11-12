@@ -6,6 +6,7 @@ import { dateLabel, monthYear } from "../history-reads.mjs";
 import { gateFor } from "./engine.mjs";
 import { GROUP_GAP_POINTS, GROUP_MIN_N, round1 } from "./common.mjs";
 import { loadDurableKeys } from "../rich-reads.mjs";
+import { isPppPattern } from "../ppp-reads/scanner-patterns.mjs";
 
 const DURABLE_KEYS = loadDurableKeys();
 
@@ -25,6 +26,18 @@ const LABEL = {
   breakaway: "card moving apart from its set",
   "release-window": "release-window move",
   "year-ago": "same-date-last-year move",
+  "ppp-sold-gap": "eBay sold median away from the TCGplayer market",
+  "ppp-sold-pace": "change in eBay sales pace",
+  "ppp-sold-trend": "eBay sold median moving apart from the TCGplayer market",
+  "ppp-sell-through": "change in eBay sold comps per listing counted",
+  "ppp-pop-growth": "jump in graded population",
+  "ppp-gem-rate": "gem rate shift",
+  "ppp-low-pop": "low gem-grade population against the price",
+  "ppp-graded-spread": "PSA 10 to raw sold spread change",
+  "ppp-eu-gap": "Cardmarket to TCGplayer gap change",
+  "ppp-jp-en": "Japanese and English printings moving apart",
+  "ppp-range52": "52-week high or low",
+  "ppp-msrp-sold": "eBay sold median against MSRP",
 };
 
 const CAP = { "pattern-forming": 3, "pattern-ending": 2, "listings-vs-price": 2, "past-cases": 2 };
@@ -113,7 +126,7 @@ export function buildScannerReads(present, gates, asOf) {
     if (row.startSrc === "fill" || row.endSrc === "fill") continue;
     const gate = gateFor(gates, row.pattern, row.stage, row.kind, row.dir);
     if (!gate) continue;
-    const read = oneRead(row, gate, asOf);
+    const read = isPppPattern(row.pattern) ? pppRead(row, gate, asOf) : oneRead(row, gate, asOf);
     if (read) rows.push(read);
   }
   const past = pastReads(gates, present, asOf);
@@ -135,6 +148,32 @@ export function buildScannerReads(present, gates, asOf) {
     kept.push(read);
   }
   return kept.sort((a, b) => (a.id < b.id ? -1 : 1));
+}
+
+// A PkmnPrices pathway that passed its gate: the fact lines plus the gate's
+// past cases. The fact read builder is loaded lazily to keep one import path.
+let FACT = null;
+export function setPppFactBuilder(fn) { FACT = fn; }
+function pppRead(row, gate, asOf) {
+  if (!FACT || !gate.from || !gate.to) return null;
+  const pathway = row.metrics?.pathway;
+  const evidence = row.metrics?.evidence;
+  if (!pathway || !evidence) return null;
+  const item = { id: row.id, kind: row.kind, name: row.name, set: row.set || "" };
+  const fact = FACT({ pathway, stage: row.stage, dir: row.dir, metrics: row.metrics, evidence }, item, asOf);
+  if (!fact) return null;
+  const past = `Past cases like this moved a median ${signed(gate.medianPct)} over ${gate.horizon} days, n=${gate.n}. Cases run from ${fullDate(gate.from, asOf)} to ${fullDate(gate.to, asOf)}.`;
+  const samples = sampleLine(gate, asOf);
+  const why = `This pathway passed the gate at n=${gate.n} on the ${gate.horizon}-day check. ${hitSentence(gate)}`;
+  const lines = [...fact.lines.slice(0, 3), past, ...(samples ? [samples] : [])];
+  if ([past, samples, why].filter(Boolean).some((t) => !scannerCopyOk(t))) return null;
+  return {
+    ...fact,
+    lines: lines.slice(0, 6),
+    why: `${fact.why} ${why}`,
+    board: "v3",
+    receipt: { ...fact.receipt, pattern: row.pattern, stage: row.stage, kind: row.kind, scored: true, gate: { n: gate.n, horizon: gate.horizon, rate: gate.rate, baseRate: gate.baseRate, dir: gate.dir || "up", kind: row.kind, trainRate: gate.train?.rate ?? null, testRate: gate.test?.rate ?? null } },
+  };
 }
 
 function oneRead(row, gate, asOf) {

@@ -680,7 +680,7 @@ export function fitBoard(priceRows, fresh, { maxShare = PRICE_SHARE_MAX, maxBoar
   return { price: priceRows.slice(0, priceN), fresh: freshKeep };
 }
 
-export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [] } = {}) {
+export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [], pppReads = [] } = {}) {
   const pub = join(root, "research/assets/public");
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
@@ -842,14 +842,17 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       fresh.push(row);
     }
   }
-  if (Array.isArray(scannerReads) && scannerReads.length) {
+  // Scanner reads first, then PkmnPrices fact reads. A passed ppp-* scanner
+  // read has the same id as its fact read, so the scored one is kept.
+  for (const extra of [scannerReads, pppReads]) {
+    if (!Array.isArray(extra) || !extra.length) continue;
     const used = new Set();
     const seenId = new Set();
     for (const r of [...base, ...fresh]) {
       if (r.href) used.add(String(r.href));
       if (r.id) seenId.add(r.id);
     }
-    for (const raw of scannerReads) {
+    for (const raw of extra) {
       if (!raw || !raw.id || seenId.has(raw.id)) continue;
       const row = { ...raw };
       if (row.href && used.has(String(row.href))) row.href = "";

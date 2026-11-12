@@ -27,11 +27,15 @@ import * as groupTogether from "./patterns/group-together.mjs";
 import * as breakaway from "./patterns/breakaway.mjs";
 import * as releaseWindow from "./patterns/release-window.mjs";
 import * as yearAgo from "./patterns/year-ago.mjs";
+import { PPP_PATTERNS, isPppPattern } from "../ppp-reads/scanner-patterns.mjs";
 
 export const PATTERNS = [
   slowClimb, slowSlide, breakout, sharpSpike, spikeRevert, recovery, flatRange,
   listingsDown, listingsUp, bothUp, bothDown, thinJump, groupTogether, breakaway,
   releaseWindow, yearAgo,
+  // PkmnPrices pathways (eBay sold comps, graded population, Cardmarket, Japanese
+  // prices, a year of history). They return null on an item with no PkmnPrices rows.
+  ...PPP_PATTERNS,
 ];
 
 const ITEM_PATTERNS = PATTERNS.filter((p) => p.id !== "group-together" && p.id !== "breakaway");
@@ -72,6 +76,7 @@ export function priceBand(price) {
 // Up, down, or flat. Down covers a slow slide, a spike that gave back, and a recovery that has ended.
 export function expectedDir(row) {
   const pattern = row?.pattern || "";
+  if (isPppPattern(pattern)) return ["up", "down", "flat"].includes(row?.metrics?.dir) ? row.metrics.dir : "flat";
   const stage = row?.stage || "";
   if (pattern === "flat-range" || pattern === "listings-down-flat" || pattern === "listings-up-flat") return "flat";
   if (pattern === "slow-slide" || pattern === "spike-revert" || pattern === "price-down-listings-down") return "down";
