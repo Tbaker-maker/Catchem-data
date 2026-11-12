@@ -93,7 +93,7 @@ function copyText(r) {
 function dollarsIn(line) {
   return [...String(line).matchAll(/\$(\d[\d,]*(?:\.\d+)?)/g)].map((m) => Number(m[1].replace(/,/g, "")));
 }
-function honestTimes(n) { return Math.round(n * 10) / 10; }
+function honestTimes(n) { return n < 1 ? Math.round(n * 100) / 100 : Math.round(n * 10) / 10; }
 
 // A sealed-vs-chase headline that names Nx tonight and Mx on a date must match the dollar lines.
 function ratioOff(read) {

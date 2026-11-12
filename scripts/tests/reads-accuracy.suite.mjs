@@ -66,7 +66,8 @@ export async function run() {
   const again = priceRange(climb, AS_OF, { minDays: 1, slackDays: 0 });
   t("the high sentence uses the chip window and the same price", high && again && high.text.includes(`${again.days} day range`) && high.text.includes("$80.00") && high.nums.window.days === again.days && high.nums.window.high === again.high && clean(high.text));
   const see = whatWeSee({ range: { from: "2024-02-08", now: { date: AS_OF }, high: { price: 80, date: AS_OF }, low: { price: 18, date: "2024-11-14" }, daysSinceHigh: 0, fromHighPct: 0, window: { days: shared.days, high: shared.high, highOn: shared.highOn, place: shared.place } } });
-  t("the history line names the same day count as the chip", see.includes(`${shared.days} day range`) && see.includes("Feb 8, 2024") && clean(see));
+  // History since Feb 2024 is longer than the chip window, so the line names the history, not "the N day range".
+  t("the history line does not shrink a long history to the chip window", !see.includes(`${shared.days} day range`) && see.includes("Feb 8, 2024") && clean(see));
 
   // A level claim is held when the shared window does not call today the high.
   const dip = climb.slice(0, -1).concat([[AS_OF, 20]]);
