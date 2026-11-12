@@ -83,6 +83,15 @@ export async function run() {
   t("a different card's number is never put inside a name", !pc.lines[0].includes("Primal Kyogre 53/160"));
   t("cards on a line follow the order they are named", ids(pc.lineCards?.[0]).join() === "tcgcsv-96047,tcgcsv-96046");
 
+  const dx = [
+    card(84757, "Deoxys", "2/95", "Call of Legends", "Holo Rare"),
+    card(88643, "Rayquaza ex", "102/107", "EX Deoxys", "Ultra Rare"),
+  ];
+  const ray = stampRead({ id: "deep-printings-rayquaza", deep: "printings", readKind: "deep", name: "Rayquaza", headline: "Every Rayquaza card.", lines: [
+    "Rayquaza ex (EX Deoxys) 102/107, Ultra Rare: $999.00.",
+  ] }, index(dx), images);
+  t("a card name inside a set tag is not a card", ray.lines[0] === "Rayquaza ex (EX Deoxys) 102/107, Ultra Rare: $999.00." && ids(ray.lineCards?.[0]).join() === "tcgcsv-88643");
+
   t("a bar drops the catalogue tag that repeats its number", barLabel({ name: "Garchomp (120 Secret)", number: "120/116" }, 16) === "Garchomp 120/116");
   t("a bar drops tags before cutting a name", barLabel({ name: "Deoxys EX (Team Plasma) (Full Art)", number: "111/116" }, 16) === "Deoxys EX 111/116");
   t("a bar drops an inner number code", barLabel({ name: "Rayquaza - 016/110 (Delta Species)", number: "16/110" }, 18) === "Rayquaza 16/110");

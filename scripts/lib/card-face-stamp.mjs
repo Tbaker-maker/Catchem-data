@@ -175,6 +175,15 @@ function stem(clean) {
   return String(clean || "").replace(/\s+-\s.*$/, "").replace(/\s*[([].*$/, "").trim();
 }
 
+function insideParens(text, i) {
+  let depth = 0;
+  for (let k = 0; k < i; k += 1) {
+    if (text[k] === "(") depth += 1;
+    else if (text[k] === ")" && depth > 0) depth -= 1;
+  }
+  return depth > 0;
+}
+
 function tags(text) {
   return (String(text || "").match(/\[[^\]]+\]/g) || []).map((t) => t.toLowerCase());
 }
@@ -193,9 +202,10 @@ function occurrences(text, pool) {
       while ((i = text.indexOf(clean, i)) >= 0) {
         const before = i > 0 ? text[i - 1] : "";
         const after = text[i + clean.length] || "";
-        // "Primal Kyogre" inside "Primal Kyogre EX" is a different card.
+        // "Primal Kyogre" inside "Primal Kyogre EX" is a different card, and a
+        // name inside a set tag ("Rayquaza ex (EX Deoxys)") is not a card.
         const tail = text.slice(i + clean.length, i + clean.length + 12);
-        if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after) && !MECHANIC.test(tail)) {
+        if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after) && !MECHANIC.test(tail) && !insideParens(text, i)) {
           found.push({ i, end: i + clean.length, card, viaBase });
         }
         i += Math.max(1, clean.length);
