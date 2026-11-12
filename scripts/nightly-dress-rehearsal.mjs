@@ -82,6 +82,7 @@ export function dressRun(script) {
     "}",
     "gh() { echo \"dress rehearsal: skip gh\"; return 0; }",
     "curl() { echo \"dress rehearsal: skip curl\"; return 0; }",
+    "node() { command node --import ./scripts/dress-rehearsal-preload.mjs \"$@\"; }",
   ].join("\n");
   return prelude + "\n" + s;
 }
@@ -165,8 +166,6 @@ async function main() {
   env.GIT_AUTHOR_EMAIL = env.GIT_AUTHOR_EMAIL || "bot@catchem.app";
   env.GIT_COMMITTER_NAME = env.GIT_COMMITTER_NAME || "catchem-bot";
   env.GIT_COMMITTER_EMAIL = env.GIT_COMMITTER_EMAIL || "bot@catchem.app";
-  const preload = "--import ./scripts/dress-rehearsal-preload.mjs";
-  env.NODE_OPTIONS = env.NODE_OPTIONS && env.NODE_OPTIONS.includes(preload) ? env.NODE_OPTIONS : [env.NODE_OPTIONS, preload].filter(Boolean).join(" ");
   const ctx = await rehearse(steps, env);
   process.exit(ctx.hardFailed ? 1 : 0);
 }
