@@ -130,11 +130,18 @@ export function shelfFromHistory(products) {
 
 // Full filtered listing count only when every Browse row was fetched and then
 // run through the same title filter. Otherwise the field stays off.
-export function filteredTotalForNight({ browseTotal, fetched, kept } = {}) {
+// eBay's total is often a few rows under the page we actually received. A
+// short page (the search stopped because the provider had no more rows, and
+// the row count is still under the page cap) is the whole result. A full page
+// is a cap, and that night stays off.
+export function filteredTotalForNight({ browseTotal, fetched, kept, complete = false, pageCap = null } = {}) {
   if (typeof browseTotal !== "number" || !Number.isInteger(browseTotal) || browseTotal < 0) return null;
-  if (typeof fetched !== "number" || !Number.isInteger(fetched) || fetched !== browseTotal) return null;
+  if (typeof fetched !== "number" || !Number.isInteger(fetched) || fetched < 0) return null;
   if (typeof kept !== "number" || !Number.isInteger(kept) || kept < 0 || kept > fetched) return null;
-  return kept;
+  if (fetched === browseTotal) return kept;
+  const underCap = pageCap == null || (Number.isInteger(pageCap) && fetched < pageCap);
+  if (complete === true && underCap && browseTotal <= fetched) return kept;
+  return null;
 }
 
 export function factsLines(row) {
