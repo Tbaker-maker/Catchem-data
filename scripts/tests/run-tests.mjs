@@ -329,6 +329,13 @@ console.log("── PkmnPrices: raw private, derived market-depth only ──");
   const n = await runNoPppRawPublicTests();
   t("no-PPP-raw public suite", n === 0, `${n} failed`);
 }
+console.log("── movers name their own window ──");
+{
+  const { run } = await import("./movers-window.suite.mjs");
+  const n = await run();
+  t("movers window suite", n === 0, `${n} failed`);
+}
+
 console.log("── public index line (value-weighted) ──");
 {
   const { spawnSync } = await import("node:child_process");

@@ -1452,6 +1452,27 @@ export function moveOver(points, days) {
   };
 }
 
+// movers.json. A row's change is its bestMove: the bigger of the 7 and 30 day
+// moves, never one day. Each row names its own window so a page never prints
+// a 30-day % as today's.
+export const MOVERS_NOTE = "TCGplayer market. Each change is over 7 or 30 days, named on the row. Slabs stay off this list.";
+
+export function moverRow(row) {
+  return {
+    id: String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""),
+    name: row.name,
+    set: row.set,
+    price: row.price,
+    changePct: row.changePct,
+    windowDays: row.windowDays,
+    fromPrice: row.fromPrice,
+    fromDate: row.fromDate,
+    href: row.href,
+    image: row.image,
+    hist: row.hist || [],
+  };
+}
+
 export function bestMove(points, kind) {
   const need = kind === "sealed" ? 5 : 8;
   const hits = [30, 7].map((days) => moveOver(points, days)).filter((row) => row && Math.abs(row.pct) >= need);

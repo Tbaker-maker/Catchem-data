@@ -6,7 +6,8 @@ import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/p
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, moverRow, pretty, slug,
+  MOVERS_NOTE,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { storePrivateReceipts } from "./lib/private-receipts-store.mjs";
@@ -876,16 +877,7 @@ const feedResult = await publishFeed({
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 
 const splitMovers = (kind) => {
-  const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""))).map((row) => ({
-    id: row.id.replace(/^(?:heating|cooling|mover|move)-/, ""),
-    name: row.name,
-    set: row.set,
-    price: row.price,
-    changePct: row.changePct,
-    href: row.href,
-    image: row.image,
-    hist: row.hist || [],
-  }));
+  const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""))).map(moverRow);
   return {
     rising: rows.filter((row) => row.changePct > 0).slice(0, 40),
     falling: rows.filter((row) => row.changePct < 0).slice(0, 40),
@@ -896,7 +888,7 @@ const sealedMove = splitMovers("sealed");
 await writeFile(join(OUT, "movers.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
-  note: "TCGplayer market, one day. Slabs stay off this list.",
+  note: MOVERS_NOTE,
   singles: singleMove.rising.concat(singleMove.falling).slice(0, 50),
   sealed: sealedMove.rising.concat(sealedMove.falling).slice(0, 50),
   singlesRising: singleMove.rising,
