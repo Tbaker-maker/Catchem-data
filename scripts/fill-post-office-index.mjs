@@ -5,9 +5,10 @@
 //    has a TCGplayer product id. The site's /data/editor/tcg route serves that id's
 //    TCGplayer photo when images.pokemontcg.io has no file (catchem-site
 //    src/editor-tcg-pids.mjs). The row's "The picture is missing." fact goes.
-// 2. A catalogue set with no Post Office rows at all gets one row per card, built
-//    the way the existing rows are: species is the name without "Mega " and
-//    without the suffix, rank is the rank the index already uses for that rarity.
+// 2. A catalogue id with no Post Office row gets one, including new cards in a
+//    set that already has some rows. Rows are built the way the existing ones
+//    are: species is the name without "Mega " and without the suffix, rank is
+//    the rank the index already uses for that rarity.
 // No row is removed and no filled src is changed. Usage: node scripts/fill-post-office-index.mjs [--dry]
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -47,16 +48,21 @@ const rankOf = (rarity) => {
 };
 const species = (name) => String(name).replace(/^Mega /, "").split(" ")[0];
 const inIndex = new Set(rows.map((r) => r.setId));
+const haveId = new Set(rows.map((r) => r.id));
 const order = (a, b) => String(a[1].number).localeCompare(String(b[1].number), "en", { numeric: true });
 const bySet = {};
-for (const [id, c] of Object.entries(cards)) if (!inIndex.has(c.setId)) (bySet[c.setId] ||= []).push([id, c]);
+for (const [id, c] of Object.entries(cards)) {
+  // New sets, and new cards in a set that already has some rows (mep was only 16 of the set).
+  if (!inIndex.has(c.setId) || !haveId.has(id)) (bySet[c.setId] ||= []).push([id, c]);
+}
+const lockOf = (id, setId, number) => (/-pc$/i.test(id) ? String(number) : numOf(id, setId));
 let added = 0;
 for (const [setId, list] of Object.entries(bySet)) {
   for (const [id, c] of list.sort(order)) {
     const num = numOf(id, setId);
     const pic = hasPid(c, id);
     const row = { id, name: c.name, species: species(c.name), set: c.setName, setId,
-      year: String(c.releaseDate || "").slice(0, 4), artist: c.artist ?? "", lock: num,
+      year: String(c.releaseDate || "").slice(0, 4), artist: c.artist ?? "", lock: lockOf(id, setId, c.number),
       rarity: c.rarity ?? "", rank: rankOf(c.rarity), src: pic ? `/img/${setId}/${num}` : "",
       tags: /^Mega /.test(c.name) ? "mega" : "" };
     if (!pic) row.fact = "The picture is missing.";
