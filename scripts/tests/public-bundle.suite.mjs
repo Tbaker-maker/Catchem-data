@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { sourceNamesDay } from "../lib/read-quality.mjs";
-import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, earlierFileNote, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -112,7 +112,13 @@ export async function run() {
   const spike90 = steady.map((p, i) => [p[0], i < 99 ? 40 : 80]);
   t("one day still cannot be most of a 90-day move", (await import("../lib/public-bundle.mjs")).feedWindow(spike90, 90) === null);
   const missingDay = steady.filter((p) => p[0] !== quarter.fromDate);
-  t("a missing exact day drops the window", quarter && quarter.fromDate && feedWindow(missingDay, 90) === null);
+  const fellBack = feedWindow(missingDay, 90);
+  const shift = (iso, days) => new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
+  t("a missing exact day uses the nearest earlier file within 2 days", fellBack && fellBack.earlierDay === true && fellBack.exactDate === quarter.fromDate && fellBack.fromDate === shift(quarter.fromDate, -1) && fellBack.fromDate < quarter.fromDate && /was missing/.test(earlierFileNote(fellBack.exactDate, fellBack.fromDate)) && !/[\u2013\u2014]/.test(earlierFileNote(fellBack.exactDate, fellBack.fromDate)));
+  const wideHole = steady.filter((p) => p[0] <= shift(quarter.fromDate, -3) || p[0] > quarter.fromDate);
+  t("a gap wider than 2 days drops the window", feedWindow(wideHole, 90) === null);
+  const laterOnly = steady.filter((p) => p[0] > quarter.fromDate);
+  t("a day after the window start is never the start", feedWindow(laterOnly, 90) === null);
 
   try {
     const counts = JSON.parse(await readFile(join(ROOT, "research/assets/public/counts.json"), "utf8"));

@@ -8,7 +8,7 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
-import { writeReadLibrary, dailyFileSet } from "./lib/read-library.mjs";
+import { writeReadLibrary, dailyFileSet, boardImage, loadBoardImageInputs } from "./lib/read-library.mjs";
 import { runRegistry } from "./lib/detectors/registry.mjs";
 import { libraryOn } from "./lib/second-library.mjs";
 import { buildBoardV3 } from "./lib/board-mix.mjs";
@@ -75,6 +75,9 @@ function releaseFor(item) {
 
 const BAD_IMAGE = new Set([232881, 532629]);
 const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pids: [] }))).pids || []).map(Number));
+// Same picture order as reads.json: catalogue cutout on catchemtcg.com, then
+// the TCGplayer photo. Gap-list rows and the two bad ids stay blank.
+const { images: boardImages, tcgOn } = await loadBoardImageInputs(ROOT);
 const items = [];
 for (const item of catalog.items || []) {
   const days = series.get(Number(item.tcgplayerProductId));
@@ -94,7 +97,7 @@ for (const item of catalog.items || []) {
     release: releaseFor(item),
     hist,
     href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
-    image: pid && !BAD_IMAGE.has(pid) && !GAP_IMAGE.has(pid) ? `https://tcgplayer-cdn.tcgplayer.com/product/${pid}_in_400x400.jpg` : "",
+    image: pid && !BAD_IMAGE.has(pid) && !GAP_IMAGE.has(pid) ? boardImage({ sku: item.id, id: item.id }, boardImages, tcgOn) : "",
   });
 }
 

@@ -55,6 +55,18 @@ export function cataloguePath(map, id) {
   return typeof path === "string" && /^(?:\/img\/|\/cards\/|\/thumb\/)/.test(path) ? path : "";
 }
 
+// The site URL for a catalogue picture, the same rule as the public bundle's
+// stock image. An id with no catalogue picture gets "".
+export function catalogueImageUrl(map, id) {
+  const path = cataloguePath(map, id);
+  if (!path) return "";
+  if (path.startsWith("/cards/")) return "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/main/research/assets" + path;
+  const m = path.match(/^\/(?:img|thumb)\/([A-Za-z0-9]+)\/([A-Za-z0-9._-]+)$/);
+  if (!m) return "";
+  const file = /\.[A-Za-z0-9]+$/.test(m[2]) ? m[2] : m[2] + "_hires.png";
+  return "/data/editor/tcg/" + m[1] + "/" + file;
+}
+
 async function writeReport(root, images) {
   const dir = join(root, "research/assets/public/sets");
   const names = (await readdir(dir)).filter((name) => name.endsWith(".json")).sort();
