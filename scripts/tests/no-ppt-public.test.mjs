@@ -134,6 +134,9 @@ export async function runNoPptPublicTests() {
   t("a PPP id map is not flagged", !pppValuedDoc({ source: "PkmnPrices id map", sealed: { "644298": 1946 }, cards: {} }));
   const pptValued = [];
   const pppValued = [];
+  // research/assets/public/market-depth/ is the #531 derived public view
+  // (eBay sold comps, pop, EUR). Raw current prices stay private.
+  const pppPublicDerived = /^research\/assets\/public\/market-depth\//;
   for (const f of tracked.filter((n) => /^(data|research\/assets)\/.*\.json$/.test(n) && !n.startsWith("data/history/"))) {
     try {
       const raw = await readFile(join(ROOT, f), "utf8");
@@ -141,11 +144,12 @@ export async function runNoPptPublicTests() {
       if (raw.length > 30_000_000) continue;
       const doc = (PPT_SOURCE_RE.test(head) || PPP_SOURCE_RE.test(head)) ? JSON.parse(raw) : null;
       if (doc && PPT_SOURCE_RE.test(head) && pptValuedDoc(doc)) pptValued.push(f);
-      if (doc && PPP_SOURCE_RE.test(head) && pppValuedDoc(doc)) pppValued.push(f);
+      if (doc && PPP_SOURCE_RE.test(head) && pppValuedDoc(doc) && !pppPublicDerived.test(f)) pppValued.push(f);
     } catch {}
   }
   t("no tracked public JSON carries PPT-sourced values", pptValued.length === 0, pptValued.slice(0, 5).join(", "));
-  t("no tracked public JSON carries PPP-sourced values", pppValued.length === 0, pppValued.slice(0, 5).join(", "));
+  t("no tracked public JSON carries raw PPP-sourced values", pppValued.length === 0, pppValued.slice(0, 5).join(", "));
+  t("derived market-depth files may name PkmnPrices (they are the public enrich output)", !pppValued.some((f) => pppPublicDerived.test(f)));
   let volumeReads = [];
   try { volumeReads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8")).reads.filter((r) => r.readKind === "volume" || r.kind === "volume"); } catch {}
   t("volume reads are off until PPT's written yes", volumeReads.length === 0, `${volumeReads.length} volume reads`);
