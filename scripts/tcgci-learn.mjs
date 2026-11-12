@@ -75,6 +75,7 @@ export async function runTcgciLearn({
       const rres = await fetchFn(robotsUrl, {
         headers: { "User-Agent": TCGCI_USER_AGENT, Accept: "text/plain" },
         redirect: "follow",
+        signal: AbortSignal.timeout(15000),
       });
       if (rres.status === 403 || rres.status === 401 || rres.status === 429) {
         status = "blocked";
@@ -126,6 +127,7 @@ export async function runTcgciLearn({
         Accept: "application/json",
       },
       redirect: "follow",
+      signal: AbortSignal.timeout(15000),
     });
     if (res.status === 403 || res.status === 401 || res.status === 429) {
       status = "blocked";

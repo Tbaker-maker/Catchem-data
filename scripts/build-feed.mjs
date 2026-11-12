@@ -8,7 +8,7 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
-import { writeReadLibrary, dailyFileSet } from "./lib/read-library.mjs";
+import { writeReadLibrary, dailyFileSet, boardImage, loadBoardImageInputs } from "./lib/read-library.mjs";
 import { runRegistry } from "./lib/detectors/registry.mjs";
 import { libraryOn } from "./lib/second-library.mjs";
 import { buildBoardV3 } from "./lib/board-mix.mjs";
@@ -16,7 +16,6 @@ import { loadSeriesOnce } from "./lib/series-cache.mjs";
 import { writeHealth } from "./write-health.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
-import { catalogueImageUrl, loadCatalogueImages } from "./catalogue-images.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -76,9 +75,9 @@ function releaseFor(item) {
 
 const BAD_IMAGE = new Set([232881, 532629]);
 const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pids: [] }))).pids || []).map(Number));
-// A TCGplayer photo URL is foreign, and applyImageGaps clears it, so every
-// Feed image was empty (1801 of 1801 on Nov 12). Use the catalogue picture.
-const catalogueImages = await loadCatalogueImages(ROOT);
+// Same picture order as reads.json: catalogue cutout on catchemtcg.com, then
+// the TCGplayer photo. Gap-list rows and the two bad ids stay blank.
+const { images: boardImages, tcgOn } = await loadBoardImageInputs(ROOT);
 const items = [];
 for (const item of catalog.items || []) {
   const days = series.get(Number(item.tcgplayerProductId));
@@ -98,7 +97,7 @@ for (const item of catalog.items || []) {
     release: releaseFor(item),
     hist,
     href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
-    image: pid && !BAD_IMAGE.has(pid) && !GAP_IMAGE.has(pid) ? catalogueImageUrl(catalogueImages, item.id) : "",
+    image: pid && !BAD_IMAGE.has(pid) && !GAP_IMAGE.has(pid) ? boardImage({ sku: item.id, id: item.id }, boardImages, tcgOn) : "",
   });
 }
 

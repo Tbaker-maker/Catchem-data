@@ -231,7 +231,7 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"]);
   extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume, ...shape.reads];
   const listingsDoc = await sealedListingsDoc(root);
-  extra.reads = await dropThinReads(extra.reads, root, asOf, listingsDoc ? sealedAnnotate(listingsDoc) : null);
+  extra.reads = await dropThinReads(extra.reads, root, asOf, listingsDoc ? sealedAnnotate(listingsDoc) : null, { keepWhenLimitsMissing: true });
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
   extra.dives = { count: dives.length, source: "research/pulse/dive/" };
   extra.volume = volume.map((r) => r.id);

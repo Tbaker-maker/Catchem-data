@@ -5,7 +5,7 @@
 // rebuild of the same asOf then cooled its own picks and the board shrank
 // (3 rows, then 2, then 0). Only earlier nights may cool a card now, and
 // rememberShown replaces tonight's rows instead of appending.
-import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, symlink } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -13,6 +13,25 @@ import { fileURLToPath } from "node:url";
 import { cooledSet, rememberShown, pickNight } from "../lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+// data/history is read, not rewritten, by build-feed. Copying it plus
+// node_modules pushed this suite over the 30 minute cap.
+const LINKED = ["data/history", "node_modules"];
+
+async function copyRepo(dir) {
+  await cp(ROOT, dir, {
+    recursive: true,
+    filter: (src) => {
+      if (src === ROOT) return true;
+      if (src.startsWith(join(ROOT, ".git"))) return false;
+      const rel = src.slice(ROOT.length + 1);
+      return !LINKED.some((name) => rel === name || rel.startsWith(`${name}/`));
+    },
+  });
+  for (const name of LINKED) {
+    try { await symlink(join(ROOT, name), join(dir, name)); } catch { /* absent in this checkout */ }
+  }
+}
 
 export async function run() {
   let fail = 0;
@@ -40,15 +59,20 @@ export async function run() {
   if (process.env.SKIP_BOARD_REBUILD === "1") return fail;
   const dir = await mkdtemp(join(tmpdir(), "board-det-"));
   try {
-    await cp(ROOT, dir, { recursive: true, filter: (src) => !src.includes(`${ROOT}/.git`) && !src.startsWith(join(ROOT, "node_modules")) });
-    await cp(join(ROOT, "node_modules"), join(dir, "node_modules"), { recursive: true }).catch(() => {});
+    await copyRepo(dir);
     const files = ["research/assets/public/reads.json", "research/assets/public/feed/read-library.json", "research/assets/public/feed/rotation.json", "research/assets/public/feed/extra-reads.json"];
     const flag = JSON.parse(await readFile(join(dir, "data/flags.json"), "utf8"));
     t("fixture reads.library is a boolean", typeof flag.flags["reads.library"].value === "boolean");
     const snaps = [];
     for (let i = 0; i < 3; i += 1) {
-      const r = spawnSync(process.execPath, [join(dir, "scripts/build-feed.mjs")], { cwd: dir, encoding: "utf8", env: { ...process.env, LEARNING_LOG: "" } });
-      if (r.status !== 0) { t(`build-feed run ${i + 1} exits 0`, false, (r.stderr || "").slice(-400)); return fail; }
+      const started = Date.now();
+      const r = spawnSync(process.execPath, [join(dir, "scripts/build-feed.mjs")], {
+        cwd: dir,
+        encoding: "utf8",
+        env: { ...process.env, LEARNING_LOG: "", PPP_READS_NO_NET: "1" },
+      });
+      if (r.status !== 0) { t(`build-feed run ${i + 1} exits 0`, false, (r.stderr || r.stdout || "").slice(-400)); return fail; }
+      console.log(`  build-feed run ${i + 1} ${Math.round((Date.now() - started) / 1000)}s`);
       snaps.push(await Promise.all(files.map((f) => readFile(join(dir, f), "utf8"))));
     }
     t("build-feed run 1 exits 0", true);

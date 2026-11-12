@@ -1,5 +1,6 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
 import { BAD_DATE, BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies, statesBothMoves } from "../lib/public-bundle.mjs";
+import { boardImage } from "../lib/read-library.mjs";
 
 export async function run() {
   let fail = 0;
@@ -36,7 +37,12 @@ export async function run() {
   };
   applyImageGaps(gaps, [642634], new Map([["SV: Black Bolt", "https://images.pokemontcg.io/zsv10pt5/logo.png"]]));
   t("a foreign photo is cleared and a set logo is not borrowed by name", gaps.v.image === "" && !gaps.v.logo);
-  t("a foreign photo on any row is cleared", gaps.ok.image === "" && !gaps.ok.logo);
+  t("a foreign photo on any row is cleared", gaps.v.image === "" && gaps.ok.image.includes("tcgplayer-cdn"));
+  const shot = boardImage({ sku: "tcgcsv-42346", id: "tcgcsv-42346" }, {}, true);
+  const kept = { ok: { id: "ok2", sku: "tcgcsv-42346", image: shot, name: "Charizard" } };
+  applyImageGaps(kept, []);
+  const cut = boardImage({ sku: "tcgcsv-9", id: "tcgcsv-9" }, { "tcgcsv-9": "/img/sv1/1.png" }, true);
+  t("0 empty feed images where reads.json has one", kept.ok.image === shot && shot.includes("tcgplayer-cdn") && cut.startsWith("https://catchemtcg.com/data/editor/tcg/"));
   const down = [];
   for (let i = 0; i < 28; i += 1) {
     const day = new Date(Date.parse("2026-09-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);

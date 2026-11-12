@@ -90,7 +90,7 @@ export const GROUPS = [
   {
     key: "reads",
     label: "reads",
-    match: /(^|-)reads?(-|\.)|^(board-v3|board-determinism|deep-reads|rd6|rd7|takes|morning-card|signal-chips|phase2-reads|fact-reads|held-reads|feed-rank|feed-sections|feed-extras-nightly|read-library|read-quality|read-scorer|second-library|trend-context|weekly-movers|weekly-read|path-tags|shape-reads|span-reads|rich-reads|history-reads|outlier-dive-reads|research-reads|extra-reads|editor-copy|pattern-lab|call-patterns|proven-signal|hype-crowd|face-stamp-subject|seller-stage)\.suite\.mjs$|^(feed lead rank suite|custom reads suites|face stamp subject suite|signal chips suite|seller tag and run stage suite|reads subprocess: .*|rebuild: (build-feed|check-board-sync|write-morning-card)\.mjs)$|^build-feed run \d+ exits/,
+    match: /(^|-)reads?(-|\.)|^(board-v3|board-determinism|deep-reads|rd6|rd7|takes|morning-card|signal-chips|phase2-reads|fact-reads|held-reads|feed-rank|feed-sections|feed-window-gap|feed-extras-nightly|read-library|read-quality|read-scorer|second-library|trend-context|weekly-movers|weekly-read|path-tags|shape-reads|span-reads|rich-reads|history-reads|outlier-dive-reads|research-reads|extra-reads|editor-copy|pattern-lab|call-patterns|proven-signal|hype-crowd|face-stamp-subject|seller-stage)\.suite\.mjs$|^(feed lead rank suite|custom reads suites|face stamp subject suite|signal chips suite|seller tag and run stage suite|reads subprocess: .*|rebuild: (build-feed|check-board-sync|write-morning-card)\.mjs)$|^build-feed run \d+ exits/,
     paths: [
       PUB + "reads.json", PUB + "today.json", PUB + "reads-preview.json", PUB + "signal-chips.json",
       PUB + "feed/item-reads", PUB + "feed/read-synth.json", PUB + "feed/extra-reads.json",

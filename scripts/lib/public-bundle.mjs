@@ -160,6 +160,40 @@ function daySpan(a, b) {
   return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000);
 }
 
+function shiftIso(iso, days) {
+  const ms = Date.parse(`${iso}T00:00:00Z`);
+  if (!Number.isFinite(ms)) return "";
+  return new Date(ms + days * 86400000).toISOString().slice(0, 10);
+}
+
+// The window starts on the day N back. If that file is missing, the nearest
+// earlier file within 2 days is the start. A later day is never used, and no
+// price is filled in.
+export function windowStart(pts, days, slack = 2) {
+  if (!pts?.length) return null;
+  const end = pts[pts.length - 1][0];
+  const exactDate = shiftIso(end, -Number(days));
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(exactDate)) return null;
+  const exact = pts.find((p) => p[0] === exactDate);
+  if (exact) return { point: exact, exactDate, earlier: false };
+  const room = Math.max(0, Number(slack) || 0);
+  for (let back = 1; back <= room; back += 1) {
+    const day = shiftIso(exactDate, -back);
+    const hit = pts.find((p) => p[0] === day);
+    if (hit) return { point: hit, exactDate, earlier: true };
+  }
+  return null;
+}
+
+export function earlierFileNote(exactDate, usedDate) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(exactDate || "")) || !/^\d{4}-\d{2}-\d{2}$/.test(String(usedDate || ""))) return "";
+  if (exactDate === usedDate || usedDate > exactDate) return "";
+  const exact = monthDay(exactDate);
+  const used = monthDay(usedDate);
+  if (!exact || !used) return "";
+  return `The file for ${exact} was missing, so this window uses ${used}.`;
+}
+
 function seriesOf(points) {
   return (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
 }
@@ -1421,15 +1455,15 @@ export function selectFeedReads(rows, limit = 12) {
 // One step, then a flat line, is a spike and does not count.
 export function moveOver(points, days) {
   const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
-  // The window is the gate: an exact day N days back, plus confirming steps.
-  // No minimum series length (TCGCSV-only history starts 2026-09-25).
+  // The window is the gate: the day N back, or the nearest earlier file within
+  // 2 days when that file is missing, plus confirming steps.
   if (pts.length < 4 || (days !== 7 && days !== 30)) return null;
+  const found = windowStart(pts, days);
+  if (!found) return null;
   const end = pts[pts.length - 1];
-  const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
-  const then = pts.find((p) => p[0] === target) || null;
-  if (!then) return null;
+  const then = found.point;
   const span = daySpan(then[0], end[0]);
-  if (span !== days) return null;
+  if (found.earlier ? span < days || span > days + 2 : span !== days) return null;
   const from = Number(then[1]);
   const to = Number(end[1]);
   if (!(from > 0) || !(to > 0) || from === to) return null;
@@ -1458,6 +1492,8 @@ export function moveOver(points, days) {
     toDate: end[0],
     window: days,
     confirms,
+    exactDate: found.exactDate,
+    earlierDay: found.earlier,
   };
 }
 
@@ -1506,15 +1542,15 @@ export function highValueSpike(pts, from, to, { name = "" } = {}) {
 
 export function feedWindow(points, days, opts = {}) {
   const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
-  // The window is the gate: an exact day N days back, plus confirming steps.
-  // No minimum series length, so a 7-day window qualifies on 7 days of history.
+  // The window is the gate: the day N back, or the nearest earlier file within
+  // 2 days when that file is missing, plus confirming steps.
   if (pts.length < 3 || (days !== 7 && days !== 30 && days !== 90)) return null;
+  const found = windowStart(pts, days);
+  if (!found) return null;
   const end = pts[pts.length - 1];
-  const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
-  const then = pts.find((p) => p[0] === target) || null;
-  if (!then) return null;
+  const then = found.point;
   const span = daySpan(then[0], end[0]);
-  if (span !== days) return null;
+  if (found.earlier ? span < days || span > days + 2 : span !== days) return null;
   const from = Number(then[1]);
   const to = Number(end[1]);
   if (from < 1 || to < 1 || from === to) return null;
@@ -1545,6 +1581,8 @@ export function feedWindow(points, days, opts = {}) {
     toDate: end[0],
     window: days,
     confirms,
+    exactDate: found.exactDate,
+    earlierDay: found.earlier,
   };
 }
 

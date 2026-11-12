@@ -39,7 +39,7 @@ export async function run() {
   const end = pika.hist[pika.hist.length - 1][0];
   const c = assembleCatalogue([pika, fresh], [], { asOf: end });
   t("a move is never built on a series whose newest day was set aside", !Object.keys(c.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
-  t("that item is logged as a newest-day drop", c.halfDropped.some((row) => row.id === "tcgcsv-713257" && row.reason === "newest-day"));
+  t("a kept cheaper tail is not logged as a newest-day drop", !c.halfDropped.some((row) => row.id === "tcgcsv-713257" && row.reason === "newest-day"));
   t("no card quotes an older price than the newest day", Object.values(c.cards).every((card) => card.sku !== "tcgcsv-713257"));
   // Delta Reign Single Pack Blister [Spritzee]: only Nov 12 ($10.51) was set
   // aside, so the read said $12.29 on Nov 11. One day behind passes the stale

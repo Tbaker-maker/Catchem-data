@@ -404,15 +404,22 @@ export function listingAnnotate(index) {
 }
 
 // Drop blocked reads only after the flag file is written. No flag, no drop.
-export async function dropThinReads(reads, root, asOf, annotate = null) {
+// A feed build that never loaded the limits file keeps its cards. A missing
+// limit on a loaded config still blocks that read.
+export async function dropThinReads(reads, root, asOf, annotate = null, opts = {}) {
+  const list = Array.isArray(reads) ? reads : [];
   const cfg = await loadReadThinData(root);
+  if (!cfg && opts.keepWhenLimitsMissing) {
+    console.log(`feed filter limits-missing in ${list.length} out ${list.length} thin limits not loaded, cards kept`);
+    return list.slice();
+  }
   const { keep, flags } = gateReads(reads, cfg, annotate);
-  if (!flags.length) return Array.isArray(reads) ? reads.slice() : [];
+  if (!flags.length) return list.slice();
   try {
     const wrote = await writeReadFlags(root, asOf, flags);
-    if (!wrote) return Array.isArray(reads) ? reads.slice() : [];
+    if (!wrote) return list.slice();
   } catch {
-    return Array.isArray(reads) ? reads.slice() : [];
+    return list.slice();
   }
   return keep;
 }
