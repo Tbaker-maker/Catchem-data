@@ -54,6 +54,19 @@ export function speakDay(iso, asOf) {
   return year === String(asOf || s).slice(0, 4) ? md : `${md}, ${year}`;
 }
 
+// True when a source line names this day, as an ISO date or spoken the way
+// speakDates writes it. "Aug 13" does not match "Aug 13, 2025" for a 2026 day.
+export function sourceNamesDay(source, day, asOf) {
+  const text = String(source || "");
+  const iso = String(day || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
+  if (text.includes(iso)) return true;
+  const spoken = speakDay(iso, asOf);
+  if (!spoken) return false;
+  const esc = spoken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^A-Za-z0-9])${esc}(?![0-9]|, \\d{4})`).test(text);
+}
+
 export function speakDates(text, asOf) {
   return String(text || "").replace(/\b(20\d{2}-\d{2}-\d{2})\b/g, (iso) => speakDay(iso, asOf) || iso);
 }

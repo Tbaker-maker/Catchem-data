@@ -13,7 +13,7 @@ import { cardTitle, tcgAmount } from "./card-face.mjs";
 import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange, dayLabel } from "./signal-chips.mjs";
-import { speakDates } from "./read-quality.mjs";
+import { sourceNamesDay, speakDates } from "./read-quality.mjs";
 
 export const HEADLINE_MAX = 300;
 
@@ -592,11 +592,35 @@ function speakRead(read) {
   return next;
 }
 
+// The shape the test gate checks on reads.json (scripts/tests/deep-reads.suite.mjs,
+// scripts/tests/public-bundle.suite.mjs). Synthesis runs after that gate, so a
+// rewrite that breaks the shape was published unchecked: on Nov 11, 18 deep
+// reads went out with 1 or 2 lines, and 22 of 51 history reads named dates in
+// their source that did not match their start date (14 more only spoke the date).
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+const GATE_HIST_KINDS = new Set(["high", "low", "year", "plain", "backto", "set"]);
+export function readContractOk(read) {
+  if (!read || typeof read !== "object") return false;
+  if (read.readKind === "deep") {
+    if (!(Array.isArray(read.lines) && read.lines.length >= 3 && read.lines.length <= 6 && read.source && ISO_DAY.test(String(read.asOf || "")))) return false;
+  }
+  if (read.board === "hist") {
+    if (!(GATE_HIST_KINDS.has(read.readKind) && read.kind === read.readKind && ISO_DAY.test(String(read.startDate || "")) && read.endDate === read.asOf && sourceNamesDay(read.source, read.startDate, read.asOf))) return false;
+  }
+  return true;
+}
+
+// Keep the rewrite only when it keeps the shape the original already had.
+// Otherwise the original read, which is what the gate passed, goes out.
+export function keepContract(next, original) {
+  return readContractOk(next) || !readContractOk(original) ? next : original;
+}
+
 // Rewrite the item reads. Returns the new list and a report.
 export function synthesizeReads(reads, ctx, cfg) {
   const items = reads.filter(isItemRead);
   const used = { total: items.length, byType: new Map() };
-  const report = { item: items.length, rewritten: 0, kept: 0 };
+  const report = { item: items.length, rewritten: 0, kept: 0, keptForShape: 0 };
   const out = reads.map((r) => {
     if (!isItemRead(r)) return r;
     const item = itemOf(r, ctx);
@@ -627,7 +651,10 @@ export function synthesizeReads(reads, ctx, cfg) {
       next.why = whyLead;
       next.whyItMatters = whyLead;
     }
-    return speakRead(next);
+    const spoken = speakRead(next);
+    const final = keepContract(spoken, r);
+    if (final === r) { report.rewritten -= 1; report.kept += 1; report.keptForShape += 1; }
+    return final;
   });
   return { reads: out, report };
 }
