@@ -267,6 +267,13 @@ console.log("── seller tag and run stage ──");
   t("seller tag and run stage suite", n === 0, `${n} failed`);
 }
 
+console.log("── reads wording: history span, dated prices, one ratio direction ──");
+{
+  const { run } = await import("./reads-wording.suite.mjs");
+  const n = await run();
+  t("reads wording suite", n === 0, `${n} failed`);
+}
+
 console.log("── publish gate ──");
 {
   const { run } = await import("./publish-gate.suite.mjs");
@@ -310,13 +317,6 @@ console.log("── reads check Nov 11 regressions ──");
   t("reads check Nov 11 suite", n === 0, `${n} failed`);
 }
 
-
-console.log("── reads wording: history span, dated prices, one ratio direction ──");
-{
-  const { run } = await import("./reads-wording.suite.mjs");
-  const n = await run();
-  t("reads wording suite", n === 0, `${n} failed`);
-}
 
 console.log("── no PPT history in public outputs ──");
 {
