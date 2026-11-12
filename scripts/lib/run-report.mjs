@@ -70,6 +70,8 @@ export function isRawPublicPath(path) {
   if (p === "data/sealed-crosscheck.json" || p === "data/crosscheck-history.json") return true;
   if (p === "ppt-raw-private" || p.startsWith("ppt-raw-private/")) return true;
   if (p === "ppt-history-raw" || p.startsWith("ppt-history-raw/")) return true;
+  if (p === "ppp-raw-private" || p.startsWith("ppp-raw-private/")) return true;
+  if (p === "data/history/ppp-sealed" || p.startsWith("data/history/ppp-sealed/")) return true;
   if (p.startsWith("research/eval-samples/") && RAW_FILE.test(p)) return true;
   return false;
 }
@@ -121,7 +123,7 @@ export function safetyVerdict({ push = {}, tracked = [], fieldHits = [] } = {}) 
   const reasons = [];
   const skipped = Boolean(push.expected && !push.pushed && pptSkipped(push));
   if (push.expected && !push.pushed && !skipped) reasons.push(`private push was expected and failed: ${push.reason || "no reason"}`);
-  if (leaks.length) reasons.push(`raw PPT is tracked in the public tree: ${leaks.slice(0, 8).join(", ")}`);
+  if (leaks.length) reasons.push(`raw PPT or PPP is tracked in the public tree: ${leaks.slice(0, 8).join(", ")}`);
   if (fieldHits.length) reasons.push(`PPT price fields are in public JSON: ${fieldHits.slice(0, 8).join(", ")}`);
   return { ok: reasons.length === 0, reasons, leaks, fieldHits, skipped };
 }

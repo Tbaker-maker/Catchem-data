@@ -14,6 +14,8 @@ import { gzipSync, gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps, vintageHeldBack } from "./lib/listing-counts.mjs";
+import { addMissingRows, sealedStepIndex, sealedStepRowsForDay } from "./lib/sealed-listing-coverage.mjs";
+import { readdir } from "node:fs/promises";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OAUTH = "https://api.ebay.com/identity/v1/oauth2/token";
@@ -71,7 +73,11 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
   console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${picked.length}`);
 
-  if (role === "guardian" && !plan.picked.length) { console.log("count guardian: every daily-tier item has a count today, nothing to do"); return { picked: 0 }; }
+  if (role === "guardian" && !plan.picked.length) {
+    console.log("count guardian: every daily-tier item has a count today, nothing to do");
+    await indexSealedStep();
+    return { picked: 0 };
+  }
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });
   const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
   const latest = await J(latestPath, { rows: {} });
@@ -130,9 +136,52 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   night.ebayBrowse.dailyTier = tierPlan.counts; night.ebayBrowse.singleCutoff = tierPlan.singleCutoff;
   usage.nights = [...(usage.nights || []), night].slice(-120);
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");
+  await indexSealedStep();
   console.log(`listing counts: ${out.length} counted, ${calls} calls, ${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`);
 }
 
+// Copy filteredTotal the sealed price step already stored. Does not call eBay
+// and does not add to the Browse log. Existing listing-count rows stay.
+export async function indexSealedStep() {
+  const sealed = await J(join(ROOT, "data/sealed-prices.json"), { products: [] });
+  const products = sealed.products || [];
+  const dir = join(ROOT, "data/derived/listing-counts/history");
+  await mkdir(dir, { recursive: true });
+  let added = 0;
+  let names = [];
+  try { names = (await readdir(dir)).filter((name) => name.endsWith(".json.gz")); } catch { names = []; }
+  for (const name of names) {
+    const date = name.slice(0, 10);
+    const path = join(dir, name);
+    let blob = { date, rows: [] };
+    try { blob = JSON.parse(gunzipSync(await readFile(path))); } catch { continue; }
+    const prev = blob.rows || [];
+    const rows = addMissingRows(prev, sealedStepRowsForDay(products, date));
+    if (rows.length === prev.length) continue;
+    added += rows.length - prev.length;
+    await writeFile(path, gzipSync(JSON.stringify({ ...blob, date: blob.date || date, rows }), { level: 9 }));
+  }
+  const index = sealedStepIndex(products);
+  await writeFile(join(ROOT, "data/derived/listing-counts/sealed-step.json"), JSON.stringify(index) + "\n");
+  const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
+  const latest = await J(latestPath, { rows: {} });
+  latest.rows ||= {};
+  const today = listingFileDay(new Date());
+  let latestChanged = false;
+  for (const row of sealedStepRowsForDay(products, today)) {
+    const cur = latest.rows[row.id];
+    if (!cur || String(cur.date || "") < row.date) {
+      latest.rows[row.id] = row;
+      latestChanged = true;
+    }
+  }
+  if (latestChanged) await writeFile(latestPath, JSON.stringify(latest) + "\n");
+  return { added, series: Object.keys(index.series).length };
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  runListingCounts({ afterSealedStep: process.argv.includes("--after-sealed") }).catch((e) => { console.error(`listing counts skipped: ${e.message}`); });
+  const job = process.argv.includes("--index-sealed-step")
+    ? indexSealedStep().then((r) => console.log(`sealed-step index: ${r.series} series, ${r.added} history rows added, no eBay call`))
+    : runListingCounts({ afterSealedStep: process.argv.includes("--after-sealed") });
+  job.catch((e) => { console.error(`listing counts skipped: ${e.message}`); });
 }

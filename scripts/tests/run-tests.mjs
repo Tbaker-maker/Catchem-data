@@ -34,6 +34,9 @@ import { runSparkTests } from "./spark30.test.mjs";
 import { runTcgcsvRawTests } from "./tcgcsv-raw.test.mjs";
 import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
 import { runNoPppRawPublicTests } from "./no-ppp-raw-public.test.mjs";
+import { runPppRefreshTests } from "./ppp-refresh.test.mjs";
+import { runPppCompareTests } from "./ppp-compare.test.mjs";
+import { runPrivatePppTests } from "./private-ppp.test.mjs";
 import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runReadTagTests } from "./read-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
@@ -328,6 +331,19 @@ console.log("── PkmnPrices: raw private, derived market-depth only ──");
 {
   const n = await runNoPppRawPublicTests();
   t("no-PPP-raw public suite", n === 0, `${n} failed`);
+}
+console.log("── ppp dual-run ──");
+{
+  const n = await runPppRefreshTests();
+  t("ppp refresh suite", n === 0, `${n} failed`);
+}
+{
+  const n = await runPppCompareTests();
+  t("ppp compare suite", n === 0, `${n} failed`);
+}
+{
+  const n = await runPrivatePppTests();
+  t("private ppp suite", n === 0, `${n} failed`);
 }
 console.log("── public index line (value-weighted) ──");
 {

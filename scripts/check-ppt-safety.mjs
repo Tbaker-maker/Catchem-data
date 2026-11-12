@@ -24,6 +24,7 @@ export async function checkSafety(root = ROOT) {
     tracked = [];
   }
   const status = push || { expected: false, pushed: false, reason: "no push status" };
+  const pppPush = await readJson(join(root, "data/ppp/push-status.json"));
   const fieldHits = [];
   for (const rel of tracked) {
     if (!rel.endsWith(".json")) continue;
@@ -32,7 +33,16 @@ export async function checkSafety(root = ROOT) {
     for (const hit of findPptPriceKeys(body, rel)) fieldHits.push(hit);
     for (const hit of findBackcalcLeaks(body, rel)) fieldHits.push(hit);
   }
-  return safetyVerdict({ push: status, tracked, fieldHits });
+  const verdict = safetyVerdict({ push: status, tracked, fieldHits });
+  if (pppPush?.expected && !pppPush.pushed) {
+    const reason = String(pppPush.reason || "");
+    const skipped = /nothing to copy/i.test(reason);
+    if (!skipped) {
+      verdict.reasons.push(`private PPP push was expected and failed: ${pppPush.reason || "no reason"}`);
+      verdict.ok = false;
+    }
+  }
+  return verdict;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
