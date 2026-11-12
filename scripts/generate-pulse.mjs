@@ -78,6 +78,30 @@ try {
 
 const sp = await J("data/sealed-prices.json");
 
+// This step runs AFTER public-data publish. If the catalogue is stale or
+// only partially fetched (typical when eBay missed a cycle), writing a
+// morning edition dated today would put today's date on an old market.
+// Failing the step would also skip The Board, share cards, the later
+// price commit, and smoke — none of which un-publishes anything. Refuse
+// the new dated edition and leave later steps to run.
+{
+  const { catalogueEditionFreshness } = await import("./lib/catalogue-edition.mjs");
+  const edition = catalogueEditionFreshness(sp);
+  if (edition.status === "stale" || edition.status === "partial") {
+    if (edition.status === "stale") {
+      console.error(`\n✗ STALE EDITION — the freshest price in the catalogue is from ${edition.newest}, ${edition.ageDays} days ago.`);
+      console.error("   At least one full fetch cycle was missed. This edition would wear");
+      console.error("   today's date over an old market.");
+    } else {
+      console.error(`\n✗ PARTIAL FETCH — only ${edition.pct}% of products carry the newest timestamp (${edition.newest}).`);
+      console.error("   A fetch ran but most products did not update.");
+    }
+    console.error("   Generate Morning Pulse will not write a new dated edition.");
+    console.error("   Later steps (The Board, share cards, commit, smoke) still run.\n");
+    process.exit(0);
+  }
+}
+
 // EDITORIAL INPUTS are read through ONE held-product scrub (lib/publish-guard
 // loadEditorialJson). qa-gate has already run (top of this file) and stamped
 // tonight's flags, so a held product is removed from every list in these files
