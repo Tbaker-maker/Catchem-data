@@ -350,6 +350,9 @@ jobs:
                   data/meta/ppt-usage.json data/meta/ppt-cursor.json \
                   data/history/slabs/status.json \
                   data/heartbeat.json data/derived/
+          # Written by Derived intelligence. Committed here too so a later failed
+          # step cannot drop tonight's watch log (Weekly receipts reads it).
+          git add research/pulse/watch-log.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -648,6 +651,12 @@ jobs:
         run: node scripts/send-discord-alerts.mjs
 
       - name: Dated reads, rip value, and status
+        # Every script here already ends in || true, so the only way this step
+        # stops the run is a hang or a lost runner (run 43126099936: five full
+        # 21 GB private clones, runner lost, every later step skipped). Cap it and
+        # keep going so "Commit updated prices" and the smoke tests still run.
+        timeout-minutes: 30
+        continue-on-error: true
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}

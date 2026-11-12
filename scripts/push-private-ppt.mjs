@@ -7,6 +7,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { redact, stagePrivate } from "./lib/private-ppt.mjs";
+import { clonePrivate } from "./lib/private-clone.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -31,7 +32,10 @@ export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = 
   const childEnv = { ...env, GIT_TERMINAL_PROMPT: "0" };
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
-    const cloned = await runGit("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+    // Sparse, blob-less clone: data/ plus only tonight's raw/<date>/. A full
+    // checkout was 21 GB on 2026-11-11 and grows about 1 GB a night.
+    const dayRaw = date ? [`/raw/${date}/`] : [];
+    const cloned = await clonePrivate(runGit, REMOTE, clone, childEnv, { include: dayRaw });
     if (cloned.code !== 0) {
       return { pushed: false, reason: `Private repo was not cloned (${redact(cloned.err, [token]) || "clone failed"}).` };
     }
@@ -46,7 +50,8 @@ export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = 
     }
     await runGit("git", ["-C", clone, "config", "user.email", "bot@catchem.app"], childEnv);
     await runGit("git", ["-C", clone, "config", "user.name", "catchem-bot"], childEnv);
-    await runGit("git", ["-C", clone, "add", "data", "raw"], childEnv);
+    await runGit("git", ["-C", clone, "add", "data"], childEnv);
+    if (date && actions.includes(`raw:${date}`)) await runGit("git", ["-C", clone, "add", join("raw", date)], childEnv);
     const quiet = await runGit("git", ["-C", clone, "diff", "--cached", "--quiet"], childEnv);
     const shaOf = async () => {
       const sha = await runGit("git", ["-C", clone, "rev-parse", "HEAD"], childEnv);
