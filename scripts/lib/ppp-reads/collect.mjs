@@ -28,6 +28,17 @@ export function pppReadsOn() {
   return flag("ppp.reads") === true;
 }
 
+// Pathway, item kind and direction whose scanner gate passed (any horizon).
+// With the flag off, only these fact reads are public.
+export function provenKeys(gates = []) {
+  const out = new Set();
+  for (const g of gates || []) {
+    if (!g?.passed || !String(g.pattern || "").startsWith("ppp-")) continue;
+    out.add(`${String(g.pattern).slice(4)}|${g.kind}|${g.dir}`);
+  }
+  return out;
+}
+
 async function ownPoints(root, wanted) {
   const out = new Map();
   const dir = join(root, "data/history/tcgcsv-daily");
@@ -139,16 +150,19 @@ export function pickFacts(hits, itemsById, asOf, L, { perPathway = PER_PATHWAY, 
   return { reads, flags };
 }
 
-export async function collectPppReads({ root, asOf, catalog, token = process.env.PRIVATE_DATA_TOKEN || "", writePrivate = true, open = openPrivate } = {}) {
+export async function collectPppReads({ root, asOf, catalog, token = process.env.PRIVATE_DATA_TOKEN || "", writePrivate = true, open = openPrivate, gates = [] } = {}) {
+  const proven = provenKeys(gates);
+  const allPublic = pppReadsOn();
   const ctx = await loadPppContext(root, { token });
   const day = String(asOf || catalog?.asOf || "").slice(0, 10);
-  const summary = { asOf: day, inputFiles: ctx.inputFiles, inputFrom: ctx.inputFrom, inputAsOf: ctx.inputAsOf, pppItems: ctx.items.size, fxDays: ctx.fx.length, msrp: ctx.msrp.size, public: pppReadsOn() };
+  const summary = { asOf: day, inputFiles: ctx.inputFiles, inputFrom: ctx.inputFrom, inputAsOf: ctx.inputAsOf, pppItems: ctx.items.size, fxDays: ctx.fx.length, msrp: ctx.msrp.size, public: allPublic ? "all" : "proven only", proven: [...proven].sort() };
   if (!ctx.items.size || !isDay(day)) return { reads: [], hits: [], summary: { ...summary, idle: true, reason: ctx.items.size ? "no asOf" : "no PkmnPrices input file yet" } };
   const items = await buildItems(root, ctx, catalog);
   const byId = new Map(items.map((it) => [it.id, it]));
   const hits = [];
   for (const it of items) for (const h of runPathways(it, day, ctx.L, ctx)) hits.push({ ...h, itemId: it.id, kind: it.kind });
-  const picked = pppReadsOn() ? pickFacts(hits.filter((h) => !h.error), byId, day, ctx.L) : { reads: [], flags: [] };
+  const showable = hits.filter((h) => !h.error && (allPublic || proven.has(`${h.pathway}|${h.kind}|${h.dir}`)));
+  const picked = showable.length ? pickFacts(showable, byId, day, ctx.L) : { reads: [], flags: [] };
   const byPathway = {};
   for (const h of hits) if (!h.error) byPathway[h.pathway] = (byPathway[h.pathway] || 0) + 1;
   const readsByPathway = {};

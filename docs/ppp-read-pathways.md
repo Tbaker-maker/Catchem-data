@@ -9,8 +9,12 @@ Code: `scripts/lib/ppp-reads/`. Tests: `scripts/tests/ppp-reads.suite.mjs`
 
 ## Two outputs, two gates
 
-1. **Fact reads** (`collect.mjs`, flag `ppp.reads`). One line of dated numbers
-   per product with its source. No hit rate, no direction word, no take code.
+1. **Fact reads** (`collect.mjs`, flag `ppp.reads`, default **off**). New read
+   types stay private and are scored against outcomes until they prove out.
+   With the flag off, a fact read is public only when its pathway, item kind and
+   direction have a passed scanner gate tonight (`ppp-<pathway>`, any horizon);
+   every other hit goes only to the private log. `true` shows every pathway.
+   One line of dated numbers per product with its source. No hit rate, no direction word, no take code.
    They join the board like scanner and span reads and then pass the same board
    fit, reads guard (spike, flip, flat step), thin-data drop and copy rules as
    every other read. At most 12 per pathway, 96 a night, one per product.
@@ -25,6 +29,14 @@ Code: `scripts/lib/ppp-reads/`. Tests: `scripts/tests/ppp-reads.suite.mjs`
 Every hit, kept or not, goes to the private store: `ppp-reads/<asOf>.json`.
 Graded population snapshots are kept there too (`ppp-reads/pop-history.json`),
 because the API only returns the current counts.
+
+## Nightly wiring
+
+`update-sealed-prices.yml` runs `node scripts/ppp-private-sync.mjs pull` (from
+the enrich PR) before the first rebuild, so `ppp-raw-private/` holds the private
+repo's `ppp/` when both `build-feed.mjs` passes run. The step does nothing until
+that script is on main, refuses to pull unless `ppp-raw-private/` is gitignored,
+and never fails the run.
 
 ## Input contract
 

@@ -97,6 +97,21 @@ jobs:
       - name: Guard audit (fails the run if any safeguard is disconnected)
         run: node scripts/guard-audit.mjs
 
+      - name: Pull private PkmnPrices rows for the read pathways
+        # The enrich run (ppp-enrich.yml, 01:30 UTC) pushes raw rows to the
+        # private repo under ppp/. Pull them into the gitignored ppp-raw-private/
+        # so build-feed's PkmnPrices pathways (scripts/lib/ppp-reads) can read
+        # them. Nothing here is committed. Skipped until ppp-private-sync.mjs
+        # exists; no token, a failed clone or a crash logs and moves on (the
+        # `|| echo` below, so no continue-on-error flag is needed).
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: |
+          if [ ! -f scripts/ppp-private-sync.mjs ]; then echo "ppp-private-sync.mjs not on main yet; PkmnPrices pathways stay idle"; exit 0; fi
+          # Raw rows must never be staged by a later commit step.
+          if ! git check-ignore -q ppp-raw-private/comps/00.json; then echo "ppp-raw-private/ is not gitignored; not pulling"; exit 0; fi
+          node scripts/ppp-private-sync.mjs pull || echo "PkmnPrices pull failed; pathways stay idle tonight"
+
       - name: Rebuild outputs on today's day (before the tests)
         # The tests compare committed outputs against the newest TCGCSV day,
         # which the step above just wrote. Rebuild them first so a new day does

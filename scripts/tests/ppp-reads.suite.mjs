@@ -20,6 +20,7 @@ export async function run() {
   let fail = 0;
   const t = (name, ok, detail = "") => { if (ok) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}${detail ? ` (${detail})` : ""}`); } };
   process.env.PPP_READS_NO_NET = "1";
+  process.env.CATCHEM_PPP_READS = "1"; // the all-public path; the default (off) is tested below
   resetPppContext();
   const { root, catalog } = await fixtureRoot();
   try {
@@ -125,8 +126,15 @@ export async function run() {
     process.env.CATCHEM_PPP_READS = "0";
     resetPppContext();
     const off = await collectPppReads({ root, asOf: ASOF, catalog, token: "" });
-    delete process.env.CATCHEM_PPP_READS;
     t("flag off: no public read, private hits still logged", off.reads.length === 0 && off.hits.length > 0);
+    const gateFor = (h) => ({ pattern: `ppp-${h.pathway}`, kind: h.kind, dir: h.dir, horizon: 30, passed: true });
+    const one = off.hits.find((h) => !h.error && h.pathway === "sold-gap");
+    resetPppContext();
+    const some = await collectPppReads({ root, asOf: ASOF, catalog, token: "", gates: [gateFor(one), { ...gateFor(off.hits.find((h) => h.pathway === "eu-gap")), passed: false }] });
+    t("flag off: only a pathway whose gate passed goes public", some.reads.length > 0 && some.reads.every((r) => r.readKind === "sold-gap") && some.summary.proven.includes(`sold-gap|${one.kind}|${one.dir}`));
+    delete process.env.CATCHEM_PPP_READS;
+    const { flag } = await import("../flags.mjs");
+    t("ppp.reads is off by default", flag("ppp.reads") === false);
     const log = JSON.parse(await readFile(join(root, "data/private/ppp-reads", `${ASOF}.json`), "utf8"));
     t("private log carries every hit", log.private === true && log.hits.length === off.hits.length);
     const popHist = JSON.parse(await readFile(join(root, "data/private/ppp-reads/pop-history.json"), "utf8"));

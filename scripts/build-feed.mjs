@@ -218,21 +218,24 @@ if (process.env.PPP_READS_NO_NET !== "1") {
   }
 }
 let scannerReads = [];
+let scannerGates = [];
 try {
   const { collectScannerReads } = await import("./lib/scanner/load.mjs");
   const scan = await collectScannerReads({ root: ROOT, asOf: catalog.asOf || "", series, catalog });
   scannerReads = scan.reads || [];
+  scannerGates = scan.gates || [];
   console.log(JSON.stringify({ scanner: scan.summary }));
 } catch (err) {
   console.error(`scanner skipped: ${err.message}`);
 }
 // PkmnPrices fact reads (eBay sold comps, graded population, Cardmarket,
 // Japanese prices, a year of history, sold vs MSRP). Every hit goes to the
-// private log; the board gets the fact reads, which then pass the same guards.
+// private log. With ppp.reads off (default) the board gets fact reads only for
+// a pathway whose scanner gate passed tonight; they then pass the same guards.
 let pppReads = [];
 try {
   const { collectPppReads } = await import("./lib/ppp-reads/collect.mjs");
-  const ppp = await collectPppReads({ root: ROOT, asOf: catalog.asOf || "", catalog });
+  const ppp = await collectPppReads({ root: ROOT, asOf: catalog.asOf || "", catalog, gates: scannerGates });
   pppReads = ppp.reads || [];
   console.log(JSON.stringify({ pppReads: ppp.summary }));
 } catch (err) {
