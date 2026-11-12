@@ -4,6 +4,7 @@
 // same card was $41.36 on Nov 11 under 30th Celebration. A move must end near
 // the catalogue day.
 import { assembleCatalogue, staleMove, FEED_STALE_DAYS } from "../lib/feed-catalogue.mjs";
+import { catalogueImageUrl } from "../catalogue-images.mjs";
 
 function series(start, values) {
   const t0 = Date.parse(`${start}T00:00:00Z`);
@@ -27,6 +28,31 @@ export async function run() {
   t("with no catalogue day nothing is dropped", Object.keys(b.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
   t("two days behind is still current", !staleMove("2026-11-09", "2026-11-11") && FEED_STALE_DAYS === 2);
   t("three days behind is stale", staleMove("2026-11-08", "2026-11-11"));
+  // Reads check Nov 12: the prices did not stop. The half-copy split set the
+  // newest days aside ($37.79 to $37.30, under half the $400 era median), so
+  // the move ended on Oct 31 at $146.27. 28 products lost their newest day
+  // this way on Nov 12.
+  const crash = [];
+  for (let i = 0; i < 24; i++) crash.push(i < 8 ? 400 : 400 - (i - 7) * 15);
+  crash.push(41, 40, 39, 38, 37.3);
+  const pika = { id: "tcgcsv-713257", name: "Pikachu ex - 107", set: "ME: Mega Evolution Promo", kind: "single", hist: series("2026-10-08", crash) };
+  const end = pika.hist[pika.hist.length - 1][0];
+  const c = assembleCatalogue([pika, fresh], [], { asOf: end });
+  t("a move is never built on a series whose newest day was set aside", !Object.keys(c.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
+  t("that item is logged as a newest-day drop", c.halfDropped.some((row) => row.id === "tcgcsv-713257" && row.reason === "newest-day"));
+  t("no card quotes an older price than the newest day", Object.values(c.cards).every((card) => card.sku !== "tcgcsv-713257"));
+  // Delta Reign Single Pack Blister [Spritzee]: only Nov 12 ($10.51) was set
+  // aside, so the read said $12.29 on Nov 11. One day behind passes the stale
+  // check, so this needs the newest-day rule.
+  const blister = { id: "tcgcsv-712108", name: "Delta Reign Single Pack Blister [Spritzee]", set: "ME06: Delta Reign", kind: "sealed", hist: [["2026-09-26", 33.12], ["2026-09-27", 33.12], ["2026-10-03", 26.94], ["2026-10-05", 26.24], ["2026-10-06", 25.74], ["2026-10-07", 25.74], ["2026-10-08", 25.36], ["2026-10-09", 25.06], ["2026-10-10", 24.18], ["2026-10-11", 24.18], ["2026-10-12", 24.18], ["2026-10-13", 24.06], ["2026-10-14", 23.92], ["2026-10-15", 23.69], ["2026-10-16", 23.69], ["2026-10-17", 23.12], ["2026-10-18", 23.12], ["2026-10-19", 22.96], ["2026-10-20", 22.67], ["2026-10-21", 22.55], ["2026-10-22", 22.55], ["2026-10-23", 22.42], ["2026-10-24", 21.18], ["2026-10-25", 21.07], ["2026-10-26", 20.8], ["2026-10-27", 20.79], ["2026-10-28", 20.38], ["2026-10-29", 19.95], ["2026-10-30", 19.35], ["2026-10-31", 19.15], ["2026-11-06", 17.12], ["2026-11-07", 14.49], ["2026-11-08", 13.08], ["2026-11-09", 13], ["2026-11-10", 12.96], ["2026-11-11", 12.29], ["2026-11-12", 10.51]] };
+  const d = assembleCatalogue([blister], [], { asOf: "2026-11-12" });
+  t("a read one day behind the page price is not built", Object.values(d.cards).every((card) => card.price === 10.51 || card.sku !== "tcgcsv-712108") && !Object.values(d.cards).some((card) => card.asOf === "2026-11-11"));
+  // Feed images: a TCGplayer photo URL is cleared as foreign, so the Feed
+  // builder uses the catalogue picture instead.
+  const pics = { "tcgcsv-1": "/img/sv4pt5/130", "tcgcsv-2": "/cards/full/x.png", "tcgcsv-3": "https://tcgplayer-cdn.tcgplayer.com/product/3_in_400x400.jpg" };
+  t("a catalogue /img/ path becomes the site picture URL", catalogueImageUrl(pics, "tcgcsv-1") === "/data/editor/tcg/sv4pt5/130_hires.png");
+  t("a catalogue /cards/ path stays on the data repo", catalogueImageUrl(pics, "tcgcsv-2").endsWith("/research/assets/cards/full/x.png"));
+  t("a foreign URL or a missing id gives no picture", catalogueImageUrl(pics, "tcgcsv-3") === "" && catalogueImageUrl(pics, "tcgcsv-9") === "");
   return fail;
 }
 

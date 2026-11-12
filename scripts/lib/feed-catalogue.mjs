@@ -472,6 +472,15 @@ export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
     if (split.dropped.length) {
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "cheap-copy", dropped: split.dropped.length });
     }
+    // The newest day is the price the item page shows. When the half-copy
+    // split sets it aside, every move ends on an older day at an older price
+    // (Pikachu ex #107 read $146.27 from Oct 31 while its page showed $37.30
+    // on Nov 12). That item is left out of the feed until the split keeps it.
+    const keptEnd = split.keep.length ? split.keep[split.keep.length - 1][0] : "";
+    if (split.dropped.some((pt) => pt[0] > keptEnd)) {
+      halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "newest-day" });
+      continue;
+    }
     const raw = split.keep;
     const windows = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` })).filter((move) => move && !staleMove(move.toDate, asOf));
     if (!windows.length) continue;
