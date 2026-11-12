@@ -1,7 +1,7 @@
 {
   "source": "https://api.pokemontcg.io/v2/sets",
   "sourceDate": "2026-10-11",
-  "note": "The live sets endpoint returned HTTP 500 and 502 on 2026-10-11 and 176 ids on 2026-10-12. mep is not in that response. It is a catalogue set id: data/card-catalogue.json has 16 cards with setId mep. The code is the set id. No ptcgo code was added because the set list does not publish one.",
+  "note": "The live sets endpoint returned HTTP 500 and 502 on 2026-10-11 and 176 ids on 2026-10-12. mep is not in that response. It is a catalogue set id (Mega Evolution Black Star Promos, TCGCSV group 24451). The code is the set id. No ptcgo code was added because the official set list does not publish one. me6 (Delta Reign, ptcgoCode DLR) was added 2026-11-12 from PokemonTCG/pokemon-tcg-data sets/en.json; the 2026-10-11 file predated that set.",
   "sets": [
     {
       "id": "base1",
@@ -280,7 +280,7 @@
     },
     {
       "id": "ru1",
-      "name": "Pokémon Rumble",
+      "name": "Pok\u00e9mon Rumble",
       "ptcgoCode": null
     },
     {
@@ -295,17 +295,17 @@
     },
     {
       "id": "hgss2",
-      "name": "HS—Unleashed",
+      "name": "HS\u2014Unleashed",
       "ptcgoCode": "UL"
     },
     {
       "id": "hgss3",
-      "name": "HS—Undaunted",
+      "name": "HS\u2014Undaunted",
       "ptcgoCode": "UD"
     },
     {
       "id": "hgss4",
-      "name": "HS—Triumphant",
+      "name": "HS\u2014Triumphant",
       "ptcgoCode": "TM"
     },
     {
@@ -670,7 +670,7 @@
     },
     {
       "id": "fut20",
-      "name": "Pokémon Futsal Collection",
+      "name": "Pok\u00e9mon Futsal Collection",
       "ptcgoCode": "FUT20"
     },
     {
@@ -715,7 +715,7 @@
     },
     {
       "id": "pgo",
-      "name": "Pokémon GO",
+      "name": "Pok\u00e9mon GO",
       "ptcgoCode": "PGO"
     },
     {
@@ -887,6 +887,11 @@
       "id": "me55c",
       "name": "30th Celebration: Classic Collection",
       "ptcgoCode": "30C"
+    },
+    {
+      "id": "me6",
+      "name": "Delta Reign",
+      "ptcgoCode": "DLR"
     }
   ]
 }
