@@ -123,11 +123,16 @@ export async function run() {
   const pub = JSON.parse(await readFile(join(ROOT, "research/assets/public/track-record.json"), "utf8"));
   const pubText = JSON.stringify(pub);
   const onDisk = siteTrack(pub);
-  t("the committed public file is a page without the score method", pub.public === true && Array.isArray(pub.rows) && pub.rows.length > 0 && !pub.rule && !pub.scoreMin && !pub.types && !pubText.includes("scored so far") && !pubText.includes("\"take\"") && !pubText.includes("percent") && pub.disclaimer === "Past moves don't predict future prices.");
+  // Since #494 the public receipts.json is a stub with no rows, so the public
+  // page can be thin with no rows. Empty is allowed only when it says so.
+  const rowsOk = Array.isArray(pub.rows) && (pub.rows.length > 0 || (pub.thin === true && pub.summary === ""));
+  t("the committed public file is a page without the score method", pub.public === true && rowsOk && !pub.rule && !pub.scoreMin && !pub.types && !pubText.includes("scored so far") && !pubText.includes("\"take\"") && !pubText.includes("percent") && pub.disclaimer === "Past moves don't predict future prices.");
   t("the committed public file opens a page and still hides the score", onDisk.page === true && onDisk.cardLine === "" && onDisk.score == null);
   t("a sealed public row never says NM", pub.rows.filter((row) => row.kind === "sealed").every((row) => !/\bNM\b|Near Mint/.test(JSON.stringify(row))));
   t("the summary counts only reads that have a later price", pub.windows.d90.reads === pub.rows.filter((row) => row.moved != null && row.date >= "2026-07-19").length);
   const sample = publicTrackPage({ asOf: "2026-10-17", rows: [{ id: "a", result: "hit", kind: "sealed", name: "Example Box", source: "eBay asking prices", hist: [["2026-10-01", 10], ["2026-10-02", 11]] }, { id: "b", result: "miss", kind: "sealed", name: "NM Box", source: "eBay asking prices", hist: [["2026-10-01", 10], ["2026-10-02", 9]] }] }, "2026-10-17");
+  const stubPage = publicTrackPage({ asOf: "2026-11-11", note: "Scored calls are kept in the private scorecard. This file has no rows.", rows: [] }, "2026-11-11");
+  t("the no-rows receipts stub gives a thin page with no rows and no score", stubPage.public === true && stubPage.thin === true && stubPage.rows.length === 0 && stubPage.summary === "" && !stubPage.rule && !stubPage.scoreMin);
   t("a sealed name with NM is left off the public page", sample.rows.length === 1 && sample.rows[0].id === "a" && sample.windows.d30.moved === 1);
 
   if (fail) console.log(fail + " failed");
