@@ -219,22 +219,10 @@ export async function runLanes({ client, budget, products, lanes, scale = 1, now
   }
 
   if (lanes.has("history")) {
-    const m = meter("history");
-    let done = 0;
-    for (const p of mapped) {
-      const s = await shard("history", bucketOf(p.pid));
-      if (s[p.pid]) continue; // one 365-day backfill per product; incremental later
-      const base = p.kind === "sealed" ? `/v1/sealed/${map.sealed[p.pid]}` : `/v1/cards/${map.single[p.pid]}`;
-      const params = p.kind === "sealed" ? { period: "365d", limit: 365, currency: "usd" } : { period: "365d", limit: 365, currency: "usd", condition: "Near Mint" };
-      if (!m.canSpend(365)) break;
-      const r = await client.get(`${base}/prices/history`, params, m, { expect: 365 });
-      if (r.daily || r.budget) break;
-      if (!r.ok) continue;
-      s[p.pid] = { at: iso, rows: r.body?.data || [], pages: r.body?.pagination?.total_pages || 1 };
-      done++;
-      await flush();
-    }
-    report.history = { products: done, credits: m.spent };
+    // The 500 credit history lane is sealed short-history only.
+    // scripts/ppp-sealed-history.mjs spends it. This branch must not call the API.
+    report.history = { products: 0, credits: 0, owner: "scripts/ppp-sealed-history.mjs" };
+    log("ppp-enrich history: skipped, sealed backfill owns the history lane");
   }
 
   await flush(true);
