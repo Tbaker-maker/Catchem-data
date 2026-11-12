@@ -103,13 +103,34 @@ export function baseName(clean) {
   return String(clean || "").replace(/\s*\(\d+[A-Za-z]?(?:\s[^)]*)?\)\s*$/, "").trim();
 }
 
-const NUMBER = "[A-Z]*\\d+[a-z]?\\/[A-Z]*\\d+";
+// A set number ("113/116") or a subset or promo code ("SL5", "SWSH006",
+// "SM168", "TG05", "H22").
+const NUMBER = "[A-Z]*\\d+[a-z]?\\/[A-Z]*\\d+|[A-Z]{1,5}\\d+[a-z]?";
 
 // The collector number written right after a card name, past any variant or
-// set tags: "Latios EX (Plasma Freeze) 113/116" gives 113/116.
+// set tags: "Latios EX (Plasma Freeze) 113/116" gives 113/116, "Ho-Oh (Call of
+// Legends) SL5" gives SL5, "Rillaboom - SWSH006 [Staff]" gives SWSH006.
 function writtenNumber(text, end) {
-  const m = String(text || "").slice(end).match(new RegExp(`^(?:\\s+${VARIANT})*(?:\\s*\\([^)]+\\))*\\s+(${NUMBER})(?![\\w/])`));
+  const m = String(text || "").slice(end).match(new RegExp(`^(?:\\s+${VARIANT})*(?:\\s*\\([^)]+\\))*(?:\\s+-)?\\s+(${NUMBER})(?![\\w/])`));
   return m ? m[1] : "";
+}
+
+// The number as its own token, so "7" is not found inside "$248.72".
+function tokenHas(text, num) {
+  const n = String(num || "");
+  if (!n) return true;
+  const s = String(text || "");
+  let i = 0;
+  while ((i = s.indexOf(n, i)) >= 0) {
+    // "Rayquaza - 016/110" already carries 16/110.
+    let j = i;
+    while (j > 0 && s[j - 1] === "0") j -= 1;
+    const before = j > 0 ? s[j - 1] : "";
+    const after = s[i + n.length] || "";
+    if (!/[\w/.$]/.test(before) && !/[\w/]/.test(after) && !(after === "." && /\d/.test(s[i + n.length + 1] || ""))) return true;
+    i += n.length;
+  }
+  return false;
 }
 
 function idsOf(read) {
@@ -148,6 +169,27 @@ function poolFor(read, index) {
   return [...map.values()];
 }
 
+// The card's name before any tag: "Ho-Oh (Shiny)" gives "Ho-Oh", "Rillaboom -
+// SWSH006 (Prerelease) [Staff]" gives "Rillaboom".
+function stem(clean) {
+  return String(clean || "").replace(/\s+-\s.*$/, "").replace(/\s*[([].*$/, "").trim();
+}
+
+function insideParens(text, i) {
+  let depth = 0;
+  for (let k = 0; k < i; k += 1) {
+    if (text[k] === "(") depth += 1;
+    else if (text[k] === ")" && depth > 0) depth -= 1;
+  }
+  return depth > 0;
+}
+
+function tags(text) {
+  return (String(text || "").match(/\[[^\]]+\]/g) || []).map((t) => t.toLowerCase());
+}
+
+const MECHANIC = /^ (?:EX|ex|GX|V|VMAX|VSTAR|V-UNION|LV\.X|Lv\.X|BREAK|Prime|LEGEND|Star|Prism Star|δ)(?![A-Za-z0-9])/;
+
 function occurrences(text, pool) {
   const found = [];
   for (const card of pool) {
@@ -160,7 +202,10 @@ function occurrences(text, pool) {
       while ((i = text.indexOf(clean, i)) >= 0) {
         const before = i > 0 ? text[i - 1] : "";
         const after = text[i + clean.length] || "";
-        if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after)) {
+        // "Primal Kyogre" inside "Primal Kyogre EX" is a different card, and a
+        // name inside a set tag ("Rayquaza ex (EX Deoxys)") is not a card.
+        const tail = text.slice(i + clean.length, i + clean.length + 12);
+        if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after) && !MECHANIC.test(tail) && !insideParens(text, i)) {
           found.push({ i, end: i + clean.length, card, viaBase });
         }
         i += Math.max(1, clean.length);
@@ -176,13 +221,43 @@ function occurrences(text, pool) {
     const written = writtenNumber(text, hit.end);
     // A number already written after the name decides the card. With none, a
     // base name alone is not enough to name a variant printing.
-    const fits = written ? same.filter((o) => o.card.number === written) : same.filter((o) => !o.viaBase);
-    if (!fits.length) continue;
+    let fits = written ? same.filter((o) => o.card.number === written) : same.filter((o) => !o.viaBase);
+    if (!fits.length && written) {
+      // "Ho-Oh ... SL5" is Ho-Oh (Shiny), not plain Ho-Oh: a printing of the
+      // same name that carries the written number.
+      fits = pool
+        .filter((c) => c.number === written)
+        .map((card) => {
+          const st = stem(card.clean);
+          const i = hit.end - st.length;
+          if (st.length < 3 || i < 0 || text.slice(i, hit.end) !== st || /[A-Za-z0-9]/.test(text[i - 1] || "")) return null;
+          return { ...hit, i, card };
+        })
+        .filter(Boolean);
+      if (fits.length && taken.some((t) => !(hit.end <= t.i || fits[0].i >= t.end))) fits = [];
+    }
+    if (!fits.length) {
+      // The name is followed by a number no card here carries. Leave the span
+      // alone: a shorter name inside it ("Pikachu" in "Pikachu & Zekrom GX")
+      // is a different card.
+      if (written) taken.push(hit);
+      continue;
+    }
     const uniq = [];
     const seen = new Set();
     for (const o of fits) if (!seen.has(o.card.id)) { seen.add(o.card.id); uniq.push(o.card); }
     const after = text.slice(hit.end, hit.end + 80);
     let card = uniq.length === 1 ? uniq[0] : null;
+    if (!card) {
+      // "Rillaboom - SWSH006 [Staff]" is the staff stamp, not the plain one.
+      const seg = after.slice(0, Math.max(0, after.search(/[:,]|$/)));
+      const want = tags(seg);
+      const byTag = uniq.filter((c) => {
+        const have = tags(c.clean);
+        return have.length === want.length && have.every((t) => want.includes(t));
+      });
+      if (byTag.length === 1 && byTag.length < uniq.length) card = byTag[0];
+    }
     if (!card) {
       const byNum = uniq.filter((c) => c.number && after.includes(c.number));
       const bySet = uniq.filter((c) => c.setShort && wordHas(after, c.setShort));
@@ -192,8 +267,9 @@ function occurrences(text, pool) {
       else if (byR.length === 1) card = byR[0];
     }
     if (!card) continue;
-    taken.push(hit);
-    chosen.push({ ...hit, card });
+    const at = fits.find((o) => o.card === card) || hit;
+    taken.push(at);
+    chosen.push({ ...at, card });
   }
   return chosen;
 }
@@ -204,13 +280,17 @@ function isSpeciesCountLine(text) {
   return /^Number\s+\d+\s+of\s+\d+\s+.+\s+cards we price/i.test(String(text || "").trim());
 }
 
-function placeNumbers(text, pool, prefer) {
+function placeNumbers(text, pool, prefer, subject) {
   const body = String(text || "");
   if (!body || !pool.length) return { text: body, cards: [] };
   // A species count line is about the group, not one printing. Stamping any
   // collector number there (especially a different Umbreon) is wrong.
   if (isSpeciesCountLine(body)) return { text: body, cards: [] };
-  const hits = occurrences(body, pool).sort((a, b) => b.i - a.i);
+  // A group read's own subject ("Every Pikachu card we price") is the group,
+  // not one card, unless a collector number is written right after it.
+  const hits = occurrences(body, pool)
+    .filter((h) => !(subject && body.slice(h.i, h.end) === subject && !writtenNumber(body, h.end)))
+    .sort((a, b) => b.i - a.i);
   let out = body;
   const cards = [];
   for (const hit of hits) {
@@ -226,7 +306,7 @@ function placeNumbers(text, pool, prefer) {
       else continue;
     }
     const local = out.slice(hit.i, Math.min(out.length, hit.end + 64));
-    if (hasNumber(local, card.number)) { cards.push(card); continue; }
+    if (tokenHas(local, card.number)) { cards.push(card); continue; }
     let end = hit.end;
     const rest = out.slice(end);
     const m = rest.match(new RegExp(`^(?:\\s+${VARIANT})*(?:\\s*\\([^)]+\\))*`));
@@ -236,11 +316,12 @@ function placeNumbers(text, pool, prefer) {
     out = next;
     cards.push(card);
   }
-  return { text: out, cards };
+  // Hits ran right to left so inserts keep earlier offsets; cards read left to right.
+  return { text: out, cards: cards.reverse() };
 }
 
-function faceText(text, pool, prefer) {
-  const placed = placeNumbers(text, pool, prefer);
+function faceText(text, pool, prefer, subject) {
+  const placed = placeNumbers(text, pool, prefer, subject);
   const priced = labelPrices(placed.text);
   return { text: safeChange(placed.text, priced), cards: placed.cards };
 }
@@ -294,15 +375,15 @@ export function stampRead(read, index, images) {
     if (typeof read[key] !== "string" || !read[key]) continue;
     const text = read[key];
     const next = subject && text.startsWith(subject)
-      ? subject + faceText(text.slice(subject.length), pool, direct).text
-      : faceText(text, pool, direct).text;
+      ? subject + faceText(text.slice(subject.length), pool, direct, subject).text
+      : faceText(text, pool, direct, subject).text;
     read[key] = safeChange(read[key], next);
   }
   if (Array.isArray(read.lines)) {
     const lineCards = [];
     read.lines = read.lines.map((line) => {
       if (typeof line !== "string") { lineCards.push({ text: line, cards: [] }); return line; }
-      const faced = faceText(line, pool, direct);
+      const faced = faceText(line, pool, direct, subject);
       const cards = [];
       const seen = new Set();
       for (const c of faced.cards) {

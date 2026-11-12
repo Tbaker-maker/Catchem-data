@@ -104,11 +104,31 @@ export function hasNumber(text, num) {
 }
 
 // Shorten the name. Never shorten the collector number.
+// The number follows the name on a bar, so a catalogue tag that repeats it
+// ("Garchomp (120 Secret)", "Rayquaza - 016/110 (Delta Species)") goes first,
+// then other tags if the name is still long, and only then a cut at a word.
 export function barLabel(card, nameMax = 14) {
   const name = cleanCardName(card?.name);
   const num = fullNumber(card?.number ?? card?.num);
   let short = name;
-  if (short.length > nameMax) short = `${short.slice(0, Math.max(4, nameMax - 3)).trimEnd()}...`;
+  if (num) {
+    short = short
+      .replace(/\s*\(\d+[A-Za-z]?(?:\s[^)]*)?\)/g, "")
+      .replace(/\s+-\s+[A-Z]*\d+[a-z]?(?:\/[A-Z]*\d+)?(?=\s|$)/g, "")
+      .replace(/\s+/g, " ")
+      .trim() || name;
+  }
+  if (short.length > nameMax) {
+    const bare = short.replace(/\s*[([][^)\]]*[)\]]/g, "").replace(/\s+/g, " ").trim();
+    if (bare.length >= 3) short = bare;
+  }
+  if (short.length > nameMax) {
+    const room = Math.max(4, nameMax - 3);
+    let cut = short.slice(0, room);
+    const space = cut.lastIndexOf(" ");
+    if (space >= 4) cut = cut.slice(0, space);
+    short = `${cut.replace(/[\s(&,-]+$/, "")}...`;
+  }
   return num ? `${short} ${num}` : short;
 }
 

@@ -310,6 +310,13 @@ console.log("── reads check Nov 11 regressions ──");
   t("reads check Nov 11 suite", n === 0, `${n} failed`);
 }
 
+console.log("── card links follow the written number (SL, promo codes) ──");
+{
+  const { run } = await import("./stamp-promo-numbers.suite.mjs");
+  const n = await run();
+  t("stamp promo numbers suite", n === 0, `${n} failed`);
+}
+
 
 console.log("── no PPT history in public outputs ──");
 {
