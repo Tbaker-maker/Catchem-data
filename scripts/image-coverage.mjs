@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { mkdtemp, rm } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { catalogueHit, ptcgHit } from "./lib/image-gap.mjs";
+import { clonePrivate } from "./lib/private-clone.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -175,7 +176,7 @@ async function pushPrivate({ token, text, env = process.env, git = run }) {
   };
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
-    const cloned = await git("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+    const cloned = await clonePrivate(git, REMOTE, clone, childEnv);
     if (cloned.code !== 0) return { pushed: false, reason: `Private repo was not cloned (${redact(cloned.err, token) || "clone failed"}).` };
     const file = join(clone, PRIVATE_REL);
     await mkdir(dirname(file), { recursive: true });

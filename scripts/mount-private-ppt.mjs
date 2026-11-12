@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { redact, restorePrivate } from "./lib/private-ppt.mjs";
+import { clonePrivate } from "./lib/private-clone.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -28,7 +29,7 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
     await rm(clone, { recursive: true, force: true });
-    const cloned = await runGit("git", ["clone", "--depth", "1", "https://github.com/Tbaker-maker/catchem-data-private.git", clone], { ...process.env, GIT_TERMINAL_PROMPT: "0" });
+    const cloned = await clonePrivate(runGit, "https://github.com/Tbaker-maker/catchem-data-private.git", clone, { ...process.env, GIT_TERMINAL_PROMPT: "0" });
     if (cloned.code !== 0) {
       return { mounted: false, reason: `Private repo was not cloned (${redact(cloned.err, [token]) || "clone failed"}). Readers will skip PPT history.` };
     }

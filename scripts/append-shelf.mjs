@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { redact } from "./lib/private-ppt.mjs";
 import { appendShelfText, ptDate, shelfRows } from "./lib/shelf.mjs";
+import { clonePrivate } from "./lib/private-clone.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -49,7 +50,7 @@ export async function pushShelf({ token, rows, date, env = process.env, runGit =
   const childEnv = { ...env, GIT_TERMINAL_PROMPT: "0" };
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
-    const cloned = await runGit("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+    const cloned = await clonePrivate(runGit, REMOTE, clone, childEnv);
     if (cloned.code !== 0) return { pushed: false, reason: `Private repo was not cloned (${redact(cloned.err, [token]) || "clone failed"}).` };
     const file = join(clone, REL);
     let existing = "";
