@@ -17,9 +17,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const IDX = join(ROOT, "research/assets/cards/full/index.json");
 const rows = JSON.parse(await readFile(IDX, "utf8"));
 const cards = JSON.parse(await readFile(join(ROOT, "data/card-catalogue.json"), "utf8")).cards;
-// TCGplayer has no photo for these ids: the CDN answered 403 to GET on 2026-11-11.
-// They keep "The picture is missing." until a source for that exact id exists.
-const NO_PHOTO = new Set(["me6-95"]);
+// Ids whose TCGplayer photo does not exist. They keep "The picture is missing."
+// Empty on 2026-11-11: all 332 ids answered 200 to GET (a HEAD 403 from the CDN
+// was transient and cleared on retry).
+const NO_PHOTO = new Set([]);
 const hasPid = (c, id) => c && !NO_PHOTO.has(id) && /^\d+$/.test(String(c.tcgPlayerId || ""));
 const numOf = (id, setId) => id.slice(setId.length + 1);
 
