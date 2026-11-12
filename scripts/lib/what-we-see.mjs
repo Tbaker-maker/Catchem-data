@@ -54,19 +54,24 @@ function collectSignals(f) {
   const rot = f.rotation;
   const rip = f.rip;
   const span = spanDays(r);
+  // The price's own date, never "tonight": a page can show a build from days ago.
+  const nowDay = day(r?.now?.date || f.asOf) || "the last price date";
 
   // At high. The history line and the range chip share one window when both name the same high.
   if (r && span >= 90 && r.daysSinceHigh === 0 && r.high?.date && r.high.date !== r.low?.date && day(r.from)) {
-    const same = r.window && r.window.place === "upper part" && Number.isFinite(Number(r.window.days)) && Number.isFinite(Number(r.window.high)) && Math.round(Number(r.window.high) * 100) === Math.round(Number(r.high.price) * 100);
+    // Name the chip's window only when it is the whole history. "Matches the
+    // high on file across the 85 day range. History starts Feb 8, 2024" read
+    // as if the history were 85 days.
+    const same = r.window && Number(r.window.days) >= span - 1 && r.window.place === "upper part" && Number.isFinite(Number(r.window.days)) && Number.isFinite(Number(r.window.high)) && Math.round(Number(r.window.high) * 100) === Math.round(Number(r.high.price) * 100);
     const phrases = same ? [
       `At its highest price in the ${r.window.days} day range, and in our history, which starts ${day(r.from)}.`,
       `New high on file: ${money(r.high.price)} on ${day(r.high.date)}, the top of the ${r.window.days} day range. History starts ${day(r.from)}.`,
-      `Tonight matches the high on file (${money(r.high.price)}) across the ${r.window.days} day range, first reached ${day(r.high.date)}. History starts ${day(r.from)}.`,
+      `On ${nowDay} it matches the high on file (${money(r.high.price)}) across the ${r.window.days} day range, first reached ${day(r.high.date)}. History starts ${day(r.from)}.`,
       `Sitting at the high of ${money(r.high.price)} in the ${r.window.days} day range. History on file starts ${day(r.from)}.`,
     ] : [
       `At its highest price in our history, which starts ${day(r.from)}.`,
       `New high on file: ${money(r.high.price)} on ${day(r.high.date)}, the top mark since ${day(r.from)}.`,
-      `Tonight matches the high on file (${money(r.high.price)}), first reached ${day(r.high.date)}.`,
+      `On ${nowDay} it matches the high on file (${money(r.high.price)}), first reached ${day(r.high.date)}. History starts ${day(r.from)}.`,
       `Sitting at the high of ${money(r.high.price)} across a history that starts ${day(r.from)}.`,
     ];
     out.push({
@@ -85,10 +90,10 @@ function collectSignals(f) {
     if (fromLow >= 0 && fromLow <= 5 && day(r.low.date)) {
       const phrases = fromLow < 0.5 ? [
         `At its low on file: ${money(r.now.price)} on ${day(r.now.date)}, matching ${day(r.low.date)}.`,
-        `Tonight is the low on file at ${money(r.low.price)} (also ${day(r.low.date)}).`,
-        `Low on file tonight: ${money(r.now.price)}, first printed ${day(r.low.date)}.`,
+        `On ${nowDay} it is at the low on file, ${money(r.low.price)} (also ${day(r.low.date)}).`,
+        `Low on file on ${nowDay}: ${money(r.now.price)}, first printed ${day(r.low.date)}.`,
       ] : [
-        `Near its low on file: ${money(r.now.price)} tonight vs ${money(r.low.price)} on ${day(r.low.date)}.`,
+        `Near its low on file: ${money(r.now.price)} on ${nowDay} vs ${money(r.low.price)} on ${day(r.low.date)}.`,
         `Within ${Math.round(fromLow)}% of the low of ${money(r.low.price)} set on ${day(r.low.date)}.`,
         `Close to the floor: low ${money(r.low.price)} (${day(r.low.date)}), now ${money(r.now.price)}.`,
       ];
@@ -112,7 +117,7 @@ function collectSignals(f) {
     const phrases = [
       `${n}% under its high of ${hi} on ${when}, ${ago} days ago.`,
       `Off ${n}% from the high of ${hi} (${when}), now ${ago} days later.`,
-      `The high was ${hi} on ${when}. Tonight is ${n}% under that mark after ${ago} days.`,
+      `The high was ${hi} on ${when}. On ${nowDay} it is ${n}% under that mark, ${ago} days later.`,
       `${ago} days after the ${hi} high (${when}), the market sits ${n}% lower.`,
     ];
     // Fresher highs score higher; deep cuts also score high.
@@ -240,7 +245,7 @@ function collectSignals(f) {
     if (rank.rank === 1) {
       const phrases = [
         `No. 1 of ${rank.of} by price in ${rank.set}, as of ${day(rank.asOf)}.`,
-        `Top price in ${rank.set} tonight among ${rank.of} priced cards (${day(rank.asOf)}).`,
+        `Top price in ${rank.set} among ${rank.of} priced cards (${day(rank.asOf)}).`,
         `Leads ${rank.set} by market price: rank 1 of ${rank.of} on ${day(rank.asOf)}.`,
       ];
       out.push({ kind: "rank", score: 64, title: "Set rank", note: `TCGplayer market, ${day(rank.asOf)}`, phrases, text: pick(id, "rank1", phrases) });

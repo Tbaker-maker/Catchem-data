@@ -336,6 +336,13 @@ console.log("── card links follow the written number (SL, promo codes) ─�
 }
 
 
+console.log("── reads wording: history span, dated prices, one ratio direction ──");
+{
+  const { run } = await import("./reads-wording.suite.mjs");
+  const n = await run();
+  t("reads wording suite", n === 0, `${n} failed`);
+}
+
 console.log("── no PPT history in public outputs ──");
 {
   const n = await runNoPptPublicTests();
