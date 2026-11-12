@@ -1,13 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sourceNamesDay } from "../lib/read-quality.mjs";
 import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 // Long-history price rows (scripts/lib/history-reads.mjs): real points, own dates.
 const histKinds = new Set(["high", "low", "year", "plain", "backto", "set"]);
-const histOk = (row) => row.board === "hist" && histKinds.has(row.readKind) && row.kind === row.readKind && /^\d{4}-\d{2}-\d{2}$/.test(String(row.startDate || "")) && row.endDate === row.asOf && String(row.source || "").includes(row.startDate);
+const histOk = (row) => row.board === "hist" && histKinds.has(row.readKind) && row.kind === row.readKind && /^\d{4}-\d{2}-\d{2}$/.test(String(row.startDate || "")) && row.endDate === row.asOf && sourceNamesDay(row.source, row.startDate, row.asOf);
 
 export async function run() {
   let fail = 0;
