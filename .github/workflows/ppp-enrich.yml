@@ -43,6 +43,10 @@ jobs:
           PPP_LANES: ${{ inputs.lanes || 'map,comps,volume,pop,history' }}
           PPP_SCALE: ${{ inputs.scale || '1' }}
         run: node scripts/ppp-enrich.mjs
+      - name: Sealed history backfill (history lane only)
+        env:
+          PKMNPRICES_API_KEY: ${{ secrets.PKMNPRICES_API_KEY }}
+        run: node scripts/ppp-sealed-history.mjs
       - name: Raw stays private, derived only
         run: node scripts/tests/no-ppp-raw-public.test.mjs
       - name: Push raw to private repo
@@ -54,7 +58,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add research/assets/public/market-depth data/ppp/enrich-report.json
+          git add research/assets/public/market-depth data/ppp/enrich-report.json data/ppp/sealed-history-progress.json
+          if [ -f data/backfill/pkmnprices/sealed.json ]; then git add data/backfill/pkmnprices/sealed.json; fi
           git diff --cached --quiet && exit 0
           git commit -m "data: market depth (eBay sold comps, pop, EUR) $(date -u +'%Y-%m-%dT%H:%MZ')"
           for i in 1 2 3 4 5; do

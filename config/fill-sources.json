@@ -54,6 +54,18 @@
       "robotsChecked": "2026-10-30",
       "depthNote": "Card pages: earliest point 2025-09-30, median ~373 days (measured 2026-10-13 from singles.json.gz)",
       "depthChecked": "2026-10-13"
+    },
+    {
+      "site": "api.pkmnprices.com sealed history",
+      "key": "pkmnprices",
+      "robots": "not a crawl; paid API, history lane only",
+      "terms": "Pro plan. 1 credit per history row. Lane cap 500 credits per UTC day.",
+      "use": "scripts/ppp-sealed-history.mjs writes data/backfill/pkmnprices/sealed.json only after an overlap sample matches our own TCGplayer days. Days before our first own day only.",
+      "rawFile": "data/backfill/pkmnprices/sealed.json",
+      "chartFill": false,
+      "fillsHistory": false,
+      "robotsBlocked": false,
+      "note": "Off until a verified file exists and this flag is turned on. Nothing from this source is on the chart while chartFill is false."
     }
   ],
   "skipped": [
