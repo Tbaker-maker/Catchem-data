@@ -10,7 +10,9 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # The suite takes about 10 minutes. A red PR runs it a second time on the
+    # base commit (below), so allow two runs plus setup.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +34,18 @@ jobs:
         run: node scripts/artifact-freshness.mjs
       - name: Full test suite
         # Every failing test blocks a PR except main's own freshness checks
-        # (scripts/lib/test-tiers.mjs, pr mode).
+        # (scripts/lib/test-tiers.mjs, pr mode), and except a test that fails
+        # the same way on the base commit. Main's committed outputs go stale
+        # when a nightly misses (Nov 9 to 11: 7 suites red on every PR, PR #504
+        # and #506 included). That is main's state, not the PR's code. The old
+        # fix (PR #501) rebuilt every output first and took about 2 hours.
+        # Here the suite runs on the base commit only when the PR is red, and
+        # only a failure the base does not have blocks
+        # (scripts/lib/test-baseline.mjs). No finished base log = every failure blocks.
+        # Pushes to main have no base to compare with and keep the plain rule.
+        env:
+          FEED_FRESHNESS_WARN_ONLY: "1" # same as the nightly test gate: staleness is reported, not failed
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           mkdir -p data/derived
           set +e
@@ -42,7 +55,15 @@ jobs:
           grep -E "✗|FAIL" /tmp/tests.log | head -40
           set -e
           if [ "$code" = 0 ]; then exit 0; fi
-          node scripts/triage-tests.mjs /tmp/tests.log --mode pr --out /tmp/test-triage.json
+          if node scripts/triage-tests.mjs /tmp/tests.log --mode pr --out /tmp/test-triage.json; then exit 0; fi
+          if [ "${{ github.event_name }}" != "pull_request" ] || [ -z "$BASE_SHA" ]; then exit 1; fi
+          echo "::group::Same suite on the base commit $BASE_SHA"
+          git worktree add -q --detach /tmp/base "$BASE_SHA"
+          ln -s "$PWD/node_modules" /tmp/base/node_modules
+          (cd /tmp/base && mkdir -p data/derived && node scripts/tests/run-tests.mjs > /tmp/base-tests.log 2>&1) || true
+          tail -3 /tmp/base-tests.log
+          echo "::endgroup::"
+          node scripts/test-baseline.mjs /tmp/tests.log /tmp/base-tests.log
       - name: Publish gate (report only)
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
