@@ -56,5 +56,21 @@ export async function run() {
   const { checkRead } = await import("../lib/publish-gate.mjs");
   t("the gate keeps the two-decimal box read", box && !checkRead(box, {}).flags.some((f) => f.rule === "ratio"));
   t("the gate drops a one-decimal box ratio", box && checkRead({ ...box, headline: box.headline.replace("0.69x", "0.7x") }, {}).flags.some((f) => f.rule === "ratio"));
+
+  // The last paired day can be before the catalogue day: name that day, not asOf.
+  const lateAsOf = "2026-11-01";
+  const chaseLate = { ...chase, pts: chase.pts.concat([[lateAsOf, 232]]) };
+  const late = sealedGapDeep(
+    [
+      { id: "pack", name: "Twilight Masquerade Booster Pack", set: "SV06: Twilight Masquerade", tcgPlayerId: 1 },
+    ],
+    new Map([["pack", hist(5, 6)]]),
+    [chaseLate],
+    new Map([[1, { group: "SV06: Twilight Masquerade" }]]),
+    { asOf: lateAsOf },
+  );
+  const latePack = late.find((r) => r.sku === "pack");
+  t("a read still builds when the last paired day is 2 days before asOf", latePack && latePack.headline.includes("on Oct 30") && latePack.headline.includes("from 50x on Sep 26"));
+  t("the headline and both dollar lines name the paired day, not asOf", latePack && latePack.lines[0].includes("Oct 30") && latePack.lines[1].includes("Oct 30") && !latePack.headline.includes("Nov 1") && !latePack.lines[0].includes("Nov 1") && !latePack.lines[1].includes("Nov 1"));
   return fail;
 }

@@ -314,7 +314,7 @@ export function sealedGapDeep(products, histories, cards, rawProducts, { asOf, m
     const group = (pid && rawProducts?.get(pid)?.group) || p.set;
     const chase = top.get(short(p.set).toLowerCase()) || top.get(short(group).toLowerCase());
     const hp = (histories.get(p.id) || []).filter((x) => x?.market > 0).map((x) => [x.date, x.market]);
-    if (!chase || hp.length < 7 || hp.at(-1)[0] !== asOf) continue;
+    if (!chase || hp.length < 7) continue;
     const cm = new Map(chase.pts);
     const paired = hp.filter((x) => cm.has(x[0])).map((x) => ({ date: x[0], sealed: x[1], card: cm.get(x[0]) }));
     if (paired.length < 7) continue;
@@ -329,10 +329,10 @@ export function sealedGapDeep(products, histories, cards, rawProducts, { asOf, m
     const nowX = times(z.card, z.sealed);
     const thenX = times(a.card, a.sealed);
     if (!(nowX > 0) || !(thenX > 0)) continue;
-    const headline = `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${timesText(nowX)}x the sealed price on ${monthDay(asOf)}, from ${timesText(thenX)}x on ${monthDay(a.date)}.`;
+    const headline = `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${timesText(nowX)}x the sealed price on ${monthDay(z.date)}, from ${timesText(thenX)}x on ${monthDay(a.date)}.`;
     const lines = [
-      `${p.name}: ${usd(a.sealed)} (${monthDay(a.date)}) to ${usd(z.sealed)} (${monthDay(asOf)}).`,
-      `${cardTitle(chase)}: ${usd(a.card)} to ${usd(z.card)}, same days.`,
+      `${p.name}: ${usd(a.sealed)} (${monthDay(a.date)}) to ${usd(z.sealed)} (${monthDay(z.date)}).`,
+      `${cardTitle(chase)}: ${usd(a.card)} (${monthDay(a.date)}) to ${usd(z.card)} (${monthDay(z.date)}).`,
       `Ratio on ${paired.length} nightly days both had a price, ${monthDay(a.date)} to ${monthDay(z.date)}, TCGplayer market.`,
       `Matched by set name: the chase card is the top-priced card in ${short(group)} on ${monthDay(asOf)}.`,
     ];
