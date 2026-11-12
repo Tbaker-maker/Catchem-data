@@ -10,9 +10,10 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    # The suite takes about 10 minutes. A red PR runs it a second time on the
-    # base commit (below), so allow two runs plus setup.
-    timeout-minutes: 45
+    # One suite run took about 19 minutes on PR #501 (run 43129428719: 00:45 to
+    # 01:04 UTC, base run 01:04 to 01:22). A red PR runs it a second time on the
+    # base commit (below), so allow two runs plus setup with room to spare.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
