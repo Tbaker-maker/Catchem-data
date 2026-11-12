@@ -7,7 +7,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PUBLIC_ITEM_KEYS, PUBLIC_SOLD_KEYS, PUBLIC_GRADED_KEYS, PUBLIC_POP_KEYS, PUBLIC_EUR_KEYS, soldStats, keepComps, dailySold, popSummary, offItem } from "../lib/ppp-derive.mjs";
+import { PUBLIC_ITEM_KEYS, PUBLIC_SOLD_KEYS, PUBLIC_GRADED_KEYS, PUBLIC_POP_KEYS, PUBLIC_EUR_KEYS, soldStats, keepComps, dailySold, popSummary, offItem, deriveItem } from "../lib/ppp-derive.mjs";
 import { checkBudget, loadBudget } from "../lib/ppp-budget.mjs";
 import { priorityOrder } from "../ppp-enrich.mjs";
 
@@ -54,14 +54,17 @@ export async function runNoPppRawPublicTests() {
   t("EUR rows are not in the USD median", keepComps([row(10, "2026-11-10", { currency: "EUR" })], { asOf }).kept.length === 0);
   t("comps outside 90 days are out", keepComps([row(10, "2026-07-01")], { asOf }).kept.length === 0);
   t("a sold median with no comp in 45 days is hidden", soldStats([1, 2, 3, 4, 5].map(() => row(10, "2026-09-01")), { asOf }) === null);
-  t("market filter drops a comp at a quarter of market", keepComps([row(10), row(40), row(41), row(42)], { asOf, market: 40 }).kept.length === 3);
+  t("market guard drops a comp under a quarter of market", keepComps([row(9), row(40), row(41), row(42)], { asOf, market: 40 }).kept.length === 3);
   t("one day of volume is hidden", dailySold([{ date: "2026-11-10", sales: 9 }], { asOf }) === null);
-  t("volume sums raw and graded per day", JSON.stringify(dailySold([{ date: "2026-11-10", sales: 2 }, { date: "2026-11-10", sales: 1 }, { date: "2026-11-11", sales: 3 }], { asOf })) === JSON.stringify([["2026-11-10", 3], ["2026-11-11", 3]]));
+  t("volume sums raw and graded per day", JSON.stringify(dailySold([{ date: "2026-11-10", sales: 2 }, { date: "2026-11-10", sales: 1 }, { date: "2026-11-11", sales: 3 }], { asOf: "2026-11-14" })) === JSON.stringify([["2026-11-10", 3], ["2026-11-11", 3]]));
+  t("the newest 3 days are left out (comps arrive late)", dailySold([{ date: "2026-11-08", sales: 3 }, { date: "2026-11-09", sales: 3 }, { date: "2026-11-11", sales: 3 }], { asOf }).length === 2);
   t("no graded copies means no pop", popSummary({ variants: [] }) === null);
   t("pop keeps counts, not urls", !JSON.stringify(popSummary({ variants: [{ variant: "Holofoil", total_population: 3, total_gems: 1, graders: { PSA: { total: 3, gems: 1, grades: { "10": 1 }, pop_report_url: "https://x" } } }] })).includes("http"));
   t("a raw comp row is caught", badMarketDepthDoc({ asOf, items: { "tcgcsv-1": { sold: { n: 5, median: 1, title: "x" } } } }).length > 0);
   t("a listing url is caught", badMarketDepthDoc({ asOf, items: { "tcgcsv-1": { graded: [{ label: "https://www.ebay.com/itm/1", n: 3, median: 1, last: asOf }] } } }).length > 0);
   t("a clean doc passes", badMarketDepthDoc({ asOf, source: "x", items: { "tcgcsv-1": { sold: { n: 5, median: 1, p25: 1, p75: 1, first: asOf, last: asOf, dropped: 0, days: 90, currency: "USD", truncated: false }, daily: [[asOf, 2]] } } }).length === 0);
+  t("a Cardmarket price 5x our market is hidden", !deriveItem({ detail: { body: { prices: [{ source: "cardmarket", currency: "EUR", market_price: 17500, created_at: "2026-11-11T00:00:00Z" }] } } }, { asOf, kind: "sealed", name: "x", market: 3265.81 }));
+  t("a Cardmarket price near our market is kept", deriveItem({ detail: { body: { prices: [{ source: "cardmarket", currency: "EUR", market_price: 310, created_at: "2026-11-11T00:00:00Z" }] } } }, { asOf, kind: "sealed", name: "x", market: 463.02 })?.eur?.market === 310);
   t("sealed come first in priority", priorityOrder([{ pid: 1, kind: "single", market: 900 }, { pid: 2, kind: "sealed", market: 5 }])[0].pid === 2);
   t("PPP lanes fit the daily plan", checkBudget(loadBudget()).length === 0, checkBudget(loadBudget()).join("; "));
 

@@ -66,9 +66,10 @@ export async function runLanes({ client, budget, products, lanes, scale = 1, now
   const ledger = ledgerFor(await readJson(join(RAW, "ledger.json"), null), day);
   const meters = [];
   const meter = (name) => {
-    const m = laneMeter(name, budget, ledger.lanes[name] || 0);
+    const start = ledger.lanes[name] || 0;
+    const m = laneMeter(name, budget, start);
     const cap = Math.floor(m.cap * scale);
-    const w = { name, cap, canSpend: (c = 1) => m.spent + c <= cap && m.canSpend(c), charge: m.charge, get spent() { return m.spent - (ledger.lanes[name] || 0); }, get total() { return m.spent; } };
+    const w = { name, cap, canSpend: (c = 1) => m.spent + c <= cap && m.canSpend(c), charge: m.charge, get spent() { return m.spent - start; }, get total() { return m.spent; } };
     meters.push(w);
     return w;
   };

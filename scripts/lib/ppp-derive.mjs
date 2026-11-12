@@ -5,7 +5,10 @@ export const SOLD_WINDOW_DAYS = 90;
 export const MIN_SOLD = 5;        // raw sold median needs at least 5 kept comps
 export const MIN_GRADED = 3;      // one grader + grade line needs 3 kept comps
 export const MIN_DAILY_TOTAL = 5; // the daily sold series needs 5 comps over 2+ days
-export const STALE_SOLD_DAYS = 45; // a sold median whose latest comp is older is hidden
+export const STALE_SOLD_DAYS = 45;
+// PkmnPrices can collect a comp days or weeks after it sold, so the newest days
+// undercount. The daily series stops this many days before asOf.
+export const DAILY_LAG_DAYS = 3; // a sold median whose latest comp is older is hidden
 export const SOURCE = "eBay sold comps via PkmnPrices";
 export const POP_SOURCE = "PSA, BGS, CGC and SGC population reports via PkmnPrices (GemRate)";
 export const EUR_SOURCE = "Cardmarket via PkmnPrices";
@@ -47,7 +50,8 @@ export function offItem(title, productName = "") {
 
 // Keep comps that are this exact item, in USD, inside the window, then drop
 // anything under half or over double the kept median (the half-price filter),
-// and anything under half or over double the current TCGplayer market when known.
+// and anything under a quarter or over 4x the current TCGplayer market when known
+// (a wide guard against a different item; the median filter does the real work).
 export function keepComps(rows, { asOf, kind = "single", name = "", market = null, graded = false, days = SOLD_WINDOW_DAYS } = {}) {
   const end = Date.parse(asOf);
   const start = end - days * DAY;
@@ -67,7 +71,7 @@ export function keepComps(rows, { asOf, kind = "single", name = "", market = nul
   }
   if (!graded && Number(market) > 0) {
     const before = kept.length;
-    kept = kept.filter((c) => c.price >= market * 0.5 && c.price <= market * 2);
+    kept = kept.filter((c) => c.price >= market * 0.25 && c.price <= market * 4);
     dropped += before - kept.length;
   }
   if (!graded) {
@@ -90,6 +94,7 @@ export function soldStats(rows, opts = {}) {
   const first = kept.map((c) => c.day).sort()[0];
   return {
     n: kept.length,
+    read: kept.length + dropped,
     median: r2(median(prices)),
     p25: r2(quantile(prices, 0.25)),
     p75: r2(quantile(prices, 0.75)),
@@ -133,7 +138,7 @@ export function dailySold(rows, { asOf, days = SOLD_WINDOW_DAYS } = {}) {
     const day = String(row?.date || "").slice(0, 10);
     const n = Number(row?.sales);
     const t = Date.parse(day);
-    if (!ISO.test(day) || !(n >= 0) || t > end || t <= end - days * DAY) continue;
+    if (!ISO.test(day) || !(n >= 0) || t > end - DAILY_LAG_DAYS * DAY || t <= end - days * DAY) continue;
     map.set(day, (map.get(day) || 0) + Math.round(n));
   }
   const pts = [...map.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
@@ -185,7 +190,7 @@ export function eurPrice(detail, { kind = "single", variant = "" } = {}) {
 
 // Allowed keys in a published market-depth item. The guard test checks this list.
 export const PUBLIC_ITEM_KEYS = new Set(["sold", "graded", "daily", "pop", "eur"]);
-export const PUBLIC_SOLD_KEYS = new Set(["n", "median", "p25", "p75", "first", "last", "dropped", "days", "currency", "truncated"]);
+export const PUBLIC_SOLD_KEYS = new Set(["n", "read", "median", "p25", "p75", "first", "last", "dropped", "days", "currency", "truncated"]);
 export const PUBLIC_GRADED_KEYS = new Set(["label", "n", "median", "last"]);
 export const PUBLIC_POP_KEYS = new Set(["variant", "variants", "total", "gems", "gemRate", "graders", "asOf", "changed"]);
 export const PUBLIC_EUR_KEYS = new Set(["market", "asOf"]);
@@ -211,7 +216,10 @@ export function deriveItem(raw, { asOf, kind, name, market }) {
   }
   if (raw.detail) {
     const e = eurPrice(raw.detail.body, { kind });
-    if (e) out.eur = e;
+    // A Cardmarket number under half or over double our TCGplayer market (no FX
+    // applied; EUR and USD are within ~20%) is more likely a different item or a
+    // thin market than a price. Hide it.
+    if (e && (!(Number(market) > 0) || (e.market >= market * 0.5 && e.market <= market * 2))) out.eur = e;
   }
   return Object.keys(out).length ? out : null;
 }
