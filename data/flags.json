@@ -96,6 +96,13 @@
       "why": "On since 2026-10-12 (reads board v3: group climbs, set heat, releases, sourced news, rotation, Pokemon facts, eBay listing counts, not-moved-yet lists). Tightening and Building still need an exact 7-day pair of filteredTotal. Set false to turn every non-price read off without a deploy.",
       "trigger": "Exact 7-day filteredTotal pairs exist and RD writes the sentence for them.",
       "env": "CATCHEM_READS_LIBRARY"
+    },
+    "reads.creatorTalk": {
+      "value": false,
+      "owner": "scripts/lib/creator-talk-reads.mjs + scripts/build-feed.mjs",
+      "why": "OFF by default (2026-10-22). Adds unnamed 'talk vs data' and 'what the market is talking about' reads from the private YouTube engine feed (catchem-data-private research/yt/read-candidates.json). Approved creator calls only, no creator names unless opted in, copy guard re-run here.",
+      "trigger": "Tyler turns it on after reviewing samples.",
+      "env": "CATCHEM_CREATOR_TALK_READS"
     }
   }
 }
