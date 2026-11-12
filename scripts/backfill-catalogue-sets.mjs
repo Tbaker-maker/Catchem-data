@@ -25,6 +25,8 @@ const TCGCSV = "https://tcgcsv.com/tcgplayer/3";
 const DRY = process.argv.includes("--dry");
 // Set id -> TCGCSV group id, only for sets whose group was checked by hand.
 const GROUPS = { me6: 24831 };
+// Published by the dataset but 404 at images.pokemontcg.io (large and small) on 2026-11-11.
+const IMAGE_404 = new Set(["hsp-HGSS18"]);
 const ENERGY = { Grass: "G", Fire: "R", Water: "W", Lightning: "L", Psychic: "P", Fighting: "F", Darkness: "D", Metal: "M" };
 
 const getJson = async (url) => {
@@ -77,7 +79,7 @@ for (const set of todo) {
     added++; setAdded++;
     const large = c.images?.large || null, small = c.images?.small || null;
     const ok = (u) => u && new URL(u).hostname === "images.pokemontcg.io";
-    if (!img.images[c.id] && ok(large) && ok(small)) { img.images[c.id] = { small, large }; images++; }
+    if (!img.images[c.id] && !IMAGE_404.has(c.id) && ok(large) && ok(small)) { img.images[c.id] = { small, large }; images++; }
   }
   cat.sets[set.id] = { cardsIngested: cards.length, expected: set.total, complete: cards.length >= set.total, at: today,
     source: `${SRC}/cards/en/${set.id}.json` };
