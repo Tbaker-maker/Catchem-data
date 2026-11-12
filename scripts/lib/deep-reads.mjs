@@ -314,28 +314,30 @@ export function sealedGapDeep(products, histories, cards, rawProducts, { asOf, m
     const group = (pid && rawProducts?.get(pid)?.group) || p.set;
     const chase = top.get(short(p.set).toLowerCase()) || top.get(short(group).toLowerCase());
     const hp = (histories.get(p.id) || []).filter((x) => x?.market > 0).map((x) => [x.date, x.market]);
-    if (!chase || hp.length < 7 || hp.at(-1)[0] !== asOf) continue;
+    if (!chase || hp.length < 7) continue;
     const cm = new Map(chase.pts);
     const paired = hp.filter((x) => cm.has(x[0])).map((x) => ({ date: x[0], sealed: x[1], card: cm.get(x[0]) }));
     if (paired.length < 7) continue;
     const a = paired[0], z = paired.at(-1);
-    // One decimal from the exact dollar pair. Never invert a ratio that was already rounded.
-    const times = (num, den) => Math.round((num / den) * 10) / 10;
-    const timesText = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
-    const cardHigher = z.card > z.sealed;
-    const nowX = cardHigher ? times(z.card, z.sealed) : times(z.sealed, z.card);
-    const thenX = cardHigher ? times(a.card, a.sealed) : times(a.sealed, a.card);
-    const headline = cardHigher
-      ? `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${timesText(nowX)}x the sealed price tonight, from ${timesText(thenX)}x on ${monthDay(a.date)}.`
-      : `${p.name} vs its top chase card: it costs ${timesText(nowX)}x ${cardTitle(chase)} tonight, from ${timesText(thenX)}x on ${monthDay(a.date)}.`;
+    // Rounded from the exact dollar pair. Never invert a ratio that was already rounded.
+    // Two decimals under 1x, so a box against its card reads 0.32x, not 0.3x.
+    const times = (num, den) => { const n = num / den; return n < 1 ? Math.round(n * 100) / 100 : Math.round(n * 10) / 10; };
+    const timesText = String;
+    // One direction on every product: the chase card as a multiple of the
+    // sealed price. A box once read "it costs 1.4x the card" next to a pack's
+    // "the card costs 24.9x the sealed price".
+    const nowX = times(z.card, z.sealed);
+    const thenX = times(a.card, a.sealed);
+    if (!(nowX > 0) || !(thenX > 0)) continue;
+    const headline = `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${timesText(nowX)}x the sealed price on ${monthDay(z.date)}, from ${timesText(thenX)}x on ${monthDay(a.date)}.`;
     const lines = [
-      `${p.name}: ${usd(a.sealed)} (${monthDay(a.date)}) to ${usd(z.sealed)} (${monthDay(asOf)}).`,
-      `${cardTitle(chase)}: ${usd(a.card)} to ${usd(z.card)}, same days.`,
+      `${p.name}: ${usd(a.sealed)} (${monthDay(a.date)}) to ${usd(z.sealed)} (${monthDay(z.date)}).`,
+      `${cardTitle(chase)}: ${usd(a.card)} (${monthDay(a.date)}) to ${usd(z.card)} (${monthDay(z.date)}).`,
       `Ratio on ${paired.length} nightly days both had a price, ${monthDay(a.date)} to ${monthDay(z.date)}, TCGplayer market.`,
-      `Matched by set name: the chase card is the top-priced card in ${short(group)} tonight.`,
+      `Matched by set name: the chase card is the top-priced card in ${short(group)} on ${monthDay(asOf)}.`,
     ];
-    const points = paired.map((x) => [x.date, cardHigher ? times(x.card, x.sealed) : times(x.sealed, x.card)]);
-    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a.date} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: { label: cardHigher ? "Chase card price / sealed price" : "Sealed price / chase card price", points }, startDate: a.date, endDate: asOf, weight: Math.abs(nowX / thenX - 1) });
+    const points = paired.map((x) => [x.date, times(x.card, x.sealed)]);
+    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a.date} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: { label: "Chase card price / sealed price", points }, startDate: a.date, endDate: asOf, weight: Math.abs(nowX / thenX - 1) });
     if (rr) out.push(rr);
   }
   return out.sort((a, z) => z.weight - a.weight).slice(0, max);
