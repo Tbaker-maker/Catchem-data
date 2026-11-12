@@ -1,0 +1,64 @@
+name: PkmnPrices enrichment (sold comps, pop, EUR)
+
+# Nightly after the 00:00 UTC credit reset. Lane caps in config/ppp-budget.json keep
+# this run inside its share of the 20,000 daily credits; scripts/ppp-refresh.mjs
+# (current prices) keeps its own 10,000. Raw responses go to catchem-data-private
+# under ppp/. Only derived files under research/assets/public/market-depth/ and
+# data/ppp/enrich-report.json are committed here.
+on:
+  schedule:
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+    inputs:
+      lanes:
+        description: "Comma list of map,comps,volume,pop,history"
+        default: "map,comps,volume,pop,history"
+      scale:
+        description: "Fraction of each lane cap to use (0-1)"
+        default: "1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ppp-credits
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pull private PkmnPrices state
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/ppp-private-sync.mjs pull
+      - name: Fetch and derive
+        env:
+          PKMNPRICES_API_KEY: ${{ secrets.PKMNPRICES_API_KEY }}
+          PPP_LANES: ${{ inputs.lanes || 'map,comps,volume,pop,history' }}
+          PPP_SCALE: ${{ inputs.scale || '1' }}
+        run: node scripts/ppp-enrich.mjs
+      - name: Raw stays private, derived only
+        run: node scripts/tests/no-ppp-raw-public.test.mjs
+      - name: Push raw to private repo
+        if: always()
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/ppp-private-sync.mjs push
+      - name: Commit derived files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add research/assets/public/market-depth data/ppp/enrich-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: market depth (eBay sold comps, pop, EUR) $(date -u +'%Y-%m-%dT%H:%MZ')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i * 15))
+          done
+          exit 1

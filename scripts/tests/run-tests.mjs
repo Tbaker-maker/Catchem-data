@@ -33,6 +33,7 @@ import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
 import { runTcgcsvRawTests } from "./tcgcsv-raw.test.mjs";
 import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
+import { runNoPppRawPublicTests } from "./no-ppp-raw-public.test.mjs";
 import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runReadTagTests } from "./read-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
@@ -315,6 +316,11 @@ console.log("── no PPT history in public outputs ──");
 {
   const n = await runNoPptPublicTests();
   t("no-PPT public suite", n === 0, `${n} failed`);
+}
+console.log("── PkmnPrices: raw private, derived market-depth only ──");
+{
+  const n = await runNoPppRawPublicTests();
+  t("no-PPP-raw public suite", n === 0, `${n} failed`);
 }
 console.log("── public index line (value-weighted) ──");
 {
