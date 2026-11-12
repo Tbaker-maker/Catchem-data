@@ -12,7 +12,7 @@ import { money } from "./public-bundle.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
 import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
-import { eraTagOf, priceRange } from "./signal-chips.mjs";
+import { eraTagOf, priceRange, dayLabel } from "./signal-chips.mjs";
 import { speakDates } from "./read-quality.mjs";
 
 export const HEADLINE_MAX = 300;
@@ -308,12 +308,35 @@ function unrepeated(have, short) {
     const body = rest.replace(/\.$/, "");
     return body.charAt(0).toUpperCase() + body.slice(1) + ".";
   }
+  // "Down 27% over 30 days, to $537.33 on Nov 11." after a lead that already said down 27% over 30 days.
+  const trend = s.match(/^(Up|Down) (\d+)% over (\d+) days, to /);
+  if (trend && saidMove(have, trend[1].toLowerCase(), trend[2], trend[3])) return "";
   const that = s.match(/^That (trails|beats) its set over (\d+) days: (up|down) (\d+)% against (.*)$/i);
   if (that && saidMove(have, that[3], that[4], that[2])) {
     const verb = that[1].toLowerCase() === "beats" ? "Ahead of" : "Trailing";
     return `${verb} ${that[5].replace(/\.$/, "")}.`;
   }
   return s;
+}
+
+// +1 for a finding that says the price went up, -1 for down, 0 for neither.
+export function findingDir(f) {
+  const type = String(f?.type || "");
+  if (f?.tag === "trend" || f?.tag === "streak") return /up$/.test(type) ? 1 : /down$/.test(type) ? -1 : 0;
+  if (type === "high" || type === "nearHigh") return 1;
+  if (type === "low" || type === "drawdown") return -1;
+  return 0;
+}
+
+// The direction a lead must not contradict. A slump read is about a fall and a
+// recovery read about a rise. Otherwise the shortest qualifying trend (7 or 30
+// days) is the most recent fact, so a longer window cannot lead against it.
+export function leadDirection(item, fs) {
+  if (item?.kind === "deep:slump") return -1;
+  if (item?.kind === "deep:recovery") return 1;
+  const recent = (fs || []).filter((f) => f.tag === "trend" && f.score > 0 && Number(f.window) > 0 && Number(f.window) <= 30)
+    .sort((a, b) => Number(a.window) - Number(b.window))[0];
+  return recent ? findingDir(recent) : 0;
 }
 
 export function compose(item, fs, cfg, used) {
@@ -324,7 +347,14 @@ export function compose(item, fs, cfg, used) {
   const cap = used ? Math.max(1, Math.floor(cfg.maxOpeningShare * used.total)) : Infinity;
   const key = (f) => openingKey(f.text, [item.title]);
   const count = (f) => (used ? used.byType.get(key(f)) || 0 : 0);
-  const lead = ranked.find((f) => count(f) < cap) || ranked.slice().sort((a, b) => count(a) - count(b))[0];
+  // A lead cannot argue against the read's own story: a slump read does not
+  // open on a gain, and a year gain does not lead over a fresh fall.
+  const want = leadDirection(item, fs);
+  const strict = item?.kind === "deep:slump" || item?.kind === "deep:recovery";
+  const against = (f) => findingDir(f) === -want && (strict || f.tag === "trend" || f.tag === "streak");
+  const agree = want ? ranked.filter((f) => !against(f)) : ranked;
+  const leadPool = agree.length ? agree : ranked;
+  const lead = leadPool.find((f) => count(f) < cap) || leadPool.slice().sort((a, b) => count(a) - count(b))[0];
   const leadWindow = Number.isFinite(Number(lead.window)) ? Number(lead.window) : null;
   const sameWindow = (f) => {
     if (!leadWindow || !Number.isFinite(Number(f.window))) return true;
@@ -462,8 +492,9 @@ function namedWindows(text) {
   if (/\b30\s*[- ]?days?\b|\b30D\b/i.test(s)) hit.add(30);
   if (/\b90\s*[- ]?days?\b|\b90D\b/i.test(s)) hit.add(90);
   if (/\b365\s*[- ]?days?\b|\bon the year\b|\bin a year\b|\bover the year\b|\bover a year\b/i.test(s)) hit.add(365);
-  const m = s.match(/\b(\d+)\s+day\b/i);
-  if (m) hit.add(Number(m[1]));
+  // Any other count of days, written out ("21 days", "29 day range") or as a chip ("21D").
+  for (const m of s.matchAll(/\b(\d+)\s*[- ]?days?\b/gi)) hit.add(Number(m[1]));
+  for (const m of s.matchAll(/\b(\d+)D\b/g)) hit.add(Number(m[1]));
   return hit;
 }
 
@@ -476,15 +507,44 @@ function chipDays(chip) {
 }
 
 // Drop chips, tiles and lines that name a different window than the lead.
-export function alignToWindow(read, days) {
+// The move chip for a trend lead, built from the lead's own two points so the
+// chip and the headline share one window and one percent.
+export function leadMoveChip(lead, days, dropped = null) {
+  const c = lead?.tag === "trend" ? lead?.nums?.lead : lead?.tag === "peers" ? lead?.nums?.own : null;
+  if (!c || !Array.isArray(c.from) || !Array.isArray(c.to) || Number(c.days) !== Number(days)) return null;
+  const a = Number(c.from[1]); const b = Number(c.to[1]);
+  if (!(a > 0) || !(b > 0)) return null;
+  const p = ((b - a) / a) * 100;
+  const shown = r0(p);
+  if (!shown) return null;
+  const dir = p > 0 ? "up" : "down";
+  const strength = dropped && dropped.dir === dir && Number(dropped.strength) > 0 ? Number(dropped.strength) : 1;
+  return { kind: "move", dir, text: `${shown}% ${days}D`, label: `Price ${dir} ${shown} percent over ${days} days`, strength };
+}
+
+export function alignToWindow(read, days, lead = null) {
   const n = Number(days);
   if (!(n > 0) || !read) return read;
   const next = { ...read, windowDays: n };
   if (Array.isArray(read.signals)) {
+    let dropped = null;
     next.signals = read.signals.filter((chip) => {
       const w = chipDays(chip);
-      return w == null || w === n;
+      const ok = w == null || w === n;
+      if (!ok && chip?.kind === "move" && !dropped) dropped = chip;
+      return ok;
     });
+    const own = next.signals.some((chip) => chip?.kind === "move") ? null : leadMoveChip(lead, n, dropped);
+    if (own) next.signals = [own, ...next.signals];
+  }
+  if (typeof read.blurb === "string" && read.blurb) {
+    const hit = namedWindows(read.blurb);
+    if (hit.size && !(hit.size === 1 && hit.has(n))) {
+      const move = (next.signals || []).find((chip) => chip?.kind === "move" && chipDays(chip) === n);
+      const when = dayLabel(read.asOf);
+      const pctText = move ? String(move.text || "").split(" ")[0] : "";
+      next.blurb = move && pctText ? `TCGplayer market is ${move.dir} ${pctText} over ${n} days${when ? `, as of ${when}` : ""}.` : "";
+    }
   }
   const tile = read.tiles?.price;
   if (tile && !tile.dash && Number(tile.days) > 0 && Number(tile.days) !== n) {
@@ -561,7 +621,7 @@ export function synthesizeReads(reads, ctx, cfg) {
         next.endDate = ends.endDate;
       }
     }
-    if (windowDays) next = alignToWindow(next, windowDays);
+    if (windowDays) next = alignToWindow(next, windowDays, lead);
     const whyLead = whyFromLead(lead);
     if (whyLead) {
       next.why = whyLead;

@@ -177,16 +177,20 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null, series
   for (const g of groups.slice(0, max)) {
     const withYear = g.rs.filter((r) => yearAgo(r.c, asOf));
     const a = withYear.reduce((s, r) => s + yearAgo(r.c, asOf), 0), z = withYear.reduce((s, r) => s + r.z, 0);
-    const head = withYear.length === 5
+    // "Tonight" only when every price in the total is tonight's. A jumpy card is
+    // quoted at its last steady print, which carries its own date.
+    const dated = g.rs.filter((r) => r.jumpy).length;
+    const head = withYear.length === 5 && !dated
       ? `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together, ${sgn(((z - a) / a) * 100)} from a year ago.`
-      : `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together tonight.`;
+      : `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together${dated ? `, ${dated === 1 ? "one card" : `${dated} cards`} at an earlier steady price` : " tonight"}.`;
     const body = [];
     for (const r of g.rs) {
       if (body.length >= 5) break;
       const y = r.jumpy ? null : yearAgo(r.c, asOf);
       const priceBit = r.quote || usd(r.z);
-      body.push(`${cardTitle(r.c)}, ${r.label}: ${priceBit}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.`);
-      if (r.thin?.line && body.length < 5) body.push(r.thin.line);
+      // The thin trading note belongs to its own card, so it stays on that card's line.
+      const note = r.thin?.line ? ` ${r.thin.line}` : "";
+      body.push(`${cardTitle(r.c)}, ${r.label}: ${priceBit}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.${note}`);
     }
     const rr = row("chase", g.set, short(g.set), head, [
       ...body,

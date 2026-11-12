@@ -82,6 +82,8 @@ export async function loadFaceIndex(root) {
         rarity: String(r.rarity || ""),
       };
       card.clean = cleanCardName(card.name);
+      const base = baseName(card.clean);
+      if (base !== card.clean) card.base = base;
       cards.push(card);
       byId.set(card.id, card);
       push(bySet, card.set, card);
@@ -92,6 +94,22 @@ export async function loadFaceIndex(root) {
     }
   }
   return { cards, byId, bySet, byArtist, bySpecies };
+}
+
+// "Latios EX (113 Full Art)" is written "Latios EX ... 113/116" in a read. The
+// base name lets that line find its own card, but only when the written
+// collector number confirms it.
+export function baseName(clean) {
+  return String(clean || "").replace(/\s*\(\d+[A-Za-z]?(?:\s[^)]*)?\)\s*$/, "").trim();
+}
+
+const NUMBER = "[A-Z]*\\d+[a-z]?\\/[A-Z]*\\d+";
+
+// The collector number written right after a card name, past any variant or
+// set tags: "Latios EX (Plasma Freeze) 113/116" gives 113/116.
+function writtenNumber(text, end) {
+  const m = String(text || "").slice(end).match(new RegExp(`^(?:\\s+${VARIANT})*(?:\\s*\\([^)]+\\))*\\s+(${NUMBER})(?![\\w/])`));
+  return m ? m[1] : "";
 }
 
 function idsOf(read) {
@@ -133,16 +151,20 @@ function poolFor(read, index) {
 function occurrences(text, pool) {
   const found = [];
   for (const card of pool) {
-    const clean = card.clean;
-    if (!clean || clean.length < 3 || !card.number) continue;
-    let i = 0;
-    while ((i = text.indexOf(clean, i)) >= 0) {
-      const before = i > 0 ? text[i - 1] : "";
-      const after = text[i + clean.length] || "";
-      if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after)) {
-        found.push({ i, end: i + clean.length, card });
+    if (!card.number) continue;
+    const names = [[card.clean, false]];
+    if (card.base && card.base !== card.clean) names.push([card.base, true]);
+    for (const [clean, viaBase] of names) {
+      if (!clean || clean.length < 3) continue;
+      let i = 0;
+      while ((i = text.indexOf(clean, i)) >= 0) {
+        const before = i > 0 ? text[i - 1] : "";
+        const after = text[i + clean.length] || "";
+        if (!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after)) {
+          found.push({ i, end: i + clean.length, card, viaBase });
+        }
+        i += Math.max(1, clean.length);
       }
-      i += Math.max(1, clean.length);
     }
   }
   found.sort((a, b) => (b.end - b.i) - (a.end - a.i) || a.i - b.i);
@@ -151,9 +173,14 @@ function occurrences(text, pool) {
   for (const hit of found) {
     if (taken.some((t) => !(hit.end <= t.i || hit.i >= t.end))) continue;
     const same = found.filter((o) => o.i === hit.i && o.end === hit.end);
+    const written = writtenNumber(text, hit.end);
+    // A number already written after the name decides the card. With none, a
+    // base name alone is not enough to name a variant printing.
+    const fits = written ? same.filter((o) => o.card.number === written) : same.filter((o) => !o.viaBase);
+    if (!fits.length) continue;
     const uniq = [];
     const seen = new Set();
-    for (const o of same) if (!seen.has(o.card.id)) { seen.add(o.card.id); uniq.push(o.card); }
+    for (const o of fits) if (!seen.has(o.card.id)) { seen.add(o.card.id); uniq.push(o.card); }
     const after = text.slice(hit.end, hit.end + 80);
     let card = uniq.length === 1 ? uniq[0] : null;
     if (!card) {
