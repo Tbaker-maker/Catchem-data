@@ -310,6 +310,12 @@ console.log("── reads check Nov 11 regressions ──");
   t("reads check Nov 11 suite", n === 0, `${n} failed`);
 }
 
+
+console.log("── no PPT history in public outputs ──");
+{
+  const n = await runNoPptPublicTests();
+  t("no-PPT public suite", n === 0, `${n} failed`);
+}
 console.log("── movers name their own window ──");
 {
   const { run } = await import("./movers-window.suite.mjs");
@@ -317,12 +323,6 @@ console.log("── movers name their own window ──");
   t("movers window suite", n === 0, `${n} failed`);
 }
 
-
-console.log("── no PPT history in public outputs ──");
-{
-  const n = await runNoPptPublicTests();
-  t("no-PPT public suite", n === 0, `${n} failed`);
-}
 console.log("── public index line (value-weighted) ──");
 {
   const { spawnSync } = await import("node:child_process");
