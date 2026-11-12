@@ -17,14 +17,17 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const IDX = join(ROOT, "research/assets/cards/full/index.json");
 const rows = JSON.parse(await readFile(IDX, "utf8"));
 const cards = JSON.parse(await readFile(join(ROOT, "data/card-catalogue.json"), "utf8")).cards;
-const hasPid = (c) => c && /^\d+$/.test(String(c.tcgPlayerId || ""));
+// TCGplayer has no photo for these ids: the CDN answered 403 to GET on 2026-11-11.
+// They keep "The picture is missing." until a source for that exact id exists.
+const NO_PHOTO = new Set(["me6-95"]);
+const hasPid = (c, id) => c && !NO_PHOTO.has(id) && /^\d+$/.test(String(c.tcgPlayerId || ""));
 const numOf = (id, setId) => id.slice(setId.length + 1);
 
 let filled = 0;
 for (const r of rows) {
   if (r.src) continue;
   const c = cards[r.id];
-  if (!hasPid(c)) continue;
+  if (!hasPid(c, r.id)) continue;
   r.src = `/img/${r.setId}/${numOf(r.id, r.setId)}`;
   if (r.fact === "The picture is missing.") delete r.fact;
   filled++;
@@ -50,7 +53,7 @@ let added = 0;
 for (const [setId, list] of Object.entries(bySet)) {
   for (const [id, c] of list.sort(order)) {
     const num = numOf(id, setId);
-    const pic = hasPid(c);
+    const pic = hasPid(c, id);
     const row = { id, name: c.name, species: species(c.name), set: c.setName, setId,
       year: String(c.releaseDate || "").slice(0, 4), artist: c.artist ?? "", lock: num,
       rarity: c.rarity ?? "", rank: rankOf(c.rarity), src: pic ? `/img/${setId}/${num}` : "",
