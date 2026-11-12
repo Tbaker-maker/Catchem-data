@@ -84,6 +84,13 @@ export async function run() {
   }
   const split = separateHalfCopies(half);
   t("a price 50% under the cluster is dropped", split.dropped.some((pt) => pt[1] === 4) && split.keep.every((pt) => pt[1] !== 4) && split.keep.at(-1)[1] === 12 && !split.ambiguous);
+  const tail = [];
+  for (let i = 0; i < 26; i += 1) {
+    const day = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    tail.push([day, i < 20 ? 100 : 40]);
+  }
+  const keptTail = separateHalfCopies(tail);
+  t("a cheaper run at the end is kept", keptTail.dropped.length === 0 && keptTail.keep.length === tail.length && keptTail.keep.at(-1)[1] === 40 && keptTail.keep[19][1] === 100 && !keptTail.ambiguous);
   const ambPts = [];
   for (let i = 0; i < 16; i += 1) {
     const day = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);

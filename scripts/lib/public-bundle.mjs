@@ -649,6 +649,15 @@ export function separateHalfCopies(points) {
   }
   const dropDates = new Set(mode.cheap.map((pt) => pt[0]));
   for (const i of isolated) dropDates.add(pts[i][0]);
+  // A dropped run after the last kept day is the same product at a newer
+  // price, not a second copy. A cheap day with a later kept price stays out.
+  let lastKept = -1;
+  for (let i = 0; i < pts.length; i += 1) {
+    if (!dropDates.has(pts[i][0])) lastKept = i;
+  }
+  if (lastKept >= 0) {
+    for (let i = lastKept + 1; i < pts.length; i += 1) dropDates.delete(pts[i][0]);
+  }
   if (!dropDates.size) return { keep: pts, dropped: [], ambiguous: false, low: null, high: null };
   const dropped = pts.filter((pt) => dropDates.has(pt[0]));
   const keep = pts.filter((pt) => !dropDates.has(pt[0]));
