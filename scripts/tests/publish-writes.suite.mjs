@@ -56,7 +56,9 @@ export async function run() {
   // 36-38: Mount private PPP state, PPP budgeted refresh, and push raw PPP to the
   //     private repo. Soft so a missing key or a down private repo cannot drop
   //     the price commit.
-  t("the price workflow still has 38 continue-on-error flags", flags.length === 38, String(flags.length));
+  // 39: Pull private PkmnPrices rows for the read pathways, so a failed private
+  //     pull cannot drop the price run. Pathways stay idle that night.
+  t("the price workflow still has 39 continue-on-error flags", flags.length === 39, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");

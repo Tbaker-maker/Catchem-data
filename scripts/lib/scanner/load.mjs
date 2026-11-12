@@ -13,6 +13,9 @@ import {
 } from "./common.mjs";
 import { presentDetections, rankExtremes, replayItems, rotationMembership, scoreGates } from "./engine.mjs";
 import { buildScannerReads } from "./reads.mjs";
+import { attachPpp, loadPppContext } from "../ppp-reads/context.mjs";
+import { setPppScannerContext } from "../ppp-reads/scanner-patterns.mjs";
+import "../ppp-reads/copy.mjs"; // registers the fact lines a passed ppp-* gate reuses
 
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
 
@@ -208,6 +211,7 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
   const started = Date.now();
   const score = await loadScoreItems(root, asOf, series);
   const scan = scanItemsFrom(catalog || { items: [] }, series, asOf, score.items);
+  const ppp = await attachPppRows(root, catalog, [...score.items, ...scan], token);
   const replayStarted = Date.now();
   const replay = replayItems(score.items, asOf);
   const gates = scoreGates(replay.detections, replay.base, asOf);
@@ -239,6 +243,7 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
     passed: passed.length,
     passedKeys: passed.map((row) => `${row.pattern}|${row.stage}|${row.kind}|${row.dir}|${row.horizon}d|n=${row.n}|rate=${row.rate}|lo=${row.rateLo}|base=${row.baseRate}|train=${row.train?.rate}|test=${row.test?.rate}`),
     listingsProgress: listingsProgress(gates),
+    ppp,
     publicReads: reads.length,
     publicByKind: tally(reads, "readKind"),
     strongest: extremes.strongest.map(brief),
@@ -248,6 +253,23 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
   summary.privatePush = privatePush;
   summary.runtimeMs = Date.now() - started;
   return { reads, summary, gates, present: live.present, detections: replay.detections };
+}
+
+// PkmnPrices rows go on the items the replay and tonight's scan already hold.
+// No PkmnPrices file means no item carries them and every ppp-* pattern is idle.
+async function attachPppRows(root, catalog, items, token) {
+  let ctx;
+  try { ctx = await loadPppContext(root, { token }); } catch (err) { return { attached: 0, error: String(err?.message || err).slice(0, 120) }; }
+  setPppScannerContext(ctx);
+  if (!ctx.items.size) return { attached: 0, inputFiles: ctx.inputFiles };
+  const printing = new Map();
+  for (const it of catalog?.items || []) if (it?.id && it.kind !== "sealed" && it.printing && !printing.has(it.id)) printing.set(it.id, it.printing);
+  const seen = new Set();
+  const unique = [];
+  for (const item of items) { if (!seen.has(item)) { seen.add(item); unique.push(item); } }
+  for (const item of unique) if (item.kind !== "sealed" && !item.printing && printing.has(item.id)) item.printing = printing.get(item.id);
+  const attached = attachPpp(unique, ctx);
+  return { attached, inputFiles: ctx.inputFiles, inputAsOf: ctx.inputAsOf };
 }
 
 const LISTING_PATTERNS = ["listings-down-flat", "listings-up-flat", "price-up-listings-up", "price-down-listings-down", "thin-jump"];

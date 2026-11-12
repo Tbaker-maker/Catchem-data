@@ -206,16 +206,42 @@ try {
 } catch (err) {
   console.error(`span reads skipped: ${err.message}`);
 }
+// ECB euro reference rates for the Cardmarket pathway: one GET, before the
+// scanner so its replay and tonight's reads see the same rates.
+if (process.env.PPP_READS_NO_NET !== "1") {
+  try {
+    const { refreshFx } = await import("./lib/ppp-reads/fx.mjs");
+    const fx = await refreshFx(ROOT);
+    console.log(JSON.stringify({ ecbFx: { status: fx.status, days: fx.rates.length, last: fx.rates.at(-1)?.date || null } }));
+  } catch (err) {
+    console.error(`ecb fx skipped: ${err.message}`);
+  }
+}
 let scannerReads = [];
+let scannerGates = [];
 try {
   const { collectScannerReads } = await import("./lib/scanner/load.mjs");
   const scan = await collectScannerReads({ root: ROOT, asOf: catalog.asOf || "", series, catalog });
   scannerReads = scan.reads || [];
+  scannerGates = scan.gates || [];
   console.log(JSON.stringify({ scanner: scan.summary }));
 } catch (err) {
   console.error(`scanner skipped: ${err.message}`);
 }
-const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true, spanReads, scannerReads });
+// PkmnPrices fact reads (eBay sold comps, graded population, Cardmarket,
+// Japanese prices, a year of history, sold vs MSRP). Every hit goes to the
+// private log. With ppp.reads off (default) the board gets fact reads only for
+// a pathway whose scanner gate passed tonight; they then pass the same guards.
+let pppReads = [];
+try {
+  const { collectPppReads } = await import("./lib/ppp-reads/collect.mjs");
+  const ppp = await collectPppReads({ root: ROOT, asOf: catalog.asOf || "", catalog, gates: scannerGates });
+  pppReads = ppp.reads || [];
+  console.log(JSON.stringify({ pppReads: ppp.summary }));
+} catch (err) {
+  console.error(`ppp reads skipped: ${err.message}`);
+}
+const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true, spanReads, scannerReads, pppReads });
 console.log(JSON.stringify({ boardV3 }));
 // Variant tags: rebuilt nightly here, then stamped on reads that point at one card.
 let variantSummary = null;

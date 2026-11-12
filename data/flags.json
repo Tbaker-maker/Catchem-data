@@ -103,6 +103,13 @@
       "why": "On since 2026-10-12 (reads board v3: group climbs, set heat, releases, sourced news, rotation, Pokemon facts, eBay listing counts, not-moved-yet lists). Tightening and Building still need an exact 7-day pair of filteredTotal. Set false to turn every non-price read off without a deploy.",
       "trigger": "Exact 7-day filteredTotal pairs exist and RD writes the sentence for them.",
       "env": "CATCHEM_READS_LIBRARY"
+    },
+    "ppp.reads": {
+      "value": false,
+      "owner": "scripts/lib/ppp-reads/collect.mjs",
+      "why": "Fact reads from PkmnPrices rows (eBay sold comps, sales counts, graded population, Cardmarket, Japanese prices, a year of TCGplayer history, sold vs sourced MSRP). Off: new read types stay private and are scored against outcomes until they prove out (Tyler's rule, 2026-11-11). With this off, a pathway's fact reads go public only for a pathway, item kind and direction whose scanner gate (ppp-<pathway>) passed tonight. True puts every pathway's fact reads on the board. Either way each read goes through the board fit, reads guard, thin-data drop and copy rules, and the private log keeps every hit.",
+      "trigger": "Tyler says to show every PkmnPrices pathway before its gate passes.",
+      "env": "CATCHEM_PPP_READS"
     }
   }
 }

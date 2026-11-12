@@ -258,6 +258,12 @@ console.log("── lock regression (LOCK.md gates) ──");
   t("lock regression suite", n === 0, `${n} failed`);
 }
 
+{
+  console.log("── PkmnPrices read pathways ──");
+  const { run } = await import("./ppp-reads.suite.mjs");
+  const n = await run();
+  t("ppp read pathways suite", n === 0, `${n} failed`);
+}
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");
