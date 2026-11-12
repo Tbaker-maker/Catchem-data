@@ -23,6 +23,7 @@
 //       CHROME_PATH overrides browser discovery.
 import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { feedFreshnessVerdict } from "./lib/smoke-feed-freshness.mjs";
 
 const SITE = process.env.SMOKE_SITE || "https://catchemtcg.com";
 const APP = process.env.SMOKE_APP || "https://app.catchemtcg.com";
@@ -61,6 +62,20 @@ const HTTP_TIMEOUT_MS = Number(process.env.SMOKE_TIMEOUT_MS || 15000);
 const fetchWithTimeout = (url, opts = {}) =>
   fetch(url, { ...opts, signal: AbortSignal.timeout(HTTP_TIMEOUT_MS) });
 
+const PUBLISHED_READS = process.env.SMOKE_READS || "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/public-data/research/assets/public/reads.json";
+async function readPublishedReadsAge() {
+  try {
+    const r = await fetchWithTimeout(PUBLISHED_READS, { headers: { "cache-control": "no-cache" } });
+    if (r.status !== 200) return null;
+    const doc = await r.json();
+    const t = Date.parse(String(doc?.asOf || "").slice(0, 10));
+    if (!Number.isFinite(t)) return null;
+    return (Date.now() - t) / 3600000;
+  } catch {
+    return null;
+  }
+}
+
 async function page(url, anchors, name) {
   try {
     const r = await fetchWithTimeout(url, { headers: { "cache-control": "no-cache" } });
@@ -98,10 +113,17 @@ try {
   // Before the publish, the pulse feed is still last night's: Generate Morning
   // Pulse runs after the publish. Oct 25: one failed publish left it over 48h
   // old, so this check refused every later publish and nothing could refresh
-  // it. The full smoke step after the publish still enforces freshness.
-  if (process.env.SMOKE_PREPUBLISH === "1" && !(age < 48)) ok(`feed freshness not checked before publish (${Math.round(age)}h old; checked after)`);
-  else if (!(age < 48)) bad("feed freshness", `${Math.round(age)}h old`);
-  else ok(`feed fresh (${age.toFixed(1)}h)`);
+  // it. After publish, a stale pulse feed is a fail unless tonight's published
+  // reads are fresh — pulse is skipped when the catalogue is stale, and that
+  // must not fail a successful price publish.
+  const prepublish = process.env.SMOKE_PREPUBLISH === "1";
+  let publishedReadsAgeHours = null;
+  if (!(age < 48) && !prepublish) {
+    publishedReadsAgeHours = await readPublishedReadsAge();
+  }
+  const verdict = feedFreshnessVerdict({ ageHours: age, prepublish, publishedReadsAgeHours });
+  if (verdict.fail) bad("feed freshness", verdict.message);
+  else ok(verdict.message);
 
   // VALUES, not just SHAPE. Everything above passes on a feed that parses, has
   // every key and a fresh timestamp — which is exactly what a compromised or
