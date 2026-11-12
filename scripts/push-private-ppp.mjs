@@ -45,7 +45,7 @@ export async function pushPrivatePpp({ token, checkout = ROOT, rawDir, date, env
     }
     await runGit("git", ["-C", clone, "config", "user.email", "bot@catchem.app"], childEnv);
     await runGit("git", ["-C", clone, "config", "user.name", "catchem-bot"], childEnv);
-    await runGit("git", ["-C", clone, "add", "data", "raw"], childEnv);
+    await runGit("git", ["-C", clone, "add", "data", "raw", "ppp"], childEnv);
     const quiet = await runGit("git", ["-C", clone, "diff", "--cached", "--quiet"], childEnv);
     const shaOf = async () => {
       const sha = await runGit("git", ["-C", clone, "rev-parse", "HEAD"], childEnv);

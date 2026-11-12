@@ -237,8 +237,10 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/push-private-ppt.mjs
       - name: Mount private PPP state
-        # Refresh dates only, so a product already pulled today is not asked again.
-        # Missing token or a down repo logs and continues. Nothing here is committed.
+        # Refresh dates, the shared credit ledger, and the enrich id map, so this
+        # job does not pay again for ids already matched and stays inside the
+        # shared 20,000-credit plan. Missing token or a down repo logs and continues.
+        # Nothing here is committed.
         continue-on-error: true
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}

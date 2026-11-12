@@ -20,12 +20,16 @@ export async function runPrivatePppTests() {
   await writeFile(join(raw, "refresh-dates.json"), JSON.stringify({ asOf: "2026-11-12", dates: { "sealed-1": "2026-11-12" } }));
   await writeFile(join(raw, "compare-2026-11-12.json"), JSON.stringify({ asOf: "2026-11-12", sealedVsTcgcsv: { nCompared: 1, outliers: [{ ppp: 10, baseline: 9 }] } }));
   await writeFile(join(raw, "2026-11-12/sealed-1.json"), JSON.stringify({ tcgPlayerId: "1", body: { prices: [{ market_price: 10 }] } }));
+  await writeFile(join(raw, "id-map.json"), JSON.stringify({ sealed: { "644298": 1946 }, single: { "42382": 12927 } }));
+  await writeFile(join(raw, "ledger.json"), JSON.stringify({ day: "2026-11-12", lanes: { current: 12, map: 100 } }));
   const actions = await stagePrivatePpp({ checkout: root, rawDir: raw, dest, date: "2026-11-12" });
   t("stage copies dates, compare, and the day raw", actions.includes("refresh-dates") && actions.includes("compare") && actions.includes("raw:2026-11-12"));
+  t("stage copies the shared id map and ledger into private ppp/", actions.includes("id-map") && actions.includes("ledger"));
   t("raw PPP lands under raw/ppp/<date>/ in the private repo", (await readFile(join(dest, "raw/ppp/2026-11-12/sealed-1.json"), "utf8")).includes("market_price"));
   const mountedRoot = join(root, "mounted");
   const restored = await restorePrivatePpp({ clone: dest, root: mountedRoot });
-  t("mount restores refresh dates only, not public raw", restored.includes("refresh-dates") && !(await readFile(join(mountedRoot, "ppp-raw-private/refresh-dates.json"), "utf8")).includes("market_price"));
+  t("mount restores refresh dates, not public raw prices", restored.includes("refresh-dates") && !(await readFile(join(mountedRoot, "ppp-raw-private/refresh-dates.json"), "utf8")).includes("market_price"));
+  t("mount restores the enrich id map and the shared ledger", restored.includes("id-map") && restored.includes("ledger") && (await readFile(join(mountedRoot, "ppp-raw-private/id-map.json"), "utf8")).includes("644298") && (await readFile(join(mountedRoot, "ppp-raw-private/ledger.json"), "utf8")).includes('"current":12'));
 
   const skipped = await pushPrivatePpp({ token: "" });
   t("no token does not push", skipped.pushed === false && /not set/.test(skipped.reason));

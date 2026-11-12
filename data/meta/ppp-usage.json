@@ -4,8 +4,8 @@
   "reason": "PKMNPRICES_API_KEY is not set. No request was sent.",
   "credits": {
     "budget": 20000,
-    "main": 16000,
-    "reserve": 4000,
+    "main": 10000,
+    "reserve": 1000,
     "used": {
       "sealed": 0,
       "singles": 0,
@@ -27,21 +27,21 @@
   },
   "errors": [],
   "estimate": {
-    "budget": 16000,
-    "reserve": 4000,
+    "budget": 10000,
+    "reserve": 1000,
     "daily": 20000,
     "sealedCredits": 775,
-    "singlesCredits": 15224,
-    "total": 15999,
+    "singlesCredits": 9224,
+    "total": 9999,
     "sealedCount": 389,
     "singlesCount": 28857,
     "mappedSealed": 3,
     "mappedSingles": 138,
-    "singlesThisNight": 7681,
+    "singlesThisNight": 4681,
     "notes": [
-      "Main budget is 16,000 of 20,000 daily credits; 4,000 stays in reserve.",
+      "Current-price lane is 10,000 of 20,000 daily credits; 1,000 stays in the shared reserve.",
       "Current prices only. History is 1 credit per row and is not in the nightly refresh.",
-      "A mapped product costs 1 credit for GET /v1/sealed/:id or GET /v1/cards/:id. An unmapped product also spends 1 credit on the tcg_player_id lookup."
+      "A mapped product costs 1 credit for GET /v1/sealed/:id or GET /v1/cards/:id. An unmapped product also spends 1 credit on the tcg_player_id lookup. Ids already in the enrich map are reused and not looked up again."
     ]
   },
   "note": "Public log only. No API key and no raw prices.",

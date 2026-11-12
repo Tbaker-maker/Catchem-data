@@ -1,7 +1,11 @@
 // Credit plan and public usage log for PkmnPrices. No network. No prices. No key.
-export const DAILY_CREDITS = 20000;
-export const MAIN_BUDGET = 16000;
-export const RESERVE_BUDGET = 4000;
+// Caps come from config/ppp-budget.json (shared with scripts/ppp-enrich.mjs).
+import { loadBudget, laneCap } from "./ppp-budget.mjs";
+
+const PLAN = loadBudget();
+export const DAILY_CREDITS = Number(PLAN.dailyCredits) || 0;
+export const MAIN_BUDGET = laneCap("current", PLAN);
+export const RESERVE_BUDGET = Number(PLAN.reserve) || 0;
 export const REQ_PER_MIN = 55;
 export const RECHECK_DAYS = 7;
 export const MAX_FAILS_IN_ROW = 5;
@@ -9,6 +13,11 @@ export const MAX_FAILS_IN_ROW = 5;
 export function spentEarlierToday(prev, today) {
   if (!prev || prev.asOf !== today) return 0;
   const credits = prev.credits || {};
+  // Prefer the current-lane ledger snapshot so all-lane usedToday is not reused as this lane's cap.
+  if (credits.lanes && Number.isFinite(Number(credits.lanes.current))) {
+    const lane = Number(credits.lanes.current);
+    return lane > 0 ? lane : 0;
+  }
   const value = Number.isFinite(credits.usedToday) ? credits.usedToday : credits.used?.total;
   return Number.isFinite(value) && value > 0 ? value : 0;
 }
@@ -49,7 +58,10 @@ export function loadIdMap(doc) {
   const sealed = {};
   const cards = {};
   const srcSealed = doc?.sealed && typeof doc.sealed === "object" ? doc.sealed : {};
-  const srcCards = doc?.cards && typeof doc.cards === "object" ? doc.cards : {};
+  const srcCards = {
+    ...(doc?.single && typeof doc.single === "object" ? doc.single : {}),
+    ...(doc?.cards && typeof doc.cards === "object" ? doc.cards : {}),
+  };
   for (const [key, value] of Object.entries(srcSealed)) {
     const id = Number(value);
     if (Number.isFinite(id) && id > 0) sealed[String(key)] = id;
@@ -69,6 +81,33 @@ export function publicIdMap({ sealed = {}, cards = {}, asOf }) {
     cards,
     counts: { sealed: Object.keys(sealed).length, cards: Object.keys(cards).length },
   };
+}
+
+export function mergeIdMaps(...docs) {
+  const sealed = {};
+  const cards = {};
+  for (const doc of docs) {
+    const next = loadIdMap(doc);
+    Object.assign(sealed, next.sealed);
+    Object.assign(cards, next.cards);
+  }
+  return { sealed, cards };
+}
+
+// Write ids back into the enrich private map without dropping bulk cursors or checkedAt.
+export function applyToEnrichMap(prev, idMap) {
+  const out = {
+    ...(prev && typeof prev === "object" ? prev : {}),
+    sealed: { ...(prev?.sealed || {}) },
+    single: { ...(prev?.single || {}) },
+  };
+  for (const [key, value] of Object.entries(idMap?.sealed || {})) {
+    if (Number(value) > 0) out.sealed[String(key)] = Number(value);
+  }
+  for (const [key, value] of Object.entries(idMap?.cards || {})) {
+    if (Number(value) > 0) out.single[String(key)] = Number(value);
+  }
+  return out;
 }
 
 export function orderRefreshCalls(calls) {
@@ -128,9 +167,9 @@ export function estimateNightly({ sealedCount, singlesCount, mappedSealed = 0, m
     mappedSingles,
     singlesThisNight: mappedDetailsFit + unmappedFit,
     notes: [
-      "Main budget is 16,000 of 20,000 daily credits; 4,000 stays in reserve.",
+      `Current-price lane is ${budget.toLocaleString("en-US")} of ${DAILY_CREDITS.toLocaleString("en-US")} daily credits; ${RESERVE_BUDGET.toLocaleString("en-US")} stays in the shared reserve.`,
       "Current prices only. History is 1 credit per row and is not in the nightly refresh.",
-      "A mapped product costs 1 credit for GET /v1/sealed/:id or GET /v1/cards/:id. An unmapped product also spends 1 credit on the tcg_player_id lookup.",
+      "A mapped product costs 1 credit for GET /v1/sealed/:id or GET /v1/cards/:id. An unmapped product also spends 1 credit on the tcg_player_id lookup. Ids already in the enrich map are reused and not looked up again.",
     ],
   };
 }

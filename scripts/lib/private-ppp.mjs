@@ -37,6 +37,21 @@ export async function stagePrivatePpp({ checkout, rawDir, dest, date }) {
     await cp(daySrc, dayDir, { recursive: true });
     actions.push(`raw:${date}`);
   }
+  actions.push(...await stageSharedPpp(root, dest));
+  return actions;
+}
+
+const SHARED = ["id-map.json", "ledger.json"];
+
+async function stageSharedPpp(root, dest) {
+  const actions = [];
+  for (const name of SHARED) {
+    const from = join(root, name);
+    if (!existsSync(from)) continue;
+    await mkdir(join(dest, "ppp"), { recursive: true });
+    await cp(from, join(dest, "ppp", name));
+    actions.push(name === "id-map.json" ? "id-map" : "ledger");
+  }
   return actions;
 }
 
@@ -47,6 +62,13 @@ export async function restorePrivatePpp({ clone, root }) {
     await mkdir(join(root, "ppp-raw-private"), { recursive: true });
     await cp(datesFrom, join(root, "ppp-raw-private/refresh-dates.json"));
     actions.push("refresh-dates");
+  }
+  for (const name of SHARED) {
+    const from = join(clone, "ppp", name);
+    if (!existsSync(from)) continue;
+    await mkdir(join(root, "ppp-raw-private"), { recursive: true });
+    await cp(from, join(root, "ppp-raw-private", name));
+    actions.push(name === "id-map.json" ? "id-map" : "ledger");
   }
   return actions;
 }

@@ -67,7 +67,7 @@ export function pppClient({ key, minGapMs = 1100, fetchImpl = fetch, log = () =>
     return { ok: false, status: 429 };
   }
   return { get, stats, get dailyOut() { return dailyOut; } };
-
+}
 
 export const BASE = "https://api.pkmnprices.com";
 export const REQ_PER_MIN = 55;
@@ -191,3 +191,4 @@ export async function defaultRequest(url, key, timeoutMs = 30000) {
     headers: pickCreditHeaders(res.headers),
     retryAfter: res.headers.get("retry-after"),
   };
+}

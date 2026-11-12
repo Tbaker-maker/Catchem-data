@@ -9,8 +9,10 @@ import {
   DAILY_CREDITS,
   MAIN_BUDGET,
   MAX_FAILS_IN_ROW,
+  applyToEnrichMap,
   estimateNightly,
   loadIdMap,
+  mergeIdMaps,
   nextMarked,
   orderRefreshCalls,
   publicIdMap,
@@ -20,6 +22,7 @@ import {
   usageSkeleton,
 } from "./lib/ppp-plan.mjs";
 import { comparePulls } from "./lib/ppp-compare.mjs";
+import { checkBudget, currentRunBudget, loadBudget } from "./lib/ppp-budget.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -135,6 +138,7 @@ export async function executePlan({
   reserve,
   rawDir,
   budget = MAIN_BUDGET,
+  reserveCredits = 0,
   secrets = [],
   alreadyDone = [],
   idMap,
@@ -157,6 +161,18 @@ export async function executePlan({
   let retries = 0;
   let failedInRow = 0;
   const finished = new Set(alreadyDone || []);
+  let remaining = null;
+  const leftOf = (res) => {
+    const raw = res?.remaining ?? res?.headers?.["x-credits-remaining"] ?? res?.headers?.get?.("x-credits-remaining");
+    if (raw == null || raw === "") return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  };
+  const noteLeft = (res) => {
+    const n = leftOf(res);
+    if (n != null) remaining = n;
+  };
+  const cannotAfford = (cost) => used.total + cost > budget || (remaining != null && remaining - cost < reserveCredits);
   const map = {
     sealed: { ...(idMap?.sealed || {}) },
     cards: { ...(idMap?.cards || {}) },
@@ -191,7 +207,7 @@ export async function executePlan({
       hold(call);
       continue;
     }
-    if (used.total + call.estimated > budget) {
+    if (cannotAfford(call.estimated)) {
       hold(call);
       continue;
     }
@@ -205,6 +221,7 @@ export async function executePlan({
       const charged = Number(err.charged) || 0;
       used[call.bucket] = (used[call.bucket] || 0) + charged;
       used.total += charged;
+      noteLeft(err);
       errors.push(redact(err.message, [key, ...secrets]));
       httpFailed += call.items || 1;
       callsFailed += 1;
@@ -233,6 +250,7 @@ export async function executePlan({
     }
     used[call.bucket] = (used[call.bucket] || 0) + charged;
     used.total += charged;
+    noteLeft(result);
     const status = result.status ?? 0;
     if (status >= 400) {
       httpFailed += call.items || 1;
@@ -240,7 +258,7 @@ export async function executePlan({
       skipped += call.items || 1;
       if (status < 500 && status !== 429) failedIds.push(call.id);
       errors.push(redact(`http ${status} on ${call.id}`, [key, ...secrets]));
-      if (used.total >= budget) {
+      if (cannotAfford(1) || used.total >= budget) {
         for (const rest of pending.slice(i + 1)) hold(rest);
         break;
       }
@@ -283,7 +301,7 @@ export async function executePlan({
     if (typeof onProgress === "function") {
       await onProgress({ done, map, used });
     }
-    if (used.total >= budget) {
+    if (cannotAfford(1) || used.total >= budget) {
       for (const rest of pending.slice(i + 1)) hold(rest);
       break;
     }
@@ -396,30 +414,48 @@ export async function main() {
   const key = process.env.PKMNPRICES_API_KEY || "";
   const token = process.env.PRIVATE_DATA_TOKEN || "";
   const { sealed, singles, tcgcsv } = await loadQueue();
-  let spentToday = 0;
-  try {
-    spentToday = spentEarlierToday(JSON.parse(await readFile(join(ROOT, "data/meta/ppp-usage.json"), "utf8")), today);
-  } catch {
-    spentToday = 0;
+  const budgetPlan = loadBudget();
+  const problems = checkBudget(budgetPlan);
+  if (problems.length) {
+    console.error(`ppp-refresh stopped: ${problems.join("; ")}`);
+    process.exitCode = 1;
+    return;
   }
-  const idMap = loadIdMap(await readJsonSafe(join(ROOT, "data/ppp-id-map.json"), {}));
+  let usageAlready = 0;
+  try {
+    usageAlready = spentEarlierToday(JSON.parse(await readFile(join(ROOT, "data/meta/ppp-usage.json"), "utf8")), today);
+  } catch {
+    usageAlready = 0;
+  }
+  const enrichMapPath = join(ROOT, "ppp-raw-private/id-map.json");
+  const ledgerPath = join(ROOT, "ppp-raw-private/ledger.json");
+  let enrichMapDoc = await readJsonSafe(enrichMapPath, {});
+  const idMap = mergeIdMaps(
+    await readJsonSafe(join(ROOT, "data/ppp-id-map.json"), {}),
+    enrichMapDoc,
+  );
+  const runBudget = currentRunBudget(budgetPlan, await readJsonSafe(ledgerPath, null), today, { usageAlready });
+  const spentToday = runBudget.already;
+  const budget = runBudget.budget;
   const estimate = estimateNightly({
     sealedCount: sealed.length,
     singlesCount: singles.length,
     mappedSealed: Object.keys(idMap.sealed).length,
     mappedSingles: Object.keys(idMap.cards).length,
+    budget: runBudget.cap,
   });
-  const budget = Math.max(0, MAIN_BUDGET - spentToday);
   const usage = usageSkeleton(estimate, {
     asOf: today,
     status: key ? "ran" : "skipped",
     reason: key
-      ? "Key was present. credits.used is this run only, as x-credits-charged reported it. credits.usedToday adds earlier runs on the same UTC day. credits.remaining is the daily budget minus usedToday, worked out here, because x-credits-remaining can lag."
+      ? "Key was present. credits.used is this run only, as x-credits-charged reported it. credits.usedToday is every PPP lane this UTC day, from the shared ledger. credits.remaining is the daily plan minus usedToday, worked out here, because x-credits-remaining can lag."
       : "PKMNPRICES_API_KEY is not set. No request was sent.",
   });
   usage.raw = "not fetched";
-  usage.credits.usedToday = spentToday;
-  usage.credits.remaining = Math.max(0, DAILY_CREDITS - spentToday);
+  usage.credits.usedToday = runBudget.total;
+  usage.credits.remaining = Math.max(0, DAILY_CREDITS - runBudget.total);
+  usage.credits.lanes = { ...runBudget.ledger.lanes };
+  usage.credits.labels.usedToday = "all PPP lanes this UTC day, from the shared ledger";
   const cursorPath = join(ROOT, "data/meta/ppp-cursor.json");
   const datesPath = join(ROOT, "ppp-raw-private/refresh-dates.json");
   const mapPath = join(ROOT, "data/ppp-id-map.json");
@@ -445,7 +481,16 @@ export async function main() {
       await writeFile(datesPath, `${JSON.stringify(next.dates, null, 2)}\n`);
     }
     if (next.cursor) await writeFile(cursorPath, `${JSON.stringify(next.cursor, null, 2)}\n`);
-    if (next.map) await writeFile(mapPath, `${JSON.stringify(publicIdMap({ ...next.map, asOf: today }), null, 2)}\n`);
+    if (next.map) {
+      await writeFile(mapPath, `${JSON.stringify(publicIdMap({ ...next.map, asOf: today }), null, 2)}\n`);
+      enrichMapDoc = applyToEnrichMap(enrichMapDoc, next.map);
+      await mkdir(join(ROOT, "ppp-raw-private"), { recursive: true });
+      await writeFile(enrichMapPath, `${JSON.stringify(enrichMapDoc)}\n`);
+    }
+    if (next.ledger) {
+      await mkdir(join(ROOT, "ppp-raw-private"), { recursive: true });
+      await writeFile(ledgerPath, `${JSON.stringify(next.ledger)}\n`);
+    }
   };
   if (key) {
     const stats = { rateLimits: 0 };
@@ -465,20 +510,26 @@ export async function main() {
       secrets: [token],
       alreadyDone,
       budget,
+      reserveCredits: Number(budgetPlan.reserve) || 0,
       idMap,
-      onProgress: async ({ done, map }) => {
+      onProgress: async ({ done, map, used }) => {
         progressWrites += 1;
         if (progressWrites % 25 !== 0) return;
+        const lanes = { ...runBudget.ledger.lanes, current: spentToday + used.total };
         await persistState({
           cursor: { asOf: today, done: [...new Set([...alreadyDone, ...done])], advanced: done.length > 0, note: "Resume point. Ids only. Not a price." },
           map,
+          ledger: { day: today, lanes },
         });
       },
     });
     usage.credits.used = ran.used;
-    usage.credits.usedToday = spentToday + ran.used.total;
-    usage.credits.remaining = Math.max(0, DAILY_CREDITS - usage.credits.usedToday);
     usage.credits.usedThisRun = ran.used.total;
+    const lanesAfter = { ...runBudget.ledger.lanes, current: spentToday + ran.used.total };
+    const usedToday = Object.values(lanesAfter).reduce((sum, n) => sum + (Number(n) || 0), 0);
+    usage.credits.usedToday = usedToday;
+    usage.credits.remaining = Math.max(0, DAILY_CREDITS - usedToday);
+    usage.credits.lanes = lanesAfter;
     usage.items = { sealed: ran.items.sealed, singles: ran.items.singles };
     usage.errors = ran.errors;
     usage.run = {
@@ -528,6 +579,7 @@ export async function main() {
       cursor,
       dates: { asOf: today, dates: nextDates, emptyIds: nextEmpty, failedIds: nextFailed },
       map: ran.idMap,
+      ledger: { day: today, lanes: lanesAfter },
     });
     try {
       await writeComparison({ root: ROOT, rawDir, today, tcgcsv, usage });
@@ -538,6 +590,7 @@ export async function main() {
     await persistState({
       cursor: { asOf: today, done: Array.isArray(cursor.done) ? cursor.done : [], advanced: false, note: "Resume point. Ids only. Not a price." },
       map: idMap,
+      ledger: runBudget.ledger,
     });
   }
   const meta = join(ROOT, "data/meta");

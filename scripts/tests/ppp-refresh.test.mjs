@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { callsFor, executePlan, loadQueue } from "../ppp-refresh.mjs";
-import { estimateNightly, loadIdMap, orderRefreshCalls, resumeIds, spentEarlierToday, usageSkeleton } from "../lib/ppp-plan.mjs";
+import { estimateNightly, loadIdMap, mergeIdMaps, MAIN_BUDGET, orderRefreshCalls, resumeIds, spentEarlierToday, usageSkeleton } from "../lib/ppp-plan.mjs";
+import { checkBudget, currentRunBudget, loadBudget, plannedSpend } from "../lib/ppp-budget.mjs";
 import { redact } from "../lib/ppp-client.mjs";
 
 export async function runPppRefreshTests() {
@@ -15,14 +16,16 @@ export async function runPppRefreshTests() {
 
   t("a missing key leaves the budget unspent", spentEarlierToday({ asOf: "2026-11-12", credits: { usedToday: 12 } }, "2026-11-13") === 0);
   t("the same UTC day reuses the spend", spentEarlierToday({ asOf: "2026-11-12", credits: { usedToday: 12 } }, "2026-11-12") === 12);
+  t("a ledger snapshot is preferred over all-lane usedToday", spentEarlierToday({ asOf: "2026-11-12", credits: { usedToday: 9000, lanes: { current: 12, map: 2500 } } }, "2026-11-12") === 12);
   t("resume clears when yesterday finished the queue", resumeIds({ asOf: "2026-11-11", done: ["a", "b"] }, ["a", "b"], "2026-11-12").length === 0);
   t("resume keeps ids already done today", resumeIds({ asOf: "2026-11-12", done: ["a"] }, ["a", "b"], "2026-11-12").join() === "a");
   t("redact strips the key", redact("boom secret-key-value", ["secret-key-value"]).includes("[redacted]") && !redact("boom secret-key-value", ["secret-key-value"]).includes("secret-key-value"));
 
   const estimate = estimateNightly({ sealedCount: 389, singlesCount: 1000, mappedSealed: 389, mappedSingles: 1000 });
-  t("mapped sealed plus singles stay inside the 16k main budget", estimate.sealedCredits === 389 && estimate.singlesCredits === 1000 && estimate.total === 1389);
+  t("mapped sealed plus singles stay inside the current-price cap", estimate.sealedCredits === 389 && estimate.singlesCredits === 1000 && estimate.total === 1389);
+  t("the current-price cap is 10,000 credits from the shared plan", MAIN_BUDGET === 10000);
   const firstNight = estimateNightly({ sealedCount: 389, singlesCount: 20000, mappedSealed: 0, mappedSingles: 0 });
-  t("an unmapped first night estimates lookup plus detail and keeps a reserve", firstNight.sealedCredits === 778 && firstNight.total === 16000 && firstNight.singlesThisNight === 7611);
+  t("an unmapped first night estimates lookup plus detail and stops at the 10k cap", firstNight.sealedCredits === 778 && firstNight.total === 10000 && firstNight.singlesThisNight === 4611, JSON.stringify({ total: firstNight.total, singles: firstNight.singlesThisNight }));
   const usage = usageSkeleton(estimate, { asOf: "2026-11-12", status: "skipped", reason: "PKMNPRICES_API_KEY is not set. No request was sent." });
   t("the public usage skeleton has no price and no key", !JSON.stringify(usage).includes("market_price") && usage.credits.used.total === 0 && usage.status === "skipped");
 
@@ -110,6 +113,43 @@ export async function runPppRefreshTests() {
   t("nightly commits do not add raw PPP", !workflow.includes("ppp-raw-private") && !workflow.includes("data/history/ppp-sealed-private"));
   const ignore = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../../.gitignore"), "utf8");
   t("raw PPP paths are gitignored", ignore.includes("ppp-raw-private/") && ignore.includes("data/history/ppp-sealed-private/") && ignore.includes("data/ppp/push-status.json"));
+
+  const plan = loadBudget();
+  const planned = plannedSpend(plan);
+  t("combined planned spend is at most 20,000", planned.total <= 20000 && planned.dailyCredits === 20000 && planned.lanes.current === 10000 && checkBudget(plan).length === 0, JSON.stringify(planned));
+  t("lane caps plus reserve equal the daily plan", planned.laneSum + planned.reserve === planned.dailyCredits);
+
+  const fresh = currentRunBudget(plan, null, "2026-11-12");
+  t("a fresh ledger leaves the full 10,000 current-price cap", fresh.budget === 10000 && fresh.already === 0);
+  const midDay = currentRunBudget(plan, { day: "2026-11-12", lanes: { current: 4000 } }, "2026-11-12");
+  t("a same-day rerun only spends the leftover current-lane room", midDay.budget === 6000 && midDay.already === 4000);
+  const tight = currentRunBudget(plan, { day: "2026-11-12", lanes: { current: 0, map: 2500, comps: 3500, volume: 1500, pop: 1000, history: 1500 } }, "2026-11-12");
+  t("other lanes plus the reserve shrink the current-price room so the day stays at 20,000", tight.budget === 9000 && tight.total === 10000, JSON.stringify(tight));
+  const capHit = await executePlan({
+    key: "k",
+    calls: orderRefreshCalls(callsFor({
+      sealed: Array.from({ length: 5 }, (_, i) => ({ tcgPlayerId: String(i + 1) })),
+      singles: [],
+      idMap: { sealed: { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }, cards: {} },
+    })),
+    budget: currentRunBudget(plan, { day: "2026-11-12", lanes: { current: 9999 } }, "2026-11-12").budget,
+    idMap: { sealed: { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }, cards: {} },
+    reserve: async () => {},
+    fetchImpl: async () => ({ status: 200, charged: 1, body: { prices: [] } }),
+  });
+  t("ppp-refresh stops at the current-price cap leftover", capHit.used.total === 1 && capHit.callsSent === 1 && capHit.callsNotSent === 4, JSON.stringify({ used: capHit.used.total, sent: capHit.callsSent, skip: capHit.callsNotSent }));
+
+  const merged = mergeIdMaps(
+    { sealed: { "644298": 1946 }, cards: { "42382": 12927 } },
+    { sealed: { "593355": 572 }, single: { "1": 99 } },
+  );
+  const reused = callsFor({
+    sealed: [{ tcgPlayerId: "644298" }, { tcgPlayerId: "593355" }],
+    singles: [{ tcgPlayerId: "42382", price: 100 }, { tcgPlayerId: "1", price: 5 }],
+    idMap: merged,
+  });
+  const reusedIds = reused.map((call) => call.id);
+  t("an enrich id map removes lookups the refresh would otherwise pay for", !reusedIds.includes("sealed-lookup-593355") && !reusedIds.includes("card-lookup-1") && reusedIds.includes("sealed-593355") && reusedIds.includes("card-1"));
 
   return fail;
 }
