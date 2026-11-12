@@ -27,6 +27,8 @@ function shortSet(set) {
 
 const VARIANT_TAG = /^(?:special illustration rare|illustration rare|tag team \(alternate art\)|alternate art|alternate full art|trainer gallery|galarian gallery|full art|secret rare|delta species|cosmos holo|cracked ice holo|poke ball pattern|pok[eé] ball pattern|master ball pattern|team plasma)$/i;
 
+const CATCH_ALL_SET = /^miscellaneous cards(?: & | and )products$/i;
+
 function normTag(text) {
   return String(text || "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -80,7 +82,11 @@ export function nameWithTags(name, set) {
   base += raw.slice(last);
   base = base.replace(/\s+/g, " ").trim();
   const tags = variants.map((tag) => `(${tag})`);
-  if (setName) tags.push(`(${matchedSet || setName})`);
+  // TCGplayer's catch-all group says nothing about the card. The name's own tag
+  // does: "Bulbasaur (Pokémon Day 2026)" was titled "Bulbasaur (Miscellaneous
+  // Cards & Products)".
+  if (setName && !matchedSet && extras.length && CATCH_ALL_SET.test(setName)) tags.push(`(${extras[0]})`);
+  else if (setName) tags.push(`(${matchedSet || setName})`);
   else if (extras.length) tags.push(`(${extras[0]})`);
   return [base, ...tags].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 }
