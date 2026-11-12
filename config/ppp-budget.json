@@ -1,0 +1,47 @@
+{
+  "_doc": "Shared PkmnPrices (PPP) Pro credit plan. One account, 20,000 credits per UTC day (reset 00:00 UTC), 60 requests per minute across every key. 1 credit per item returned. Every PPP script reads its lane cap from here through scripts/lib/ppp-budget.mjs and stops at that cap or when the account is down to the reserve, whichever comes first. Lanes add up to the daily limit, so no lane can eat another's share.",
+  "plan": "Pro",
+  "dailyCredits": 20000,
+  "perMinute": 60,
+  "minGapMs": 1100,
+  "reserve": 1000,
+  "lanes": {
+    "current": {
+      "cap": 10000,
+      "script": "scripts/ppp-refresh.mjs",
+      "what": "current TCGplayer USD + Cardmarket EUR prices, dual-run vs PPT (private)"
+    },
+    "map": {
+      "cap": 2500,
+      "script": "scripts/ppp-enrich.mjs",
+      "what": "TCGplayer id -> PPP id: bulk list pages of 100 (English sealed, then English singles by value), then one-by-one for the rest. 1 credit per item; mostly unspent once mapped"
+    },
+    "comps": {
+      "cap": 3500,
+      "script": "scripts/ppp-enrich.mjs",
+      "what": "eBay sold comps, cards + sealed, 90-day window, max 20 per page; sealed detail (EUR) 1 credit"
+    },
+    "volume": {
+      "cap": 1500,
+      "script": "scripts/ppp-enrich.mjs",
+      "what": "eBay sold comps per day (sales/volume), 90-day window"
+    },
+    "pop": {
+      "cap": 1000,
+      "script": "scripts/ppp-enrich.mjs",
+      "what": "graded population (PSA/BGS/CGC/SGC), refreshed weekly per card"
+    },
+    "history": {
+      "cap": 500,
+      "script": "scripts/ppp-enrich.mjs",
+      "what": "365-day TCGplayer/Cardmarket history backfill, private only"
+    }
+  },
+  "refreshDays": {
+    "comps": 7,
+    "volume": 7,
+    "pop": 7,
+    "history": 0
+  },
+  "priority": "all mapped sealed and singles ranked by current TCGplayer market price, interleaved, highest first"
+}
