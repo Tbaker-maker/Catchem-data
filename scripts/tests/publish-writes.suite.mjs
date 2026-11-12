@@ -51,7 +51,9 @@ export async function run() {
   // 32: the eBay fetch is soft (Oct 20), so a 429 cannot block TCGCSV, PPT or publish.
   // 33: feed news is written before unit tests, so a new-set failure cannot freeze the digest.
   // 34: that news commit is soft, so a push race cannot block the price run.
-  t("the price workflow still has 34 continue-on-error flags", flags.length === 34, String(flags.length));
+  // 35: Dated reads, rip value, and status is soft and time-capped (run 43126099936
+  //     hung there and every later step, the price commit included, was skipped).
+  t("the price workflow still has 35 continue-on-error flags", flags.length === 35, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");
