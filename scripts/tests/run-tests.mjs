@@ -363,6 +363,13 @@ console.log("── ppp dual-run ──");
   const n = await runPppEnrichTests();
   t("ppp enrich lane caps suite", n === 0, `${n} failed`);
 }
+console.log("── movers name their own window ──");
+{
+  const { run } = await import("./movers-window.suite.mjs");
+  const n = await run();
+  t("movers window suite", n === 0, `${n} failed`);
+}
+
 console.log("── public index line (value-weighted) ──");
 {
   const { spawnSync } = await import("node:child_process");
