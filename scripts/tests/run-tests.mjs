@@ -485,6 +485,13 @@ console.log("── set source groups ──");
   t("vintage and POP sets sit in their era", eraOf("Skyridge") === "Original" && eraOf("POP Series 5") === "Promos and extras");
 }
 
+console.log("── catch-all group keeps the card's own tag ──");
+{
+  const { run } = await import("./misc-set-title.suite.mjs");
+  const n = await run();
+  t("misc set title suite", n === 0, `${n} failed`);
+}
+
 console.log("── IR and SIR watch ──");
 {
   const { run } = await import("./ir-sir-watch.suite.mjs");
