@@ -28,6 +28,8 @@ jobs:
         # stop tonight's prices fails this check. Withheld groups and main's own
         # freshness are reported in the summary and the one nightly issue.
         id: tests
+        env:
+          FEED_FRESHNESS_WARN_ONLY: "1" # same as the nightly test step
         run: |
           set +e
           mkdir -p data/derived

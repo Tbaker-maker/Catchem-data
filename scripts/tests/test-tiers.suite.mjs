@@ -93,8 +93,17 @@ export async function run() {
   t("the watchdog alarms on stale prices and does not gain a new dispatch", /prices-stale-issue\.mjs/.test(dog) && dog.split("createWorkflowDispatch").length === 2);
   t("the nightly checks out the branch tip, not the queued commit", /uses: actions\/checkout@v4\n\s+with:\n\s+ref: \$\{\{ github\.ref_name \}\}/.test(wf));
   t("a later feed crash withholds reads instead of stopping the publish", /build-feed\.mjs \|\| node scripts\/withhold-group\.mjs reads/.test(wf));
+
+  const cutoutQa = triage(log("── feature suites ──", "  FAIL every showable product has a cutout or a review reason: tcgcsv-709095", "  ✗ sealed-cutout-qa.suite.mjs — 1 failed"));
+  t("a sealed-cutout-qa failure does not block price steps", cutoutQa.blocked.length === 0, JSON.stringify(cutoutQa.blocked));
+  t("a sealed-cutout-qa failure withholds cutout photos", cutoutQa.withheld.length === 1 && cutoutQa.withheld[0].key === "cutouts" && cutoutQa.paths.includes("research/assets/public/cutouts") && cutoutQa.paths.includes("research/assets/public/sealed-cutouts.json"));
+  t("withheld cutouts never include the price files", !cutoutQa.paths.some((p) => /sealed-prices|^data\//.test(p)));
+  const detExits = triage(log("── feature suites ──", "  ✗ build-feed run 1 exits 0 : pulse-feed.json is 13 days behind 2026-11-12", "  ✗ board-determinism.suite.mjs — 1 failed"));
+  t("an inner build-feed run exits line withholds reads, not price safety", detExits.blocked.length === 0 && detExits.withheld.length === 1 && detExits.withheld[0].key === "reads");
+
   const pre = await readFile(new URL("../../.github/workflows/nightly-precheck.yml", import.meta.url), "utf8");
   t("the pre-check uses the same tiers", /triage-tests\.mjs[^\n]*--mode nightly/.test(pre));
+  t("the pre-check warns on stale feed freshness, like the nightly test step", /FEED_FRESHNESS_WARN_ONLY:\s*"1"/.test(pre));
   const pr = await readFile(new URL("../../.github/workflows/pr-tests.yml", import.meta.url), "utf8");
   t("PR CI triages in pr mode", /triage-tests\.mjs[^\n]*--mode pr/.test(pr));
   t("main's artifact freshness runs only on main, not on PRs", /Artifact freshness[\s\S]{0,500}github\.event_name != 'pull_request'/.test(pr));
