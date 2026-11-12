@@ -99,19 +99,18 @@ jobs:
 
       - name: Pull private PkmnPrices rows for the read pathways
         # The enrich run (ppp-enrich.yml, 01:30 UTC) and the PPP refresh push raw
-        # rows to the private repo under ppp/. Pull them into the gitignored
-        # ppp-raw-private/ so build-feed and the scanner can score the 12
-        # PkmnPrices pathways privately. ppp.reads stays off, so the board does
-        # not get these fact reads until a pathway's gate passes. Nothing here
-        # is committed. continue-on-error plus the || echo so a missing token,
-        # a failed clone, or a crash cannot drop the price run.
+        # rows to the private repo under ppp/. ppp-private-sync.mjs pull copies
+        # them into the local gitignored raw folder (it refuses if that folder is
+        # not ignored) so build-feed and the scanner can score the 12 PkmnPrices
+        # pathways privately. ppp.reads stays off, so the board does not get these
+        # fact reads until a pathway's gate passes. Nothing here is committed.
+        # continue-on-error plus the || echo so a missing token, a failed clone,
+        # or a crash cannot drop the price run.
         continue-on-error: true
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: |
           if [ ! -f scripts/ppp-private-sync.mjs ]; then echo "ppp-private-sync.mjs missing; PkmnPrices pathways stay idle"; exit 0; fi
-          # Raw rows must never be staged by a later commit step.
-          if ! git check-ignore -q ppp-raw-private/comps/00.json; then echo "ppp-raw-private/ is not gitignored; not pulling"; exit 0; fi
           node scripts/ppp-private-sync.mjs pull || echo "PkmnPrices pull failed; pathways stay idle tonight"
 
       - name: Rebuild outputs on today's day (before the tests)

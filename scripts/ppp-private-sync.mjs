@@ -27,6 +27,11 @@ function run(cmd, args, env) {
 
 export async function syncPrivate(mode, { token = process.env.PRIVATE_DATA_TOKEN || "" } = {}) {
   if (!token) return { ok: false, reason: "PRIVATE_DATA_TOKEN is not set; PkmnPrices raw stays local to this run." };
+  if (mode === "pull") {
+    // Raw rows must never be staged by a later commit step in the public repo.
+    const ig = await run("git", ["-C", ROOT, "check-ignore", "-q", join(LOCAL, "comps", "00.json")], process.env);
+    if (ig.code !== 0) return { ok: false, reason: "the local raw folder is not gitignored; not pulling" };
+  }
   const netrc = join(homedir(), ".netrc");
   const clone = join(tmpdir(), `catchem-private-ppp-${process.pid}`);
   const env = { ...process.env, GIT_TERMINAL_PROMPT: "0" };
