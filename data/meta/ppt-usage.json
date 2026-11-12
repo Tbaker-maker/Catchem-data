@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-11-11",
+  "asOf": "2026-11-12",
   "status": "ran",
   "reason": "Key was present. credits.used is this run only, as the provider reported it. credits.usedToday adds earlier runs on the same UTC day. credits.remaining is the daily budget minus usedToday, worked out here.",
   "credits": {
@@ -7,16 +7,16 @@
     "main": 16000,
     "reserve": 4000,
     "used": {
-      "sealed": 138,
-      "singles": 4390,
+      "sealed": 644,
+      "singles": 15368,
       "slabs": 0,
       "intraday": 0,
       "crosscheck": 0,
-      "total": 4528
+      "total": 16012
     },
-    "remaining": 15472,
-    "usedToday": 4528,
-    "usedThisRun": 4528,
+    "remaining": 3988,
+    "usedToday": 16012,
+    "usedThisRun": 16012,
     "labels": {
       "used": "this run only",
       "usedThisRun": "this run only",
@@ -25,8 +25,8 @@
     }
   },
   "items": {
-    "sealed": 69,
-    "singles": 2170,
+    "sealed": 322,
+    "singles": 7647,
     "slabs": 0
   },
   "errors": [],
@@ -86,21 +86,21 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 4528,
-    "itemsDone": 2239,
+    "creditsUsed": 16012,
+    "itemsDone": 7969,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 0,
-    "itemsSkipped": 0,
-    "callsSent": 81,
+    "itemsBudgetSkipped": 10182,
+    "itemsSkipped": 10182,
+    "callsSent": 367,
     "callsFailed": 0,
-    "callsNotSent": 0,
-    "rateLimitCount": 3,
-    "retries": 3
+    "callsNotSent": 80,
+    "rateLimitCount": 11,
+    "retries": 11
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here.",
   "emptySealed": {
-    "skippedToday": 0,
-    "foundEmptyToday": 67,
+    "skippedToday": 67,
+    "foundEmptyToday": 0,
     "marked": 67,
     "recheckDays": 7,
     "note": "Sealed ids PPT answered with no product. Skipped until a week has passed, then asked once more."

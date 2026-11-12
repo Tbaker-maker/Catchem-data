@@ -1,4 +1,4 @@
-# Script research scan — 2026-11-10
+# Script research scan — 2026-11-12
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
@@ -6,7 +6,6 @@ Leads from files the nightly already fetched. No web search, no AI. Verify befor
 No flags.
 
 ## Radar check
-- 2026-11-10 McDonald's x Pokémon TCG Happy Meal promotion (US; Canada starts Nov 3) — no second source in tonight's files
 - 2026-11-13 JP: Special Deck Set (Mega Feraligatr ex / Mega Dragonite ex / Mega Gengar ex) — no second source in tonight's files
 - 2026-11-13 Mega Greninja ex League Battle Deck — no second source in tonight's files
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
