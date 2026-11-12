@@ -49,21 +49,27 @@ assert.deepEqual(neededSecrets(byName("Publish the public-data")), []);
 // PATH shims: a bash step and a node child process both hit them.
 const shims = installShims(process.env.PATH);
 const repo = mkdtempSync(join(tmpdir(), "dress-repo-"));
+const other = mkdtempSync(join(tmpdir(), "dress-other-"));
 const remote = mkdtempSync(join(tmpdir(), "dress-remote-"));
 const realGit = (args, cwd) => execFileSync(shims.realGit, args, { cwd, encoding: "utf8" }).trim();
 try {
   realGit(["init", "-q", "--bare"], remote);
-  realGit(["init", "-q", "-b", "main"], repo);
-  realGit(["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "-m", "x"], repo);
-  realGit(["remote", "add", "origin", remote], repo);
-  realGit(["config", "user.name", "before"], repo);
-  const env = { ...process.env, PATH: shims.path, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t" };
+  for (const dir of [repo, other]) {
+    realGit(["init", "-q", "-b", "main"], dir);
+    realGit(["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "-m", "x"], dir);
+    realGit(["config", "user.name", "before"], dir);
+  }
+  // The rehearsal checkout pushes to GitHub. Nothing listens at this URL, so
+  // only the shim can make a push to it exit 0.
+  realGit(["remote", "add", "origin", "https://github.invalid/Tbaker-maker/Catchem-data.git"], repo);
+  realGit(["remote", "add", "origin", remote], other);
+  const env = { ...process.env, PATH: shims.path, DRESS_ROOT: repo, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t", GIT_TERMINAL_PROMPT: "0" };
 
-  const bash = spawnSync("bash", ["-e", "-c", "if git push origin HEAD:refs/heads/leak; then echo PUSHED; fi\ngit config user.name after\ngit pull origin main\ncurl -s -X POST https://example.invalid/hook\ngh issue create --title x --body y\necho NAME=$(git config user.name)\n"], { cwd: repo, env, encoding: "utf8" });
+  const bash = spawnSync("bash", ["-e", "-c", "if git push origin HEAD:refs/heads/leak; then echo PUSHED; fi\ngit push\ngit config user.name after\ngit pull origin main\ncurl -s -X POST https://example.invalid/hook\ngh issue create --title x --body y\necho NAME=$(git config user.name)\n"], { cwd: repo, env, encoding: "utf8" });
   assert.equal(bash.status, 0, bash.stderr);
   assert.match(bash.stdout, /PUSHED/);
   assert.match(bash.stdout, /NAME=before/);
-  assert.match(bash.stderr, /blocked git push/);
+  assert.match(bash.stderr, /blocked git push[\s\S]*blocked git push/);
   assert.match(bash.stderr, /blocked git config write/);
   assert.match(bash.stderr, /blocked git pull/);
   assert.match(bash.stderr, /blocked curl/);
@@ -73,27 +79,35 @@ try {
     const { execSync, spawnSync } = require("node:child_process");
     execSync("git push origin HEAD:refs/heads/from-node", { stdio: "inherit" });
     execSync("git -C . push --force origin HEAD:refs/heads/from-node-c", { stdio: "inherit" });
+    execSync("git -c remote.origin.pushurl=/tmp/x push origin HEAD", { stdio: "inherit" });
     const gh = spawnSync("gh", ["issue", "create", "--title", "x", "--body", "y"], { encoding: "utf8" });
     process.stderr.write(gh.stderr);
     if (gh.status !== 0) process.exit(7);
     execSync("git config --global user.name leak", { stdio: "inherit" });
+    execSync("git config user.name leak", { stdio: "inherit" });
   `;
   const node = spawnSync(process.execPath, ["-e", child], { cwd: repo, env: { ...env, HOME: repo }, encoding: "utf8" });
   assert.equal(node.status, 0, node.stderr);
-  assert.match(node.stderr, /blocked git push[\s\S]*blocked git push/);
+  assert.equal((node.stderr.match(/blocked git push/g) || []).length, 2, node.stderr);
+  assert.match(node.stderr, /blocked git url override/);
   assert.match(node.stderr, /blocked gh/);
-  assert.match(node.stderr, /blocked git config write/);
-  assert.equal(realGit(["for-each-ref", "--format=%(refname)"], remote), "", "a push reached the remote");
+  assert.equal((node.stderr.match(/blocked git config write/g) || []).length, 2, node.stderr);
   assert.equal(realGit(["config", "user.name"], repo), "before");
+  assert.equal(spawnSync(shims.realGit, ["config", "--global", "user.name"], { env: { ...process.env, HOME: repo }, encoding: "utf8" }).stdout.trim(), "");
   // A blocked push moves only the local throwaway branch.
   assert.match(realGit(["branch", "--list", "dress-rehearsal-throwaway"], repo), /dress-rehearsal-throwaway/);
   // Reads still work through the shim.
   const read = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd: repo, env, encoding: "utf8" });
   assert.equal(read.stdout.trim(), "main");
+  // A unit test's own temp repo with a local bare remote still pushes and
+  // writes its config, so the suites behave as they do in the nightly.
+  const local = spawnSync("bash", ["-e", "-c", "git config user.name inner\ngit push -q -u origin main\ngit push -q\n"], { cwd: other, env, encoding: "utf8" });
+  assert.equal(local.status, 0, local.stderr);
+  assert.doesNotMatch(local.stderr, /blocked/);
+  assert.equal(realGit(["config", "user.name"], other), "inner");
+  assert.equal(realGit(["for-each-ref", "--format=%(refname)"], remote), "refs/heads/main");
 } finally {
-  rmSync(repo, { recursive: true, force: true });
-  rmSync(remote, { recursive: true, force: true });
-  rmSync(shims.bin, { recursive: true, force: true });
+  for (const dir of [repo, other, remote, shims.bin]) rmSync(dir, { recursive: true, force: true });
 }
 
 assert.match(nodeOptionsWithPreload(""), /^--import=\/.*dress-rehearsal-preload\.mjs$/);

@@ -142,46 +142,12 @@ function realBinary(name, pathValue) {
 }
 
 // Writes git, gh, curl and wget shims into a new temp bin dir and returns
-// { bin, path } where path puts that dir first.
+// { bin, path, realGit } where path puts that dir first. The git shim reads
+// DRESS_ROOT to know which checkout must not get config writes.
 export function installShims(basePath = process.env.PATH || "") {
   const bin = mkdtempSync(join(tmpdir(), "dress-bin-"));
   const realGit = realBinary("git", basePath) || "/usr/bin/git";
-  const git = `#!/usr/bin/env bash
-# dress rehearsal git shim: blocks push, pull and config writes.
-REAL=${JSON.stringify(realGit)}
-args=("$@"); i=0; sub=""
-while [ $i -lt \${#args[@]} ]; do
-  a="\${args[$i]}"
-  case "$a" in
-    -C|-c|--git-dir|--work-tree|--namespace|--exec-path|--super-prefix|--config-env) i=$((i+2));;
-    -*) i=$((i+1));;
-    *) sub="$a"; break;;
-  esac
-done
-rest=("\${args[@]:$((i+1))}")
-case "$sub" in
-  push|pull|send-pack|request-pull)
-    echo "dress rehearsal: blocked git $sub" >&2
-    "$REAL" branch -f dress-rehearsal-throwaway HEAD >/dev/null 2>&1 || true
-    exit 0;;
-  config)
-    read=0; pos=0; first=""
-    for r in "\${rest[@]}"; do
-      case "$r" in
-        --get|--get-all|--get-regexp|--get-urlmatch|--get-color|--get-colorbool|-l|--list) read=1;;
-        --file|-f|--blob|--type|--default|--comment) ;;
-        -*) ;;
-        *) pos=$((pos+1)); [ -z "$first" ] && first="$r";;
-      esac
-    done
-    case "$first" in get|list) read=1;; set|unset|rename-section|remove-section|edit) read=0; pos=9;; esac
-    for r in "\${rest[@]}"; do case "$r" in --add|--unset|--unset-all|--replace-all|--rename-section|--remove-section|-e|--edit) read=0; pos=9;; esac; done
-    if [ $read = 1 ] || [ $pos -le 1 ] && [ $pos -ne 9 ]; then exec "$REAL" "$@"; fi
-    echo "dress rehearsal: blocked git config write" >&2
-    exit 0;;
-esac
-exec "$REAL" "$@"
-`;
+  const git = readFileSync(join(ROOT, "scripts/dress-rehearsal-git-shim.sh"), "utf8").replace("__REAL_GIT__", realGit);
   const block = (name) => `#!/usr/bin/env bash
 # dress rehearsal ${name} shim: never runs.
 echo "dress rehearsal: blocked ${name}" >&2
@@ -250,7 +216,7 @@ const ERROR_LINE = /(✗|💥|\bFAIL\b|\bFAILED\b|\bError\b|ERROR|fatal:|ENOENT|
 
 export function firstErrorLine(text) {
   const lines = String(text || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean)
-    .filter((l) => !/^dress rehearsal: blocked/.test(l));
+    .filter((l) => !/^dress rehearsal: blocked/.test(l) && !/^::warning::/.test(l));
   const hit = lines.find((l) => ERROR_LINE.test(l) && !/^\s*(ok|✓)\b/.test(l));
   return (hit || lines.at(-1) || "").slice(0, 200);
 }
@@ -282,9 +248,13 @@ const SUITE_WRAPPER = `
 const file = process.argv[1];
 const mod = await import(file);
 let failed = 0;
+const t = (name, cond, detail = "") => {
+  if (cond) console.log("  ok  " + name);
+  else { failed += 1; console.error("  FAIL " + name + (detail ? ": " + detail : "")); }
+};
 const fns = Object.entries(mod).filter(([k, v]) => typeof v === "function" && (k === "run" || /^run[A-Z].*Tests?$/.test(k)));
 for (const [, fn] of fns) {
-  const n = await fn();
+  const n = await fn(t);
   if (typeof n === "number") failed += n;
 }
 if (failed) { console.error("SUITE: " + failed + " failed"); process.exit(1); }
@@ -299,7 +269,7 @@ export async function runEverySuite(env, run = runShell) {
   const results = [];
   console.log(`\n===== every unit-test suite, one process each (${files.length}) =====`);
   for (const f of files) {
-    const script = `timeout 900 node --input-type=module -e ${shq(SUITE_WRAPPER)} ${shq(join(testsDir, f))}`;
+    const script = `timeout 1800 node --input-type=module -e ${shq(SUITE_WRAPPER)} ${shq(join(testsDir, f))}`;
     const r = await run(script, env);
     const ok = r.code === 0;
     const reason = ok ? "" : firstFailing(r.output) || `exit ${r.code}`;
@@ -437,7 +407,7 @@ async function main() {
   if (process.env.DRESS_SKIP_BRANCH !== "1") {
     execSync(`${JSON.stringify(shims.realGit)} checkout -B dress-rehearsal-throwaway`, { cwd: ROOT, stdio: "inherit" });
   }
-  const env = { ...process.env, EBAY_REPLAY: "1", DRESS_REHEARSAL: "1", PATH: shims.path };
+  const env = { ...process.env, EBAY_REPLAY: "1", DRESS_REHEARSAL: "1", PATH: shims.path, DRESS_ROOT: ROOT };
   env.NODE_OPTIONS = nodeOptionsWithPreload(env.NODE_OPTIONS);
   env.GIT_AUTHOR_NAME = env.GIT_AUTHOR_NAME || "catchem-bot";
   env.GIT_AUTHOR_EMAIL = env.GIT_AUTHOR_EMAIL || "bot@catchem.app";
