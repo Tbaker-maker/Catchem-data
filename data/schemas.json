@@ -472,6 +472,8 @@
   "data/singles-enrichment.json": {
    "readers": 4,
    "root": "object",
+   "optional": true,
+   "note": "Generated locally and gitignored; a fresh clone will not have it.",
    "requires": {
     "updatedAt": {
      "type": "str"
