@@ -65,13 +65,25 @@ export function parseWorkflowSteps(yaml) {
 export function dressRun(script) {
   let s = String(script || "");
   s = s.replace(/node scripts\/publish-public-data\.mjs --push\b/g, "node scripts/publish-public-data.mjs");
-  s = s.replace(/git config user\.name[^\n]*/g, "true # dress: author comes from the environment");
-  s = s.replace(/git config user\.email[^\n]*/g, "true # dress: email comes from the environment");
-  s = s.replace(/git pull --rebase --autostash origin main/g, "echo 'dress rehearsal: skip pull'");
-  s = s.replace(/\bgit push\b[^\n]*/g, "echo 'dress rehearsal: skip push' && git branch -f dress-rehearsal-throwaway HEAD");
-  s = s.replace(/\bcurl\b[^\n]*/g, "echo 'dress rehearsal: skip curl'");
-  s = s.replace(/(^|\n)([ \t]*)gh\b/g, "$1$2true # dress skip gh ");
-  return s;
+  // Wrap git, gh and curl so a push, a hook, or an issue command cannot leave
+  // this machine. Rewriting the middle of a line breaks `if git push; then`.
+  const prelude = [
+    "git() {",
+    "  if [ \"$1\" = \"push\" ] || [ \"$1\" = \"pull\" ]; then",
+    "    echo \"dress rehearsal: skip git $1\"",
+    "    command git branch -f dress-rehearsal-throwaway HEAD >/dev/null 2>&1 || true",
+    "    return 0",
+    "  fi",
+    "  if [ \"$1\" = \"config\" ]; then",
+    "    echo \"dress rehearsal: skip git config\"",
+    "    return 0",
+    "  fi",
+    "  command git \"$@\"",
+    "}",
+    "gh() { echo \"dress rehearsal: skip gh\"; return 0; }",
+    "curl() { echo \"dress rehearsal: skip curl\"; return 0; }",
+  ].join("\n");
+  return prelude + "\n" + s;
 }
 
 function evalExpr(expr, ctx) {
@@ -127,8 +139,8 @@ export async function rehearse(steps, env, run = runShell) {
       console.error(`CONTINUE ${step.name} (exit ${code})`);
       continue;
     }
+    if (!ctx.failedStep) ctx.failedStep = step.name;
     ctx.hardFailed = true;
-    ctx.failedStep = step.name;
     console.error(`DRESS REHEARSAL FAILED at step: ${step.name} (exit ${code})`);
   }
   if (ctx.soft.length) console.error("continue-on-error failures:\n" + ctx.soft.map((n) => "- " + n).join("\n"));

@@ -22,14 +22,21 @@ const pub = steps.find((s) => s.name.startsWith("Publish the public-data"));
 assert.match(pub.run, /--push/);
 assert.doesNotMatch(dressRun(pub.run), /--push/);
 assert.match(dressRun(pub.run), /publish-public-data\.mjs/);
-const commit = steps.find((s) => s.name.startsWith("Commit price data"));
+const commit = steps.find((s) => s.name.startsWith("Commit today's TCGCSV"));
 const rewritten = dressRun(commit.run);
-assert.doesNotMatch(rewritten, /^[ \t]*git config/m);
-assert.doesNotMatch(rewritten, /\bgit push\b/);
-assert.match(rewritten, /dress-rehearsal-throwaway/);
-assert.doesNotMatch(rewritten, /git pull --rebase/);
+assert.match(rewritten, /git\(\) \{/);
+assert.match(rewritten, /skip git/);
+assert.match(rewritten, /if git push; then/);
 const hook = steps.find((s) => s.name.startsWith("Trigger app rebuild"));
-assert.doesNotMatch(dressRun(hook.run), /^[ \t]*curl\b/m);
+assert.match(dressRun(hook.run), /curl\(\) \{/);
+const { spawnSync } = await import("node:child_process");
+const snippet = dressRun("if git push; then echo PUSHED; fi\ngit config user.name x\ncurl -s -X POST \"$CF_DEPLOY_HOOK\"\n");
+const probe = spawnSync("bash", ["-lc", snippet], { encoding: "utf8" });
+assert.equal(probe.status, 0, probe.stderr);
+assert.match(probe.stdout, /PUSHED/);
+assert.match(probe.stdout, /skip git config/);
+assert.match(probe.stdout, /skip curl/);
+assert.doesNotMatch(probe.stdout, /To https:/);
 
 const green = { hardFailed: false, outcomes: { tests: "success", setpages: "success", publish: "success" } };
 assert.equal(shouldRun("", green), true);
@@ -52,13 +59,17 @@ const fake = [
   { name: "always after", id: "e", run: "true", uses: "", continueOnError: false, if: "always()" },
 ];
 const ran = [];
-const ctx = await rehearse(fake, {}, async (script) => { ran.push(script); return script.includes("exit") ? Number(script.split(" ")[1]) : 0; });
+const ctx = await rehearse(fake, {}, async (script) => {
+  const body = script.trim().split("\n").pop();
+  ran.push(body);
+  return body.startsWith("exit") ? Number(body.split(" ")[1]) : 0;
+});
 assert.deepEqual(ran, ["true", "exit 3", "exit 4", "true"]);
 assert.equal(ctx.failedStep, "hard");
 assert.deepEqual(ctx.soft, ["soft"]);
 
 const preload = await import("./dress-rehearsal-preload.mjs");
 void preload;
-await assert.rejects(() => fetch("https://api.ebay.com/buy/browse/v1/item_summary/search"), /blocked an eBay API call/);
+await assert.rejects(() => fetch("https://api.ebay.com/buy/browse/v1/item_summary/search", { signal: AbortSignal.timeout(5000) }), /blocked an eBay API call/);
 
 console.log("nightly dress rehearsal parser ok", steps.length);
