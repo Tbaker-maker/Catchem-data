@@ -519,7 +519,7 @@ export async function main() {
         await persistState({
           cursor: { asOf: today, done: [...new Set([...alreadyDone, ...done])], advanced: done.length > 0, note: "Resume point. Ids only. Not a price." },
           map,
-          ledger: { day: today, lanes },
+          ledger: { ...runBudget.ledger, day: today, lanes },
         });
       },
     });
@@ -579,7 +579,7 @@ export async function main() {
       cursor,
       dates: { asOf: today, dates: nextDates, emptyIds: nextEmpty, failedIds: nextFailed },
       map: ran.idMap,
-      ledger: { day: today, lanes: lanesAfter },
+      ledger: { ...runBudget.ledger, day: today, lanes: lanesAfter },
     });
     try {
       await writeComparison({ root: ROOT, rawDir, today, tcgcsv, usage });

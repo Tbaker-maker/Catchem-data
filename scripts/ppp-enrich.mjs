@@ -54,22 +54,38 @@ export function priorityOrder(products) {
 
 const fresh = (at, days, now) => at && days > 0 && now - Date.parse(at) < days * DAY;
 
-async function loadShard(kind, b) { return readJson(join(RAW, kind, `${b}.json`), {}); }
+async function loadShard(kind, b, rawDir = RAW) { return readJson(join(rawDir, kind, `${b}.json`), {}); }
 
-export async function runLanes({ client, budget, products, lanes, scale = 1, now = Date.now(), log = console.log }) {
-  const map = await readJson(join(RAW, "id-map.json"), { single: {}, sealed: {} });
+export async function runLanes({ client, budget, products, lanes, scale = 1, now = Date.now(), log = console.log, rawDir = RAW }) {
+  const map = await readJson(join(rawDir, "id-map.json"), { single: {}, sealed: {} });
   map.single ||= {}; map.sealed ||= {};
   const order = priorityOrder(products);
   const shards = new Map();
-  const shard = async (kind, b) => { const k = `${kind}/${b}`; if (!shards.has(k)) shards.set(k, await loadShard(kind, b)); return shards.get(k); };
+  const shard = async (kind, b) => { const k = `${kind}/${b}`; if (!shards.has(k)) shards.set(k, await loadShard(kind, b, rawDir)); return shards.get(k); };
   const day = new Date(now).toISOString().slice(0, 10);
-  const ledger = ledgerFor(await readJson(join(RAW, "ledger.json"), null), day);
+  const ledger = ledgerFor(await readJson(join(rawDir, "ledger.json"), null), day);
   const meters = [];
   const meter = (name) => {
     const start = ledger.lanes[name] || 0;
-    const m = laneMeter(name, budget, start);
+    const m = laneMeter(name, budget, start, { stopped: ledger.stopped?.[name] || null });
     const cap = Math.floor(m.cap * scale);
-    const w = { name, cap, canSpend: (c = 1) => m.spent + c <= cap && m.canSpend(c), charge: m.charge, get spent() { return m.spent - start; }, get total() { return m.spent; } };
+    if (m.stopped) log(`ppp-enrich ${name}: stopped earlier this UTC day (charged ${m.stopped.charged} > expected ${m.stopped.expected}); skipping`);
+    const w = {
+      name,
+      cap,
+      canSpend: (c = 1) => m.spent + c <= cap && m.canSpend(c),
+      charge: (charged, left, expected) => {
+        const was = m.stopped;
+        m.charge(charged, left, expected);
+        if (!was && m.stopped) {
+          m.stopped.at = new Date(now).toISOString();
+          log(`ppp-enrich ${name}: charged ${m.stopped.charged} > expected ${m.stopped.expected}; lane stopped for the UTC day`);
+        }
+      },
+      get stopped() { return m.stopped; },
+      get spent() { return m.spent - start; },
+      get total() { return m.spent; },
+    };
     meters.push(w);
     return w;
   };
@@ -79,10 +95,13 @@ export async function runLanes({ client, budget, products, lanes, scale = 1, now
   const flush = async (force = false) => {
     if (!force && ++since < 50) return;
     since = 0;
-    for (const w of meters) ledger.lanes[w.name] = w.total;
-    await writeJson(join(RAW, "ledger.json"), ledger);
-    for (const [k, v] of shards) await writeJson(join(RAW, `${k}.json`), v);
-    await writeJson(join(RAW, "id-map.json"), map);
+    for (const w of meters) {
+      ledger.lanes[w.name] = w.total;
+      if (w.stopped) (ledger.stopped ||= {})[w.name] = w.stopped;
+    }
+    await writeJson(join(rawDir, "ledger.json"), ledger);
+    for (const [k, v] of shards) await writeJson(join(rawDir, `${k}.json`), v);
+    await writeJson(join(rawDir, "id-map.json"), map);
   };
   const refresh = budget.refreshDays || {};
   const iso = new Date(now).toISOString();
@@ -219,6 +238,7 @@ export async function runLanes({ client, budget, products, lanes, scale = 1, now
   }
 
   await flush(true);
+  for (const w of meters) if (w.stopped && report[w.name]) report[w.name].stopped = { charged: w.stopped.charged, expected: w.stopped.expected };
   return report;
 }
 

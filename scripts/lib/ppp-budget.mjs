@@ -27,25 +27,36 @@ export function checkBudget(budget = loadBudget()) {
 
 // Spend tracker for one lane in one run. remaining = last x-credits-remaining header.
 // already = credits this lane spent earlier in the same UTC day (from the ledger).
-export function laneMeter(name, budget = loadBudget(), already = 0) {
+// spent only ever grows by what x-credits-charged reported, so the cap is on real spend.
+// A call that comes back charging more than the caller expected stops the lane for
+// the rest of the UTC day: the cost model is wrong, so no later pre-check can be trusted.
+// stopped = that day's stop from the ledger, so a second run the same day stays stopped.
+export function laneMeter(name, budget = loadBudget(), already = 0, { stopped = null } = {}) {
   const cap = laneCap(name, budget);
   const reserve = Number(budget.reserve) || 0;
   let spent = Number(already) || 0;
   let remaining = null;
+  let stop = stopped || null;
   return {
     name,
     cap,
     get spent() { return spent; },
     get remaining() { return remaining; },
+    get stopped() { return stop; },
     // can we afford a request that may cost up to `cost` credits?
     canSpend(cost = 1) {
+      if (stop) return false;
       if (spent + cost > cap) return false;
       if (remaining != null && remaining - cost < reserve) return false;
       return true;
     },
-    charge(charged, left) {
-      spent += Number(charged) || 0;
+    charge(charged, left, expected = null) {
+      const c = Number(charged) || 0;
+      spent += c;
       if (Number.isFinite(Number(left)) && left !== null && left !== "") remaining = Number(left);
+      if (!stop && expected !== null && expected !== undefined && Number.isFinite(Number(expected)) && c > Number(expected)) {
+        stop = { charged: c, expected: Number(expected) };
+      }
     },
   };
 }
@@ -81,7 +92,7 @@ export function currentRunBudget(budget, ledger, day, { usageAlready = 0 } = {})
     already,
     cap,
     budget: Math.min(laneRoom, dailyRoom),
-    ledger: { day, lanes },
+    ledger: { ...base, day, lanes },
     total,
     dailyRoom,
     laneRoom,
