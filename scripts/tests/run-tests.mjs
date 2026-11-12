@@ -37,6 +37,7 @@ import { runNoPppRawPublicTests } from "./no-ppp-raw-public.test.mjs";
 import { runPppRefreshTests } from "./ppp-refresh.test.mjs";
 import { runPppCompareTests } from "./ppp-compare.test.mjs";
 import { runPrivatePppTests } from "./private-ppp.test.mjs";
+import { runPppEnrichTests } from "./ppp-enrich.test.mjs";
 import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runReadTagTests } from "./read-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
@@ -344,6 +345,10 @@ console.log("── ppp dual-run ──");
 {
   const n = await runPrivatePppTests();
   t("private ppp suite", n === 0, `${n} failed`);
+}
+{
+  const n = await runPppEnrichTests();
+  t("ppp enrich lane caps suite", n === 0, `${n} failed`);
 }
 console.log("── public index line (value-weighted) ──");
 {
