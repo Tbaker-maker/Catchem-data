@@ -1,9 +1,12 @@
 name: Nightly dress rehearsal
 
 # Full nightly price pipeline on current code, without touching the live site.
-# eBay is replayed from the newest saved response. Publish runs without --push.
-# Commits stay on a throwaway branch. Every step still runs after a failure.
-# The job exits naming the first hard step, and the log lists the rest.
+# eBay is replayed from the newest saved night (EBAY_REPLAY=1) through the
+# normal write path, and api.ebay.com is blocked. Publish runs without --push.
+# git push, git pull, git config writes, gh, curl and wget hit PATH shims, so
+# child processes cannot reach the network through them either. Every step
+# still runs after a failure, every unit-test suite runs on its own, steps that
+# need a secret are listed as skipped, and the log ends with one step table.
 on:
   pull_request:
     paths:
@@ -29,17 +32,27 @@ jobs:
         with:
           fetch-depth: 0
           filter: blob:none
+          persist-credentials: false
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Parser test
+      - name: Parser and safety test
         run: node scripts/nightly-dress-rehearsal.test.mjs
 
       - name: Dress rehearsal
         env:
           EBAY_REPLAY: "1"
           DRESS_REHEARSAL: "1"
+          DRESS_REPORT: ${{ runner.temp }}/dress-rehearsal-report.json
         run: node scripts/nightly-dress-rehearsal.mjs
+
+      - name: Keep the step report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dress-rehearsal-report
+          path: ${{ runner.temp }}/dress-rehearsal-report.json
+          if-no-files-found: ignore

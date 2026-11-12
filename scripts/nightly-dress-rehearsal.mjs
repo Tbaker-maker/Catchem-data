@@ -1,18 +1,43 @@
 // Dress rehearsal of .github/workflows/update-sealed-prices.yml.
-// Runs the same steps against the current checkout. eBay is replayed from the
-// newest saved data/raw/ebay-sealed file (EBAY_REPLAY=1) and api.ebay.com is
-// blocked. publish-public-data.mjs is called without --push. git push is
-// rewritten to a local throwaway branch. The first hard failure stops the
-// pipeline and names the step. continue-on-error steps are listed and the run
-// continues.
+// Runs the same steps against the current checkout so one run shows every
+// failure, not only the first one.
+//
+// Safety, for this process and every child it starts:
+// - git, gh, curl and wget are PATH shims in a temp bin dir at the front of
+//   PATH, so a bash step and a node execSync or spawn call hit the same shim.
+//   git push, git pull and git config writes are blocked (a push only moves
+//   the local dress-rehearsal-throwaway branch). gh, curl and wget never run.
+// - NODE_OPTIONS imports dress-rehearsal-preload.mjs by absolute path, which
+//   throws on any api.ebay.com request.
+// - publish-public-data.mjs is called without --push.
+// - Every secret the nightly reads is blank. A step that cannot work without
+//   one is logged as SKIPPED: needs secret X and is not a failure.
+// - EBAY_REPLAY=1: fetch-sealed-prices.mjs replays the newest saved
+//   data/raw/ebay-sealed/YYYY-MM-DD.json.gz through its normal write path.
+//
+// Keep-going mode (on unless DRESS_KEEP_GOING=0): a step with no if, or with
+// success(), still runs after a hard failure and is labelled "ran after
+// earlier failure". always() and failure() keep their meaning. The unit test
+// step also runs every suite on its own so each failing suite is listed.
+// The end of the log is one table of every step.
 
-import { readFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawn, execSync } from "node:child_process";
-import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
+import { delimiter, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WORKFLOW = join(ROOT, ".github/workflows/update-sealed-prices.yml");
+const PRELOAD = join(ROOT, "scripts/dress-rehearsal-preload.mjs");
+
+// Secrets a step can do without: the scripts fall back to public files.
+const OPTIONAL_SECRETS = new Set(["PRIVATE_DATA_TOKEN", "YOUTUBE_API_KEY"]);
+// Secrets the rehearsal replaces: eBay comes from the saved night.
+const REPLAYED_SECRETS = new Set(["EBAY_APP_ID", "EBAY_CERT_ID"]);
+// Steps whose whole job is the private repo still need PRIVATE_DATA_TOKEN.
+const PRIVATE_ONLY_STEP = /^Pull private |\bprivate (repo|log|history|state)\b/i;
+const PRIVATE_ONLY_RUN = /scripts\/(mount|push)-private-|ppp-private-sync\.mjs/;
 
 export function parseWorkflowSteps(yaml) {
   const lines = String(yaml).split(/\n/);
@@ -44,6 +69,7 @@ export function parseWorkflowSteps(yaml) {
         continueOnError: false,
         if: "",
         env: {},
+        secrets: [],
       };
       continue;
     }
@@ -56,6 +82,9 @@ export function parseWorkflowSteps(yaml) {
         const quoted = val.match(/^"([^"]*)"/) || val.match(/^'([^']*)'/);
         if (quoted) val = quoted[1];
         else val = val.replace(/\s+#.*$/, "").trim();
+        for (const m of val.matchAll(/\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}/g)) {
+          if (!cur.secrets.includes(m[1])) cur.secrets.push(m[1]);
+        }
         val = val.replace(/\$\{\{\s*secrets\.[^}]+\}\}/g, "");
         val = val.replace(/\$\{\{\s*github\.[^}]+\}\}/g, "");
         cur.env[em[1]] = val;
@@ -67,7 +96,7 @@ export function parseWorkflowSteps(yaml) {
     if (id) cur.id = id[1].trim();
     const uses = line.match(/^        uses:\s*(.+)$/);
     if (uses) cur.uses = uses[1].trim();
-    if (/^        continue-on-error:\s*true\s*$/.test(line)) cur.continueOnError = true;
+    if (/^        continue-on-error:\s*true\b/.test(line)) cur.continueOnError = true;
     const iff = line.match(/^        if:\s*(.+)$/);
     if (iff) cur.if = iff[1].trim();
     if (/^        env:\s*$/.test(line)) { inEnv = true; continue; }
@@ -79,42 +108,117 @@ export function parseWorkflowSteps(yaml) {
   return steps;
 }
 
-export function dressRun(script) {
-  let s = String(script || "");
-  s = s.replace(/node scripts\/publish-public-data\.mjs --push\b/g, "node scripts/publish-public-data.mjs");
-  // Wrap git, gh and curl so a push, a hook, or an issue command cannot leave
-  // this machine. Rewriting the middle of a line breaks `if git push; then`.
-  const prelude = [
-    "git() {",
-    "  if [ \"$1\" = \"push\" ] || [ \"$1\" = \"pull\" ]; then",
-    "    echo \"dress rehearsal: skip git $1\"",
-    "    command git branch -f dress-rehearsal-throwaway HEAD >/dev/null 2>&1 || true",
-    "    return 0",
-    "  fi",
-    "  if [ \"$1\" = \"config\" ]; then",
-    "    echo \"dress rehearsal: skip git config\"",
-    "    return 0",
-    "  fi",
-    "  command git \"$@\"",
-    "}",
-    "gh() { echo \"dress rehearsal: skip gh\"; return 0; }",
-    "curl() { echo \"dress rehearsal: skip curl\"; return 0; }",
-    "node() { command node --import ./scripts/dress-rehearsal-preload.mjs \"$@\"; }",
-  ].join("\n");
-  return prelude + "\n" + s;
+// Secrets this step cannot run without. The rehearsal never has them.
+export function neededSecrets(step) {
+  const out = [];
+  for (const name of step.secrets || []) {
+    if (REPLAYED_SECRETS.has(name)) continue;
+    if (OPTIONAL_SECRETS.has(name)) {
+      if (name === "PRIVATE_DATA_TOKEN" && (PRIVATE_ONLY_STEP.test(step.name) || PRIVATE_ONLY_RUN.test(step.run || ""))) out.push(name);
+      continue;
+    }
+    out.push(name);
+  }
+  return out;
 }
 
-function evalExpr(expr, ctx) {
+export function allSecrets(steps) {
+  const all = new Set();
+  for (const s of steps) for (const n of s.secrets || []) all.add(n);
+  return [...all];
+}
+
+export function dressRun(script) {
+  return String(script || "").replace(/node scripts\/publish-public-data\.mjs --push\b/g, "node scripts/publish-public-data.mjs");
+}
+
+function realBinary(name, pathValue) {
+  for (const dir of String(pathValue || "").split(delimiter)) {
+    if (!dir) continue;
+    const p = join(dir, name);
+    if (existsSync(p)) return p;
+  }
+  return "";
+}
+
+// Writes git, gh, curl and wget shims into a new temp bin dir and returns
+// { bin, path } where path puts that dir first.
+export function installShims(basePath = process.env.PATH || "") {
+  const bin = mkdtempSync(join(tmpdir(), "dress-bin-"));
+  const realGit = realBinary("git", basePath) || "/usr/bin/git";
+  const git = `#!/usr/bin/env bash
+# dress rehearsal git shim: blocks push, pull and config writes.
+REAL=${JSON.stringify(realGit)}
+args=("$@"); i=0; sub=""
+while [ $i -lt \${#args[@]} ]; do
+  a="\${args[$i]}"
+  case "$a" in
+    -C|-c|--git-dir|--work-tree|--namespace|--exec-path|--super-prefix|--config-env) i=$((i+2));;
+    -*) i=$((i+1));;
+    *) sub="$a"; break;;
+  esac
+done
+rest=("\${args[@]:$((i+1))}")
+case "$sub" in
+  push|pull|send-pack|request-pull)
+    echo "dress rehearsal: blocked git $sub" >&2
+    "$REAL" branch -f dress-rehearsal-throwaway HEAD >/dev/null 2>&1 || true
+    exit 0;;
+  config)
+    read=0; pos=0; first=""
+    for r in "\${rest[@]}"; do
+      case "$r" in
+        --get|--get-all|--get-regexp|--get-urlmatch|--get-color|--get-colorbool|-l|--list) read=1;;
+        --file|-f|--blob|--type|--default|--comment) ;;
+        -*) ;;
+        *) pos=$((pos+1)); [ -z "$first" ] && first="$r";;
+      esac
+    done
+    case "$first" in get|list) read=1;; set|unset|rename-section|remove-section|edit) read=0; pos=9;; esac
+    for r in "\${rest[@]}"; do case "$r" in --add|--unset|--unset-all|--replace-all|--rename-section|--remove-section|-e|--edit) read=0; pos=9;; esac; done
+    if [ $read = 1 ] || [ $pos -le 1 ] && [ $pos -ne 9 ]; then exec "$REAL" "$@"; fi
+    echo "dress rehearsal: blocked git config write" >&2
+    exit 0;;
+esac
+exec "$REAL" "$@"
+`;
+  const block = (name) => `#!/usr/bin/env bash
+# dress rehearsal ${name} shim: never runs.
+echo "dress rehearsal: blocked ${name}" >&2
+exit 0
+`;
+  writeFileSync(join(bin, "git"), git);
+  for (const name of ["gh", "curl", "wget"]) writeFileSync(join(bin, name), block(name));
+  for (const name of ["git", "gh", "curl", "wget"]) chmodSync(join(bin, name), 0o755);
+  return { bin, path: [bin, basePath].filter(Boolean).join(delimiter), realGit };
+}
+
+export function nodeOptionsWithPreload(existing = "") {
+  const flag = `--import=${PRELOAD}`;
+  return String(existing || "").includes(flag) ? existing : [existing, flag].filter(Boolean).join(" ");
+}
+
+function evalExpr(expr, ctx, keepGoing) {
   const e = String(expr || "").trim();
   if (e === "always()") return true;
   if (e === "failure()") return ctx.hardFailed;
-  if (e === "success()") return !ctx.hardFailed;
+  if (e === "success()") return keepGoing ? true : !ctx.hardFailed;
+  if (e === "cancelled()") return false;
   const parts = e.split(/\s*&&\s*/);
-  if (parts.length > 1) return parts.every((part) => evalExpr(part, ctx));
-  const m = e.match(/^steps\.([A-Za-z0-9_-]+)\.outcome\s*==\s*'(success|failure)'$/);
+  if (parts.length > 1) return parts.every((part) => evalExpr(part, ctx, keepGoing));
+  const m = e.match(/^steps\.([A-Za-z0-9_-]+)\.(?:outcome|conclusion)\s*==\s*'(success|failure|skipped)'$/);
   if (m) return ctx.outcomes[m[1]] === m[2];
-  console.log("dress rehearsal: unrecognized if, running only while the run is green: " + e);
-  return !ctx.hardFailed;
+  console.log("dress rehearsal: unrecognized if, treated as success(): " + e);
+  return keepGoing ? true : !ctx.hardFailed;
+}
+
+// True when the expression is gated on the run being green: a blank if is an
+// implicit success(). Those are the steps keep-going mode runs anyway.
+function successGated(expr) {
+  const e = String(expr || "").trim();
+  if (!e) return true;
+  if (/\b(always|failure|cancelled)\(\)/.test(e)) return false;
+  return true;
 }
 
 export function expandGha(script, ctx) {
@@ -135,63 +239,189 @@ export function expandGha(script, ctx) {
   });
 }
 
-export function shouldRun(expr, ctx) {
-  // A blank if still runs after an earlier failure. The nightly stops there,
-  // so a broken step hides the next one until the following night. This run
-  // keeps going and names the first hard failure at the end.
-  if (!String(expr || "").trim()) return true;
-  return evalExpr(expr, ctx);
+// { run, afterFailure } for one step in the current run state.
+export function shouldRun(expr, ctx, keepGoing = true) {
+  const run = evalExpr(String(expr || "").trim() || "success()", ctx, keepGoing);
+  const afterFailure = run && ctx.hardFailed && successGated(expr);
+  return { run, afterFailure };
+}
+
+const ERROR_LINE = /(✗|💥|\bFAIL\b|\bFAILED\b|\bError\b|ERROR|fatal:|ENOENT|Cannot find|not found|failed|refus|::error::)/;
+
+export function firstErrorLine(text) {
+  const lines = String(text || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean)
+    .filter((l) => !/^dress rehearsal: blocked/.test(l));
+  const hit = lines.find((l) => ERROR_LINE.test(l) && !/^\s*(ok|✓)\b/.test(l));
+  return (hit || lines.at(-1) || "").slice(0, 200);
 }
 
 function runShell(script, env) {
   return new Promise((resolve) => {
-    const child = spawn("bash", ["-lc", script], { cwd: ROOT, env, stdio: "inherit" });
-    child.on("close", (code) => resolve(code == null ? 1 : code));
+    const child = spawn("bash", ["--noprofile", "--norc", "-e", "-c", script], { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    const keep = (chunk) => { out += chunk.toString(); if (out.length > 4_000_000) out = out.slice(-2_000_000); };
+    child.stdout.on("data", (c) => { process.stdout.write(c); keep(c); });
+    child.stderr.on("data", (c) => { process.stderr.write(c); keep(c); });
+    child.on("close", (code) => resolve({ code: code == null ? 1 : code, output: out }));
   });
 }
 
-export async function rehearse(steps, env, run = runShell) {
-  const ctx = { hardFailed: false, failedStep: "", failures: [], soft: [], outcomes: {} };
+// The suites the nightly runner loads: every *.suite.mjs plus each *.test.mjs
+// that run-tests.mjs names.
+export function suiteFiles(testsDir, runnerText) {
+  const names = readdirSync(testsDir).sort();
+  const suites = names.filter((n) => n.endsWith(".suite.mjs"));
+  const tests = names.filter((n) => n.endsWith(".test.mjs")).filter((n) => {
+    const base = n.replace(/\.test\.mjs$/, "");
+    return runnerText.includes(`./${n}`) || runnerText.includes(`"${base}"`);
+  });
+  return [...tests, ...suites];
+}
+
+const SUITE_WRAPPER = `
+const file = process.argv[1];
+const mod = await import(file);
+let failed = 0;
+const fns = Object.entries(mod).filter(([k, v]) => typeof v === "function" && (k === "run" || /^run[A-Z].*Tests?$/.test(k)));
+for (const [, fn] of fns) {
+  const n = await fn();
+  if (typeof n === "number") failed += n;
+}
+if (failed) { console.error("SUITE: " + failed + " failed"); process.exit(1); }
+`;
+
+// Every suite in its own process, so one red suite cannot hide the next.
+// Returns [{ file, ok, reason }].
+export async function runEverySuite(env, run = runShell) {
+  const testsDir = join(ROOT, "scripts/tests");
+  const runnerText = readFileSync(join(testsDir, "run-tests.mjs"), "utf8");
+  const files = suiteFiles(testsDir, runnerText);
+  const results = [];
+  console.log(`\n===== every unit-test suite, one process each (${files.length}) =====`);
+  for (const f of files) {
+    const script = `timeout 900 node --input-type=module -e ${shq(SUITE_WRAPPER)} ${shq(join(testsDir, f))}`;
+    const r = await run(script, env);
+    const ok = r.code === 0;
+    const reason = ok ? "" : firstFailing(r.output) || `exit ${r.code}`;
+    results.push({ file: f, ok, reason });
+  }
+  const bad = results.filter((r) => !r.ok);
+  console.log(`\nunit-test suites: ${results.length - bad.length} passed, ${bad.length} failed`);
+  for (const b of bad) console.log(`  SUITE FAIL ${b.file}: ${b.reason}`);
+  return results;
+}
+
+function firstFailing(output) {
+  const lines = String(output || "").split(/\r?\n/).map((l) => l.trim());
+  const fails = lines.filter((l) => /^(FAIL\b|✗|not ok\b)/.test(l) || /AssertionError|Error:/.test(l));
+  return fails.slice(0, 3).join(" | ").slice(0, 300);
+}
+
+function shq(s) { return "'" + String(s).replace(/'/g, "'\\''") + "'"; }
+
+export async function rehearse(steps, env, run = runShell, opts = {}) {
+  const keepGoing = opts.keepGoing !== false;
+  const everySuite = opts.everySuite || null;
+  const blankSecrets = allSecrets(steps);
+  const ctx = { hardFailed: false, failedStep: "", failures: [], soft: [], secretSkips: [], outcomes: {}, rows: [], suites: [] };
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     const key = step.id || `n${i}`;
-    if (!shouldRun(step.if, ctx)) {
-      console.log(`SKIP ${step.name}`);
+    const row = { n: i + 1, name: step.name, ran: false, result: "", note: "", error: "" };
+    ctx.rows.push(row);
+    const gate = shouldRun(step.if, ctx, keepGoing);
+    if (!gate.run) {
+      console.log(`SKIP ${step.name} (if: ${step.if})`);
       ctx.outcomes[key] = "skipped";
+      row.result = "skipped";
+      row.note = `if: ${step.if}`;
       continue;
     }
     if (step.uses && !step.run) {
       console.log(`SKIP uses ${step.name} (${step.uses})`);
       ctx.outcomes[key] = "success";
+      row.result = "skipped";
+      row.note = `uses ${step.uses}, done by the rehearsal job`;
+      continue;
+    }
+    const needs = neededSecrets(step);
+    if (needs.length) {
+      const msg = `SKIPPED: needs secret ${needs.join(", ")}`;
+      console.log(`${msg} (${step.name})`);
+      ctx.outcomes[key] = "skipped";
+      ctx.secretSkips.push({ name: step.name, secrets: needs });
+      row.result = "skipped";
+      row.note = msg;
       continue;
     }
     const script = expandGha(dressRun(step.run), ctx);
-    console.log(`\n===== STEP: ${step.name} =====`);
+    console.log(`\n===== STEP: ${step.name}${gate.afterFailure ? " (ran after earlier failure)" : ""} =====`);
     const stepEnv = { ...env, ...(step.env || {}), EBAY_REPLAY: "1", DRESS_REHEARSAL: "1" };
-    stepEnv.EBAY_APP_ID = "";
-    stepEnv.EBAY_CERT_ID = "";
-    const code = script.trim() ? await run(script, stepEnv) : 0;
+    for (const name of blankSecrets) stepEnv[name] = "";
+    stepEnv.GH_TOKEN = "";
+    stepEnv.GITHUB_TOKEN = "";
+    row.ran = true;
+    if (gate.afterFailure) row.note = "ran after earlier failure";
+    const r = script.trim() ? await run(script, stepEnv) : { code: 0, output: "" };
+    const code = typeof r === "number" ? r : r.code;
+    const output = typeof r === "number" ? "" : r.output;
+    if (step.id === "tests" && everySuite) {
+      ctx.suites = await everySuite(stepEnv);
+      const bad = ctx.suites.filter((s) => !s.ok);
+      if (bad.length) row.note = [row.note, `failing suites: ${bad.map((s) => s.file).join(", ")}`].filter(Boolean).join("; ");
+    }
     if (code === 0) {
       ctx.outcomes[key] = "success";
+      row.result = "pass";
       continue;
     }
     ctx.outcomes[key] = "failure";
+    row.error = firstErrorLine(output) || `exit ${code}`;
     if (step.continueOnError) {
       ctx.soft.push(step.name);
+      row.result = "fail (continue-on-error)";
       console.error(`CONTINUE ${step.name} (exit ${code})`);
       continue;
     }
     if (!ctx.failedStep) ctx.failedStep = step.name;
     ctx.failures.push(step.name);
     ctx.hardFailed = true;
-    console.error(`DRESS REHEARSAL FAILED at step: ${step.name} (exit ${code})`);
+    row.result = "FAIL";
+    console.error(`DRESS REHEARSAL STEP FAILED: ${step.name} (exit ${code})`);
   }
-  if (ctx.soft.length) console.error("continue-on-error failures:\n" + ctx.soft.map((n) => "- " + n).join("\n"));
-  if (ctx.hardFailed) {
-    console.error(`DRESS REHEARSAL FAILED at step: ${ctx.failedStep}`);
-    console.error("All hard failures:\n" + ctx.failures.map((n) => "- " + n).join("\n"));
-  } else console.log("DRESS REHEARSAL PASSED");
+  printSummary(ctx);
   return ctx;
+}
+
+export function stepTable(rows) {
+  const esc = (s) => String(s || "").replace(/\|/g, "/");
+  const head = "| # | step | ran | result | note | first error line |\n|---|---|---|---|---|---|";
+  return head + "\n" + rows.map((r) => `| ${r.n} | ${esc(r.name)} | ${r.ran ? "ran" : "skipped"} | ${esc(r.result)} | ${esc(r.note)} | ${esc(r.error)} |`).join("\n");
+}
+
+function printSummary(ctx) {
+  const lines = [];
+  lines.push("## Dress rehearsal step table", "", stepTable(ctx.rows), "");
+  lines.push(`Hard failures (${ctx.failures.length}):`);
+  for (const n of ctx.failures) lines.push(`- ${n}`);
+  lines.push("", `continue-on-error failures (${ctx.soft.length}):`);
+  for (const n of ctx.soft) lines.push(`- ${n}`);
+  lines.push("", `Skipped, needs a secret the rehearsal does not have (${ctx.secretSkips.length}), not failures:`);
+  for (const s of ctx.secretSkips) lines.push(`- ${s.name}: SKIPPED: needs secret ${s.secrets.join(", ")}`);
+  const bad = (ctx.suites || []).filter((s) => !s.ok);
+  if ((ctx.suites || []).length) {
+    lines.push("", `Unit-test suites run one by one: ${ctx.suites.length - bad.length} passed, ${bad.length} failed`);
+    for (const b of bad) lines.push(`- ${b.file}: ${b.reason}`);
+  }
+  lines.push("", ctx.hardFailed ? `DRESS REHEARSAL FAILED: ${ctx.failures.length} hard failure(s), first at step: ${ctx.failedStep}` : "DRESS REHEARSAL PASSED");
+  const text = lines.join("\n");
+  console.log("\n" + text);
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    try { writeFileSync(process.env.GITHUB_STEP_SUMMARY, text + "\n", { flag: "a" }); } catch { /* summary only */ }
+  }
+  if (process.env.DRESS_REPORT) {
+    try { writeFileSync(process.env.DRESS_REPORT, JSON.stringify({ rows: ctx.rows, failures: ctx.failures, soft: ctx.soft, secretSkips: ctx.secretSkips, suites: ctx.suites }, null, 1) + "\n"); } catch { /* report only */ }
+  }
 }
 
 async function main() {
@@ -199,18 +429,22 @@ async function main() {
   const steps = parseWorkflowSteps(yaml);
   if (!steps.length) {
     console.error("DRESS REHEARSAL FAILED at step: parse workflow (no steps)");
-    process.exit(1);
+    process.exit(2);
   }
   console.log(`dress rehearsal: ${steps.length} steps from update-sealed-prices.yml`);
+  const shims = installShims(process.env.PATH);
+  console.log(`dress rehearsal: git, gh, curl and wget shims in ${shims.bin}`);
   if (process.env.DRESS_SKIP_BRANCH !== "1") {
-    execSync("git checkout -B dress-rehearsal-throwaway", { cwd: ROOT, stdio: "inherit" });
+    execSync(`${JSON.stringify(shims.realGit)} checkout -B dress-rehearsal-throwaway`, { cwd: ROOT, stdio: "inherit" });
   }
-  const env = { ...process.env, EBAY_REPLAY: "1", DRESS_REHEARSAL: "1" };
+  const env = { ...process.env, EBAY_REPLAY: "1", DRESS_REHEARSAL: "1", PATH: shims.path };
+  env.NODE_OPTIONS = nodeOptionsWithPreload(env.NODE_OPTIONS);
   env.GIT_AUTHOR_NAME = env.GIT_AUTHOR_NAME || "catchem-bot";
   env.GIT_AUTHOR_EMAIL = env.GIT_AUTHOR_EMAIL || "bot@catchem.app";
   env.GIT_COMMITTER_NAME = env.GIT_COMMITTER_NAME || "catchem-bot";
   env.GIT_COMMITTER_EMAIL = env.GIT_COMMITTER_EMAIL || "bot@catchem.app";
-  const ctx = await rehearse(steps, env);
+  const keepGoing = process.env.DRESS_KEEP_GOING !== "0";
+  const ctx = await rehearse(steps, env, runShell, { keepGoing, everySuite: keepGoing ? (e) => runEverySuite(e) : null });
   process.exit(ctx.hardFailed ? 1 : 0);
 }
 
