@@ -49,7 +49,7 @@ export function pppClient({ key, minGapMs = 1100, fetchImpl = fetch, log = () =>
       const charged = Number(res.headers.get("x-credits-charged") || 0);
       const left = res.headers.get("x-credits-remaining");
       stats.credits += charged;
-      if (meter) meter.charge(charged, left);
+      if (meter) meter.charge(charged, left, expect);
       if (res.status === 429) {
         let body = null; try { body = await res.json(); } catch {}
         const type = body?.error?.limit_type;
