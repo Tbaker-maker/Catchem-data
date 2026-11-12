@@ -91,6 +91,48 @@ export function readBlob(cwd, blob) {
   return git(cwd, ["cat-file", "-p", blob]);
 }
 
+// Files under research/assets/public that a merged pull request deleted from
+// main on purpose. PR #473 removed 44 cutouts on 2026-10-31 and the guard then
+// refused every publish (run 42908933741: 55 files would disappear).
+//
+// Rules, all fail closed (a doubt means the drop still counts):
+// - Only main's own line (--first-parent). A PR merge commit is read as one
+//   change against main, so a bot commit inside a merged PR counts as reviewed
+//   by that PR, and a branch commit never counts on its own.
+// - The commit on main must be committed by GitHub itself (noreply@github.com):
+//   a squash, rebase, or merge done through a pull request. Direct pushes by
+//   catchem-bot, github-actions[bot], or any local push still count as drops.
+// - Renames are a delete plus an add (--no-renames), so a renamed file can go.
+// - The newest change to a path decides. A file deleted by a PR, re-added, then
+//   deleted again by the bot still counts.
+// - A file that is back on main is not removed.
+// - A shallow clone sees less history, so it allows fewer drops, never more.
+// - Any git error returns an empty set.
+export const MERGE_COMMITTER = "noreply@github.com";
+export function reviewedRemovals(cwd, rev = "HEAD", sinceDays = 120) {
+  try {
+    const out = git(cwd, ["-c", "core.quotePath=false", "log", rev, "--first-parent", "--diff-merges=first-parent", "--no-renames",
+      `--since=${sinceDays}.days.ago`, "--name-status", "--format=%x01%ce", "--", PUBLIC_PREFIX]);
+    const onMain = new Set(mainPublicFiles(cwd, rev));
+    const seen = new Set();
+    const names = new Set();
+    for (const block of out.split("\x01").filter(Boolean)) {
+      const [who, ...lines] = block.split("\n").map((line) => line.trim()).filter(Boolean);
+      for (const line of lines) {
+        const tab = line.indexOf("\t");
+        if (tab < 0) continue;
+        const status = line.slice(0, tab);
+        const path = line.slice(tab + 1);
+        if (!path.startsWith(`${PUBLIC_PREFIX}/`) || seen.has(path)) continue;
+        seen.add(path); // newest first: the first change seen is the one that counts
+        const name = path.slice(PUBLIC_PREFIX.length + 1);
+        if (status === "D" && who === MERGE_COMMITTER && !onMain.has(name)) names.add(name);
+      }
+    }
+    return names;
+  } catch { return new Set(); }
+}
+
 // The tip before this push is kept on a fixed backup ref. Only these two refs move.
 export const BACKUP_REF = "refs/heads/public-data-backup";
 
@@ -116,7 +158,10 @@ export async function guardedPublish({ cwd, remote = "origin", today, cfg, smoke
   let backup = "";
   try { git(cwd, ["fetch", "-q", remote, `+${PUBLIC_REF}:refs/remotes/${remote}/${PUBLIC_BRANCH}`]); backup = git(cwd, ["rev-parse", `refs/remotes/${remote}/${PUBLIC_BRANCH}`]); } catch { backup = ""; }
   const before = backup ? [...treeFiles(cwd, backup).keys()] : null;
-  const problems = checkBuild({ files, before, cfg, today });
+  const removed = reviewedRemovals(cwd);
+  const allowed = before ? before.filter((n) => removed.has(n) && !files.has(n)) : [];
+  if (allowed.length) log(`${allowed.length} files left the site because a merged pull request removed them from main`);
+  const problems = checkBuild({ files, before, cfg, today, removed });
   if (smoke) { const s = await smoke(); if (s) problems.push(s); }
   if (problems.length) return { pushed: false, sha, backup, problems };
   if (backup) git(cwd, ["push", "--force", remote, `${backup}:${BACKUP_REF}`]);
