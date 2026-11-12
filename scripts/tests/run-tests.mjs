@@ -424,6 +424,13 @@ console.log("── feature suites ──");
   }
 }
 
+console.log("── set reads carry no card-only chips ──");
+{
+  const { run } = await import("./set-read-chips.suite.mjs");
+  const n = await run();
+  t("set read chips suite", n === 0, `${n} failed`);
+}
+
 console.log("── set source groups ──");
 {
   const { auditGroups, foreignGroups } = await import("../lib/set-audit.mjs");

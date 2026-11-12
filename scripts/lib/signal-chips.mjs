@@ -34,6 +34,14 @@ export function dayLabel(iso) {
   return `${MONTHS[Number(s.slice(5, 7)) - 1]} ${Number(s.slice(8, 10))}`;
 }
 
+// A set read ("Ascended Heroes, about 30 days: 0 of 29 priced cards up") is about
+// the whole set. Its sku is only the lead card, so a card-only chip such as the
+// art type (SIR) would describe one card as if it were the set.
+export function isSetRead(read) {
+  const kind = String(read?.readKind || read?.kind || "").toLowerCase();
+  return kind === "set" || /^set\d*-/.test(String(read?.id || ""));
+}
+
 export function isSealedRead(read) {
   const kind = String(read?.kind || read?.readKind || read?.item?.kind || "").toLowerCase();
   const href = String(read?.href || "");
@@ -768,7 +776,7 @@ export function qualifyChips(read, ctx = {}, rules = {}) {
     eraChip(ctx, rules),
     confidenceChip(points, rules),
   ].filter(Boolean);
-  if (isSealedRead(read)) return chips.filter((chip) => chip.kind !== "art");
+  if (isSealedRead(read) || isSetRead(read)) return chips.filter((chip) => chip.kind !== "art");
   return chips;
 }
 
