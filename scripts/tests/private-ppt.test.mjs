@@ -94,6 +94,39 @@ export async function runPrivatePptTests() {
   const badGit = async (cmd, args) => { failCalls.push(args); return { code: 128, err: "auth failed", out: "" }; };
   const failed = await clonePrivate(badGit, "https://example.invalid/private.git", "/tmp/x", {});
   t("a failed private clone stops before the checkout", failed.code === 128 && failCalls.length === 1);
+  const incCalls = [];
+  await clonePrivate(async (cmd, args) => { incCalls.push(args); return { code: 0, err: "", out: "" }; }, "https://example.invalid/private.git", "/tmp/x", {}, { include: ["/raw/2026-11-12/"] });
+  t("an include pattern is added after the raw/ exclusion", incCalls[1].at(-1) === "/raw/2026-11-12/" && incCalls[1].indexOf("!/raw/") < incCalls[1].indexOf("/raw/2026-11-12/"));
+
+  // Run 43126099936 lost its runner in "Dated reads, rip value, and status":
+  // full 21 GB private checkouts. The push step must not check out old raw/ days either.
+  const pushRoot = await mkdtemp(join(tmpdir(), "ppt-push-"));
+  await mkdir(join(pushRoot, "raw/ppt-sealed"), { recursive: true });
+  await writeFile(join(pushRoot, "raw/ppt-sealed/a.json"), "{}\n");
+  const pushCalls = [];
+  const recGit = async (_cmd, args) => {
+    pushCalls.push(args);
+    if (args.includes("--quiet")) return { code: 1, err: "", out: "" };
+    if (args.includes("rev-parse")) return { code: 0, err: "", out: "abc123\n" };
+    return { code: 0, err: "", out: "" };
+  };
+  await pushPrivate({ token: "not-a-real-token-value", checkout: join(pushRoot, "gone"), rawDir: join(pushRoot, "raw"), date: "2026-11-12", runGit: recGit });
+  const cloneCall = pushCalls.find((a) => a[0] === "clone") || [];
+  const sparseCall = pushCalls.find((a) => a.includes("sparse-checkout")) || [];
+  const adds = pushCalls.filter((a) => a.includes("add")).map((a) => a.slice(a.indexOf("add") + 1).join(" "));
+  t("the raw PPT push clones shallow and blob-less", cloneCall.includes("--depth") && cloneCall.includes("--filter=blob:none") && cloneCall.includes("--no-checkout"));
+  t("the raw PPT push checks out only tonight's raw day", sparseCall.includes("!/raw/") && sparseCall.at(-1) === "/raw/2026-11-12/");
+  t("the raw PPT push adds data/ and raw/<date>, never all of raw/", adds.includes("data") && adds.includes(join("raw", "2026-11-12")) && !adds.includes("raw"));
+  await rm(pushRoot, { recursive: true, force: true });
+
+  const wf = await readFile(join(dirname(fileURLToPath(import.meta.url)), "..", "..", ".github/workflows/update-sealed-prices.yml"), "utf8");
+  const datedAt = wf.indexOf("- name: Dated reads, rip value, and status");
+  const datedHead = wf.slice(datedAt, wf.indexOf("run:", datedAt));
+  t("the dated reads step has a time cap", /timeout-minutes:\s*\d+/.test(datedHead));
+  t("a hung dated reads step does not skip the price commit", /continue-on-error:\s*true/.test(datedHead));
+  const earlyAt = wf.indexOf("- name: Commit price data (before anything reports on it)");
+  const earlyBody = wf.slice(earlyAt, wf.indexOf("- name:", earlyAt + 10));
+  t("the watch log is committed before the reports run", earlyBody.includes("git add research/pulse/watch-log.json"));
   return fail;
 }
 
