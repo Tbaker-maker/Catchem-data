@@ -299,6 +299,28 @@ function firstFailing(output) {
 
 function shq(s) { return "'" + String(s).replace(/'/g, "'\\''") + "'"; }
 
+// Not the private thresholds. The gate has a loaded file so a blank
+// PRIVATE_DATA_TOKEN does not block every read. Production has no stub.
+export function writeDressStubLimits() {
+  const dir = mkdtempSync(join(tmpdir(), "dress-limits-"));
+  const path = join(dir, "read-thin-data.json");
+  const stub = {
+    minAnchorDays: 1,
+    anchorBand: 1,
+    minJumps: 1,
+    jumpRatio: 1000,
+    minListings: 0,
+    bigMoveRatio: 100,
+    minDipPct: 0,
+    minDipUsd: 0,
+    maxDayGap: 365,
+    eraTags: {},
+  };
+  writeFileSync(path, JSON.stringify(stub) + "\n");
+  console.error(`DRESS REHEARSAL: private thin limits were not loaded. Using a stub limits file at ${path}. This is not the private config. Production blocks every read when that file is missing.`);
+  return path;
+}
+
 export async function rehearse(steps, env, run = runShell, opts = {}) {
   const keepGoing = opts.keepGoing !== false;
   const everySuite = opts.everySuite || null;
@@ -424,6 +446,8 @@ async function main() {
   env.GIT_COMMITTER_NAME = env.GIT_COMMITTER_NAME || "catchem-bot";
   env.GIT_COMMITTER_EMAIL = env.GIT_COMMITTER_EMAIL || "bot@catchem.app";
   const keepGoing = process.env.DRESS_KEEP_GOING !== "0";
+  const stubPath = writeDressStubLimits();
+  env.READ_THIN_DATA_FILE = stubPath;
   const ctx = await rehearse(steps, env, runShell, { keepGoing, everySuite: keepGoing ? (e) => runEverySuite(e) : null });
   process.exit(ctx.hardFailed ? 1 : 0);
 }

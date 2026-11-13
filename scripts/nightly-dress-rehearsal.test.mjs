@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import {
   parseWorkflowSteps, dressRun, expandGha, shouldRun, rehearse, neededSecrets,
   installShims, nodeOptionsWithPreload, stepTable, firstErrorLine, suiteFiles, suiteProcessCommand,
+  writeDressStubLimits,
 } from "./nightly-dress-rehearsal.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -218,5 +219,13 @@ void preload;
 await assert.rejects(() => fetch("https://api.ebay.com/buy/browse/v1/item_summary/search", { signal: AbortSignal.timeout(5000) }), /blocked an eBay API call/);
 const https = await import("node:https");
 assert.throws(() => https.request("https://api.ebay.com/identity/v1/oauth2/token"), /blocked an eBay API call/);
+
+const stubPath = writeDressStubLimits();
+const stub = JSON.parse(readFileSync(stubPath, "utf8"));
+for (const key of ["minAnchorDays", "anchorBand", "minJumps", "jumpRatio", "minListings", "bigMoveRatio", "minDipPct", "minDipUsd", "maxDayGap"]) {
+  assert.equal(typeof stub[key], "number", key);
+}
+assert.equal(typeof stub.eraTags, "object");
+assert.ok(!Array.isArray(stub.eraTags));
 
 console.log("nightly dress rehearsal parser ok", steps.length);
