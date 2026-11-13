@@ -3,6 +3,7 @@
 // An overall score is added only when the private rules name a proven signal.
 import { flagLine, isClean } from "./copy-rules.mjs";
 import { oneNightMove } from "./history-reads.mjs";
+import { windowStart } from "./public-bundle.mjs";
 import { straightWeeks } from "./trend-context.mjs";
 
 export const CHIP_ORDER = Object.freeze([
@@ -690,10 +691,8 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
   const conf = all.find((chip) => chip.kind === "confidence");
   const counts = ctx.counts || null;
   const depth = depthBars(counts, asOf, rules?.confidence?.depth);
-  if ((depth || conf) && counts && counts.prices > 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(counts.since || ""))) {
-    tiles.data = {
-      bars: depth ? depth.bars : conf.bars,
-      of: depth ? depth.of : (conf.of || 3),
+  if (counts && counts.prices > 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(counts.since || ""))) {
+    const base = {
       prices: counts.prices,
       recent: counts.recent || 0,
       since: counts.since,
@@ -701,6 +700,17 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
       span: spanWords(counts.since, asOf),
       source: src,
     };
+    // Bars need the private scale. Counts and dates are public and stay when
+    // that scale is not loaded. No cutoff is written either way.
+    if (depth || conf) {
+      tiles.data = {
+        bars: depth ? depth.bars : conf.bars,
+        of: depth ? depth.of : (conf.of || 3),
+        ...base,
+      };
+    } else {
+      tiles.data = base;
+    }
   }
   const move = all.find((chip) => chip.kind === "move");
   const daily = cleanPoints(ctx.daily && ctx.daily.length ? ctx.daily : ctx.points);
@@ -725,21 +735,33 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
     };
   };
   // The Price tile uses the read's own window. A long window does not borrow a
-  // 7 day tile, and a missing start day is not invented.
+  // 7 day tile, and a missing price is not invented. If the exact start day is
+  // missing, the nearest earlier file within 2 days is the start, and the tile
+  // names that real span. It does not still say 7 when the span is 8.
   const SHORT_MAX = 35;
-  const exactEnds = (series, days) => {
-    const now = exactPoint(series, asOf);
-    const then = exactPoint(series, addDays(asOf, -days));
-    if (!now || !then || now[0] === then[0]) return null;
-    if (dayNum(now[0]) - dayNum(then[0]) !== days) return null;
-    if (days === 7 && oneNightMove(series, then[0], now[0])) return null;
-    return { now, then };
+  const seriesEnding = (pts) => {
+    const series = (pts || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && p[0] <= asOf);
+    series.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    if (!series.length || series[series.length - 1][0] !== asOf) return [];
+    return series;
+  };
+  const exactEnds = (pts, days) => {
+    const series = seriesEnding(pts);
+    if (!series.length) return null;
+    const found = windowStart(series, days, 2);
+    if (!found) return null;
+    const now = series[series.length - 1];
+    const then = found.point;
+    const span = dayNum(now[0]) - dayNum(then[0]);
+    if (found.earlier ? span < days || span > days + 2 : span !== days) return null;
+    if ((days === 7 || span === 7) && oneNightMove(series, then[0], now[0])) return null;
+    return { now, then, span };
   };
   if (move && move.dir === "dash") {
     tiles.price = { dash: true, source: src, asOf };
   } else if (rw > 0 && rw <= SHORT_MAX && Number.isFinite(rp) && rnow > 0) {
     const ends = exactEnds(daily.length ? daily : cleanPoints(ctx.points), rw);
-    if (ends) tiles.price = priceTile(rp, rw, ends.then[1], ends.then[0]);
+    if (ends) tiles.price = priceTile(rp, ends.span, ends.then[1], ends.then[0]);
   } else if (!(rw > 0) && move && move.days > 0 && move.days <= SHORT_MAX && move.nowDate === asOf && dayNum(move.nowDate) - dayNum(move.thenDate) === move.days) {
     const t = priceTile(move.dir === "flat" ? 0 : (move.dir === "down" ? -move.pct : move.pct), move.days, move.then, move.thenDate || "");
     t.dir = move.dir;

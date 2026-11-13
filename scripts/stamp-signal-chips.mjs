@@ -49,8 +49,8 @@ async function loadRules() {
   try {
     const doc = await readJson(join(store.dir, "signal-chips/thresholds.json"));
     if (!doc) {
-      console.log("signal chips: rules file is not in the private store, so no chips were written");
-      return null;
+      console.log("signal chips: rules file is not in the private store, so private cuts are not applied. Tiles still use the public prices on file.");
+      return {};
     }
     const extra = await readJson(join(store.dir, "signal-chips/strength.json"));
     if (extra) doc.strength = extra;
@@ -455,7 +455,5 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
   const rules = await loadRules();
-  if (rules) {
-    await stampSignalChips({ rules, writeReads: process.env.SIGNAL_STAMP_READS === "1" });
-  }
+  if (rules) await stampSignalChips({ rules, writeReads: process.env.SIGNAL_STAMP_READS === "1" });
 }

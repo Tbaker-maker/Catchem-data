@@ -260,6 +260,30 @@ export async function run() {
   const slackWeek = [["2026-10-09", 10], ["2026-10-17", 12]];
   const slackMove = qualifyChips({ id: "slack-7", name: "Card", kind: "single", asOf: "2026-10-17", windowDays: 7, price: 12, changePct: 20 }, { asOf: "2026-10-17", points: slackWeek }, RULES);
   t("a 7 day chip is not an 8 day span", !slackMove.some((chip) => chip.kind === "move" && /7 day|7D/.test(`${chip.text} ${chip.label}`)));
+  const gapWeek = [
+    ["2026-10-09", 10],
+    ["2026-10-11", 10.4],
+    ["2026-10-12", 10.6],
+    ["2026-10-13", 10.8],
+    ["2026-10-14", 11],
+    ["2026-10-15", 11.2],
+    ["2026-10-16", 11.4],
+    ["2026-10-17", 12],
+  ];
+  const gapTile = readSignals(
+    { id: "move-gap-7", sku: "tcgcsv-gap", name: "Card", kind: "single", asOf: "2026-10-17", price: 12, changePct: 20, windowDays: 7, source: "TCGplayer market" },
+    { asOf: "2026-10-17", points: gapWeek, daily: gapWeek },
+    RULES,
+  ).tiles?.price;
+  t("a missing exact day uses the day 1 earlier and names the real span", gapTile && gapTile.days === 8 && gapTile.fromDate === "2026-10-09" && gapTile.from === 10 && gapTile.asOf === "2026-10-17");
+  const tooEarly = [["2026-10-07", 10], ["2026-10-17", 12]];
+  const earlyTile = readSignals(
+    { id: "move-early-7", sku: "tcgcsv-early", name: "Card", kind: "single", asOf: "2026-10-17", price: 12, changePct: 20, windowDays: 7 },
+    { asOf: "2026-10-17", points: tooEarly, daily: tooEarly, counts: { prices: 2, recent: 2, since: "2026-10-07" } },
+    {},
+  ).tiles || {};
+  t("a start 3 days early gets no price tile", !earlyTile.price);
+  t("public price counts still make a data tile when private cuts are not loaded", earlyTile.data && earlyTile.data.prices === 2 && earlyTile.data.since === "2026-10-07" && earlyTile.data.through === "2026-10-17" && earlyTile.data.bars == null && !/flatAbs|cuts/.test(JSON.stringify(earlyTile.data)));
   const fiveUp = [
     ["2026-10-01", 10.1],
     ["2026-10-08", 10.2],
