@@ -39,7 +39,51 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { buildGroup, mergeSnapshot } from "./lib/tcgcsv-catalog.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const TODAY = new Date().toISOString().slice(0, 10);
+
+export function dressCatalogDay(realToday, fileNames) {
+  if (process.env.DRESS_REHEARSAL !== "1") return "";
+  const days = (fileNames || [])
+    .map((name) => String(name).slice(0, 10))
+    .filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day))
+    .sort();
+  const last = days.at(-1) || "";
+  if (!last || last >= String(realToday || "")) return "";
+  return last;
+}
+
+async function resolveCatalogDay(root = ROOT) {
+  const real = new Date().toISOString().slice(0, 10);
+  let names = [];
+  try { names = await readdir(join(root, "data/history/tcgcsv-daily")); } catch { names = []; }
+  const pinned = dressCatalogDay(real, names);
+  if (pinned) {
+    console.error(`DRESS REHEARSAL: UTC today is ${real}. The last price file is ${pinned}. This step will not open ${real}. No price is invented.`);
+  }
+  return pinned || real;
+}
+
+async function keepPublishedDay(root, today) {
+  const dayPath = join(root, "data/history/tcgcsv-daily", `${today}.json`);
+  const catalogDir = join(root, "data/catalog");
+  const published = JSON.parse(await readFile(dayPath, "utf8"));
+  const latestPath = join(catalogDir, "tcgcsv-latest.json");
+  const latest = JSON.parse(await readFile(latestPath, "utf8"));
+  const next = applyDayPrices(latest, published);
+  const catalog = next === latest ? latest : next;
+  if (next !== latest) {
+    await writeFile(latestPath, JSON.stringify(next));
+    console.log(`catalog asOf moved from ${latest.asOf} to ${published.date} using the published day`);
+  }
+  const coverage = {
+    asOf: catalog.asOf,
+    source: catalog.source,
+    counts: catalog.counts,
+    failedGroups: catalog.failedGroups || [],
+    note: catalog.note,
+  };
+  await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(coverage, null, 2));
+  console.log(`coverage asOf ${coverage.asOf}`);
+}
 const GROUPS = "https://tcgcsv.com/tcgplayer/3/groups";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -142,7 +186,14 @@ export async function writeRawDay(root, today, raw) {
   }));
 }
 
-export async function fetchCatalog(today = TODAY) {
+export async function fetchCatalog(today = "") {
+  const day = today || await resolveCatalogDay();
+  if (process.env.DRESS_REHEARSAL === "1" && dayPublishedBeforeRun(ROOT, day)) {
+    console.error(`DRESS REHEARSAL: tcgcsv day ${day} is already published. Not fetching a new catalog. No price is invented.`);
+    try { await keepPublishedDay(ROOT, day); }
+    catch (err) { console.error(`tcgcsv day ${day} was kept; catalog was not moved forward: ${err.message}`); }
+    return null;
+  }
   const groups = (await getJson(GROUPS)).results || [];
   const rawParts = [];
   const parts = [];
@@ -161,7 +212,7 @@ export async function fetchCatalog(today = TODAY) {
         groupName: group.name,
         products: products.results || [],
         priceRows: prices.results || [],
-        asOf: today,
+        asOf: day,
       }));
     } catch (err) {
       failedGroups.push({ groupId: id, name: group.name, error: String(err.message || err).slice(0, 180) });
@@ -171,53 +222,33 @@ export async function fetchCatalog(today = TODAY) {
     await sleep(30);
   });
   failedGroups.sort((a, b) => a.groupId - b.groupId);
-  const snap = mergeSnapshot(parts, { asOf: today, failedGroups });
+  const snap = mergeSnapshot(parts, { asOf: day, failedGroups });
   const catalogDir = join(ROOT, "data/catalog");
-  const dayPath = join(ROOT, "data/history/tcgcsv-daily", `${today}.json`);
+  const dayPath = join(ROOT, "data/history/tcgcsv-daily", `${day}.json`);
   await mkdir(catalogDir, { recursive: true });
   await mkdir(dirname(dayPath), { recursive: true });
   // A day already published before this run started (a manual re-run on the same
   // UTC day) is never rewritten: tonight's public files were built from it, and
   // a fresh copy made them disagree (2026-10-13). Same-run rewrites still happen.
-  if (dayPublishedBeforeRun(ROOT, today)) {
-    console.log(`tcgcsv day ${today} was published before this run; kept as is.`);
-    try {
-      const published = JSON.parse(await readFile(dayPath, "utf8"));
-      const latestPath = join(catalogDir, "tcgcsv-latest.json");
-      const latest = JSON.parse(await readFile(latestPath, "utf8"));
-      const next = applyDayPrices(latest, published);
-      const catalog = next === latest ? latest : next;
-      if (next !== latest) {
-        await writeFile(latestPath, JSON.stringify(next));
-        console.log(`catalog asOf moved from ${latest.asOf} to ${published.date} using the published day`);
-      }
-      const coverage = {
-        asOf: catalog.asOf,
-        source: catalog.source,
-        counts: catalog.counts,
-        failedGroups: catalog.failedGroups || [],
-        note: catalog.note,
-      };
-      await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(coverage, null, 2));
-      console.log(`coverage asOf ${coverage.asOf}`);
-    } catch (err) {
-      console.error(`tcgcsv day ${today} was kept; catalog was not moved forward: ${err.message}`);
-    }
+  if (dayPublishedBeforeRun(ROOT, day)) {
+    console.log(`tcgcsv day ${day} was published before this run; kept as is.`);
+    try { await keepPublishedDay(ROOT, day); }
+    catch (err) { console.error(`tcgcsv day ${day} was kept; catalog was not moved forward: ${err.message}`); }
     return snap;
   }
   // Write the day before the other catalog files. A later write in this
   // process must not be able to drop the day that already landed.
   await writeFile(dayPath, JSON.stringify(snap.daily));
   try {
-    await writeRawDay(ROOT, today, { groups, parts: rawParts, failedGroups });
+    await writeRawDay(ROOT, day, { groups, parts: rawParts, failedGroups });
   } catch (err) {
-    console.error(`tcgcsv raw archive ${today} failed: ${err.message}`);
+    console.error(`tcgcsv raw archive ${day} failed: ${err.message}`);
   }
   try {
     await writeFile(join(catalogDir, "tcgcsv-latest.json"), JSON.stringify(snap.latest));
     await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(snap.coverage, null, 2));
   } catch (err) {
-    console.error(`tcgcsv day ${today} is on disk; a later catalog write failed: ${err.message}`);
+    console.error(`tcgcsv day ${day} is on disk; a later catalog write failed: ${err.message}`);
     throw err;
   }
   console.log(`tcgcsv groups ${groups.length - failedGroups.length}/${groups.length} items ${snap.latest.counts.items} priced ${snap.latest.counts.priced} sealed ${snap.latest.counts.sealed} slabs ${snap.latest.counts.slab}`);
