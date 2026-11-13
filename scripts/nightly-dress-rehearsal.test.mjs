@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   parseWorkflowSteps, dressRun, expandGha, shouldRun, rehearse, neededSecrets,
-  installShims, nodeOptionsWithPreload, stepTable, firstErrorLine, suiteFiles,
+  installShims, nodeOptionsWithPreload, stepTable, firstErrorLine, suiteFiles, suiteProcessCommand,
 } from "./nightly-dress-rehearsal.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -181,6 +181,37 @@ const tctx = await rehearse(withTests, {}, async () => ({ code: 1, output: "" })
 assert.match(tctx.rows[0].note, /failing suites: b\.suite\.mjs/);
 const files = suiteFiles(join(root, "scripts/tests"), readFileSync(join(root, "scripts/tests/run-tests.mjs"), "utf8"));
 for (const f of ["publish-writes.suite.mjs", "deep-reads.suite.mjs", "public-bundle.suite.mjs", "read-facts.test.mjs", "price-sanity.test.mjs"]) assert.ok(files.includes(f), f);
+
+// A trailing path becomes argv[1] and suites self-run, then the wrapper
+// runs them again. board-determinism then exceeds 30 minutes. The path is
+// SUITE_FILE only, so the CLI guard stays quiet and run() happens once.
+const probeDir = mkdtempSync(join(tmpdir(), "dress-suite-"));
+const probe = join(probeDir, "probe.suite.mjs");
+try {
+  const { writeFileSync } = await import("node:fs");
+  writeFileSync(probe, `
+let n = 0;
+export async function run() {
+  n += 1;
+  console.log("RAN " + n + " argv1=" + (process.argv[1] || ""));
+  return 0;
+}
+if (process.argv[1] && process.argv[1].endsWith("probe.suite.mjs")) {
+  console.log("SELF");
+  await run();
+}
+`);
+  const cmd = suiteProcessCommand(probe);
+  assert.match(cmd, /SUITE_FILE=/);
+  assert.doesNotMatch(cmd, / -e '[^']*' '/);
+  const once = spawnSync("bash", ["-lc", cmd], { encoding: "utf8" });
+  assert.equal(once.status, 0, once.stderr);
+  assert.equal((once.stdout.match(/^RAN /gm) || []).length, 1, once.stdout);
+  assert.doesNotMatch(once.stdout, /SELF/);
+  assert.match(once.stdout, /argv1=$/m);
+} finally {
+  rmSync(probeDir, { recursive: true, force: true });
+}
 
 const preload = await import("./dress-rehearsal-preload.mjs");
 void preload;

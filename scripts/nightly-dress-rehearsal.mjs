@@ -245,7 +245,8 @@ export function suiteFiles(testsDir, runnerText) {
 }
 
 const SUITE_WRAPPER = `
-const file = process.argv[1];
+const file = process.env.SUITE_FILE;
+if (!file) { console.error("SUITE_FILE is not set"); process.exit(1); }
 const mod = await import(file);
 let failed = 0;
 const t = (name, cond, detail = "") => {
@@ -260,6 +261,15 @@ for (const [, fn] of fns) {
 if (failed) { console.error("SUITE: " + failed + " failed"); process.exit(1); }
 `;
 
+// node --input-type=module -e puts a trailing path in argv[1]. Suites that
+// self-run when argv[1] ends with their filename then run again from this
+// wrapper. board-determinism is three rebuilds (about 20 minutes) and the
+// second pass blows the 30 minute cap (exit 124). The path stays in
+// SUITE_FILE so argv[1] is not the suite.
+export function suiteProcessCommand(file) {
+  return `SUITE_FILE=${shq(file)} timeout 1800 node --input-type=module -e ${shq(SUITE_WRAPPER)}`;
+}
+
 // Every suite in its own process, so one red suite cannot hide the next.
 // Returns [{ file, ok, reason }].
 export async function runEverySuite(env, run = runShell) {
@@ -269,7 +279,7 @@ export async function runEverySuite(env, run = runShell) {
   const results = [];
   console.log(`\n===== every unit-test suite, one process each (${files.length}) =====`);
   for (const f of files) {
-    const script = `timeout 1800 node --input-type=module -e ${shq(SUITE_WRAPPER)} ${shq(join(testsDir, f))}`;
+    const script = suiteProcessCommand(join(testsDir, f));
     const r = await run(script, env);
     const ok = r.code === 0;
     const reason = ok ? "" : firstFailing(r.output) || `exit ${r.code}`;
