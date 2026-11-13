@@ -36,8 +36,9 @@ export async function run() {
   // Same rules as the gate suites, read from the source so the two cannot drift.
   const deepSuite = await readFile(join(ROOT, "scripts/tests/deep-reads.suite.mjs"), "utf8");
   const bundleSuite = await readFile(join(ROOT, "scripts/tests/public-bundle.suite.mjs"), "utf8");
+  const quality = await readFile(join(ROOT, "scripts/lib/read-quality.mjs"), "utf8");
   t("the gate still asks deep reads for 3 to 6 lines", /r\.lines\.length >= 3 && r\.lines\.length <= 6/.test(deepSuite));
-  t("the gate still lists the same history kinds", bundleSuite.includes('const histKinds = new Set(["high", "low", "year", "plain", "backto", "set"]);'));
-  t("the gate still asks a history source to name its start date", bundleSuite.includes("sourceNamesDay(row.source, row.startDate, row.asOf)"));
+  t("the gate still lists the same history kinds", quality.includes('const HIST_KINDS = new Set(["high", "low", "year", "plain", "backto", "set"]);') && bundleSuite.includes("histBoardOk") && bundleSuite.includes("nonPriceKindOk"));
+  t("the gate still asks a history source to name its start date", quality.includes("sourceNamesDay(row.source, row.startDate, row.asOf)") && bundleSuite.includes("oneKindOk"));
   return fail;
 }
