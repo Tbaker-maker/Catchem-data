@@ -1,6 +1,6 @@
 // Sealed history queue, lane room, and the overlap gate. No network, no key.
 import { pathToFileURL } from "node:url";
-import { queueSealed, pullLimit, verifyOverlap, chartPoints, watchRank, progressDoc } from "../lib/ppp-sealed-history.mjs";
+import { queueSealed, pullLimit, verifyOverlap, chartPoints, watchRank, progressDoc, rememberOwnDay, verifyStoredHistory } from "../lib/ppp-sealed-history.mjs";
 import { laneMeter } from "../lib/ppp-budget.mjs";
 
 const budget = { lanes: { history: { cap: 500 } }, reserve: 0 };
@@ -52,6 +52,18 @@ export async function runPppSealedHistoryTests() {
   const doc = progressDoc({ asOf: "2026-11-12", cap: 500, spentBefore: 155, spentThisRun: 0, queued: 3, status: "skipped" });
   t("the progress counter stays inside the history cap", doc.cap === 500 && doc.spentToday === 155 && doc.shown === 0 && doc.chartFill === false);
   t("the progress counter has no price field", !JSON.stringify(doc).includes("avg") && doc.lane === "history");
+
+  const by = new Map();
+  for (const [day, price] of own) rememberOwnDay(by, 516576, day, price);
+  const stored = verifyStoredHistory([{ pid: 516576, rows: good }], by);
+  t("a stored pull verifies against daily own days and keeps only earlier days", stored.verified === 1 && stored.items[0].points.length === 1 && stored.items[0].points[0][0] === "2026-10-01" && stored.items[0].pid === 516576, JSON.stringify(stored.items));
+  const again = verifyStoredHistory([{ pid: 516576, rows: good }], by, { skip: new Set([516576]) });
+  t("a product already in the fill is not added twice", again.verified === 0 && again.items.length === 0);
+  const missed = verifyStoredHistory([{ pid: 9, rows: good }], new Map());
+  t("stored rows with no own day stay out of the file", missed.verified === 0 && missed.held === 1 && missed.items.length === 0);
+  const off = good.map((r) => r.date === "2026-11-02" ? { ...r, avg: 80 } : r);
+  const heldStored = verifyStoredHistory([{ pid: 516576, rows: off }], by);
+  t("a stored mismatch stays out of the file", heldStored.verified === 0 && heldStored.held === 1);
   return fail;
 }
 
