@@ -63,41 +63,31 @@ function priceOn(series, sku, day) {
   return value > 0 ? value : null;
 }
 
-// A window is the price on the day N calendar days before asOf. If that day
-// has no price, the nearest earlier day within 2 days is used. A later day
-// is never used, and a missing day is not filled.
+// A window is the price on the day exactly N calendar days before asOf.
+// The library does not use an earlier file. The feed window does, and that
+// read carries the missing-file sentence. A missing day is not filled.
 export function exactWindow(series, sku, asOf, days) {
   const n = Number(days);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) || !WINDOW_DAYS.has(n)) return null;
-  const exact = shiftDay(asOf, -n);
+  const start = shiftDay(asOf, -n);
+  const from = priceOn(series, sku, start);
   const to = priceOn(series, sku, asOf);
-  if (to == null || !exact) return null;
-  let start = "";
-  let from = null;
-  for (let back = 0; back <= 2; back += 1) {
-    const day = shiftDay(exact, -back);
-    const price = priceOn(series, sku, day);
-    if (price == null || !day || day > exact) continue;
-    start = day;
-    from = price;
-    break;
-  }
-  if (from == null || !start) return null;
+  if (from == null || to == null || !start) return null;
   const pct = Math.round((((to - from) / from) * 100) * 10) / 10;
   if (!Number.isFinite(pct)) return null;
   if (n === 7) {
     const id = productId(sku);
-    const daysMap = id && series?.get?.(id);
+    const days = id && series?.get?.(id);
     const rows = [];
-    if (daysMap) {
+    if (days) {
       for (let d = start; d && d <= asOf; d = shiftDay(d, 1)) {
-        const v = Number(daysMap.get(d));
+        const v = Number(days.get(d));
         if (v > 0) rows.push([d, v]);
       }
     }
     if (oneNightMove(rows, start, asOf)) return null;
   }
-  return { start, end: asOf, from, to, pct, days: n, exactDate: exact, earlier: start !== exact };
+  return { start, end: asOf, from, to, pct, days: n };
 }
 
 function namedDate(asOf, mon, day) {
