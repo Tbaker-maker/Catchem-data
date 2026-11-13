@@ -404,15 +404,17 @@ export function listingAnnotate(index) {
 }
 
 // Drop blocked reads only after the flag file is written. No flag, no drop.
+// A missing limits file blocks every read. Nothing is kept in its place.
 export async function dropThinReads(reads, root, asOf, annotate = null) {
+  const list = Array.isArray(reads) ? reads : [];
   const cfg = await loadReadThinData(root);
   const { keep, flags } = gateReads(reads, cfg, annotate);
-  if (!flags.length) return Array.isArray(reads) ? reads.slice() : [];
+  if (!flags.length) return list.slice();
   try {
     const wrote = await writeReadFlags(root, asOf, flags);
-    if (!wrote) return Array.isArray(reads) ? reads.slice() : [];
+    if (!wrote) return list.slice();
   } catch {
-    return Array.isArray(reads) ? reads.slice() : [];
+    return list.slice();
   }
   return keep;
 }

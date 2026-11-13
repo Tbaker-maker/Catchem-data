@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BAD_DATE, bannedWord, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, fillerBanned, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
+  BAD_DATE, bannedWord, chartSeries, composeLead, directionAgrees, earlierFileNote, endStreak, feedWindow, fillerBanned, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
@@ -452,24 +452,71 @@ export function staleMove(toDate, asOf, days = FEED_STALE_DAYS) {
   return (day - end) / 86400000 > days;
 }
 
+function applyGapNote(card) {
+  const opts = card?._pathOpts || {};
+  if (!opts.earlierDay) return;
+  const note = earlierFileNote(opts.exactDate, opts.fromDate);
+  if (!note || bannedWord(note) || fillerBanned(note)) return;
+  if (card.path && !String(card.path).includes("was missing")) {
+    const next = `${String(card.path).replace(/\s+$/, "")} ${note}`.trim();
+    if (!bannedWord(next) && !fillerBanned(next)) card.path = next;
+  }
+  if (card.why && !String(card.why).includes("was missing")) {
+    const next = `${String(card.why).replace(/\.\s*$/, "")}. ${note}`;
+    if (!bannedWord(next) && !fillerBanned(next)) card.why = next;
+  }
+}
+
+export function logFeedFilters(filters) {
+  const f = filters || {};
+  let n = f.items || 0;
+  const drop = (name, k) => {
+    const out = n - (k || 0);
+    console.log(`feed filter ${name} in ${n} out ${out}`);
+    n = out;
+  };
+  drop("bad-id", f.badId);
+  drop("junk", f.junk);
+  drop("ambiguous", f.ambiguous);
+  drop("newest-day", f.newestDay);
+  drop("no-window", f.noWindow);
+  drop("stale-move", f.stale);
+  console.log(`feed filter copy in ${f.copyIn || 0} out ${f.copyOut || 0}`);
+  console.log(`feed filter half-copy noted ${f.cheapNoted || 0}`);
+}
+
 export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
   const priorBySku = new Map();
   for (const row of prior || []) {
     if (!row?.sku_id) continue;
     if (!priorBySku.has(row.sku_id)) priorBySku.set(row.sku_id, row);
   }
+  const filters = {
+    items: (items || []).length,
+    badId: 0,
+    junk: 0,
+    ambiguous: 0,
+    newestDay: 0,
+    noWindow: 0,
+    stale: 0,
+    cheapNoted: 0,
+    copyIn: 0,
+    copyOut: 0,
+  };
   const headlines = new Set();
   const cards = {};
   const halfDropped = [];
   for (const item of items || []) {
-    if (!item?.id || !String(item.id).startsWith("tcgcsv-")) continue;
-    if (JUNK.test(item.name || "")) continue;
+    if (!item?.id || !String(item.id).startsWith("tcgcsv-")) { filters.badId += 1; continue; }
+    if (JUNK.test(item.name || "")) { filters.junk += 1; continue; }
     const split = separateHalfCopies(item.hist || []);
     if (split.ambiguous) {
+      filters.ambiguous += 1;
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "ambiguous" });
       continue;
     }
     if (split.dropped.length) {
+      filters.cheapNoted += 1;
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "cheap-copy", dropped: split.dropped.length });
     }
     // The newest day is the price the item page shows. When the half-copy
@@ -478,18 +525,25 @@ export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
     // on Nov 12). That item is left out of the feed until the split keeps it.
     const keptEnd = split.keep.length ? split.keep[split.keep.length - 1][0] : "";
     if (split.dropped.some((pt) => pt[0] > keptEnd)) {
+      filters.newestDay += 1;
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "newest-day" });
       continue;
     }
     const raw = split.keep;
-    const windows = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` })).filter((move) => move && !staleMove(move.toDate, asOf));
-    if (!windows.length) continue;
+    const rawMoves = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` }));
+    const windows = rawMoves.filter((move) => move && !staleMove(move.toDate, asOf));
+    if (!windows.length) {
+      if (rawMoves.some((move) => move && staleMove(move.toDate, asOf))) filters.stale += 1;
+      else filters.noWindow += 1;
+      continue;
+    }
     const kind = item.kind === "sealed" ? "sealed" : "single";
     const thin = isThinSeries(raw, windows[0].toDate);
     const streak = endStreak(chartSeries(raw));
     const strongest = [...windows].sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct) || b.window - a.window)[0];
     const priorCall = priorBySku.get(item.id) || null;
     for (const move of windows) {
+      filters.copyIn += 1;
       const direction = move.pct > 0 ? "up" : "down";
       const draft = {
         id: `move-${item.id}-${move.window}`,
@@ -565,6 +619,8 @@ export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
           toDate: move.toDate,
           fromPrice: move.from,
           windowDays: move.window,
+          earlierDay: move.earlierDay === true,
+          exactDate: move.exactDate || move.fromDate,
         },
       };
       const sentence = pathSentence(raw, {
@@ -577,7 +633,9 @@ export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
         sealedKind: card.sealedKind,
       });
       if (sentence && !bannedWord(sentence)) card.path = sentence;
+      applyGapNote(card);
       cards[card.id] = card;
+      filters.copyOut += 1;
       if (move === strongest && streak.n >= 4 && streak.dir === Math.sign(move.pct)) {
         card.tempo = streak.dir > 0 ? "heat" : "cool";
       }
@@ -585,7 +643,7 @@ export function assembleCatalogue(items, prior = [], { asOf = "" } = {}) {
   }
   disambiguatePaths(cards);
   const lists = assignSections(cards);
-  return { cards, lists, halfDropped };
+  return { cards, lists, halfDropped, filters };
 }
 
 function disambiguatePaths(cards) {
@@ -633,7 +691,8 @@ export function trackedRows(prior, priceBySku) {
 }
 
 export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "", cooled = null, leadMargin = null }) {
-  const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior, { asOf });
+  const { cards, lists, halfDropped = [], filters } = assembleCatalogue(items, prior, { asOf });
+  logFeedFilters(filters);
   applyShelf(cards, shelf);
   const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
   for (const card of Object.values(cards)) {
@@ -649,6 +708,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
       sold: card._sold,
     });
     if (sentence && !bannedWord(sentence)) card.path = sentence;
+    applyGapNote(card);
   }
   disambiguatePaths(cards);
   applyImageGaps(cards, gapPids);
@@ -707,6 +767,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
       return view;
     });
     const gated = gateReads(views, thinCfg);
+    const before = views.length;
     if (gated.flags.length) {
       let wrote = null;
       try { wrote = await writeReadFlags(root, asOf, gated.flags); } catch { wrote = null; }
@@ -720,6 +781,9 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
         for (const sku of Object.keys(facts)) if (!liveSku.has(sku)) delete facts[sku];
       }
     }
+    const after = Object.keys(cards).length;
+    if (!thinCfg) console.log(`feed filter limits-missing in ${before} out ${after} thin limits not loaded, cards blocked`);
+    else console.log(`feed filter thin-rules in ${before} out ${after}`);
   }
   const sets = new Map();
   for (const card of Object.values(cards)) sets.set(card.set, (sets.get(card.set) || 0) + 1);

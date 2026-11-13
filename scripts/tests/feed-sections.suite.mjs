@@ -37,6 +37,9 @@ export async function run() {
   applyImageGaps(gaps, [642634], new Map([["SV: Black Bolt", "https://images.pokemontcg.io/zsv10pt5/logo.png"]]));
   t("a foreign photo is cleared and a set logo is not borrowed by name", gaps.v.image === "" && !gaps.v.logo);
   t("a foreign photo on any row is cleared", gaps.ok.image === "" && !gaps.ok.logo);
+  const homePic = { pic: { id: "pic", sku: "tcgcsv-9", image: "/data/editor/tcg/sv1/1_hires.png", name: "Row" } };
+  applyImageGaps(homePic, []);
+  t("a catalogue picture stays", homePic.pic.image === "/data/editor/tcg/sv1/1_hires.png");
   const down = [];
   for (let i = 0; i < 28; i += 1) {
     const day = new Date(Date.parse("2026-09-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);

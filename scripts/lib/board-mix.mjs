@@ -810,7 +810,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       ...chaseLists(histCards, tagsOf, { asOf: end, max: 20, jumpy, seriesOf, lowOf }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
     );
     deepSlump = slumpWatch(histCards, tagsOf, { asOf: end, max: 10, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
-    deepSlump = await dropThinReads(deepSlump, root, end);
+    deepSlump = await dropThinReads(deepSlump, root, end, null);
     // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
     // They compare prices, so they ride a price lane and count toward the price share.
     const rating = await readJson(join(pub, "feed/card-rating.json"), {});
@@ -823,7 +823,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
-    deepRecovery = await dropThinReads(deepRecovery, root, end);
+    deepRecovery = await dropThinReads(deepRecovery, root, end, null);
     deepGap = sealedGapDeep(sealedProducts, histories, histCards, raw?.products, { asOf: end }).map((r) => ({ ...r, priceRead: true }));
   } catch (err) { console.error("deep reads skipped:", err.message); }
   if (Array.isArray(spanReads) && spanReads.length) {

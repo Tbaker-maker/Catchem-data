@@ -63,8 +63,9 @@ function priceOn(series, sku, day) {
   return value > 0 ? value : null;
 }
 
-// A window is the price on the day exactly N calendar days before the latest
-// price day. An earlier day does not count, and a missing day is not filled.
+// A window is the price on the day exactly N calendar days before asOf.
+// The library does not use an earlier file. The feed window does, and that
+// read carries the missing-file sentence. A missing day is not filled.
 export function exactWindow(series, sku, asOf, days) {
   const n = Number(days);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) || !WINDOW_DAYS.has(n)) return null;

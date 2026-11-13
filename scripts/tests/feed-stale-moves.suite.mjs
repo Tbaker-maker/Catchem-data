@@ -4,6 +4,7 @@
 // same card was $41.36 on Nov 11 under 30th Celebration. A move must end near
 // the catalogue day.
 import { assembleCatalogue, staleMove, FEED_STALE_DAYS } from "../lib/feed-catalogue.mjs";
+import { separateHalfCopies } from "../lib/public-bundle.mjs";
 import { catalogueImageUrl } from "../catalogue-images.mjs";
 
 function series(start, values) {
@@ -28,19 +29,28 @@ export async function run() {
   t("with no catalogue day nothing is dropped", Object.keys(b.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
   t("two days behind is still current", !staleMove("2026-11-09", "2026-11-11") && FEED_STALE_DAYS === 2);
   t("three days behind is stale", staleMove("2026-11-08", "2026-11-11"));
-  // Reads check Nov 12: the prices did not stop. The half-copy split set the
-  // newest days aside ($37.79 to $37.30, under half the $400 era median), so
-  // the move ended on Oct 31 at $146.27. 28 products lost their newest day
-  // this way on Nov 12.
+  // Reads check Nov 12, after #540. This fixture is 29 days from 2026-10-08:
+  // eight days at $400, then down $15 a day to $160 on 2026-10-31, then
+  // 2026-11-01 $41, 11-02 $40, 11-03 $39, 11-04 $38, 11-05 $37.30.
+  // The median is $295, so half is $147.50. Those five November days sit under
+  // that line. #540 puts back every dropped day after the last kept day.
+  // The last kept day is 2026-10-31 at $160, so Nov 1 through Nov 5 stay.
+  // Nothing is dropped, so this is not a newest-day drop.
+  // No window qualifies. The 7-day step from $160 on Oct 31 to $41 on Nov 1
+  // is most of that move. The 30-day start is 2026-10-06 and the 90-day start
+  // is 2026-08-07. Neither day is in the series, and a later day is never
+  // used as the start.
   const crash = [];
   for (let i = 0; i < 24; i++) crash.push(i < 8 ? 400 : 400 - (i - 7) * 15);
   crash.push(41, 40, 39, 38, 37.3);
   const pika = { id: "tcgcsv-713257", name: "Pikachu ex - 107", set: "ME: Mega Evolution Promo", kind: "single", hist: series("2026-10-08", crash) };
   const end = pika.hist[pika.hist.length - 1][0];
+  const split = separateHalfCopies(pika.hist);
   const c = assembleCatalogue([pika, fresh], [], { asOf: end });
-  t("a move is never built on a series whose newest day was set aside", !Object.keys(c.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
-  t("that item is logged as a newest-day drop", c.halfDropped.some((row) => row.id === "tcgcsv-713257" && row.reason === "newest-day"));
-  t("no card quotes an older price than the newest day", Object.values(c.cards).every((card) => card.sku !== "tcgcsv-713257"));
+  t("the cheaper tail after the last kept day stays", split.dropped.length === 0 && !split.ambiguous && split.keep.at(-1)[0] === "2026-11-05" && split.keep.at(-1)[1] === 37.3 && split.keep.find((pt) => pt[0] === "2026-10-31")[1] === 160);
+  t("that item is not a newest-day drop", !c.halfDropped.some((row) => row.id === "tcgcsv-713257" && row.reason === "newest-day"));
+  t("no window is built once the tail is kept", !Object.keys(c.cards).some((id) => id.startsWith("move-tcgcsv-713257-")));
+  t("no card quotes an older price than the newest day", Object.values(c.cards).every((card) => card.sku !== "tcgcsv-713257" || card.price === 37.3));
   // Delta Reign Single Pack Blister [Spritzee]: only Nov 12 ($10.51) was set
   // aside, so the read said $12.29 on Nov 11. One day behind passes the stale
   // check, so this needs the newest-day rule.
