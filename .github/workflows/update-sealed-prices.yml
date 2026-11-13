@@ -264,8 +264,12 @@ jobs:
       - name: PPP budgeted refresh
         # No key: the script logs that PKMNPRICES_API_KEY is not set, writes a
         # zero-credit usage file, and exits 0. Raw never lands in data/.
+        # PPP_MAX_MINUTES stops sending calls after 45 minutes; the cursor resumes the
+        # rest next run. The step timeout is only a backstop if the script hangs.
         continue-on-error: true
+        timeout-minutes: 55
         env:
+          PPP_MAX_MINUTES: "45"
           PKMNPRICES_API_KEY: ${{ secrets.PKMNPRICES_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/ppp-refresh.mjs
