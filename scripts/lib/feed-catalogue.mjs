@@ -421,8 +421,7 @@ export function applyShelf(cards, shelfRows) {
   return latest.size;
 }
 
-// A gap-list row loses its photo. Other rows keep the catalogue cutout or the
-// TCGplayer photo. A foreign logo is still not a set logo.
+// A foreign host is not the catalogue. A set name is not an id.
 export function applyImageGaps(cards, gapPids) {
   const gaps = new Set((gapPids || []).map(Number));
   const foreign = /tcgplayer-cdn\.tcgplayer\.com|images\.pokemontcg\.io|ebayimg|i\.ebayimg/i;
@@ -430,7 +429,7 @@ export function applyImageGaps(cards, gapPids) {
   for (const card of Object.values(cards || {})) {
     if (!card || typeof card !== "object") continue;
     const pid = Number(String(card.sku || "").replace(/^tcgcsv-/, ""));
-    if (gaps.has(pid) && card.image) {
+    if ((gaps.has(pid) || foreign.test(String(card.image || ""))) && card.image) {
       card.image = "";
       n += 1;
     }
@@ -769,9 +768,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     });
     const gated = gateReads(views, thinCfg);
     const before = views.length;
-    if (!thinCfg) {
-      console.log(`feed filter limits-missing in ${before} out ${before} thin limits not loaded, cards kept`);
-    } else if (gated.flags.length) {
+    if (gated.flags.length) {
       let wrote = null;
       try { wrote = await writeReadFlags(root, asOf, gated.flags); } catch { wrote = null; }
       if (wrote) {
@@ -783,10 +780,10 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
         const liveSku = new Set(Object.values(cards).map((card) => card.sku));
         for (const sku of Object.keys(facts)) if (!liveSku.has(sku)) delete facts[sku];
       }
-      console.log(`feed filter thin-rules in ${before} out ${Object.keys(cards).length}`);
-    } else {
-      console.log(`feed filter thin-rules in ${before} out ${before}`);
     }
+    const after = Object.keys(cards).length;
+    if (!thinCfg) console.log(`feed filter limits-missing in ${before} out ${after} thin limits not loaded, cards blocked`);
+    else console.log(`feed filter thin-rules in ${before} out ${after}`);
   }
   const sets = new Map();
   for (const card of Object.values(cards)) sets.set(card.set, (sets.get(card.set) || 0) + 1);

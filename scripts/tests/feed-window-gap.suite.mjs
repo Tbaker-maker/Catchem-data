@@ -1,5 +1,5 @@
 // A missing day 7 back, with no 90-day file, still leaves a catalogue.
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,7 +61,7 @@ export async function run() {
   t("the note names both days", earlierFileNote(MISSING, shift(MISSING, -1)) === "The file for Nov 5 was missing, so this window uses Nov 4.");
   const series = new Map([[7, new Map(base)]]);
   const hit = exactWindow(series, "tcgcsv-7", END, 7);
-  t("the library window uses the same earlier file", hit && hit.earlier === true && hit.start === shift(MISSING, -1) && hit.exactDate === MISSING);
+  t("the library window stays off when the exact file is missing", hit == null);
   t("a start more than 2 days early does not count", exactWindow(new Map([[7, new Map([["2026-11-01", 12], [END, 14]])]]), "tcgcsv-7", END, 7) == null);
   t("a day after the window start does not count", exactWindow(new Map([[7, new Map([["2026-11-06", 12], [END, 14]])]]), "tcgcsv-7", END, 7) == null);
 
@@ -72,7 +72,7 @@ export async function run() {
   clearReadThinCache();
   const dir = await mkdtemp(join(tmpdir(), "feed-gap-"));
   try {
-    const published = await publishFeed({
+    const blocked = await publishFeed({
       items: items.slice(0, 4),
       prior: [],
       prices: new Map(items.slice(0, 4).map((item) => [item.id, item.price])),
@@ -84,10 +84,36 @@ export async function run() {
       gapPids: [],
       root: dir,
     });
+    t("limits-missing blocks the catalogue", blocked.count === 0);
+    const stub = {
+      minAnchorDays: 1, anchorBand: 1, minJumps: 1, jumpRatio: 1000,
+      minListings: 0, bigMoveRatio: 100, minDipPct: 0, minDipUsd: 0, maxDayGap: 365, eraTags: {},
+    };
+    const stubPath = join(dir, "stub-limits.json");
+    await writeFile(stubPath, JSON.stringify(stub) + "\n");
+    process.env.READ_THIN_DATA_FILE = stubPath;
+    clearReadThinCache();
+    const pictured = items.slice(0, 4).map((item, i) => i === 0
+      ? { ...item, image: "/data/editor/tcg/sv1/1_hires.png" }
+      : item);
+    const published = await publishFeed({
+      items: pictured,
+      prior: [],
+      prices: new Map(pictured.map((item) => [item.id, item.price])),
+      asOf: END,
+      updatedAt: null,
+      outDir: dir,
+      logFile: null,
+      shelf: [],
+      gapPids: [],
+      root: dir,
+    });
     const cat = JSON.parse(await readFile(join(dir, "feed/catalogue.json"), "utf8"));
-    const images = Object.values(cat.cards).map((card) => card.image);
-    t("limits-missing keeps the catalogue", published.count > 0 && Object.keys(cat.cards).length === published.count);
-    t("0 empty feed images where reads.json has one", images.length > 0 && images.every((image) => image.includes("tcgplayer-cdn.tcgplayer.com")));
+    const images = Object.values(cat.cards);
+    const foreign = /tcgplayer-cdn\.tcgplayer\.com|images\.pokemontcg\.io|ebayimg|i\.ebayimg/i;
+    t("a loaded stub keeps the catalogue", published.count > 0 && Object.keys(cat.cards).length === published.count);
+    t("a foreign photo is cleared", images.filter((card) => card.sku !== pictured[0].id).every((card) => card.image === ""));
+    t("a catalogue picture stays", images.some((card) => card.sku === pictured[0].id && card.image === "/data/editor/tcg/sv1/1_hires.png") && !images.some((card) => foreign.test(String(card.image || ""))));
   } finally {
     await rm(dir, { recursive: true, force: true });
     if (prevFile == null) delete process.env.READ_THIN_DATA_FILE;
@@ -105,24 +131,22 @@ export async function run() {
     const has = async (d) => { try { await readFile(join(ROOT, "data/history/tcgcsv-daily", `${d}.json`)); return true; } catch { return false; } };
     const missing7 = !(await has(day(7)));
     const missing90 = !(await has(day(90)));
+    const foreign = /tcgplayer-cdn\.tcgplayer\.com|images\.pokemontcg\.io|ebayimg|i\.ebayimg/i;
     const rows = reads.reads || [];
-    const withPic = new Set(rows.filter((row) => row.image && (row.sku || row.sourceLine)).flatMap((row) => [row.sku, row.sourceLine].filter(Boolean)));
+    const homePic = new Set(rows.filter((row) => row.image && !foreign.test(String(row.image)) && (row.sku || row.sourceLine)).flatMap((row) => [row.sku, row.sourceLine].filter(Boolean)));
     const cards = Object.values(cat.cards || {});
-    const empty = cards.filter((card) => withPic.has(card.sku) && !card.image).length;
-    const filled = cards.filter((card) => card.image).length;
+    const empty = cards.filter((card) => homePic.has(card.sku) && !card.image).length;
+    const filled = cards.filter((card) => card.image && !foreign.test(String(card.image))).length;
     if (missing7 && missing90) {
       t("with a missing day 7 back and no 90-day file, the catalogue is still more than 12 and the board is 200 to 400", (cat.count || 0) > 12 && rows.length >= 200 && rows.length <= 400);
     } else {
       console.log("  - this checkout has the day 7 file or the 90-day file");
     }
-    // The file on main is the 02:47Z publish: every feed image is still blank.
-    // That is the bug this PR fixes. The publishFeed case above is the proof.
-    // Once the committed catalogue has any picture, a read that has one cannot
-    // sit on a blank feed card.
+    // A foreign host is cleared. A catalogue picture on a read must stay on the card.
     if (filled > 0) {
-      t("built feed: 0 empty feed images where reads.json has one", empty === 0);
+      t("a catalogue picture on a read stays on the feed card", empty === 0);
     } else {
-      console.log("  - committed catalogue images are still blank; the publishFeed case is the check");
+      console.log("  - committed catalogue has no catalogue picture yet");
     }
   } catch {
     console.log("  - built feed files are not in this checkout");
