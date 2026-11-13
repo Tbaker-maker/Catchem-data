@@ -13,7 +13,7 @@ import { loadBudget, laneMeter, ledgerFor } from "./lib/ppp-budget.mjs";
 import { pppClient, loadKey, redactKey } from "./lib/ppp-client.mjs";
 import { loadFillMap } from "./lib/fill-history.mjs";
 import { loadProducts, RAW } from "./ppp-enrich.mjs";
-import { queueSealed, pullLimit, chartPoints, progressDoc } from "./lib/ppp-sealed-history.mjs";
+import { queueSealed, pullLimit, chartPoints, progressDoc, rememberOwnDay, ownPoints, verifyStoredHistory } from "./lib/ppp-sealed-history.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PROGRESS = join(ROOT, "data/ppp/sealed-history-progress.json");
@@ -41,29 +41,54 @@ async function listingWatch(root) {
 }
 
 async function ownDayCounts(root) {
-  const dir = join(root, "data/history/tcgplayer-market");
-  const days = new Map();
-  const points = new Map();
+  const byPid = new Map();
+  const longDir = join(root, "data/history/tcgplayer-market");
   let files = [];
-  try { files = (await readdir(dir)).filter((f) => f.endsWith(".json")); } catch { files = []; }
+  try { files = (await readdir(longDir)).filter((f) => f.endsWith(".json")); } catch { files = []; }
   for (const file of files) {
     if (["mapping.json", "coverage.json", "unmatched.json", "no-tcg-listing.json", "removed-not-real.json"].includes(file)) continue;
-    const doc = await readJson(join(dir, file), null);
+    const doc = await readJson(join(longDir, file), null);
     const pid = Number(doc?.tcgplayerProductId);
     if (!pid || !Array.isArray(doc.points)) continue;
-    const rows = [];
     for (const pt of doc.points) {
       const day = String(pt?.date || "").slice(0, 10);
-      const price = Number(pt?.market);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !(price > 0)) continue;
       if (pt?.source && !/tcgcsv|tcgplayer market/i.test(String(pt.source))) continue;
-      rows.push([day, price]);
+      rememberOwnDay(byPid, pid, day, pt?.market);
     }
-    if (!rows.length) continue;
-    days.set(pid, rows.length);
-    points.set(pid, rows);
   }
-  return { days, points };
+  // The nightly file is one TCGplayer market day for the whole catalogue.
+  // The long files above cover a short named list, so a product that only
+  // lives here used to look like it had no own days and could never overlap.
+  const dailyDir = join(root, "data/history/tcgcsv-daily");
+  let daily = [];
+  try { daily = (await readdir(dailyDir)).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)); } catch { daily = []; }
+  for (const file of daily) {
+    const doc = await readJson(join(dailyDir, file), null);
+    const day = String(doc?.date || file.slice(0, 10));
+    for (const row of doc?.prices || []) rememberOwnDay(byPid, row?.id, day, row?.market);
+  }
+  const days = new Map();
+  const points = new Map();
+  for (const [pid, series] of byPid) {
+    days.set(pid, series.size);
+    points.set(pid, ownPoints(byPid, pid));
+  }
+  return { days, points, byPid };
+}
+
+async function storedHistory(rawDir) {
+  const dir = join(rawDir, "history");
+  let files = [];
+  try { files = (await readdir(dir)).filter((f) => f.endsWith(".json")); } catch { files = []; }
+  const out = [];
+  for (const file of files) {
+    const doc = await readJson(join(dir, file), {});
+    for (const [pid, rec] of Object.entries(doc || {})) {
+      if (!rec || !Array.isArray(rec.rows)) continue;
+      out.push({ pid: Number(pid), rows: rec.rows });
+    }
+  }
+  return out;
 }
 
 async function haveHistory(rawDir) {
@@ -105,6 +130,22 @@ export async function runSealedHistory({ root = ROOT, rawDir = RAW, client = nul
   const fillItems = [];
   const existingFill = await readJson(FILL_OUT, { items: [] });
   for (const item of existingFill.items || []) fillItems.push(item);
+  const skip = new Set(fillItems.map((item) => Number(item.pid)).filter(Boolean));
+  const stored = verifyStoredHistory(await storedHistory(rawDir), own.byPid, { skip });
+  for (const item of stored.items) fillItems.push(item);
+  counts.verified += stored.verified;
+
+  const writeFill = async () => {
+    if (!fillItems.length) return;
+    await writeJson(FILL_OUT, {
+      asOf,
+      source: "PkmnPrices sealed history, TCGplayer USD, unopened",
+      sourceKey: "pkmnprices",
+      chartFill: false,
+      note: "Held. An overlap sample matched our own days. chartFill in config/fill-sources.json stays false until that file is turned on.",
+      items: fillItems,
+    });
+  };
 
   const writeProgress = async (status, reason) => {
     const doc = progressDoc({
@@ -127,6 +168,7 @@ export async function runSealedHistory({ root = ROOT, rawDir = RAW, client = nul
   };
 
   if (!client) {
+    await writeFill();
     const doc = await writeProgress("skipped", "PKMNPRICES_API_KEY is not set. No request was sent.");
     log(`ppp-sealed-history skipped. queued=${queue.length} historySpentToday=${spentBefore}`);
     return doc;
@@ -169,15 +211,7 @@ export async function runSealedHistory({ root = ROOT, rawDir = RAW, client = nul
     if (meter.stopped) break;
   }
 
-  if (fillItems.length) {
-    await writeJson(FILL_OUT, {
-      source: "PkmnPrices sealed history, TCGplayer USD, unopened",
-      sourceKey: "pkmnprices",
-      chartFill: false,
-      note: "Held. An overlap sample matched our own days. chartFill in config/fill-sources.json stays false until that file is turned on.",
-      items: fillItems,
-    });
-  }
+  if (fillItems.length) await writeFill();
   const status = meter.stopped ? "stopped" : "ok";
   const reason = meter.stopped ? "a history call charged more than its row limit" : "";
   const doc = await writeProgress(status, reason);
