@@ -195,6 +195,7 @@ let n = 0;
 export async function run() {
   n += 1;
   console.log("RAN " + n + " argv1=" + (process.argv[1] || ""));
+  console.log(process.argv[1].endsWith("probe.suite.mjs") ? "SELF" : "ENDS");
   return 0;
 }
 if (process.argv[1] && process.argv[1].endsWith("probe.suite.mjs")) {
@@ -204,12 +205,15 @@ if (process.argv[1] && process.argv[1].endsWith("probe.suite.mjs")) {
 `);
   const cmd = suiteProcessCommand(probe);
   assert.match(cmd, /SUITE_FILE=/);
-  assert.doesNotMatch(cmd, / -e '[^']*' '/);
+  assert.match(cmd, /dress-suite-runner\.mjs'$/);
+  assert.doesNotMatch(cmd, /probe\.suite\.mjs'$/);
   const once = spawnSync("bash", ["-lc", cmd], { encoding: "utf8" });
   assert.equal(once.status, 0, once.stderr);
   assert.equal((once.stdout.match(/^RAN /gm) || []).length, 1, once.stdout);
   assert.doesNotMatch(once.stdout, /SELF/);
-  assert.match(once.stdout, /argv1=$/m);
+  assert.match(once.stdout, /argv1=\S/);
+  assert.doesNotMatch(once.stdout, /probe\.suite\.mjs/);
+  assert.match(once.stdout, /ENDS/);
 } finally {
   rmSync(probeDir, { recursive: true, force: true });
 }

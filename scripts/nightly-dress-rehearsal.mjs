@@ -263,11 +263,13 @@ if (failed) { console.error("SUITE: " + failed + " failed"); process.exit(1); }
 
 // node --input-type=module -e puts a trailing path in argv[1]. Suites that
 // self-run when argv[1] ends with their filename then run again from this
-// wrapper. board-determinism is three rebuilds (about 20 minutes) and the
-// second pass blows the 30 minute cap (exit 124). The path stays in
-// SUITE_FILE so argv[1] is not the suite.
+// wrapper. board-determinism is three rebuilds and the second pass blows the
+// 30 minute cap (exit 124). Some suites also call argv[1].endsWith with no
+// guard, so argv[1] has to be a path, and it must not be the suite path.
+// The suite path stays in SUITE_FILE.
 export function suiteProcessCommand(file) {
-  return `SUITE_FILE=${shq(file)} timeout 1800 node --input-type=module -e ${shq(SUITE_WRAPPER)}`;
+  const runner = join(dirname(file), "dress-suite-runner.mjs");
+  return `SUITE_FILE=${shq(file)} timeout 1800 node --input-type=module -e ${shq(SUITE_WRAPPER)} ${shq(runner)}`;
 }
 
 // Every suite in its own process, so one red suite cannot hide the next.
