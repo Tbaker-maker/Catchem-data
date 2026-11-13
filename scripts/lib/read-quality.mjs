@@ -544,3 +544,45 @@ export function publishReads(lib) {
     quietNight: lib?.quietNight || "",
   };
 }
+
+// Public read kinds. A pathway id (sold-gap and the rest of the PkmnPrices
+// set) is not one of these. Those facts stay in the private log.
+const V3_KINDS = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase", "deep", "year-range", "year-ago", "season", "pattern-forming", "pattern-ending", "listings-vs-price", "past-cases", "mixed", "rarity-band", "artist-band", "release-cycle", "rip"]);
+const HIST_KINDS = new Set(["high", "low", "year", "plain", "backto", "set"]);
+const LOOSE_READ_KIND = new Set(["pull", "pokemon", "lag", "group", "supply", "outlier", "dive", "volume", "listing", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "streak", "mover", "high", "set", "turned", "sealed", "release"]);
+const ONE_KIND = new Set(["single", "sealed", "pull", "pokemon", "lag", "group", "supply", "outlier", "dive", "volume", "streak", "mover", "high", "set", "turned", "release"]);
+const PAIR_KIND = new Set(["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"]);
+
+export function histBoardOk(row) {
+  return row?.board === "hist" && HIST_KINDS.has(row.readKind) && row.kind === row.readKind && /^\d{4}-\d{2}-\d{2}$/.test(String(row.startDate || "")) && row.endDate === row.asOf && sourceNamesDay(row.source, row.startDate, row.asOf);
+}
+
+export function isPriceLead(row) {
+  return (row?.board !== "v3" && row?.readKind === "price") || row?.kind === "single" || row?.kind === "sealed";
+}
+
+export function nonPriceKindOk(row) {
+  return (row?.board === "v3" && V3_KINDS.has(row.readKind)) || histBoardOk(row) || LOOSE_READ_KIND.has(row?.readKind);
+}
+
+export function oneKindOk(row) {
+  return (row?.board === "v3" && V3_KINDS.has(row.kind) && row.kind === row.readKind) || histBoardOk(row) || ONE_KIND.has(row?.kind) || (row?.kind === row?.readKind && PAIR_KIND.has(row?.kind));
+}
+
+// True only when the row would pass both public kind gates.
+export function publicBoardKindOk(row) {
+  if (!oneKindOk(row)) return false;
+  if (isPriceLead(row)) return true;
+  return nonPriceKindOk(row);
+}
+
+export function withholdNewReadKinds(rows) {
+  const kept = [];
+  const dropped = [];
+  for (const row of rows || []) {
+    if (publicBoardKindOk(row)) kept.push(row);
+    else dropped.push(row);
+  }
+  return { kept, dropped };
+}
+

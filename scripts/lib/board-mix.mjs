@@ -23,7 +23,7 @@ export function markCited(set, doc) {
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads, dayNum, stampHistReceipt } from "./history-reads.mjs";
-import { speakDates } from "./read-quality.mjs";
+import { speakDates, publicBoardKindOk, withholdNewReadKinds } from "./read-quality.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
@@ -843,7 +843,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     }
   }
   // Scanner reads first, then PkmnPrices fact reads. A passed ppp-* scanner
-  // read has the same id as its fact read, so the scored one is kept.
+  // read has the same id as its fact read, so the scored one is first.
+  // A pathway id is not a public kind, so that row is withheld here.
   for (const extra of [scannerReads, pppReads]) {
     if (!Array.isArray(extra) || !extra.length) continue;
     const used = new Set();
@@ -855,6 +856,11 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     for (const raw of extra) {
       if (!raw || !raw.id || seenId.has(raw.id)) continue;
       const row = { ...raw };
+      // A PkmnPrices pathway id is not a public kind. The private log keeps it.
+      if (!publicBoardKindOk(row)) {
+        console.log(`withheld new read kind: ${row.id} ${row.kind}/${row.readKind}`);
+        continue;
+      }
       if (row.href && used.has(String(row.href))) row.href = "";
       if (row.href) used.add(String(row.href));
       seenId.add(row.id);
@@ -952,7 +958,9 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     if (Array.isArray(r.lines)) r.lines = r.lines.map((line) => typeof line === "string" ? speakDates(line, r.asOf) : line);
     if (Array.isArray(r.variants)) r.variants = r.variants.map((line) => typeof line === "string" ? speakDates(line, r.asOf) : line);
   }
-  const stamped = gated.map(stampHistReceipt);
+  const split = withholdNewReadKinds(gated.map(stampHistReceipt));
+  if (split.dropped.length) console.log(`withheld new read kind: ${split.dropped.map((r) => `${r.id} ${r.kind}/${r.readKind}`).join("; ")}`);
+  const stamped = split.kept;
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: stamped, count: stamped.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of stamped) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
