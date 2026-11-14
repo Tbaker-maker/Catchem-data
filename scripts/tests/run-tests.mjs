@@ -530,6 +530,13 @@ console.log("── catch-all group keeps the card's own tag ──");
   t("misc set title suite", n === 0, `${n} failed`);
 }
 
+console.log("── supply shifts compare whole counts only ──");
+{
+  const { run } = await import("./supply-shifts.suite.mjs");
+  const n = await run();
+  t("supply shifts suite", n === 0, `${n} failed`);
+}
+
 console.log("── IR and SIR watch ──");
 {
   const { run } = await import("./ir-sir-watch.suite.mjs");
