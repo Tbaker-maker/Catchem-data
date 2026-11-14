@@ -14,6 +14,8 @@ import { pickDigestNames } from "./lib/research-reads.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
 import { publishChartIndexes } from "./compute-indexes.mjs";
+import { comparableCounts, readFloor, shiftPct } from "./lib/supply-shifts.mjs";
+import { openPrivate } from "./lib/private-store.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -541,23 +543,42 @@ const notification = { title: `Catchem Sealed Index ${sealedIndex.level}${sealed
 
 
 // Listing/price pairs for the last two days, independent of the index.
-const lastTwo = {}, lastTwoN = {};
+const lastTwo = {}, lastTwoD = {};
 for (const r of [...hh].sort((a, b) => a.date < b.date ? -1 : 1)) {
   if (r.date < "2026-08-19") continue;
   if (r.price) { (lastTwo[r.id] ||= []).push(r.price); if (lastTwo[r.id].length > 2) lastTwo[r.id].shift(); }
-  (lastTwoN[r.id] ||= []).push(r.listingCount ?? null); if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
+  (lastTwoD[r.id] ||= []).push(r.date); if (lastTwoD[r.id].length > 2) lastTwoD[r.id].shift();
 }
 
+// Floor for supply shifts. Private, and missing means no shifts (fail closed).
+async function loadSupplyFloor() {
+  try {
+    if (process.env.SUPPLY_SHIFT_LIMITS) return readFloor(JSON.parse(await readFile(process.env.SUPPLY_SHIFT_LIMITS, "utf-8")));
+    const store = await openPrivate({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
+    try { return readFloor(JSON.parse(await readFile(join(store.dir, "supply-shifts/limits.json"), "utf-8"))); }
+    catch { return null; }
+    finally { if (store.remote) await store.close(["supply-shifts/limits.json"], "supply shift limits"); }
+  } catch (e) { console.warn(`supply shifts: private limits not readable (${e.message}), so no shifts`); return null; }
+}
+const supplyFloor = await loadSupplyFloor();
+if (supplyFloor == null) console.warn("supply shifts: no private floor (supply-shifts/limits.json minListingsEachNight), so no shifts were written");
+const historyById = new Map(sp.products.map(p => [p.id, p.priceHistory || []]));
+
 // ── 🌊 SUPPLY SHIFTS (Tyler, Aug 20) — % supply change + cause candidates ──
-// Gate: n>=20 listings and |Δ|>=15% (small shelves make noisy percents).
+// Gate: both nights read the whole eBay result (filteredTotal on the
+// priceHistory point), both counts clear the private floor, and |Δ|>=15%.
+// A capped night's count is a sample of the first 150 rows, not a shelf.
 let recentCatalysts = [];
 try { const cl = await J("data/catalyst-log.json"); const cutoff = Date.now() - 7*86400000;
   recentCatalysts = (cl.entries||[]).filter(e => new Date(e.date).getTime() >= cutoff); } catch {}
 const supplyShifts = [];
 for (const p of liveList) {
-  const ln = lastTwoN[p.id]; if (!ln || ln.length < 2 || !ln[0] || !ln[1]) continue;
-  if (Math.max(ln[0], ln[1]) < 20) continue;
-  const dPct = Math.round((ln[1]/ln[0] - 1) * 1000) / 10;
+  const days = lastTwoD[p.id]; if (!days || days.length < 2) continue;
+  const hist = historyById.get(p.id) || [];
+  const c = comparableCounts({ prevPoint: hist.find(h => h.date === days[0]), nowPoint: hist.find(h => h.date === days[1]), floor: supplyFloor });
+  if (c.skip) continue;
+  const ln = [c.prev, c.now];
+  const dPct = shiftPct(c.prev, c.now);
   if (Math.abs(dPct) < 15) continue;
   const lp = lastTwo[p.id]; const priceD = lp && lp.length === 2 && lp[0] ? Math.round((lp[1]/lp[0]-1)*1000)/10 : null;
   let read;
