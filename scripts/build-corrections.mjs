@@ -8,16 +8,14 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { headerHtml, footerHtml, chromeCss, FONTS, stampLabel } from "./lib/public-chrome.mjs";
-import { freshnessFromReport } from "./lib/freshness.mjs";
+import { headerHtml, footerHtml, chromeCss, FONTS } from "./lib/public-chrome.mjs";
+import { freshnessFromDay } from "./lib/freshness.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 const log = await J("data/corrections-log.json") ?? { entries: [] };
 const q = await J("data/quarantine.json") ?? { entries: [] };
-const today = new Date().toISOString().slice(0, 10);
-
 const rows = (log.entries || []).slice().sort((a, b) => a.date < b.date ? 1 : -1).map(e => `
   <div class="c">
     <div class="d">${esc(e.date)}${e.material ? ' <span class="chip m">AFFECTED A PUBLISHED NUMBER</span>' : ' <span class="chip i">CAUGHT BEFORE PUBLICATION</span>'}</div>
@@ -29,8 +27,9 @@ const rows = (log.entries || []).slice().sort((a, b) => a.date < b.date ? 1 : -1
 const held = (q.entries || []).map(e => `
   <div class="row"><span><b>${esc(e.id)}</b><em>${esc(e.reason)}</em></span><span class="mono">held since ${esc(e.since)}</span></div>`).join("");
 
-const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
-const when = fresh.at ? stampLabel(fresh.at) : `Updated ${today}`;
+const dates = (log.entries || []).map((entry) => String(entry?.date || "").slice(0, 10)).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day)).sort();
+const fresh = freshnessFromDay(dates.at(-1) || "");
+const when = fresh.label;
 
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="${FONTS}" rel="stylesheet">

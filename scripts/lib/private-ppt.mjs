@@ -106,6 +106,36 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
 // What the daily job mounts back into the public checkout. The sealed history
 // goes to a gitignored folder. The two crosscheck files go to the gitignored
 // raw path the readers already check. Nothing here is committed.
+function daysEnding(today, n) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(today || ""))) return [];
+  const start = Date.parse(`${today}T00:00:00Z`);
+  const out = [];
+  for (let i = 0; i < n; i += 1) out.push(new Date(start - i * 86400000).toISOString().slice(0, 10));
+  return out;
+}
+
+// The compare reads sealed-*.json from the last week. Set raws stay out: they are
+// the bulk of raw/. Only the sealed product files are copied back.
+export async function restoreRecentSealed({ clone, root, today, days = 7 }) {
+  const actions = [];
+  for (const day of daysEnding(today, days)) {
+    const candidates = [join(clone, "raw", day, day), join(clone, "raw", day)];
+    for (const src of candidates) {
+      if (!existsSync(src)) continue;
+      let names = [];
+      try { names = await readdir(src); } catch { continue; }
+      const sealed = names.filter((name) => /^sealed-\d+\.json$/.test(name));
+      if (!sealed.length) continue;
+      const dest = join(root, "ppt-raw-private", day);
+      await mkdir(dest, { recursive: true });
+      for (const name of sealed) await cp(join(src, name), join(dest, name));
+      actions.push(`sealed:${day}`);
+      break;
+    }
+  }
+  return actions;
+}
+
 export async function restorePrivate({ clone, root }) {
   const actions = [];
   if (await overlayJson(join(clone, "data/history/ppt-sealed"), join(root, "data/history/ppt-sealed-private"))) {

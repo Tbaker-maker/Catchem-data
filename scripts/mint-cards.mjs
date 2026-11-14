@@ -3,12 +3,12 @@
 // research/pulse/cards/ (CI-committed path). Watermark law: ⚡ Catch'em +
 // date + provenance chip on every asset. Voice v4/v5 apply.
 import { flag } from "./flags.mjs";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, open } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { cardImage } from "./image-source.mjs";
-import { headerHtml, footerHtml, FONTS, stampLabel } from "./lib/public-chrome.mjs";
-import { freshnessFromReport } from "./lib/freshness.mjs";
+import { headerHtml, footerHtml, FONTS } from "./lib/public-chrome.mjs";
+import { freshnessFromDay } from "./lib/freshness.mjs";
 import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
 
 // wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
@@ -98,7 +98,15 @@ if (t3.raw) { const r = t3.raw; const rc = (sg.cards || []).find(c => c.name ===
     why: r.explain || r.reason, img: rc ? cardImg(rc.cardId) : "", chip: "READ" })); }
 
 // ── Public methodology page — the receipts pillar, one URL ──────────────
-const fresh = freshnessFromReport(await J("data/ppt/run-report.json").catch(() => null));
+let catalogDay = "";
+try {
+  const fh = await open(join(ROOT, "data/catalog/tcgcsv-latest.json"), "r");
+  const buf = Buffer.alloc(240);
+  await fh.read(buf, 0, 240, 0);
+  await fh.close();
+  catalogDay = buf.toString("utf8").match(/"asOf"\s*:\s*"(\d{4}-\d{2}-\d{2})"/)?.[1] || "";
+} catch { catalogDay = ""; }
+const fresh = freshnessFromDay(catalogDay);
 const M = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="${FONTS}" rel="stylesheet">
 <title>Catch'em — Methodology</title><style>
@@ -116,7 +124,7 @@ p{margin:8px 0}.dim{color:var(--dim);font-size:14px}a{color:var(--gold)}
 </style></head><body>
 ${headerHtml("Methodology")}
 <main class="col">
-<h1>How our numbers are made</h1><p class="dim">Every figure on Catch'em carries a chip — <b style="color:var(--green)">VERIFIED</b> (measured from listings) or <b>READ</b> (our interpretation, always with a stated way to prove it wrong). This page is the receipts. ${stampLabel(fresh.at)}.</p>
+<h1>How our numbers are made</h1><p class="dim">Every figure on Catch'em carries a chip. <b style="color:var(--green)">VERIFIED</b> (measured from listings) or <b>READ</b> (our interpretation, always with a stated way to prove it wrong). This page is the receipts. ${fresh.label}.</p>
 <h2 id="index">The Catch'em Sealed Index</h2>
 <div class="law" style="border-left-color:#36d399"><b>The five-year-old version 🍭</b><br>
 Imagine a shelf with 153 Pokémon boxes. Every morning we check every price, then squish them into <b>one magic number</b>. On day one we called it <b class="mono">100</b> — the starting line. Every day, each box answers one question: <i>am I worth more or less than when we started?</i> We average the answers. <b class="mono">100.6</b> means the shelf is worth a tiny bit more than at the start. Brand-new sets sit on the bench for their first three months — launch-week excitement is not market weather, so they join once the dust settles. And each box only competes against <i>itself</i> — the $2,900 box and the $99 box each get one vote, so no giant box can hog the number. <b>Breadth</b> just counts hands: today 42 boxes said "I went up," 4 said "I went down." Sunny day on the shelf.</div>

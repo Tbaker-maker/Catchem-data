@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { redact, restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
+import { redact, restorePrivate, restoreRecentSealed, stagePrivate } from "../lib/private-ppt.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
 import { mountPrivate } from "../mount-private-ppt.mjs";
 import { clonePrivate, PRIVATE_SPARSE } from "../lib/private-clone.mjs";
@@ -94,6 +94,19 @@ export async function runPrivatePptTests() {
   const badGit = async (cmd, args) => { failCalls.push(args); return { code: 128, err: "auth failed", out: "" }; };
   const failed = await clonePrivate(badGit, "https://example.invalid/private.git", "/tmp/x", {});
   t("a failed private clone stops before the checkout", failed.code === 128 && failCalls.length === 1);
+  const recentRoot = await mkdtemp(join(tmpdir(), "ppt-recent-"));
+  await mkdir(join(recentRoot, "raw/2026-11-12/2026-11-12"), { recursive: true });
+  await writeFile(join(recentRoot, "raw/2026-11-12/2026-11-12/sealed-98562.json"), "{\"data\":[]}\n");
+  await writeFile(join(recentRoot, "raw/2026-11-12/2026-11-12/set-xy1.json"), "{\"data\":[]}\n");
+  const recentPublic = join(recentRoot, "public");
+  const recent = await restoreRecentSealed({ clone: recentRoot, root: recentPublic, today: "2026-11-14", days: 7 });
+  t("a nested sealed file from an earlier day is restored", recent.includes("sealed:2026-11-12") && (await readFile(join(recentPublic, "ppt-raw-private/2026-11-12/sealed-98562.json"), "utf8")).includes("data"));
+  let setCopied = true;
+  try { await readFile(join(recentPublic, "ppt-raw-private/2026-11-12/set-xy1.json"), "utf8"); } catch { setCopied = false; }
+  t("set raw stays out of the sealed restore", setCopied === false);
+  const mountSrc = await readFile(new URL("../mount-private-ppt.mjs", import.meta.url), "utf8");
+  t("the mount asks for a week of sealed files and not set files", mountSrc.includes("/raw/${day}/${day}/sealed-*.json") && mountSrc.includes("restoreRecentSealed") && !mountSrc.includes("set-*.json"));
+  await rm(recentRoot, { recursive: true, force: true });
   const incCalls = [];
   await clonePrivate(async (cmd, args) => { incCalls.push(args); return { code: 0, err: "", out: "" }; }, "https://example.invalid/private.git", "/tmp/x", {}, { include: ["/raw/2026-11-12/"] });
   t("an include pattern is added after the raw/ exclusion", incCalls[1].at(-1) === "/raw/2026-11-12/" && incCalls[1].indexOf("!/raw/") < incCalls[1].indexOf("/raw/2026-11-12/"));

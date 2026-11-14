@@ -103,7 +103,7 @@ for (const item of catalog.items || []) {
 }
 
 let updatedAt = null;
-try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
+// The feed prices are the TCGplayer catalog. catalog.asOf is the day. The PPT run clock does not date this file.
 const prices = new Map();
 for (const item of catalog.items || []) {
   const hist = series.get(Number(item.tcgplayerProductId));
