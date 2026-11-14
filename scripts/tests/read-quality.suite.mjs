@@ -282,6 +282,15 @@ export async function run() {
   const sealedRows = sealedOn.board.filter((row) => row.signal === "sealed");
   t("sealed week caps at one and skips art parents", sealedRows.length === 1 && sealedRows[0].sku === "box-b" && !sealedOn.board.some((row) => /Art /.test(row.name)));
   t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (Oct 8), from $50.00 (Oct 1). Up $20.00.") && !/\bNM\b/.test(sealedRows[0].headline) && sealedRows[0].whyItMatters === "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.");
+  const hiddenCase = [
+    ...sealedProducts,
+    { id: "case-hidden", name: "Ditto Premium Collection Case", combinedArts: false, tcgPlayerId: "300", set: "Base", browse: false },
+  ];
+  const hiddenSeries = new Map(sealedSeries);
+  hiddenSeries.set(300, new Map([["2026-10-01", 1000], ["2026-10-08", 600]]));
+  const hiddenOn = libOf({ cards: {}, series: hiddenSeries, dailyFiles: new Set(["2026-10-01", ASOF]), library: true, sealed: hiddenCase });
+  const hiddenRows = hiddenOn.board.filter((row) => row.signal === "sealed");
+  t("a browse-hidden case is not the sealed week read", hiddenRows.length === 1 && hiddenRows[0].sku === "box-b");
 
   // The live radar drops a row once it has released (the 10-26 digest dropped
   // Deck Crafter's Collection), so the release-day check pins its own rows on
