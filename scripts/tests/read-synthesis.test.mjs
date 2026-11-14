@@ -155,6 +155,24 @@ await rm(root, { recursive: true, force: true });
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
 }
 
+{
+  const raw = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
+  delete raw.streakWeekUsd;
+  t("a missing week floor does not load", validSynth(raw) === null);
+  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1 });
+  const asOf = "2026-11-12";
+  const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
+  const itemOf = (pts) => ({ pts, title: "Deino (White Flare) 146/086", asOf });
+  const flatFs = findings(itemOf(weekly([11.5, 11.78, 15.64, 15.66, 16.14, 16.25, 17.08, 17.41, 17.5])), {}, weekCfg);
+  t("flat then one drop is not a streak", !flatFs.some((f) => f.tag === "streak" || /weeks running/.test(`${f.text || ""} ${f.short || ""}`)));
+  const drop = flatFs.find((f) => f.type === "dropdown");
+  t("flat then one drop names the size and the date", drop?.text === "Down 25% in one week: Deino (White Flare) 146/086 went from $15.64 on Oct 29 to $11.78 on Nov 5.", drop?.text || "");
+  t("the one drop sentence has no banned word", !!drop && !hasBannedWord(drop.text) && !/[\u2014\u2013]/.test(drop.text));
+  const eight = findings(itemOf(weekly([20, 22, 24, 26, 28, 30, 32, 34, 36])), {}, weekCfg);
+  const streak = eight.find((f) => f.type === "streakdown");
+  t("eight real lower weeks are still a streak", /Lower for 8 weeks running/.test(streak?.text || ""), streak?.text || "");
+}
+
 // Receipts: the full facts move to the side file, reads.json keeps a short pointer.
 {
   const big = { id: "r1", sku: "tcgcsv-1", headline: "x", receipt: { from: 1, synth: { lead: "high", title: "T", signals: ["range", "trend"], now: ["2026-10-23", 5], facts: [{ tag: "range", type: "high", nums: { hi: ["2026-01-01", 4], now: ["2026-10-23", 5] } }], sources: ["a", "b"] } } };
