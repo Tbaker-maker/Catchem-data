@@ -166,14 +166,14 @@ try {
 // A stale reads board is loud here, inside the Morning Pulse schema guard.
 // It does not join `problems` and it does not exit. Generate Morning Pulse
 // sits above "Commit updated prices", and an exit from this file used to
-// stop that commit. The workflow step reads-day-alert.mjs is the red mark.
-// This print is the second place the same fact cannot stay silent.
+// stop that commit. ::error:: is the visible alert. The workflow step
+// reads-day-alert.mjs prints the same lines and also exits 0.
 const readsAlerts = await loadReadsDayAlerts(ROOT);
 if (readsAlerts.length) {
   console.error(`\n✗ READS DAY: ${readsAlerts.length} alert(s). Price publish is not stopped.`);
   for (const line of readsAlerts) {
     console.error(`   ${line}`);
-    console.error(`::warning::${line}`);
+    console.error(`::error::${line}`);
   }
   console.error("");
 }

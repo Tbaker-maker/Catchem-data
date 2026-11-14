@@ -458,10 +458,10 @@ jobs:
 
       - name: Alert when the reads day is behind the sealed prices
         # Visible, not blocking. A 1-day gap, or a withheld reads group after
-        # a crash, prints a warning and fails this step. continue-on-error so
-        # the price commit later in the job still runs. The Morning Pulse
-        # schema guard prints the same alert and does not exit.
-        continue-on-error: true
+        # a crash, prints an error annotation and exits 0. This step does not
+        # carry a soft-fail flag, so the counted flag total stays put and a
+        # later price commit is not skipped. The Morning Pulse schema guard
+        # prints the same alert and does not exit.
         run: node scripts/reads-day-alert.mjs
 
       - name: Run the read registry

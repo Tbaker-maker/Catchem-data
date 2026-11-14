@@ -25,6 +25,11 @@ export async function run() {
   const problemsExit = guard.indexOf("if (problems.length)");
   t("the schema guard does not exit on the reads day alert", alertAt > 0 && problemsExit > alertAt && exitAt > problemsExit && !/readsAlerts\.length[\s\S]{0,200}process\.exit\(1\)/.test(guard));
   const wf = await readFile(join(ROOT, ".github/workflows/update-sealed-prices.yml"), "utf8");
+  const script = await readFile(join(ROOT, "scripts/reads-day-alert.mjs"), "utf8");
+  const steps = wf.split(/\n      - name: /).slice(1);
+  const alertStep = steps.find((step) => step.startsWith("Alert when the reads day is behind the sealed prices")) || "";
+  t("the alert is an error annotation and exits 0", /::error::/.test(script) && /process\.exit\(0\)/.test(script) && !/process\.exit\(1\)/.test(script));
   t("the feed rebuild stays one pass and still withholds on a crash", /node scripts\/build-feed\.mjs \|\| node scripts\/withhold-group\.mjs reads "rebuild: build-feed\.mjs crashed after the price commit"/.test(wf) && !/second pass crashed/.test(wf));
+  t("the alert step adds no soft-fail flag", /node scripts\/reads-day-alert\.mjs/.test(alertStep) && !/continue-on-error/.test(alertStep));
   return fail;
 }
