@@ -2,10 +2,32 @@
   "mode": "nightly",
   "finished": true,
   "blocked": [],
-  "withheld": [],
+  "withheld": [
+    {
+      "key": "cutouts",
+      "label": "sealed cutouts",
+      "paths": [
+        "research/assets/public/cutouts",
+        "research/assets/public/sealed-cutouts.json"
+      ],
+      "tests": [
+        {
+          "name": "sealed-cutout-qa.suite.mjs",
+          "detail": "1 failed",
+          "section": "feature suites",
+          "inner": [
+            "every showable sealed id passed or is blocked tcgcsv-709018"
+          ]
+        }
+      ]
+    }
+  ],
   "monitor": [],
   "warning": [],
-  "paths": [],
-  "summary": "Prices fetch, commit and publish tonight.\nEvery test passed. Nothing withheld.",
-  "at": "2026-11-13T20:08:59.859Z"
+  "paths": [
+    "research/assets/public/cutouts",
+    "research/assets/public/sealed-cutouts.json"
+  ],
+  "summary": "Prices fetch, commit and publish tonight.\nWithheld: sealed cutouts. The site keeps the last good copy of research/assets/public/cutouts, research/assets/public/sealed-cutouts.json. Failing tests:\n- sealed-cutout-qa.suite.mjs (every showable sealed id passed or is blocked tcgcsv-709018)",
+  "at": "2026-11-14T12:36:57.479Z"
 }

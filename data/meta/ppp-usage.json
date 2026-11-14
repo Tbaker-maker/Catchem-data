@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-11-13",
+  "asOf": "2026-11-14",
   "status": "ran",
   "reason": "Key was present. credits.used is this run only, as x-credits-charged reported it. credits.usedToday is every PPP lane this UTC day, from the shared ledger. credits.remaining is the daily plan minus usedToday, worked out here, because x-credits-remaining can lag.",
   "credits": {
@@ -7,13 +7,13 @@
     "main": 10000,
     "reserve": 1000,
     "used": {
-      "sealed": 399,
-      "singles": 9601,
-      "total": 10000
+      "sealed": 0,
+      "singles": 2473,
+      "total": 2473
     },
-    "remaining": 1224,
-    "usedToday": 18776,
-    "usedThisRun": 10000,
+    "remaining": 8747,
+    "usedToday": 11253,
+    "usedThisRun": 2473,
     "labels": {
       "used": "this run only, from x-credits-charged",
       "usedThisRun": "this run only, from x-credits-charged",
@@ -21,31 +21,33 @@
       "remaining": "daily budget minus usedToday; not the lagging x-credits-remaining header"
     },
     "lanes": {
-      "map": 2499,
-      "comps": 3473,
-      "volume": 1304,
+      "map": 2500,
+      "comps": 3468,
+      "volume": 1312,
       "pop": 1000,
       "history": 500,
-      "current": 10000
+      "current": 2473
     }
   },
   "items": {
-    "sealed": 387,
-    "singles": 5867
+    "sealed": 0,
+    "singles": 1308
   },
-  "errors": [],
+  "errors": [
+    "time cap reached; 43326 calls left for the next run"
+  ],
   "estimate": {
     "budget": 10000,
     "reserve": 1000,
     "daily": 20000,
     "sealedCredits": 389,
-    "singlesCredits": 9611,
-    "total": 10000,
+    "singlesCredits": 9610,
+    "total": 9999,
     "sealedCount": 389,
-    "singlesCount": 28857,
-    "mappedSealed": 2574,
-    "mappedSingles": 2133,
-    "singlesThisNight": 5872,
+    "singlesCount": 28859,
+    "mappedSealed": 2586,
+    "mappedSingles": 6010,
+    "singlesThisNight": 7810,
     "notes": [
       "Current-price lane is 10,000 of 20,000 daily credits; 1,000 stays in the shared reserve.",
       "Current prices only. History is 1 credit per row and is not in the nightly refresh.",
@@ -55,22 +57,22 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 10000,
-    "itemsDone": 6254,
+    "creditsUsed": 2473,
+    "itemsDone": 1308,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 45964,
-    "itemsSkipped": 45964,
-    "callsSent": 10020,
+    "itemsBudgetSkipped": 43349,
+    "itemsSkipped": 43349,
+    "callsSent": 2476,
     "callsFailed": 0,
-    "callsNotSent": 45964,
+    "callsNotSent": 43349,
     "rateLimitCount": 0,
     "retries": 0
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppp-raw-private and pushed to the private repo. It is not committed here.",
   "emptyIds": {
-    "skippedToday": 0,
-    "foundEmptyToday": 20,
-    "marked": 20,
+    "skippedToday": 20,
+    "foundEmptyToday": 3,
+    "marked": 23,
     "recheckDays": 7,
     "note": "Lookups PPP answered with no unique product. Skipped until a week has passed, then asked once more."
   },
@@ -82,19 +84,19 @@
     "note": "Ids PPP rejected with a 4xx. Skipped for a week, then asked once more. Rate limits are not cached. Successes stay on the cursor."
   },
   "compare": {
-    "asOf": "2026-11-13",
+    "asOf": "2026-11-14",
     "note": "Counts and percent agreement only. Dollar prices stay in the private report.",
     "sealed": {
       "vsTcgcsv": {
-        "nCompared": 287,
-        "nExact": 167,
-        "exactShare": 0.5818815331010453,
-        "medianAbsPct": 0,
-        "within5": 281,
-        "within5Share": 0.9790940766550522,
-        "within10": 285,
-        "within10Share": 0.9930313588850174,
-        "nOutliersOver10": 2
+        "nCompared": 0,
+        "nExact": 0,
+        "exactShare": null,
+        "medianAbsPct": null,
+        "within5": 0,
+        "within5Share": null,
+        "within10": 0,
+        "within10Share": null,
+        "nOutliersOver10": 0
       },
       "vsPpt": {
         "nCompared": 0,
@@ -110,15 +112,15 @@
     },
     "singles": {
       "vsTcgcsv": {
-        "nCompared": 6653,
-        "nExact": 5061,
-        "exactShare": 0.7607094543814821,
+        "nCompared": 1662,
+        "nExact": 936,
+        "exactShare": 0.5631768953068592,
         "medianAbsPct": 0,
-        "within5": 6465,
-        "within5Share": 0.9717420712460544,
-        "within10": 6532,
-        "within10Share": 0.9818127160679393,
-        "nOutliersOver10": 121
+        "within5": 1601,
+        "within5Share": 0.9632972322503008,
+        "within10": 1638,
+        "within10Share": 0.9855595667870036,
+        "nOutliersOver10": 24
       },
       "vsPpt": {
         "nCompared": 0,
