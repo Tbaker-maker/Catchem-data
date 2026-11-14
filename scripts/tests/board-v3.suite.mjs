@@ -1,4 +1,4 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, rotationSetReads, rotationPhrase, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay } from "../lib/board-mix.mjs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -94,13 +94,45 @@ export async function run() {
   {
     const root = await mkdtemp(join(tmpdir(), "board-day-"));
     await mkdir(join(root, "data/catalog"), { recursive: true });
+    await mkdir(join(root, "research/assets/public/feed"), { recursive: true });
+    await writeFile(join(root, "research/assets/public/feed/catalogue.json"), JSON.stringify({ asOf: "2026-11-13" }));
     await writeFile(join(root, "data/catalog/tcgcsv-latest.json"), JSON.stringify({ asOf: "2026-11-14" }));
     await writeFile(join(root, "data/sealed-prices.json"), JSON.stringify({ updatedAt: "2026-11-14T12:40:27.302Z" }));
-    t("the board day follows today's price files, not yesterday's reads stamp", await priceBoardDay(root, "2026-11-13") === "2026-11-14");
+    const lines = [];
+    const orig = console.log;
+    console.log = (...args) => { lines.push(args.join(" ")); };
+    let stayed = "";
+    try { stayed = await priceBoardDay(root, "2026-11-13"); }
+    finally { console.log = orig; }
+    t("the stamp stays on the catalogue day when sealed prices are newer", stayed === "2026-11-13" && lines.some((line) => line.includes("stays 2026-11-13") && line.includes("data/sealed-prices.json 2026-11-14")));
+    const matched = await mkdtemp(join(tmpdir(), "board-day-"));
+    await mkdir(join(matched, "research/assets/public/feed"), { recursive: true });
+    await mkdir(join(matched, "data"), { recursive: true });
+    await writeFile(join(matched, "research/assets/public/feed/catalogue.json"), JSON.stringify({ asOf: "2026-11-14" }));
+    await writeFile(join(matched, "data/sealed-prices.json"), JSON.stringify({ updatedAt: "2026-11-14T12:40:27.302Z" }));
+    const quiet = [];
+    console.log = (...args) => { quiet.push(args.join(" ")); };
+    let same = "";
+    try { same = await priceBoardDay(matched, "2026-11-13"); }
+    finally { console.log = orig; }
+    t("matching catalogue and sealed days stamp that day and do not log", same === "2026-11-14" && quiet.length === 0);
     const older = await mkdtemp(join(tmpdir(), "board-day-"));
     t("with no price file the reads stamp is the fallback", await priceBoardDay(older, "2026-11-13") === "2026-11-13");
+    const ahead = await mkdtemp(join(tmpdir(), "board-day-"));
+    await mkdir(join(ahead, "data"), { recursive: true });
+    await writeFile(join(ahead, "data/sealed-prices.json"), JSON.stringify({ updatedAt: "2026-11-14T12:40:27.302Z" }));
+    const aheadLog = [];
+    console.log = (...args) => { aheadLog.push(args.join(" ")); };
+    let held = "";
+    try { held = await priceBoardDay(ahead, "2026-11-13"); }
+    finally { console.log = orig; }
+    t("with no catalogue a newer sealed file does not move the reads stamp", held === "2026-11-13" && aheadLog.some((line) => line.includes("stays 2026-11-13")));
+    const sets = rotationSetReads({ asOf: "2026-08-24", sets: [{ name: "SV03: Obsidian Flames", slug: "obsidian-flames", mark: "G", status: "Rotated april 10, 2026" }] }, "2026-11-14");
+    t("a rotated set line capitalizes the month", rotationPhrase("Rotated april 10, 2026") === "rotated April 10, 2026" && sets.length === 1 && sets[0].headline.includes("rotated April 10, 2026") && !/april/.test(sets[0].headline));
     await rm(root, { recursive: true, force: true });
+    await rm(matched, { recursive: true, force: true });
     await rm(older, { recursive: true, force: true });
+    await rm(ahead, { recursive: true, force: true });
   }
   return fail;
 }
