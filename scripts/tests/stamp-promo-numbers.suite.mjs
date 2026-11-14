@@ -1,7 +1,7 @@
 // Reads check Nov 11 (2): a card line's thumbnail and link must be the card
 // whose price the line quotes. Real lines from the Nov 11 build.
 import { stampRead } from "../lib/card-face-stamp.mjs";
-import { barLabel } from "../lib/card-face.mjs";
+import { barLabel, cardTitle } from "../lib/card-face.mjs";
 
 function card(id, name, number, set, rarity = "") {
   const setShort = set.replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
@@ -96,6 +96,40 @@ export async function run() {
   t("a bar drops tags before cutting a name", barLabel({ name: "Deoxys EX (Team Plasma) (Full Art)", number: "111/116" }, 16) === "Deoxys EX 111/116");
   t("a bar drops an inner number code", barLabel({ name: "Rayquaza - 016/110 (Delta Species)", number: "16/110" }, 18) === "Rayquaza 16/110");
   t("a bar never cuts a word in half", /^Fusion Strike\.\.\. 244\/264$/.test(barLabel({ name: "Fusion Strike Energy", number: "244/264" }, 18)));
+
+  const legends = [
+    card(84757, "Deoxys", "2/95", "Call of Legends", "Holo Rare"),
+    card(84758, "Deoxys (Shiny)", "SL1", "Call of Legends", "Shiny Holo Rare"),
+    card(85274, "Entei (Shiny)", "SL3", "Call of Legends", "Shiny Holo Rare"),
+  ];
+  t("a shiny legend keeps Shiny and its own number", cardTitle({ name: "Deoxys (Shiny)", set: "Call of Legends", number: "SL1" }) === "Deoxys (Shiny) (Call of Legends) SL1");
+  t("the plain holo keeps its own number", cardTitle({ name: "Deoxys", set: "Call of Legends", number: "2/95" }) === "Deoxys (Call of Legends) 2/95");
+  const year = stampRead({ id: "deep-bigyear-hgss", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Biggest year in HGSS.", lines: [
+    `1. ${cardTitle({ name: "Deoxys (Shiny)", set: "Call of Legends", number: "SL1" })}: $144.17 to $850.00, up 490%.`,
+    `2. ${cardTitle({ name: "Deoxys", set: "Call of Legends", number: "2/95" })}: $10.00 to $60.59, up 506%.`,
+    "3. Mewtwo (Call of Legends) SL9: $10.00 to $20.00, up 100%.",
+    `4. ${cardTitle({ name: "Entei (Shiny)", set: "Call of Legends", number: "SL3" })}: $67.84 to $290.00, up 327%.`,
+  ] }, index(legends), images);
+  t("Deoxys SL1 stays the shiny card", year.lines[0].includes("SL1") && !year.lines[0].includes("2/95") && ids(year.lineCards?.[0]).join() === "tcgcsv-84758");
+  t("Deoxys 2/95 stays the plain card", year.lines[1].includes("2/95") && !year.lines[1].includes("SL1") && ids(year.lineCards?.[1]).join() === "tcgcsv-84757");
+  t("a line with no matched card is dropped", year.lines.every((line) => !line.includes("Mewtwo")) && year.lines.length === 3);
+  t("Entei SL3 links the shiny card", year.lines[2].startsWith("3. ") && year.lines[2].includes("SL3") && ids(year.lineCards?.[2]).join() === "tcgcsv-85274");
+  const apart = stampRead({ id: "deep-bigyear-hgss", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Biggest year.", lineIds: ["tcgcsv-84758", "tcgcsv-84757", "tcgcsv-85274"], lines: [
+    "1. Deoxys (Call of Legends): $144.17 to $850.00, up 490%.",
+    "2. Deoxys (Call of Legends): $10.00 to $60.59, up 506%.",
+    "3. Entei (Call of Legends): $67.84 to $290.00, up 327%.",
+  ] }, index(legends), images);
+  t("carried card ids keep shiny Deoxys off the plain card", ids(apart.lineCards?.[0]).join() === "tcgcsv-84758" && apart.lines[0].includes("SL1") && !apart.lines[0].includes("2/95") && ids(apart.lineCards?.[1]).join() === "tcgcsv-84757" && apart.lines[1].includes("2/95") && ids(apart.lineCards?.[2]).join() === "tcgcsv-85274");
+  const mixed = stampRead({ id: "deep-bigyear-hgss", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Biggest year.", lines: [
+    "1. Deoxys (Call of Legends) 2/95 SL1: $144.17 to $850.00, up 490%.",
+    "2. Gyarados (Call of Legends) 7/95: $26.95 to $132.18, up 390%.",
+  ] }, index([...legends, card(85999, "Gyarados", "7/95", "Call of Legends")]), images);
+  t("a deep read under 3 lines is dropped", mixed.omit === true && mixed.lines.length < 3);
+  const keptShort = stampRead({ id: "deep-two-kept", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Two lines.", lineIds: ["tcgcsv-84757", "tcgcsv-85274"], lines: [
+    "1. Deoxys (Call of Legends): $10.00 to $60.59, up 506%.",
+    "2. Entei (Call of Legends): $67.84 to $290.00, up 327%.",
+  ] }, index(legends), images);
+  t("a 2 line deep read with nothing dropped stays published", keptShort.omit !== true && keptShort.lines.length === 2 && keptShort.lines[0].includes("2/95") && keptShort.lines[1].includes("SL3"));
   return fail;
 }
 

@@ -5,6 +5,7 @@ export async function run() {
   let fail = 0;
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
   t("title keeps the full collector number", cardTitle({ name: "Lugia EX (Team Plasma)", set: "Plasma Storm", number: "108/135" }) === "Lugia EX (Team Plasma) (Plasma Storm) 108/135");
+  t("a shiny legend is not folded into the plain name", cardTitle({ name: "Deoxys (Shiny)", set: "Call of Legends", number: "SL1" }) === "Deoxys (Shiny) (Call of Legends) SL1");
   t("a variant tag and a set are added only once", cardTitle({
     name: "Thundurus EX (Full Art) (Next Destinies) (Plasma Storm) (Legendary Treasures) (Dark Explorers)",
     set: "BW: Plasma Storm",

@@ -333,6 +333,54 @@ function picture(card, images) {
   return url;
 }
 
+function moneyHits(text) {
+  return (String(text || "").match(/\$\d/g) || []).length;
+}
+
+function collectorNums(text) {
+  const out = [];
+  const re = /(?:^|[^A-Za-z0-9/])([A-Z]*\d+[a-z]?\/[A-Z]*\d+|[A-Z]{1,5}\d+[a-z]?)(?![\w/])/g;
+  let m;
+  while ((m = re.exec(String(text || "")))) out.push(m[1]);
+  return [...new Set(out)];
+}
+
+// One priced card, not a "top cards" list. Zero matches, or two collector
+// numbers on that one name, is not a card. The line is removed, not left blank.
+function dropUnmatchedCardLine(text, cards) {
+  if (typeof text !== "string") return false;
+  const trimmed = text.trim();
+  if (/^Top cards tonight/i.test(trimmed)) return false;
+  if (moneyHits(text) >= 3) return false;
+  const nums = collectorNums(text);
+  if (!nums.length || !/\$\d/.test(text)) return false;
+  if ((cards || []).length >= 2) return false;
+  if (cards?.length === 1 && nums.length === 1) return false;
+  if (/^\d+\.\s/.test(trimmed) || nums.length > 1) return true;
+  return false;
+}
+
+function renumberLines(lines) {
+  let n = 0;
+  return lines.map((line) => {
+    if (typeof line !== "string" || !/^\d+\.\s/.test(line)) return line;
+    n += 1;
+    return line.replace(/^\d+\./, `${n}.`);
+  });
+}
+
+function carriedCard(read, index, i) {
+  const id = Array.isArray(read?.lineIds) ? String(read.lineIds[i] || "") : "";
+  return id ? index.byId.get(id) || null : null;
+}
+
+function lineFromCarried(line, card) {
+  const text = String(line || "");
+  if (!card?.number || hasNumber(text, card.number)) return text;
+  if (/:\s*\$/.test(text)) return text.replace(/:\s*\$/, ` ${card.number}: $`);
+  return `${text} ${card.number}`;
+}
+
 function dollars(text, asOf, tonight) {
   const out = [];
   const ask = /eBay asks \(\$([\d,]+(?:\.\d{2})?)\)/g;
@@ -381,8 +429,15 @@ export function stampRead(read, index, images) {
   }
   if (Array.isArray(read.lines)) {
     const lineCards = [];
-    read.lines = read.lines.map((line) => {
+    const mapped = read.lines.map((line, i) => {
       if (typeof line !== "string") { lineCards.push({ text: line, cards: [] }); return line; }
+      const carried = carriedCard(read, index, i);
+      if (carried) {
+        const text = safeChange(line, labelPrices(lineFromCarried(line, carried)));
+        const image = picture(carried, images);
+        lineCards.push({ text, cards: [{ id: carried.id, number: carried.number, title: cardTitle(carried), ...(image ? { image } : {}) }] });
+        return text;
+      }
       const faced = faceText(line, pool, direct, subject);
       const cards = [];
       const seen = new Set();
@@ -395,7 +450,24 @@ export function stampRead(read, index, images) {
       lineCards.push({ text: faced.text, cards });
       return safeChange(line, faced.text);
     });
-    if (lineCards.some((row) => row.cards.length)) read.lineCards = lineCards;
+    const keptLines = [];
+    const keptCards = [];
+    const keptIds = [];
+    const srcIds = Array.isArray(read.lineIds) ? read.lineIds : [];
+    for (let i = 0; i < mapped.length; i += 1) {
+      const line = mapped[i];
+      const row = lineCards[i] || { text: line, cards: [] };
+      if (dropUnmatchedCardLine(line, row.cards)) continue;
+      keptLines.push(line);
+      keptCards.push(row);
+      keptIds.push(srcIds[i] || "");
+    }
+    const dropped = keptLines.length < mapped.length;
+    read.lines = dropped ? renumberLines(keptLines) : keptLines;
+    if (srcIds.length) read.lineIds = keptIds;
+    if (keptCards.some((row) => row.cards.length)) read.lineCards = keptCards;
+    else if (read.lineCards) delete read.lineCards;
+    if (dropped && (read.readKind === "deep" || read.kind === "deep" || read.deep) && read.lines.length < 3) read.omit = true;
   }
   if (Array.isArray(read.variants)) {
     read.variants = read.variants.map((line) => (typeof line === "string" ? safeChange(line, faceText(line, pool, direct).text) : line));
@@ -440,16 +512,20 @@ export async function stampReadsDoc(doc, root) {
   const reads = Array.isArray(doc?.reads) ? doc.reads : [];
   let numbered = 0;
   let missed = 0;
+  const kept = [];
   for (const read of reads) {
     stampRead(read, index, images);
+    if (read.omit) continue;
+    kept.push(read);
     const card = index.byId.get(String(read.sku || ""));
     if (!card?.number || read.dex || read.cardCount) continue;
     const blob = `${read.name || ""} ${read.headline || ""} ${(read.lines || []).join(" ")}`;
     if (hasNumber(blob, card.number)) numbered += 1;
     else if (singleCard(read) && cleanCardName(card.name) && String(read.headline || read.name || "").includes(cleanCardName(read.name || card.name).slice(0, 8))) missed += 1;
   }
+  doc.reads = kept;
   doc.conditionNote = CONDITION_NOTE;
-  return { reads: reads.length, cards: index.cards.length, numbered, missed };
+  return { reads: kept.length, cards: index.cards.length, numbered, missed };
 }
 
 export async function stampReadsFile(root) {

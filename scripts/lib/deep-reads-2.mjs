@@ -184,6 +184,7 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null, series
       ? `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together, ${sgn(((z - a) / a) * 100)} from a year ago.`
       : `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together${dated ? `, ${dated === 1 ? "one card" : `${dated} cards`} at an earlier steady price` : " tonight"}.`;
     const body = [];
+    const lineIds = [];
     for (const r of g.rs) {
       if (body.length >= 5) break;
       const y = r.jumpy ? null : yearAgo(r.c, asOf);
@@ -191,11 +192,13 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null, series
       // The thin trading note belongs to its own card, so it stays on that card's line.
       const note = r.thin?.line ? ` ${r.thin.line}` : "";
       body.push(`${cardTitle(r.c)}, ${r.label}: ${priceBit}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.${note}`);
+      lineIds.push(r.c.id);
     }
+    const foot = `TCGplayer market, ${monthDay(asOf)}.`;
     const rr = row("chase", g.set, short(g.set), head, [
       ...body,
-      `TCGplayer market, ${monthDay(asOf)}.`,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total });
+      foot,
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total, lineIds: [...lineIds, ""] });
     if (rr) out.push(rr);
   }
   return out;
