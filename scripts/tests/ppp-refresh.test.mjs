@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { callsFor, executePlan, loadQueue, runDeadline } from "../ppp-refresh.mjs";
+import { callsFor, executePlan, loadQueue, runDeadline, writeComparison, COMPARE_LOOKBACK_DAYS } from "../ppp-refresh.mjs";
 import { estimateNightly, loadIdMap, mergeIdMaps, MAIN_BUDGET, orderRefreshCalls, resumeIds, spentEarlierToday, usageSkeleton } from "../lib/ppp-plan.mjs";
 import { checkBudget, currentRunBudget, loadBudget, plannedSpend } from "../lib/ppp-budget.mjs";
 import { redact } from "../lib/ppp-client.mjs";
@@ -115,10 +115,45 @@ export async function runPppRefreshTests() {
     items: [
       { kind: "single", tcgplayerProductId: 42382, name: "Charizard", price: 10 },
       { kind: "sealed", tcgplayerProductId: 644298, name: "Box", price: 20 },
+      { kind: "sealed", id: "other-box", tcgplayerProductId: 999001, name: "Other box", price: 5 },
+      { kind: "sealed", id: "no-id", name: "Missing id" },
     ],
   }));
   const queue = await loadQueue(root);
-  t("the queue uses the 389-id sealed list and TCGCSV singles only", queue.sealed.length === 1 && queue.singles.length === 1 && queue.singles[0].tcgPlayerId === "42382");
+  const sealedIds = queue.sealed.map((row) => row.tcgPlayerId).sort();
+  t("the sealed queue is every catalog sealed product with a TCGplayer id", sealedIds.join() === "644298,999001" && queue.singles.length === 1 && queue.singles[0].tcgPlayerId === "42382", sealedIds.join());
+  t("the 45 minute cap is still the run bound", COMPARE_LOOKBACK_DAYS === 7 && runDeadline("45", 0) === 45 * 60000);
+
+  const cmp = await mkdtemp(join(tmpdir(), "ppp-cmp-"));
+  await mkdir(join(cmp, "raw/ppp/2026-11-13"), { recursive: true });
+  await mkdir(join(cmp, "raw/2026-11-12/2026-11-12"), { recursive: true });
+  await mkdir(join(cmp, "raw/2026-11-13/2026-11-13"), { recursive: true });
+  await writeFile(join(cmp, "raw/ppp/2026-11-13/sealed-98562.json"), JSON.stringify({
+    tcgPlayerId: "98562",
+    body: { name: "Deoxys Booster Pack", prices: [{ source: "tcgplayer", currency: "USD", condition: "Unopened", market_price: 100 }] },
+  }));
+  await writeFile(join(cmp, "raw/ppp/2026-11-13/card-84856.json"), JSON.stringify({
+    tcgPlayerId: "84856",
+    body: { name: "Dodrio", prices: [{ source: "tcgplayer", currency: "USD", condition: "Near Mint", variant: "Normal", market_price: 0.4 }] },
+  }));
+  await writeFile(join(cmp, "raw/2026-11-12/2026-11-12/sealed-98562.json"), JSON.stringify({ data: [{ tcgPlayerId: 98562, unopenedPrice: 110 }] }));
+  await writeFile(join(cmp, "raw/2026-11-13/2026-11-13/set-xy1.json"), JSON.stringify({
+    data: [{
+      tcgPlayerId: 84856,
+      prices: { variants: { Normal: { "Near Mint": { price: 0.32 } } }, primaryPrinting: "Normal" },
+      variants: { Normal: { marketPrice: 0.32, conditionUsed: "Near Mint" } },
+    }],
+  }));
+  const compared = await writeComparison({
+    root: cmp,
+    today: "2026-11-13",
+    tcgcsv: { items: [
+      { tcgplayerProductId: 98562, kind: "sealed", price: 100 },
+      { tcgplayerProductId: 84856, kind: "single", printings: [{ name: "Normal", price: 0.32 }] },
+    ] },
+  });
+  t("a previous-day sealed file and a real card body are not 0 rows", compared.privateReport.sealedVsPpt.nCompared > 0 && compared.privateReport.singlesVsPpt.nCompared > 0, JSON.stringify(compared.privateReport.counts));
+  await rm(cmp, { recursive: true, force: true });
   await rm(root, { recursive: true, force: true });
   await rm(rawDir, { recursive: true, force: true });
 

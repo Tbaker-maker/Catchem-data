@@ -3,7 +3,7 @@
 // data. No mockup numbers, no illustrative states — if an instrument is
 // calibrating, the page says so. Output: research/assets/the-board.html
 import { rootCss } from "./lib/brand.mjs";
-import { freshnessFromReport } from "./lib/freshness.mjs";
+import { freshnessFrom } from "./lib/freshness.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -26,8 +26,7 @@ const sealedImg = p => {
 };
 
 const sp = await J("data/sealed-prices.json");
-let runReport = null; try { runReport = await J("data/ppt/run-report.json"); } catch {}
-const fresh = freshnessFromReport(runReport);
+const fresh = freshnessFrom(sp?.updatedAt);
 try { const ov = await J("data/image-overrides.json"); __imgOv = ov?.products || {}; } catch {}
 try { const cm = await J("data/crosscheck-id-map.json");
   for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
