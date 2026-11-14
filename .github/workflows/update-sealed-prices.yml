@@ -444,8 +444,15 @@ jobs:
         # that print. A feed build that crashes withholds the reads group (its
         # files go back to the last committed copy) instead of stopping the
         # publish of tonight's prices.
+        # The early double pass runs before sealed prices land, so it still
+        # carries the previous board. This second pass is the one that settles
+        # today's prices. The first pass after a new price day does not.
         run: |
-          node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
+          if node scripts/build-feed.mjs; then
+            node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs second pass crashed after the price commit"
+          else
+            node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
+          fi
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}

@@ -7,7 +7,7 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
-import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
+import { money, pretty, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { nameWithTags } from "./card-face.mjs";
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
@@ -289,22 +289,27 @@ export function setHeatReads(pool, { start, end, minMoved = 5 } = {}) {
 
 export function releaseReads(releasesDoc, asOf, { days = 45 } = {}) {
   const out = [];
+  const seenProduct = new Set();
   const until = addDays(asOf, days);
   for (const r of releasesDoc?.releases || []) {
     if (!r?.name || !/^\d{4}-\d{2}-\d{2}$/.test(String(r.date || ""))) continue;
     if (r.date < asOf || r.date > until) continue;
     const name = String(r.name).replace(/\s*[\u2014\u2013]\s*/g, ": ").replace(/^JP:\s*/, "Japan: ").replace(/^CN:\s*/, "China: ");
     const inDays = Math.round((Date.parse(r.date) - Date.parse(asOf)) / 86400000);
-    let headline = `${name} is out ${monthDay(r.date)}, ${inDays} days from ${monthDay(asOf)}.`;
-    if (r.market?.price > 0 && r.market?.date) headline += ` ${r.market.name} is listed at ${money(r.market.price)} on TCGplayer (${monthDay(r.market.date)}).`;
+    const price = Number(r.market?.price);
+    const productId = String(r.market?.id || "").trim();
+    if (!(price > 0) || !productId || !r.market?.date) continue;
+    if (seenProduct.has(productId)) continue;
+    seenProduct.add(productId);
+    const listed = `${pretty(r.market.name || name)} is listed at ${money(price)} on TCGplayer (${monthDay(r.market.date)}).`;
+    let headline = `${name} is out ${monthDay(r.date)}, ${inDays} days from ${monthDay(asOf)}. ${listed}`;
     if (!cleanCopy(headline)) continue;
     out.push({
-      id: `release-${name}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80), readKind: "release", kind: "release", board: BOARD_TAG, family: "calendar",
+      id: `release-${productId}`, sku: productId, href: `/p/${productId}`, readKind: "release", kind: "release", board: BOARD_TAG, family: "calendar",
       name, headline, path: headline, asOf, date: r.date,
-      href: r.market?.id ? `/p/${r.market.id}` : "",
       source: `${String(r.source || "").replace(/^(?:https?:\/\/)?support\.pokemoncenter\.com\/\S*/i, "Pokémon Center Estimated Preorder Release Dates page")}, checked ${r.checked}`,
       receipt: { date: r.date, source: r.source, checked: r.checked, market: r.market || null },
-      variants: [`${inDays} days to go: ${name} lands ${monthDay(r.date)}.`, `Coming ${monthDay(r.date)}: ${name}.`].filter(cleanCopy),
+      variants: [`${inDays} days to go: ${name} lands ${monthDay(r.date)}. ${listed}`, `Coming ${monthDay(r.date)}: ${name}. ${listed}`].filter(cleanCopy),
     });
   }
   return out;
@@ -351,9 +356,9 @@ export function listingReads(doc, { minStart = 15, minMove = 4, minPct = 20 } = 
     const a = lc.prev.n, b = lc.n;
     if (!Number.isInteger(a) || !Number.isInteger(b) || Math.max(a, b) < minStart) continue;
     if (Math.abs(b - a) < minMove || Math.abs(pct(a, b)) < minPct) continue;
-    const headline = `${p.name}: eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}). A listing is not a sale.`;
+    const headline = `${pretty(p.name)}: eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}). A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
-    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${monthDay(lc.prev.date)} and ${monthDay(lc.date)}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${p.name}. A listing is not a sale.`].filter(cleanCopy) });
+    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: pretty(p.name), headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${monthDay(lc.prev.date)} and ${monthDay(lc.date)}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${pretty(p.name)}. A listing is not a sale.`].filter(cleanCopy) });
   }
   return out;
 }
@@ -422,14 +427,15 @@ export function listingLevelReads(doc, { min = 10, max = 30, asOf = "" } = {}) {
     if (!p?.id || skip.has(p.id) || !Number.isInteger(lc?.n) || lc.n < min || !lc.date) continue;
     // A count from another day is not this read. Do not carry it forward.
     if (asOf && lc.date !== asOf) continue;
-    const headline = `${p.name}: ${lc.n} eBay listings counted on ${monthDay(lc.date)}. A listing is not a sale.`;
+    const name = pretty(p.name);
+    const headline = `${name}: ${lc.n} eBay listings counted on ${monthDay(lc.date)}. A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
     const lines = [];
     if (lc.prev?.date && Number.isInteger(lc.prev.n)) {
       const line = `Listings counted ${lc.prev.n} on ${monthDay(lc.prev.date)} to ${lc.n} on ${monthDay(lc.date)}. A listing is not a sale.`;
       if (cleanCopy(line)) lines.push(line);
     }
-    out.push({ id: `listcount-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, lines, asOf: lc.date, source: lc.prev?.date ? `eBay listings counted, ${lc.prev.date} and ${lc.date}` : `eBay listings counted, ${lc.date}`, receipt: { n: lc.n, prev: lc.prev?.n ?? null, date: lc.date, prevDate: lc.prev?.date || "" } });
+    out.push({ id: `listcount-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name, headline, path: headline, lines, asOf: lc.date, source: lc.prev?.date ? `eBay listings counted, ${lc.prev.date} and ${lc.date}` : `eBay listings counted, ${lc.date}`, receipt: { n: lc.n, prev: lc.prev?.n ?? null, date: lc.date, prevDate: lc.prev?.date || "" } });
   }
   return out.sort((a, b) => b.receipt.n - a.receipt.n).slice(0, max);
 }
@@ -680,13 +686,54 @@ export function fitBoard(priceRows, fresh, { maxShare = PRICE_SHARE_MAX, maxBoar
   return { price: priceRows.slice(0, priceN), fresh: freshKeep };
 }
 
+const PRICE_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+// The board day is the newest price file, not the stamp already on reads.json.
+// A reads file left on yesterday does not hold today's prices back.
+export async function priceBoardDay(root, fallback = "") {
+  const days = [];
+  const push = (value) => {
+    const day = String(value || "").slice(0, 10);
+    if (PRICE_DAY.test(day)) days.push(day);
+  };
+  try { push(JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8")).asOf); } catch { /* no catalog day */ }
+  try { push(JSON.parse(await readFile(join(root, "data/sealed-prices.json"), "utf8")).updatedAt); } catch { /* no sealed day */ }
+  days.sort();
+  if (days.length) return days[days.length - 1];
+  const fb = String(fallback || "").slice(0, 10);
+  return PRICE_DAY.test(fb) ? fb : "";
+}
+
+// A release read with no market price does not publish. Two wordings of one
+// product id publish once. Other reads are left as they are.
+export function keepReleaseRead(read, seen) {
+  const kind = String(read?.readKind || read?.kind || read?.signal || "");
+  if (kind !== "release") return true;
+  const blob = `${read?.headline || ""} ${(Array.isArray(read?.lines) ? read.lines : []).join(" ")}`;
+  if (/No price on this line/i.test(blob) || !/\$\d/.test(blob)) return false;
+  const id = String(read?.sku || read?.receipt?.market?.id || "").trim();
+  if (!id || seen.has(id)) return false;
+  seen.add(id);
+  return true;
+}
+
+export function withoutBareReleases(rows) {
+  const seen = new Set();
+  const out = [];
+  for (const read of rows || []) {
+    if (keepReleaseRead(read, seen)) out.push(read);
+  }
+  return out;
+}
+
 export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [], pppReads = [] } = {}) {
   const pub = join(root, "research/assets/public");
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
   if (!doc || !Array.isArray(doc.reads)) return { skipped: "no reads.json" };
   const base = doc.reads.filter(isPriceRead).filter((r) => r.board !== "hist").filter(keepPriceRead).map(polishPriceRead);
-  const end = doc.asOf;
+  const end = await priceBoardDay(root, doc.asOf);
+  if (!end) return { skipped: "no price day" };
   const start = addDays(end, -7);
   const dailyDir = join(root, "data/history/tcgcsv-daily");
   const startDoc = await readJson(join(dailyDir, `${start}.json`));
@@ -725,8 +772,9 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const kept = unstickFamilies(dropHeldReads(base, heldIds));
     const listingIndex = await loadListingIndex(root);
     const gated = await dropThinReads(kept, root, end, listingAnnotate(listingIndex));
-    await writeFile(readsPath, JSON.stringify({ ...doc, reads: gated, count: gated.length }, null, 1) + "\n");
-    return { on, price: gated.length, fresh: 0 };
+    const published = withoutBareReleases(gated);
+    await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: published, count: published.length }, null, 1) + "\n");
+    return { on, price: published.length, fresh: 0 };
   }
   const releases = await readJson(join(pub, "releases.json"));
   const news = await readJson(join(root, "research/digests/news.json"));
@@ -960,8 +1008,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   }
   const split = withholdNewReadKinds(gated.map(stampHistReceipt));
   if (split.dropped.length) console.log(`withheld new read kind: ${split.dropped.map((r) => `${r.id} ${r.kind}/${r.readKind}`).join("; ")}`);
-  const stamped = split.kept;
-  await writeFile(readsPath, JSON.stringify({ ...doc, reads: stamped, count: stamped.length }, null, 1) + "\n");
+  const stamped = withoutBareReleases(split.kept);
+  await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: stamped, count: stamped.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of stamped) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
   return { on, history: hist.counts, price: gated.filter(isPriceRead).length, fresh: gated.length - gated.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };

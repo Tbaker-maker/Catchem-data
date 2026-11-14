@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -164,6 +164,44 @@ await rm(root, { recursive: true, force: true });
   t("reads.json keeps lead, title, signals and the closing point", reads[0].receipt.synth.lead === "high" && reads[0].receipt.synth.title === "T" && reads[0].receipt.synth.signals.length === 2 && reads[0].receipt.synth.now[1] === 5 && reads[0].receipt.synth.facts === SYNTH_FILE && reads[0].receipt.from === 1);
   t("reads without a synthesized receipt are untouched", reads[1] === plain);
   t("the pointer is smaller than the full receipt", JSON.stringify(reads[0]).length < JSON.stringify(big).length);
+}
+
+// Crispin (Prismatic Evolutions) 171/131: $29.89 on Aug 20 to $20.47 on Nov 13,
+// and a 90 day line that does not use those dates. The 90 day line drops.
+{
+  const from = "2026-08-20";
+  const to = "2026-11-13";
+  const span = dayNum(to) - dayNum(from);
+  const pct = Math.round((Math.abs(20.47 - 29.89) / 29.89) * 1000) / 10;
+  const lead = {
+    tag: "streak", type: "streakdown", window: span, score: 12,
+    nums: { st: { n: 12, dir: -1, from: [from, 29.89], to: [to, 20.47] } },
+    text: "Lower for 12 weeks running: Crispin (Prismatic Evolutions) 171/131 moved from $29.89 on Aug 20 to $20.47 on Nov 13.",
+    short: "It has closed lower 12 weeks running, from $29.89 on Aug 20.",
+  };
+  const otherWindow = {
+    tag: "trend", type: "trend90down", window: 90, score: 5,
+    nums: { lead: { days: 90, asked: 90, from: ["2026-08-15", 33.02], to: [to, 20.47], pct: -38 } },
+    text: "Down 38% in the last 90 days: Crispin (Prismatic Evolutions) 171/131 went from $33.02 on Aug 15 to $20.47 on Nov 13.",
+    short: "Down 38% over 90 days, to $20.47 on Nov 13.",
+  };
+  const sameWindow = {
+    tag: "trend", type: "trendspandown", window: span, score: 4,
+    nums: { lead: { days: span, asked: span, from: [from, 29.89], to: [to, 20.47], pct: -pct } },
+    text: `Down ${pct}% in ${span} days: Crispin (Prismatic Evolutions) 171/131 went from $29.89 on Aug 20 to $20.47 on Nov 13.`,
+    short: `Down ${pct}% over ${span} days, to $20.47 on Nov 13.`,
+  };
+  const peak = {
+    tag: "range", type: "drawdown", score: 2,
+    nums: { hi: ["2025-03-27", 64.75], now: [to, 20.47] },
+    text: "Still 68% under its peak of $64.75 on Mar 27, 2025: Crispin (Prismatic Evolutions) 171/131 is at $20.47 on Nov 13.",
+    short: "It is still 68% under its peak of $64.75 on Mar 27, 2025.",
+  };
+  const item = { title: "Crispin (Prismatic Evolutions) 171/131", kind: "backto" };
+  const dropped = compose(item, [lead, otherWindow, peak], CFG);
+  t("Crispin's 90 day line drops when the dates differ", span !== 90 && pct === 31.5 && dropped && dropped.text.includes("$29.89") && dropped.text.includes("$20.47") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/38%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
+  const kept = compose(item, [lead, sameWindow, peak], CFG);
+  t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }

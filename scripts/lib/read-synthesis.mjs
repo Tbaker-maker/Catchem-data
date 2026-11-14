@@ -230,7 +230,8 @@ export function findings(item, ctx, cfg) {
   // Weekly streak and how often it moved
   const st = weeklyStreak(pts, asOf);
   if (st && st.n >= cfg.streakMinWeeks && Math.abs(st.to[1] - st.from[1]) >= cfg.minTrendUsd) {
-    out.push({ tag: "streak", type: `streak${st.dir > 0 ? "up" : "down"}`, score: cfg.weights.streak * st.n, nums: { st },
+    const spanDays = dayNum(st.to[0]) - dayNum(st.from[0]);
+    out.push({ tag: "streak", type: `streak${st.dir > 0 ? "up" : "down"}`, window: spanDays > 0 ? spanDays : undefined, score: cfg.weights.streak * st.n, nums: { st },
       text: `${st.dir > 0 ? "Higher" : "Lower"} for ${st.n} weeks running: ${title} moved from ${at(st.from, asOf)} to ${usd(st.to[1])} on ${monthDay(asOf)}.`, short: `It has closed ${st.dir > 0 ? "higher" : "lower"} ${st.n} weeks running, from ${at(st.from, asOf)}.` });
   }
   const mv = movedDays(pts, asOf);
@@ -339,6 +340,14 @@ export function leadDirection(item, fs) {
   return recent ? findingDir(recent) : 0;
 }
 
+function moveEnds(f) {
+  const st = f?.nums?.st;
+  if (Array.isArray(st?.from) && Array.isArray(st?.to) && st.from[0] && st.to[0]) return { from: String(st.from[0]), to: String(st.to[0]) };
+  const lead = f?.nums?.lead;
+  if (Array.isArray(lead?.from) && Array.isArray(lead?.to) && lead.from[0] && lead.to[0]) return { from: String(lead.from[0]), to: String(lead.to[0]) };
+  return null;
+}
+
 export function compose(item, fs, cfg, used) {
   const ranked = fs.filter((f) => f.score > 0 && f.text).sort((a, b) => b.score - a.score);
   const kindF = item.kindLine ? { tag: "kind", type: `kind:${item.kind}`, score: cfg.weights.kind, text: item.kindLine } : null;
@@ -356,7 +365,12 @@ export function compose(item, fs, cfg, used) {
   const leadPool = agree.length ? agree : ranked;
   const lead = leadPool.find((f) => count(f) < cap) || leadPool.slice().sort((a, b) => count(a) - count(b))[0];
   const leadWindow = Number.isFinite(Number(lead.window)) ? Number(lead.window) : null;
+  const leadEnds = moveEnds(lead);
   const sameWindow = (f) => {
+    const ends = moveEnds(f);
+    // A second price move has to use the lead's own dates. A 90 day line
+    // under a 12 week streak is a different window, so that line drops.
+    if (leadEnds && ends && (leadEnds.from !== ends.from || leadEnds.to !== ends.to)) return false;
     if (!leadWindow || !Number.isFinite(Number(f.window))) return true;
     return Number(f.window) === leadWindow;
   };

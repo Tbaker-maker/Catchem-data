@@ -428,6 +428,7 @@ export function releaseReads({ radar, asOf }) {
   const rows = radar?.upcoming || radar?.rows || (Array.isArray(radar) ? radar : []);
   const updated = String(radar?.updated || radar?.checkedAt || "").slice(0, 10);
   const hits = [];
+  const seen = new Set();
   for (const row of rows) {
     if (String(row?.confidence || "") !== "verified") continue;
     if (String(row?.type || "").toLowerCase().startsWith("jp")) continue;
@@ -436,11 +437,20 @@ export function releaseReads({ radar, asOf }) {
     if (asOf !== date && asOf !== shiftDay(date, -7)) continue;
     const name = scrub(row?.name || "");
     if (!name || !updated) continue;
-    const headline = `${name} is dated ${speakDay(date, asOf)} on the release file (checked ${speakDay(updated, asOf)}). No price on this line.`;
-    if (/msrp|\$\s?\d/i.test(headline)) continue;
+    const market = row?.market && typeof row.market === "object" ? row.market : null;
+    const price = Number(market?.price);
+    const productId = String(market?.id || "").trim();
+    const priceDate = String(market?.date || "").slice(0, 10);
+    const shown = money(price);
+    if (!(price > 0) || !shown || !productId || !/^\d{4}-\d{2}-\d{2}$/.test(priceDate) || seen.has(productId)) continue;
+    const listed = `${pretty(market.name || name)} is listed at ${shown} on TCGplayer (${speakDay(priceDate, asOf)}).`;
+    const headline = `${name} is dated ${speakDay(date, asOf)} on the release file (checked ${speakDay(updated, asOf)}). ${listed}`;
+    if (/msrp/i.test(headline) || /No price on this line/i.test(headline)) continue;
+    seen.add(productId);
     hits.push({
-      id: `release-${date}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40)}`,
-      sku: `release-${date}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)}`,
+      id: `release-${productId}`,
+      sku: productId,
+      href: `/p/${productId}`,
       signal: "release",
       readKind: "release",
       kind: "release",
@@ -451,9 +461,9 @@ export function releaseReads({ radar, asOf }) {
       asOf,
       source: "release file",
       sourceLine: `release file checked ${updated}`,
-      whyItMatters: "The date is on the release file. No market price is on this line.",
-      why: "The date is on the release file. No market price is on this line.",
-      whatWouldMakeThisWrong: "Wrong if the release file does not date this product on that day.",
+      whyItMatters: "The date is on the release file. The dollar figure is the TCGplayer market on the date shown.",
+      why: "The date is on the release file. The dollar figure is the TCGplayer market on the date shown.",
+      whatWouldMakeThisWrong: "Wrong if the release file does not date this product on that day, or the market price is not that figure.",
       _onDay: asOf === date ? 0 : 1,
     });
   }
