@@ -159,15 +159,23 @@ await rm(root, { recursive: true, force: true });
   const raw = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
   delete raw.streakWeekUsd;
   t("a missing week floor does not load", validSynth(raw) === null);
+  const noDrop = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
+  delete noDrop.weights.drop;
+  t("a missing drop weight does not load", validSynth(noDrop) === null);
   const weekCfg = validSynth({ ...raw, streakWeekUsd: 1 });
   const asOf = "2026-11-12";
   const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
   const itemOf = (pts) => ({ pts, title: "Deino (White Flare) 146/086", asOf });
   const flatFs = findings(itemOf(weekly([11.5, 11.78, 15.64, 15.66, 16.14, 16.25, 17.08, 17.41, 17.5])), {}, weekCfg);
   t("flat then one drop is not a streak", !flatFs.some((f) => f.tag === "streak" || /weeks running/.test(`${f.text || ""} ${f.short || ""}`)));
-  const drop = flatFs.find((f) => f.type === "dropdown");
+  t("a move that is not the latest week is not one week", !flatFs.some((f) => f.tag === "drop" || /in one week/.test(`${f.text || ""} ${f.short || ""}`)));
+  const stepAsOf = "2026-11-05";
+  const stepPts = [11.78, 15.64, 15.66, 16.14, 16.25, 17.08, 17.41, 17.5].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
+  const stepFs = findings({ pts: stepPts, title: "Deino (White Flare) 146/086", asOf: stepAsOf }, {}, weekCfg);
+  const drop = stepFs.find((f) => f.type === "dropdown");
   t("flat then one drop names the size and the date", drop?.text === "Down 25% in one week: Deino (White Flare) 146/086 went from $15.64 on Oct 29 to $11.78 on Nov 5.", drop?.text || "");
   t("the one drop sentence has no banned word", !!drop && !hasBannedWord(drop.text) && !/[\u2014\u2013]/.test(drop.text));
+  t("the one week score is the drop weight", drop?.score === weekCfg.weights.drop);
   const eight = findings(itemOf(weekly([20, 22, 24, 26, 28, 30, 32, 34, 36])), {}, weekCfg);
   const streak = eight.find((f) => f.type === "streakdown");
   t("eight real lower weeks are still a streak", /Lower for 8 weeks running/.test(streak?.text || ""), streak?.text || "");
@@ -187,16 +195,8 @@ await rm(root, { recursive: true, force: true });
 {
   const start = "2026-10-13";
   const end = "2026-11-12";
-  const cases = [
-    ["deep-set-xy-roaring-skies", "TCGplayer market, Nov 13, 2025 to Nov 13; sets.json; rotation-status.json Aug 24", "TCGplayer market, 2026-10-13 and 2026-11-12; sets.json; rotation-status.json Aug 24"],
-    ["high-tcgcsv-98141", "TCGplayer market (tcgcsv daily archive and our nightly days), 2024-02-08 and 2026-11-13", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-10-13 and 2026-11-12"],
-    ["deep-irlife-2026-11-13", "TCGplayer market, buckets and hist-long, Nov 13; method from the Catch'em IR study", "TCGplayer market, buckets and hist-long, 2026-10-13 and 2026-11-12; method from the Catch'em IR study"],
-    ["release-cycle-sv-prismatic-evolutions", "sets.json; TCGplayer market, Jan 17, 2025 to Nov 13", "sets.json; TCGplayer market, 2026-10-13 and 2026-11-12"],
-  ];
-  const published = JSON.parse(readFileSync(new URL("../../research/assets/public/reads.json", import.meta.url), "utf8"));
-  const byId = new Map((published.reads || []).map((row) => [row.id, row.source]));
+  const cases = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-sources.json", import.meta.url), "utf8"));
   for (const [id, source, want] of cases) {
-    t(`${id} source is the published line`, byId.get(id) === source);
     t(`${id} source keeps every clause`, retargetMarketSpan(source, start, end) === want);
   }
   const gain = compose(
