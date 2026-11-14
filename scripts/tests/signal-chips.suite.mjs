@@ -1,8 +1,11 @@
 import { readFileSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { isClean } from "../lib/copy-rules.mjs";
 import { depthBars, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
 import { isVintageSet } from "../lib/extra-reads.mjs";
-import { FEED_PARTS, stampSkipped } from "../stamp-signal-chips.mjs";
+import { FEED_PARTS, loadRules, stampSkipped } from "../stamp-signal-chips.mjs";
 
 // Fixture cutoffs only. The live numbers stay in catchem-data-private.
 const RULES = {
@@ -307,5 +310,27 @@ export async function run() {
     RULES,
   ).find((chip) => chip.kind === "gone");
   t("the listings chip counts listings and never says gone or sold", counted && counted.label === "Listings counted down, 100 to 40" && !/gone|\bsold\b/i.test(counted.label));
+
+  const rulesDir = await mkdtemp(join(tmpdir(), "signal-rules-missing-"));
+  const quietStore = { dir: rulesDir, remote: false, close: async () => ({}) };
+  const savedLog = console.log;
+  const capture = async (env) => {
+    const lines = [];
+    console.log = (...args) => { lines.push(args.map(String).join(" ")); };
+    try {
+      const value = await loadRules({ env, store: quietStore });
+      return { value, lines };
+    } finally {
+      console.log = savedLog;
+    }
+  };
+  const baseEnv = { ...process.env, SIGNAL_RULES: "", SIGNAL_STRENGTH: "", PRIVATE_DATA_TOKEN: "" };
+  delete baseEnv.DRESS_REHEARSAL;
+  const closed = await capture(baseEnv);
+  t("missing rules with dress rehearsal unset returns null", closed.value === null);
+  t("missing rules with dress rehearsal unset logs that the rules file is missing", closed.lines.some((line) => line.includes("rules file is missing") && line.includes("chips are not stamped")));
+  const opened = await capture({ ...baseEnv, DRESS_REHEARSAL: "1" });
+  t("missing rules during dress rehearsal returns empty rules", opened.value && typeof opened.value === "object" && !Array.isArray(opened.value) && Object.keys(opened.value).length === 0);
+  await rm(rulesDir, { recursive: true, force: true });
   return fail;
 }
