@@ -24,6 +24,16 @@ export async function run() {
   const reads = await load(join(ROOT, "research/assets/public/reads.json"), { reads: [] });
   const cuts = await load(join(ROOT, "data/sealed-cutouts.json"), { products: [] });
   const review = await load(join(ROOT, "data/sealed-cutout-review.json"), { products: [] });
+  const hiddenOnly = showableProducts(
+    [],
+    [
+      { id: "tcgcsv-1", name: "Example Box", browse: true, tcgPlayerId: "1" },
+      { id: "tcgcsv-709018", name: "Example Case", browse: false, tcgPlayerId: "709018" },
+    ],
+    { reads: [{ kind: "sealed", sku: "tcgcsv-709018" }, { kind: "sealed", sku: "tcgcsv-1", href: "/p/tcgcsv-1" }] },
+    [],
+  );
+  t("a browse-hidden case is not a showable cutout", hiddenOnly.length === 1 && hiddenOnly[0].id === "tcgcsv-1");
   const show = showableProducts(prices.products || [], Array.isArray(catalog) ? catalog : [], reads);
   const byId = new Map((cuts.products || []).map((row) => [row.id, row]));
   const why = new Map((review.products || []).map((row) => [row.id, row]));
