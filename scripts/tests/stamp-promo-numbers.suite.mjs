@@ -125,6 +125,11 @@ export async function run() {
     "2. Gyarados (Call of Legends) 7/95: $26.95 to $132.18, up 390%.",
   ] }, index([...legends, card(85999, "Gyarados", "7/95", "Call of Legends")]), images);
   t("a deep read under 3 lines is dropped", mixed.omit === true && mixed.lines.length < 3);
+  const keptShort = stampRead({ id: "deep-two-kept", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Two lines.", lineIds: ["tcgcsv-84757", "tcgcsv-85274"], lines: [
+    "1. Deoxys (Call of Legends): $10.00 to $60.59, up 506%.",
+    "2. Entei (Call of Legends): $67.84 to $290.00, up 327%.",
+  ] }, index(legends), images);
+  t("a 2 line deep read with nothing dropped stays published", keptShort.omit !== true && keptShort.lines.length === 2 && keptShort.lines[0].includes("2/95") && keptShort.lines[1].includes("SL3"));
   return fail;
 }
 

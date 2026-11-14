@@ -467,7 +467,7 @@ export function stampRead(read, index, images) {
     if (srcIds.length) read.lineIds = keptIds;
     if (keptCards.some((row) => row.cards.length)) read.lineCards = keptCards;
     else if (read.lineCards) delete read.lineCards;
-    if ((read.readKind === "deep" || read.kind === "deep" || read.deep) && read.lines.length < 3) read.omit = true;
+    if (dropped && (read.readKind === "deep" || read.kind === "deep" || read.deep) && read.lines.length < 3) read.omit = true;
   }
   if (Array.isArray(read.variants)) {
     read.variants = read.variants.map((line) => (typeof line === "string" ? safeChange(line, faceText(line, pool, direct).text) : line));
