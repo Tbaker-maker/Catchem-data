@@ -45,6 +45,12 @@ export async function syncPrivate(mode, { token = process.env.PRIVATE_DATA_TOKEN
       if (!existsSync(remoteDir)) return { ok: true, reason: "private repo has no ppp/ yet" };
       await mkdir(LOCAL, { recursive: true });
       await cp(remoteDir, LOCAL, { recursive: true });
+      const bandSrc = join(clone, "data/private/market-depth/comp-band.json");
+      if (existsSync(bandSrc)) {
+        const bandDst = join(ROOT, "data/private/market-depth/comp-band.json");
+        await mkdir(join(ROOT, "data/private/market-depth"), { recursive: true });
+        await cp(bandSrc, bandDst);
+      }
       return { ok: true, reason: "pulled ppp/" };
     }
     if (!existsSync(LOCAL)) return { ok: true, reason: "nothing to push" };

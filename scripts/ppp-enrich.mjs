@@ -14,7 +14,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { loadBudget, laneMeter, checkBudget, ledgerFor } from "./lib/ppp-budget.mjs";
 import { pppClient, loadKey, redactKey } from "./lib/ppp-client.mjs";
-import { deriveItem, SOURCE, POP_SOURCE, EUR_SOURCE, SOLD_WINDOW_DAYS } from "./lib/ppp-derive.mjs";
+import { deriveItem, SOURCE, POP_SOURCE, EUR_SOURCE, SOLD_WINDOW_DAYS, readCompBand, marketOnDate } from "./lib/ppp-derive.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const RAW = process.env.PPP_RAW_DIR || join(ROOT, "ppp-raw-private");
@@ -230,12 +230,42 @@ export async function runLanes({ client, budget, products, lanes, scale = 1, now
   return report;
 }
 
+// One market per product per day: the highest positive market that day, matching
+// loadProducts. Days with no row are absent. marketOnDate then uses the latest
+// day on or before the sale.
+export async function loadDatedMarkets(root = ROOT) {
+  const dir = join(root, "data/history/tcgcsv-daily");
+  const byId = new Map();
+  let files = [];
+  try { files = (await readdir(dir)).filter((n) => /^\d{4}-\d{2}-\d{2}\.json$/.test(n)).sort(); } catch { return byId; }
+  for (const f of files) {
+    const day = f.slice(0, 10);
+    const doc = await readJson(join(dir, f), null);
+    if (!Array.isArray(doc?.prices)) continue;
+    const seen = new Map();
+    for (const row of doc.prices) {
+      const id = Number(row?.id);
+      const market = Number(row?.market);
+      if (!id || !(market > 0)) continue;
+      const prev = seen.get(id);
+      if (prev == null || market > prev) seen.set(id, market);
+    }
+    for (const [id, market] of seen) {
+      if (!byId.has(id)) byId.set(id, []);
+      byId.get(id).push({ date: day, market });
+    }
+  }
+  return byId;
+}
+
 // Derived public files: one per pid bucket, keyed by our product id.
-export async function deriveAll({ products, asOf, now = Date.now() }) {
+// band null withholds raw comps and graded medians (fail closed).
+export async function deriveAll({ products, asOf, now = Date.now(), band = null, markets = null, rawDir = RAW, log = console.log }) {
   const byBucket = new Map();
-  const counts = { items: 0, sold: 0, soldSealed: 0, graded: 0, daily: 0, pop: 0, eur: 0 };
+  const counts = { items: 0, sold: 0, soldSealed: 0, graded: 0, daily: 0, pop: 0, eur: 0, withheld: 0 };
   const shardCache = new Map();
-  const get = async (kind, b) => { const k = `${kind}/${b}`; if (!shardCache.has(k)) shardCache.set(k, await loadShard(kind, b)); return shardCache.get(k); };
+  const get = async (kind, b) => { const k = `${kind}/${b}`; if (!shardCache.has(k)) shardCache.set(k, await loadShard(kind, b, rawDir)); return shardCache.get(k); };
+  if (!band) log("market-depth comp band is missing. Raw comps and graded medians are withheld.");
   for (const p of products) {
     const b = bucketOf(p.pid);
     const raw = {
@@ -245,8 +275,10 @@ export async function deriveAll({ products, asOf, now = Date.now() }) {
       detail: (await get("detail", b))[p.pid],
     };
     if (!raw.comps && !raw.volume && !raw.pop && !raw.detail) continue;
-    const item = deriveItem(raw, { asOf, kind: p.kind, name: p.name, market: p.market });
-    if (!item) continue;
+    const series = markets?.get(p.pid) || null;
+    const marketOn = series ? (day) => marketOnDate(series, day) : () => null;
+    const item = deriveItem(raw, { asOf, kind: p.kind, name: p.name, market: p.market, band, marketOn });
+    if (!item) { counts.withheld++; continue; }
     if (!byBucket.has(b)) byBucket.set(b, {});
     byBucket.get(b)[p.id] = item;
     counts.items++;
@@ -265,7 +297,7 @@ export async function deriveAll({ products, asOf, now = Date.now() }) {
     builtAt: new Date(now).toISOString(),
     soldWindowDays: SOLD_WINDOW_DAYS,
     sources: { sold: SOURCE, pop: POP_SOURCE, eur: EUR_SOURCE },
-    note: "Derived numbers only. Sold = eBay sold comps, raw copies, exact item, half-price/double filter applied. Listings counted elsewhere on the site are active listings, not sales.",
+    note: "Derived numbers only. Raw comps are the exact item, in USD, inside the private band around the TCGplayer market on the comp date. A low grade far above that market is withheld. Listings counted elsewhere on the site are active listings, not sales.",
     counts,
     buckets: [...byBucket.keys()].sort(),
   }, true);
@@ -292,7 +324,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       report.stats = client.stats;
     }
   }
-  const counts = await deriveAll({ products, asOf });
+  const band = readCompBand(await readJson(join(ROOT, "data/private/market-depth/comp-band.json"), null));
+  if (!band) {
+    console.error("market-depth comp band is missing. Raw comps and graded medians are withheld. No market-depth files were rewritten.");
+    process.exit(1);
+  }
+  const markets = await loadDatedMarkets();
+  const counts = await deriveAll({ products, asOf, band, markets });
   const ledgerPath = join(ROOT, "data/ppp/enrich-report.json");
   await writeJson(ledgerPath, { at: new Date().toISOString(), asOf, lanes: report, derived: counts }, true);
   console.log(JSON.stringify({ lanes: report, derived: counts }));
