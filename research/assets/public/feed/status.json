@@ -15,63 +15,63 @@
  "steps": [
   {
    "name": "TCGCSV day",
-   "file": "data/history/tcgcsv-daily/2026-11-12.json",
+   "file": "data/history/tcgcsv-daily/2026-11-13.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "eBay sealed prices",
    "file": "data/sealed-prices.json",
    "result": "file is present",
-   "detail": "2026-11-12T02:16:24.364Z"
+   "detail": "2026-11-13T20:12:31.676Z"
   },
   {
    "name": "Public counts",
    "file": "research/assets/public/counts.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "Reads",
    "file": "research/assets/public/reads.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "Movers",
    "file": "research/assets/public/movers.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "Accuracy",
    "file": "research/assets/public/accuracy.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "Track record",
    "file": "research/assets/public/track-record.json",
    "result": "file is present",
-   "detail": "2026-11-11"
+   "detail": "2026-11-12"
   },
   {
    "name": "Today",
    "file": "research/assets/public/today.json",
    "result": "file is present",
-   "detail": "2026-11-12"
+   "detail": "2026-11-13"
   },
   {
    "name": "PPT refresh",
    "file": "data/ppt/run-report.json",
-   "result": "file says calls.failed is 0",
-   "detail": "2026-11-12T02:47:43.680Z"
+   "result": "file says calls.failed is 2",
+   "detail": "2026-11-13T23:46:43.325Z"
   },
   {
    "name": "derived",
    "file": "data/heartbeat.json",
    "result": "time is in the file, pass or fail is not",
-   "detail": "2026-11-12T02:47:27.957Z"
+   "detail": "2026-11-13T23:46:29.937Z"
   },
   {
    "name": "cards",
@@ -95,22 +95,22 @@
    "name": "fetch",
    "file": "data/heartbeat.json",
    "result": "time is in the file, pass or fail is not",
-   "detail": "2026-11-12T02:14:19.462Z"
+   "detail": "2026-11-13T20:10:24.595Z"
   }
  ],
- "newestPriceDay": "2026-11-12",
- "lastFileTime": "2026-11-12T02:47:27.957Z",
- "lastFileTimePt": "2026-11-11 18:47 PT",
+ "newestPriceDay": "2026-11-13",
+ "lastFileTime": "2026-11-13T23:46:29.937Z",
+ "lastFileTimePt": "2026-11-13 15:46 PT",
  "lastFile": "data/heartbeat.json",
- "ebayUpdatedAt": "2026-11-12T02:16:24.364Z",
+ "ebayUpdatedAt": "2026-11-13T20:12:31.676Z",
  "counts": {
-  "items": 31164,
+  "items": 31165,
   "single": 28857,
-  "sealed": 2307,
+  "sealed": 2308,
   "slab": 0,
   "sets": 206,
-  "priced": 29853,
-  "artists": 391
+  "priced": 29866,
+  "artists": 410
  },
  "images": {
   "tcgplayer": true
