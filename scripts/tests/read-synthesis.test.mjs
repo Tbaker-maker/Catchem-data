@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -182,6 +182,31 @@ await rm(root, { recursive: true, force: true });
   t("reads.json keeps lead, title, signals and the closing point", reads[0].receipt.synth.lead === "high" && reads[0].receipt.synth.title === "T" && reads[0].receipt.synth.signals.length === 2 && reads[0].receipt.synth.now[1] === 5 && reads[0].receipt.synth.facts === SYNTH_FILE && reads[0].receipt.from === 1);
   t("reads without a synthesized receipt are untouched", reads[1] === plain);
   t("the pointer is smaller than the full receipt", JSON.stringify(reads[0]).length < JSON.stringify(big).length);
+}
+
+{
+  const start = "2026-10-13";
+  const end = "2026-11-12";
+  const cases = [
+    ["deep-set-xy-roaring-skies", "TCGplayer market, Nov 12, 2025 to Nov 12; sets.json; rotation-status.json Aug 24", "TCGplayer market, 2026-10-13 and 2026-11-12; sets.json; rotation-status.json Aug 24"],
+    ["backto-tcgcsv-534493", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-04-29 and 2026-11-12", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-10-13 and 2026-11-12"],
+    ["deep-irlife-2026-11-12", "TCGplayer market, buckets and hist-long, Nov 12; method from the Catch'em IR study", "TCGplayer market, buckets and hist-long, 2026-10-13 and 2026-11-12; method from the Catch'em IR study"],
+    ["release-cycle-sv-prismatic-evolutions", "sets.json; TCGplayer market, Jan 17, 2025 to Nov 12", "sets.json; TCGplayer market, 2026-10-13 and 2026-11-12"],
+  ];
+  for (const [id, source, want] of cases) {
+    t(`${id} source keeps every clause`, retargetMarketSpan(source, start, end) === want);
+  }
+  const gain = compose(
+    { title: "Card", kind: "single" },
+    [
+      { tag: "drop", type: "dropdown", score: 50, window: 7, text: "Down 20% in one week: Card went from $10 on Nov 5 to $8 on Nov 12.", short: "Down 20% in one week." },
+      { tag: "trend", type: "trend30up", score: 8, window: 30, text: "Up 40% over 30 days: Card went from $5 on Oct 13 to $8 on Nov 12.", short: "Up 40% over 30 days." },
+    ],
+    { maxOpeningShare: 0.5, minSignals: 1, weights: { kind: 1 } },
+    null,
+  );
+  t("a one-week drop does not lead a gain read", gain && gain.lead.tag === "trend" && gain.lead.type === "trend30up");
+  t("a drop finding has a direction", findingDir({ tag: "drop", type: "dropdown" }) === -1 && findingDir({ tag: "drop", type: "dropup" }) === 1);
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
