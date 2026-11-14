@@ -188,12 +188,15 @@ await rm(root, { recursive: true, force: true });
   const start = "2026-10-13";
   const end = "2026-11-12";
   const cases = [
-    ["deep-set-xy-roaring-skies", "TCGplayer market, Nov 12, 2025 to Nov 12; sets.json; rotation-status.json Aug 24", "TCGplayer market, 2026-10-13 and 2026-11-12; sets.json; rotation-status.json Aug 24"],
-    ["backto-tcgcsv-534493", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-04-29 and 2026-11-12", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-10-13 and 2026-11-12"],
-    ["deep-irlife-2026-11-12", "TCGplayer market, buckets and hist-long, Nov 12; method from the Catch'em IR study", "TCGplayer market, buckets and hist-long, 2026-10-13 and 2026-11-12; method from the Catch'em IR study"],
-    ["release-cycle-sv-prismatic-evolutions", "sets.json; TCGplayer market, Jan 17, 2025 to Nov 12", "sets.json; TCGplayer market, 2026-10-13 and 2026-11-12"],
+    ["deep-set-xy-roaring-skies", "TCGplayer market, Nov 13, 2025 to Nov 13; sets.json; rotation-status.json Aug 24", "TCGplayer market, 2026-10-13 and 2026-11-12; sets.json; rotation-status.json Aug 24"],
+    ["high-tcgcsv-98141", "TCGplayer market (tcgcsv daily archive and our nightly days), 2024-02-08 and 2026-11-13", "TCGplayer market (tcgcsv daily archive and our nightly days), 2026-10-13 and 2026-11-12"],
+    ["deep-irlife-2026-11-13", "TCGplayer market, buckets and hist-long, Nov 13; method from the Catch'em IR study", "TCGplayer market, buckets and hist-long, 2026-10-13 and 2026-11-12; method from the Catch'em IR study"],
+    ["release-cycle-sv-prismatic-evolutions", "sets.json; TCGplayer market, Jan 17, 2025 to Nov 13", "sets.json; TCGplayer market, 2026-10-13 and 2026-11-12"],
   ];
+  const published = JSON.parse(readFileSync(new URL("../../research/assets/public/reads.json", import.meta.url), "utf8"));
+  const byId = new Map((published.reads || []).map((row) => [row.id, row.source]));
   for (const [id, source, want] of cases) {
+    t(`${id} source is the published line`, byId.get(id) === source);
     t(`${id} source keeps every clause`, retargetMarketSpan(source, start, end) === want);
   }
   const gain = compose(
