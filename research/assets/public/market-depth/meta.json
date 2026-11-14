@@ -1,21 +1,22 @@
 {
  "asOf": "2026-11-14",
- "builtAt": "2026-11-14T08:13:02.138Z",
+ "builtAt": "2026-11-14T20:00:00.000Z",
  "soldWindowDays": 90,
  "sources": {
   "sold": "eBay sold comps via PkmnPrices",
   "pop": "PSA, BGS, CGC and SGC population reports via PkmnPrices (GemRate)",
   "eur": "Cardmarket via PkmnPrices"
  },
- "note": "Derived numbers only. Sold = eBay sold comps, raw copies, exact item, half-price/double filter applied. Listings counted elsewhere on the site are active listings, not sales.",
+ "note": "Derived numbers only. Raw comps are the exact item, in USD, inside the private band around the TCGplayer market on the comp date. A low grade far above that market is withheld. Listings counted elsewhere on the site are active listings, not sales.",
  "counts": {
   "items": 1305,
-  "sold": 199,
+  "sold": 171,
   "soldSealed": 0,
-  "graded": 224,
+  "graded": 219,
   "daily": 46,
   "pop": 1093,
-  "eur": 745
+  "eur": 747,
+  "withheld": 191
  },
  "buckets": [
   "00",
