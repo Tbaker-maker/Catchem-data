@@ -539,10 +539,12 @@ export function biggestYear(cards, { asOf, sets }) {
     if (rows.length < 3) continue;
     rows.sort((x, y) => y.ch - x.ch);
     const top = rows.slice(0, 3);
+    const cardLines = top.map((r, i) => `${i + 1}. ${cardTitle(r.c)}: ${usd(r.a)} to ${usd(r.z)}, ${sgn(r.ch)}.`);
+    const foot = `${dateLabel(addDays(asOf, -365), asOf)} to ${monthDay(asOf)}, TCGplayer market. Cards priced $5 or more a year ago that gained $5 or more.`;
     const rr = row("bigyear", label, label, `Biggest year in ${label}: ${cardTitle(top[0].c)} went ${usd(top[0].a)} to ${usd(top[0].z)}.`, [
-      ...top.map((r, i) => `${i + 1}. ${cardTitle(r.c)}: ${usd(r.a)} to ${usd(r.z)}, ${sgn(r.ch)}.`),
-      `${dateLabel(addDays(asOf, -365), asOf)} to ${monthDay(asOf)}, TCGplayer market. Cards priced $5 or more a year ago that gained $5 or more.`,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { chart: { label: "1-year change, %", bars: top.map((r) => [barLabel(r.c, 18), Math.round(r.ch)]) }, startDate: addDays(asOf, -365), endDate: asOf });
+      ...cardLines,
+      foot,
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { chart: { label: "1-year change, %", bars: top.map((r) => [barLabel(r.c, 18), Math.round(r.ch)]) }, startDate: addDays(asOf, -365), endDate: asOf, lineIds: [...top.map((r) => r.c.id), ""] });
     if (rr) out.push(rr);
   }
   return out;

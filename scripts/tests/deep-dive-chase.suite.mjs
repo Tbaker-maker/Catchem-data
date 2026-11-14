@@ -1,7 +1,8 @@
 // Set deep dives: the chase basket is the set's top-priced fresh singles, a
 // pricier stale card flags the basket as partial, and any move compares the
 // same cards with real prices on both dates.
-import { chaseBasket, windowMove, setDeepDives, repairSetDive, diveCoversNamed, scrubCutoff } from "../lib/deep-reads.mjs";
+import { chaseBasket, windowMove, setDeepDives, repairSetDive, diveCoversNamed, scrubCutoff, biggestYear } from "../lib/deep-reads.mjs";
+import { chaseLists } from "../lib/deep-reads-2.mjs";
 
 export async function run() {
   let fail = 0;
@@ -45,5 +46,19 @@ export async function run() {
   t("a repaired dive does not publish a one-point chart", fixed.row.chart == null);
   t("cutoff wording comes out of a public line", scrubCutoff("6 of 6 fell at least 3%, median -20%.") === "6 of 6 fell, median -20%.");
   t("a rise hit line drops the cutoff without a broken of", scrubCutoff("A hit is a later rise of at least 3% that also beats the market median.") === "A hit is a later rise that also beats the market median.");
+  const yearDay = "2026-11-12";
+  const yearAgoDay = "2025-11-12";
+  const sets = { sets: [{ slug: "col1", era: "HeartGold & SoulSilver" }] };
+  const face = (id, name, number, a, z) => ({ id, name, number, set: "Call of Legends", setSlug: "col1", rarity: "Rare Holo", pts: [[yearAgoDay, a], [yearDay, z]] });
+  const year = biggestYear([
+    face("tcgcsv-84758", "Deoxys (Shiny)", "SL1", 200, 850),
+    face("tcgcsv-84757", "Deoxys", "2/95", 40, 60),
+    face("tcgcsv-85274", "Entei (Shiny)", "SL3", 70, 200),
+  ], { asOf: yearDay, sets });
+  const hgss = year.find((r) => r.id.includes("hgss") || /HeartGold/.test(r.name || ""));
+  t("biggest year lines carry each card id", hgss && hgss.lineIds[0] === "tcgcsv-84758" && hgss.lineIds[1] === "tcgcsv-85274" && hgss.lineIds[2] === "tcgcsv-84757" && hgss.lineIds[3] === "" && hgss.lines[0].includes("(Shiny)") && hgss.lines[0].includes("SL1") && !hgss.lines[0].includes("2/95"));
+  const chaseCards = [1, 2, 3, 4, 5].map((i) => ({ id: `tcgcsv-${i}`, name: `Mon ${i}`, number: `${i}/100`, set: "Call of Legends", setSlug: "col1", rarity: "Rare Holo", release: "2010-02-01", pts: [[yearAgoDay, 10 + i], [yearDay, 20 + i]] }));
+  const chase = chaseLists(chaseCards, () => [], { asOf: yearDay, max: 5 });
+  t("chase lines carry each card id", chase.length === 1 && chase[0].lineIds.slice(0, 5).join() === "tcgcsv-5,tcgcsv-4,tcgcsv-3,tcgcsv-2,tcgcsv-1" && chase[0].lineIds[5] === "" && chase[0].lines[0].includes("5/100") && chase[0].lines[4].includes("1/100"));
   return fail;
 }

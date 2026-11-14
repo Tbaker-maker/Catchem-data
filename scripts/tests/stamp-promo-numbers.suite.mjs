@@ -113,12 +113,18 @@ export async function run() {
   t("Deoxys SL1 stays the shiny card", year.lines[0].includes("SL1") && !year.lines[0].includes("2/95") && ids(year.lineCards?.[0]).join() === "tcgcsv-84758");
   t("Deoxys 2/95 stays the plain card", year.lines[1].includes("2/95") && !year.lines[1].includes("SL1") && ids(year.lineCards?.[1]).join() === "tcgcsv-84757");
   t("a line with no matched card is dropped", year.lines.every((line) => !line.includes("Mewtwo")) && year.lines.length === 3);
-  t("Entei SL3 links the shiny card", year.lines[2].includes("SL3") && ids(year.lineCards?.[2]).join() === "tcgcsv-85274");
+  t("Entei SL3 links the shiny card", year.lines[2].startsWith("3. ") && year.lines[2].includes("SL3") && ids(year.lineCards?.[2]).join() === "tcgcsv-85274");
+  const apart = stampRead({ id: "deep-bigyear-hgss", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Biggest year.", lineIds: ["tcgcsv-84758", "tcgcsv-84757", "tcgcsv-85274"], lines: [
+    "1. Deoxys (Call of Legends): $144.17 to $850.00, up 490%.",
+    "2. Deoxys (Call of Legends): $10.00 to $60.59, up 506%.",
+    "3. Entei (Call of Legends): $67.84 to $290.00, up 327%.",
+  ] }, index(legends), images);
+  t("carried card ids keep shiny Deoxys off the plain card", ids(apart.lineCards?.[0]).join() === "tcgcsv-84758" && apart.lines[0].includes("SL1") && !apart.lines[0].includes("2/95") && ids(apart.lineCards?.[1]).join() === "tcgcsv-84757" && apart.lines[1].includes("2/95") && ids(apart.lineCards?.[2]).join() === "tcgcsv-85274");
   const mixed = stampRead({ id: "deep-bigyear-hgss", deep: "bigyear", readKind: "deep", name: "HGSS", headline: "Biggest year.", lines: [
     "1. Deoxys (Call of Legends) 2/95 SL1: $144.17 to $850.00, up 490%.",
     "2. Gyarados (Call of Legends) 7/95: $26.95 to $132.18, up 390%.",
   ] }, index([...legends, card(85999, "Gyarados", "7/95", "Call of Legends")]), images);
-  t("a line with two collector numbers is dropped", mixed.lines.length === 1 && mixed.lines[0].includes("Gyarados") && ids(mixed.lineCards?.[0]).join() === "tcgcsv-85999");
+  t("a deep read under 3 lines is dropped", mixed.omit === true && mixed.lines.length < 3);
   return fail;
 }
 
