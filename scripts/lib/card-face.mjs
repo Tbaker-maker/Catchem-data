@@ -25,7 +25,7 @@ function shortSet(set) {
     .trim();
 }
 
-const VARIANT_TAG = /^(?:special illustration rare|illustration rare|tag team \(alternate art\)|alternate art|alternate full art|trainer gallery|galarian gallery|full art|secret rare|delta species|cosmos holo|cracked ice holo|poke ball pattern|pok[eé] ball pattern|master ball pattern|team plasma)$/i;
+const VARIANT_TAG = /^(?:special illustration rare|illustration rare|tag team \(alternate art\)|alternate art|alternate full art|trainer gallery|galarian gallery|full art|secret rare|delta species|cosmos holo|cracked ice holo|poke ball pattern|pok[eé] ball pattern|master ball pattern|team plasma|shiny)$/i;
 
 const CATCH_ALL_SET = /^miscellaneous cards(?: & | and )products$/i;
 

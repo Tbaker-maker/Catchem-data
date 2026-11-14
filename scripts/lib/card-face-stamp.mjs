@@ -333,6 +333,33 @@ function picture(card, images) {
   return url;
 }
 
+function moneyHits(text) {
+  return (String(text || "").match(/\$\d/g) || []).length;
+}
+
+function collectorNums(text) {
+  const out = [];
+  const re = /(?:^|[^A-Za-z0-9/])([A-Z]*\d+[a-z]?\/[A-Z]*\d+|[A-Z]{1,5}\d+[a-z]?)(?![\w/])/g;
+  let m;
+  while ((m = re.exec(String(text || "")))) out.push(m[1]);
+  return [...new Set(out)];
+}
+
+// One priced card, not a "top cards" list. Zero matches, or two collector
+// numbers on that one name, is not a card. The line is removed, not left blank.
+function dropUnmatchedCardLine(text, cards) {
+  if (typeof text !== "string") return false;
+  const trimmed = text.trim();
+  if (/^Top cards tonight/i.test(trimmed)) return false;
+  if (moneyHits(text) >= 3) return false;
+  const nums = collectorNums(text);
+  if (!nums.length || !/\$\d/.test(text)) return false;
+  if ((cards || []).length >= 2) return false;
+  if (cards?.length === 1 && nums.length === 1) return false;
+  if (/^\d+\.\s/.test(trimmed) || nums.length > 1) return true;
+  return false;
+}
+
 function dollars(text, asOf, tonight) {
   const out = [];
   const ask = /eBay asks \(\$([\d,]+(?:\.\d{2})?)\)/g;
@@ -395,7 +422,18 @@ export function stampRead(read, index, images) {
       lineCards.push({ text: faced.text, cards });
       return safeChange(line, faced.text);
     });
-    if (lineCards.some((row) => row.cards.length)) read.lineCards = lineCards;
+    const keptLines = [];
+    const keptCards = [];
+    for (let i = 0; i < read.lines.length; i += 1) {
+      const line = read.lines[i];
+      const row = lineCards[i] || { text: line, cards: [] };
+      if (dropUnmatchedCardLine(line, row.cards)) continue;
+      keptLines.push(line);
+      keptCards.push(row);
+    }
+    read.lines = keptLines;
+    if (keptCards.some((row) => row.cards.length)) read.lineCards = keptCards;
+    else if (read.lineCards) delete read.lineCards;
   }
   if (Array.isArray(read.variants)) {
     read.variants = read.variants.map((line) => (typeof line === "string" ? safeChange(line, faceText(line, pool, direct).text) : line));
