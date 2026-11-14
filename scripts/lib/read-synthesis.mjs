@@ -39,7 +39,7 @@ const DASH = /[\u2014\u2013]/;
 const SOLD = /\b(?:sold|sales)\b/i;
 const CONDITION = /\b(?:NM|Near Mint|LP|Lightly Played|MP|Moderately Played|HP|Heavily Played|DMG|Damaged)\b/;
 const WINDOWS = [7, 30, 90, 365];
-const NUM_KEYS = ["maxOpeningShare", "minSignals", "ebayMinListings", "listingsMinN", "listingsMinChangePct", "spreadMinPct", "peerMinN", "peerMinGapPts", "nearHighPct", "drawdownMinPct", "streakMinWeeks", "divergenceMinPct", "longMinDays", "minTrendUsd", "peerMinPrice"];
+const NUM_KEYS = ["maxOpeningShare", "minSignals", "ebayMinListings", "listingsMinN", "listingsMinChangePct", "spreadMinPct", "peerMinN", "peerMinGapPts", "nearHighPct", "drawdownMinPct", "streakMinWeeks", "streakWeekUsd", "divergenceMinPct", "longMinDays", "minTrendUsd", "peerMinPrice"];
 const WEIGHT_KEYS = ["high", "low", "nearHigh", "drawdown", "trend", "divergence", "streak", "peers", "listings", "spread", "kind"];
 // Reads that are one product's own price story. Multi card and set wide reads keep their own copy.
 const ITEM_KINDS = new Set(["year", "backto", "high", "low", "plain", "year-range", "year-ago", "streak", "single", "sealed", "season", "turned", "deep"]);
@@ -153,16 +153,46 @@ function changeAt(pts, asOf, days, cfg) {
   return { days: span, asked: days, from: p, to: last, pct: pct(p[1], last[1]) };
 }
 
-function weeklyStreak(pts, asOf) {
+function weekSamples(pts, asOf) {
   const weeks = [];
-  for (let k = 0; k <= 12; k += 1) { const p = nearestPoint(pts, addDays(asOf, -7 * k), 3); if (!p) break; weeks.push(p); }
+  for (let k = 0; k <= 12; k += 1) {
+    const p = nearestPoint(pts, addDays(asOf, -7 * k), 3);
+    if (!p) break;
+    weeks.push(p);
+  }
+  return weeks;
+}
+
+// A week counts only when the price moved by at least the private floor.
+// A smaller move is noise, and it ends the run. It is not another down week.
+function weeklyStreak(pts, asOf, minMove) {
+  const weeks = weekSamples(pts, asOf);
+  const floor = Number(minMove);
+  if (!(floor > 0)) return null;
   let n = 0; let dir = 0;
   for (let i = 0; i + 1 < weeks.length; i += 1) {
-    const d = Math.sign(weeks[i][1] - weeks[i + 1][1]);
+    const delta = weeks[i][1] - weeks[i + 1][1];
+    if (!(Math.abs(delta) >= floor)) break;
+    const d = Math.sign(delta);
     if (!d || (dir && d !== dir)) break;
     dir = d; n += 1;
   }
   return n ? { n, dir, from: weeks[n], to: weeks[0] } : null;
+}
+
+// Flat samples plus one real week. Not a streak. The sentence is that one move.
+function oneStep(pts, asOf, minMove) {
+  const weeks = weekSamples(pts, asOf);
+  const floor = Number(minMove);
+  if (!(floor > 0) || weeks.length < 2) return null;
+  const moves = [];
+  for (let i = 0; i + 1 < weeks.length; i += 1) {
+    const delta = weeks[i][1] - weeks[i + 1][1];
+    if (Math.abs(delta) >= floor) moves.push({ from: weeks[i + 1], to: weeks[i] });
+  }
+  if (moves.length !== 1) return null;
+  const m = moves[0];
+  return { dir: Math.sign(m.to[1] - m.from[1]), from: m.from, to: m.to, usd: Math.abs(m.to[1] - m.from[1]) };
 }
 
 function movedDays(pts, asOf) {
@@ -228,10 +258,19 @@ export function findings(item, ctx, cfg) {
       short: `${move.pct >= 0 ? "Up" : "Down"} ${r0(move.pct)}% over ${over}, to ${usd(last[1])} on ${monthDay(asOf)}.` });
   }
   // Weekly streak and how often it moved
-  const st = weeklyStreak(pts, asOf);
+  const st = weeklyStreak(pts, asOf, cfg.streakWeekUsd);
   if (st && st.n >= cfg.streakMinWeeks && Math.abs(st.to[1] - st.from[1]) >= cfg.minTrendUsd) {
     out.push({ tag: "streak", type: `streak${st.dir > 0 ? "up" : "down"}`, score: cfg.weights.streak * st.n, nums: { st },
       text: `${st.dir > 0 ? "Higher" : "Lower"} for ${st.n} weeks running: ${title} moved from ${at(st.from, asOf)} to ${usd(st.to[1])} on ${monthDay(asOf)}.`, short: `It has closed ${st.dir > 0 ? "higher" : "lower"} ${st.n} weeks running, from ${at(st.from, asOf)}.` });
+  } else {
+    const step = oneStep(pts, asOf, cfg.streakWeekUsd);
+    if (step && step.usd >= cfg.minTrendUsd) {
+      const down = step.dir < 0;
+      const pctStep = r0(pct(step.from[1], step.to[1]));
+      out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.streak * 2, nums: { step },
+        text: `${down ? "Down" : "Up"} ${pctStep}% in one week: ${title} went from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.`,
+        short: `${down ? "Down" : "Up"} ${pctStep}% in one week, from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.` });
+    }
   }
   const mv = movedDays(pts, asOf);
   if (mv) out.push({ tag: "activity", type: "activity", window: 30, score: 0, nums: { mv }, text: `The price changed on ${mv.moved} of the last ${mv.of} days on file.`, short: `The price changed on ${mv.moved} of the last ${mv.of} days on file.` });
@@ -457,7 +496,10 @@ export function itemOf(read, ctx) {
   if (!title) return null;
   const kind = String(read.readKind || read.kind || "");
   const own = HIST_KINDS.has(kind) ? "" : firstSentence(read.headline);
-  return { id: read.sku, pts, title, asOf: read.asOf, set: row.set || read.set || "", setSlug: row.setSlug || "", release: String(row.release || ctx.setRel.get(row.setSlug) || "").slice(0, 10), sealed, kind: kind === "deep" ? `deep:${read.deep}` : kind, kindLine: own && !CONDITION.test(own) ? own : "" };
+  // A "weeks running" sentence is a price finding, not the read's own kind.
+  // Keeping it here would republish a streak the week floor just rejected.
+  const kindLine = own && !CONDITION.test(own) && !/weeks running/.test(own) ? own : "";
+  return { id: read.sku, pts, title, asOf: read.asOf, set: row.set || read.set || "", setSlug: row.setSlug || "", release: String(row.release || ctx.setRel.get(row.setSlug) || "").slice(0, 10), sealed, kind: kind === "deep" ? `deep:${read.deep}` : kind, kindLine };
 }
 
 
@@ -643,6 +685,11 @@ export function synthesizeReads(reads, ctx, cfg) {
       if (ends && windowDays) {
         next.startDate = ends.startDate;
         next.endDate = ends.endDate;
+        // The hist gate keeps a rewrite only when source names startDate.
+        // A new lead window has to say that date, or the old headline stays.
+        if (typeof next.source === "string" && next.source.includes(",")) {
+          next.source = next.source.replace(/, [^,]+$/, `, ${ends.startDate} and ${ends.endDate}`);
+        }
       }
     }
     if (windowDays) next = alignToWindow(next, windowDays, lead);
