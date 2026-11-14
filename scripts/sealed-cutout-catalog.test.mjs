@@ -4,7 +4,7 @@
 import { readFile, access } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { showableProducts, productTypeOf, nameAgrees, FEED_MUST, judgeCut } from "./lib/sealed-cutouts.mjs";
+import { showableProducts, productTypeOf, nameAgrees, FEED_MUST, judgeCut, uncoveredCutouts } from "./lib/sealed-cutouts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -68,6 +68,23 @@ export async function run() {
   t("a blocked cutout is not shipped", leaked.length === 0);
 
   t("a tiny source names its reason", judgeCut({ tiny: true }).join(",") === "source photo is too small");
+  const uncovered = uncoveredCutouts(
+    [{ id: "tcgcsv-1", name: "Example Blister", tcgPlayerId: 1 }, { id: "tcgcsv-2", name: "Kept Box" }],
+    [{ id: "tcgcsv-2", pass: true, file: "cutouts/tcgcsv-2.webp", png: "cutouts/tcgcsv-2.png" }],
+    [],
+    "no scale file, so no cutout was built",
+  );
+  t("a new showable id is blocked with the true reason and a pass is left alone", uncovered.rows.length === 1 && uncovered.rows[0].id === "tcgcsv-1" && uncovered.rows[0].pass === false && !uncovered.rows[0].file && uncovered.notes[0].reason === "no scale file, so no cutout was built" && uncovered.notes[0].kept === "not shipped");
+  const feed = await readFile(join(ROOT, "scripts/build-feed.mjs"), "utf8");
+  t("the feed build covers a new showable sealed id", feed.includes("ensureShowableCutouts"));
+  for (const id of ["tcgcsv-206029", "tcgcsv-625582", "tcgcsv-626630"]) {
+    const row = byId.get(id);
+    const note = why.get(id);
+    t(
+      id + " blister stays blocked: no traced cutout build",
+      row && row.pass === false && row.productType === "blister" && !row.file && !row.png && note && note.reason === "no traced cutout build" && note.kept === "not shipped",
+    );
+  }
   const sample = { name: "Delta Reign Sleeved Booster Pack", subtype: "booster-pack" };
   t("a sleeved name wins over a pack subtype", productTypeOf(sample) === "sleeved-pack" && nameAgrees(sample.name, "sleeved-pack"));
   t("decks plural is a deck", productTypeOf({ name: "Legendary Battle Decks [Lugia]" }) === "deck");
