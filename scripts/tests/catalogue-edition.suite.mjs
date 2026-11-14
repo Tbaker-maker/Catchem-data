@@ -34,6 +34,11 @@ export async function run() {
   t("only 50% on the newest day is a partial fetch", partial.status === "partial" && partial.pct === 50);
   const mostly = catalogue(20, (i) => (i < 16 ? "2026-11-12" : "2026-11-10"));
   t("80% on the newest day is ok", catalogueEditionFreshness(mostly, noonOn("2026-11-12")).status === "ok");
+  const late = Date.parse("2026-11-13T18:39:00Z");
+  const yesterday = catalogueEditionFreshness(catalogue(20, "2026-11-12"), late);
+  t("lastSeen yesterday at 18:39Z is one calendar day, not stale", yesterday.status === "ok" && yesterday.ageDays === 1 && yesterday.newest === "2026-11-12");
+  const twoDays = catalogueEditionFreshness(catalogue(20, "2026-11-11"), late);
+  t("lastSeen two calendar days earlier is stale", twoDays.status === "stale" && twoDays.ageDays === 2);
 
   const pulse = await readFile(join(ROOT, "scripts/generate-pulse.mjs"), "utf8");
   t("pulse checks catalogue freshness before writing", pulse.includes("catalogueEditionFreshness"));

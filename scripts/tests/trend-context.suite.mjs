@@ -112,6 +112,24 @@ export async function run() {
   t("a count field named up is not a list of items", itemIds({ sku: "tcgcsv-1", receipt: { up: 6 } }).join() === "tcgcsv-1");
   const once = applyTrend(reads, series, "2026-10-13");
   t("one line on the lead read", once.reads[0].trend === climbed.line && once.reads[0].lines.at(-1) === climbed.line && once.reads[0].lines[0] === "Already here.");
+  const full = applyTrend([{
+    id: "deep-card-tcgcsv-86916",
+    sku: "tcgcsv-1",
+    readKind: "deep",
+    deep: "card",
+    asOf: "2026-10-13",
+    lines: ["1.", "2.", "3.", "4.", "5.", "6."],
+  }], series, "2026-10-13");
+  t("a 6 line card story does not grow a 7th trend line", full.reads[0].lines.length === 6 && full.reads[0].lines.join("|") === "1.|2.|3.|4.|5.|6." && !full.reads[0].trend);
+  const room = applyTrend([{
+    id: "deep-card-room",
+    sku: "tcgcsv-1",
+    readKind: "deep",
+    deep: "card",
+    asOf: "2026-10-13",
+    lines: ["1.", "2.", "3.", "4.", "5."],
+  }], series, "2026-10-13");
+  t("a 5 line card story still gains the trend line", room.reads[0].lines.length === 6 && room.reads[0].lines.at(-1) === climbed.line);
   t("a small move is left off", !once.reads[1].trend);
   const twice = applyTrend(once.reads, series, "2026-10-13");
   t("a second pass does not repeat the line", twice.reads[0].lines.filter((row) => row === climbed.line).length === 1);

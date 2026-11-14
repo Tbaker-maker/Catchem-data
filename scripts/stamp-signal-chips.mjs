@@ -36,20 +36,25 @@ async function readJson(path) {
   try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
 }
 
-async function loadRules() {
-  const direct = process.env.SIGNAL_RULES || "";
+export async function loadRules(opts = {}) {
+  const env = opts.env || process.env;
+  const direct = env.SIGNAL_RULES || "";
   if (direct) {
     const doc = await readJson(direct);
     if (!doc) throw new Error("signal rules file was not readable");
-    const extra = process.env.SIGNAL_STRENGTH ? await readJson(process.env.SIGNAL_STRENGTH) : null;
+    const extra = env.SIGNAL_STRENGTH ? await readJson(env.SIGNAL_STRENGTH) : null;
     if (extra) doc.strength = extra;
     return doc;
   }
-  const store = await openPrivate({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
+  const store = opts.store || await openPrivate({ root: opts.root || ROOT, token: env.PRIVATE_DATA_TOKEN || "" });
   try {
     const doc = await readJson(join(store.dir, "signal-chips/thresholds.json"));
     if (!doc) {
-      console.log("signal chips: rules file is not in the private store, so no chips were written");
+      if (env.DRESS_REHEARSAL === "1") {
+        console.log("signal chips: rules file is missing. Dress rehearsal is on, so private cuts are not applied.");
+        return {};
+      }
+      console.log("signal chips: rules file is missing, so chips are not stamped.");
       return null;
     }
     const extra = await readJson(join(store.dir, "signal-chips/strength.json"));
@@ -455,7 +460,5 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
   const rules = await loadRules();
-  if (rules) {
-    await stampSignalChips({ rules, writeReads: process.env.SIGNAL_STAMP_READS === "1" });
-  }
+  if (rules) await stampSignalChips({ rules, writeReads: process.env.SIGNAL_STAMP_READS === "1" });
 }
