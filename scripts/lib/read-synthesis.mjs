@@ -40,7 +40,7 @@ const SOLD = /\b(?:sold|sales)\b/i;
 const CONDITION = /\b(?:NM|Near Mint|LP|Lightly Played|MP|Moderately Played|HP|Heavily Played|DMG|Damaged)\b/;
 const WINDOWS = [7, 30, 90, 365];
 const NUM_KEYS = ["maxOpeningShare", "minSignals", "ebayMinListings", "listingsMinN", "listingsMinChangePct", "spreadMinPct", "peerMinN", "peerMinGapPts", "nearHighPct", "drawdownMinPct", "streakMinWeeks", "streakWeekUsd", "divergenceMinPct", "longMinDays", "minTrendUsd", "peerMinPrice"];
-const WEIGHT_KEYS = ["high", "low", "nearHigh", "drawdown", "trend", "divergence", "streak", "peers", "listings", "spread", "kind"];
+const WEIGHT_KEYS = ["high", "low", "nearHigh", "drawdown", "trend", "divergence", "streak", "drop", "peers", "listings", "spread", "kind"];
 // Reads that are one product's own price story. Multi card and set wide reads keep their own copy.
 const ITEM_KINDS = new Set(["year", "backto", "high", "low", "plain", "year-range", "year-ago", "streak", "single", "sealed", "season", "turned", "deep"]);
 const DEEP_ITEM = new Set(["card", "recovery", "slump", "sealedrating", "singlesvssealed"]);
@@ -180,19 +180,14 @@ function weeklyStreak(pts, asOf, minMove) {
   return n ? { n, dir, from: weeks[n], to: weeks[0] } : null;
 }
 
-// Flat samples plus one real week. Not a streak. The sentence is that one move.
+// One real move, and only the latest week. An older sample is not "in one week".
 function oneStep(pts, asOf, minMove) {
   const weeks = weekSamples(pts, asOf);
   const floor = Number(minMove);
   if (!(floor > 0) || weeks.length < 2) return null;
-  const moves = [];
-  for (let i = 0; i + 1 < weeks.length; i += 1) {
-    const delta = weeks[i][1] - weeks[i + 1][1];
-    if (Math.abs(delta) >= floor) moves.push({ from: weeks[i + 1], to: weeks[i] });
-  }
-  if (moves.length !== 1) return null;
-  const m = moves[0];
-  return { dir: Math.sign(m.to[1] - m.from[1]), from: m.from, to: m.to, usd: Math.abs(m.to[1] - m.from[1]) };
+  const delta = weeks[0][1] - weeks[1][1];
+  if (!(Math.abs(delta) >= floor)) return null;
+  return { dir: Math.sign(delta), from: weeks[1], to: weeks[0], usd: Math.abs(delta) };
 }
 
 function movedDays(pts, asOf) {
@@ -267,7 +262,7 @@ export function findings(item, ctx, cfg) {
     if (step && step.usd >= cfg.minTrendUsd) {
       const down = step.dir < 0;
       const pctStep = r0(pct(step.from[1], step.to[1]));
-      out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.streak * 2, nums: { step },
+      out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.drop, nums: { step },
         text: `${down ? "Down" : "Up"} ${pctStep}% in one week: ${title} went from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.`,
         short: `${down ? "Down" : "Up"} ${pctStep}% in one week, from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.` });
     }

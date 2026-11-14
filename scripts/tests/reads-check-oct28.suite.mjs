@@ -54,7 +54,7 @@ export async function run() {
     spikeRatio: 1.6, baselineSpikeRatio: 1.12, neighborBand: 0.1,
     trendMinPct: { 7: 3, 30: 3, 90: 5, 365: 5 },
     slackDays: { 7: 2, 30: 3, 90: 5, 365: 7 },
-    weights: { high: 3, low: 3, nearHigh: 2, drawdown: 2, trend: 2, divergence: 2, streak: 2, peers: 1, listings: 1, spread: 1, kind: 1 },
+    weights: { high: 3, low: 3, nearHigh: 2, drawdown: 2, trend: 2, divergence: 2, streak: 2, drop: 4, peers: 1, listings: 1, spread: 1, kind: 1 },
   });
   const etbPts = [
     ["2026-09-26", 146.84],
