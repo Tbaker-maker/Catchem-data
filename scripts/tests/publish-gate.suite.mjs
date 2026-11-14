@@ -1,5 +1,5 @@
 // Publish gate and the Oct 19 reads check bugs. Made up numbers only.
-import { checkRead, gateReads, checkMeter } from "../lib/publish-gate.mjs";
+import { checkRead, gateReads, checkMeter, refuseMissingBoard } from "../lib/publish-gate.mjs";
 import { staleOneStep } from "../lib/read-quality.mjs";
 import { backToRead } from "../lib/history-reads.mjs";
 import { sealedGapDeep, cardStories } from "../lib/deep-reads.mjs";
@@ -35,6 +35,11 @@ export async function run() {
   t("a data tile keeps the read", !rule({ ...base, kind: "single", price: 10, href: "/c/tcgcsv-2" }, { chips: { x: { tiles: { data: { bars: 3, of: 5 } } } } }).includes("tiles"));
   t("price being checked is not required to have tiles", !rule({ ...base, kind: "single", price: 10, href: "/c/tcgcsv-3", headline: "Price being checked." }, { chips: {} }).includes("tiles"));
   t("an unpriced deep read is not required to have tiles", !rule({ ...base, kind: "deep" }, { chips: {} }).includes("tiles"));
+  t("a new read kind stays private", rule({ ...base, kind: "sold-gap", readKind: "sold-gap", headline: "A private pathway fact." }).includes("kind"));
+  t("tiles do not publish a new read kind", rule({ ...base, kind: "sold-gap", readKind: "sold-gap", price: 10, href: "/c/x" }, { chips: { x: { tiles: { price: { dir: "up", days: 7 } } } } }).includes("kind"));
+  t("a sealed lane row with no readKind is not a new kind", !rule({ ...base, kind: "sealed", price: 12, href: "/p/example-box" }, { chips: { x: { tiles: { data: { bars: 1, of: 1 } } } } }).includes("kind"));
+  t("a missing reads file is fatal", refuseMissingBoard(false) === "publish gate: research/assets/public/reads.json is missing. Not publishing an empty board.");
+  t("an existing reads file is gated, not refused", refuseMissingBoard(true) == null);
   t("bare pattern rate under 50 drops", rule({ ...base, readKind: "pattern-forming", headline: "Items matching this pattern were right 29.1% of the time 7 days later, vs 20.8% normally." }).includes("pattern-rate"));
   t("lift lead keeps a later rate", !rule({ ...base, readKind: "pattern-forming", headline: "1.4x more likely than usual to rise and finish above the usual move within 7 days. 29.1% of 2,962 past cases vs 20.8% for all items." }).includes("pattern-rate"));
   t("down 17 price headline is not a pattern rate", !rule({ ...base, headline: "Box: Down 17%." }).includes("pattern-rate"));
@@ -80,6 +85,10 @@ export async function run() {
 
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);
+  const justUnder = Array.from({ length: 21 }, (_, i) => ({ ...base, id: `u${i}`, name: i < 5 ? "Rating: X" : "Box" }));
+  t("five bad rows of 21 stay under the rows-failed bar", gateReads(justUnder).systemic === false && gateReads(justUnder).dropped === 5);
+  const justOver = Array.from({ length: 21 }, (_, i) => ({ ...base, id: `o${i}`, name: i < 6 ? "Rating: X" : "Box" }));
+  t("six bad rows of 21 fail the rows-failed bar", gateReads(justOver).systemic === true);
   const meter = { published: true, asOf: "2026-10-19", minComponents: 2, market: { mood: 60, heat: 40, moodUsed: 2, heatUsed: 2, reasons: ["53% of sets up over 7 days (145 of 276)"] } };
   t("meter gate keeps a full fresh row", checkMeter(meter, { minComponents: 2, freshAsOf: "2026-10-19" }).ok === true);
   t("meter gate drops under the private minimum", checkMeter({ ...meter, market: { ...meter.market, moodUsed: 1 } }, { minComponents: 2, freshAsOf: "2026-10-19" }).action === "drop");

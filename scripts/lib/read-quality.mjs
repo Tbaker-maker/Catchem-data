@@ -382,6 +382,10 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
   const hits = [];
   for (const product of list) {
     if (!product || product.combinedArts === true) continue;
+    // browse:false (cases, displays, accessories) stays in the history files
+    // and off the public board. A hidden case is not a storefront product
+    // and must not become the sealed week read.
+    if (product.browse === false) continue;
     const id = Number(product.tcgPlayerId);
     if (!id) continue;
     const days = series.get(id);

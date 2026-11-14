@@ -15,7 +15,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 let schemas;
 try { schemas = JSON.parse(await readFile(join(ROOT, "data/schemas.json"), "utf-8")); }
-catch { console.log("· schema guard: no schemas.json"); process.exit(0); }
+catch {
+  // A missing registry used to exit 0, so Morning Pulse treated "no schemas" as a pass.
+  console.error("schema guard: no schemas.json");
+  process.exit(1);
+}
+
+export function unreadableFileProblem(path, spec, error) {
+  if (spec?.optional) return null;
+  return `${path}: unreadable or not valid JSON (${error.message}) — ${spec?.readers} scripts depend on it`;
+}
 
 const problems = [];
 for (const [path, spec] of Object.entries(schemas.files || {})) {
@@ -24,8 +33,9 @@ for (const [path, spec] of Object.entries(schemas.files || {})) {
   catch (e) {
     // A schema may be declared BEFORE the file exists, so a new data file is
     // validated from its first run rather than after it has gone wrong once.
-    if (spec.optional) continue;
-    problems.push(`${path}: unreadable or not valid JSON (${e.message}) — ${spec.readers} scripts depend on it`); continue;
+    const problem = unreadableFileProblem(path, spec, e);
+    if (problem) problems.push(problem);
+    continue;
   }
 
   const isArr = Array.isArray(d);
@@ -72,10 +82,20 @@ const isDateField = (k) => /(date|at|since|reviewed|lastseen)$/i.test(k) && !FUT
 const isCount = (k) => /(count|listings|cards|constituents|peers|qty|quantity)$/i.test(k);
 const isPrice = (k) => /(price|median|market|floor|high|low|value|ceiling|perpack)$/i.test(k) && !isPct(k);
 const SKEW_MS = 48 * 3600 * 1000;
-const impossible = [];
-function scan(node, path, file, depth) {
+export function findImpossible(node, file = "fixture.json", now = Date.now()) {
+  const impossible = [];
+  scan(node, "", file, 0, impossible, now);
+  return impossible;
+}
+function scan(node, path, file, depth, impossible, now) {
   if (node == null || depth > 6 || impossible.length > 40) return;
-  if (Array.isArray(node)) { node.slice(0, 400).forEach((v, i) => scan(v, path + "[" + i + "]", file, depth + 1)); return; }
+  // Every row. A cap at 400 hid a bad price in heat-history (7k rows) and any
+  // later page of a capped fetch. The Nov 12 supply shift died here only
+  // because the bad percent sat in a short file.
+  if (Array.isArray(node)) {
+    for (let i = 0; i < node.length; i++) scan(node[i], path + "[" + i + "]", file, depth + 1, impossible, now);
+    return;
+  }
   if (typeof node !== "object") return;
   for (const [k, v] of Object.entries(node)) {
     const at = path + "." + k;
@@ -92,9 +112,9 @@ function scan(node, path, file, depth) {
     const forwardLooking = FUTURE_OK.test(k) || /(upcoming|radar|release|schedule|calendar|window|print)/i.test(file + path);
     if (typeof v === "string" && isDateField(k) && !forwardLooking && /^\d{4}-\d{2}-\d{2}/.test(v)) {
       const ts = Date.parse(v);
-      if (Number.isFinite(ts) && ts - Date.now() > SKEW_MS) impossible.push(file + at + " = " + v + " — recorded in the future");
+      if (Number.isFinite(ts) && ts - now > SKEW_MS) impossible.push(file + at + " = " + v + " — recorded in the future");
     }
-    if (v && typeof v === "object") scan(v, at, file, depth + 1);
+    if (v && typeof v === "object") scan(v, at, file, depth + 1, impossible, now);
   }
   const lo = node.floor ?? node.priceFloorClean, hi = node.high ?? node.priceHigh, mid = node.median ?? node.priceMedian;
   if (typeof lo === "number" && typeof hi === "number" && lo > hi) impossible.push(file + path + ": floor " + lo + " above high " + hi);
@@ -102,9 +122,8 @@ function scan(node, path, file, depth) {
   if (typeof mid === "number" && typeof hi === "number" && mid > hi) impossible.push(file + path + ": median " + mid + " above high " + hi);
 }
 for (const [p2, sp2] of Object.entries(schemas.files || {})) {
-  try { scan(JSON.parse(await readFile(join(ROOT, p2), "utf-8")), "", p2, 0); } catch {}
+  try { for (const hit of findImpossible(JSON.parse(await readFile(join(ROOT, p2), "utf-8")), p2)) problems.push(hit); } catch {}
 }
-for (const i of impossible) problems.push(i);
 
 // ── SPECIALTY SETS HAVE NO BOOSTER BOX ──────────────────────────────────────
 // Tyler, 2026-08-23: getting this wrong in a public format tool "would be the
@@ -118,16 +137,30 @@ for (const i of impossible) problems.push(i);
 // would embarrass us is a BOX. Checked as an exact subtype so the two never get
 // conflated (I conflated them on the first pass and produced eight false
 // alarms). The rule is not vacuous: 47 mainline sets do carry boxes.
+export function specialtyBoxProblems(classes, rows) {
+  const problems = [];
+  for (const p of rows || []) {
+    const set = p?.setId ?? p?.set;
+    if (classes?.[set] === "specialty" && p?.subtype === "booster-box")
+      problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box — "${p?.name}"`);
+  }
+  return problems;
+}
+
+export function specialtyReadProblem(error) {
+  if (!error) return null;
+  return `specialty booster-box check could not read set-classes.json or sealed-products.json (${error.message})`;
+}
+
 try {
   const classes = JSON.parse(await readFile(join(ROOT, "data/set-classes.json"), "utf-8")).classes ?? {};
   const sealed = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf-8"));
   const rows = sealed.products ?? sealed;
-  for (const p of rows) {
-    const set = p.setId ?? p.set;
-    if (classes[set] === "specialty" && p.subtype === "booster-box")
-      problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box — "${p.name}"`);
-  }
-} catch { /* either file absent: nothing to assert */ }
+  for (const line of specialtyBoxProblems(classes, rows)) problems.push(line);
+} catch (e) {
+  const line = specialtyReadProblem(e);
+  if (line) problems.push(line);
+}
 
 if (problems.length) {
   console.error(`\n✗ SCHEMA GUARD — ${problems.length} problem(s):`);

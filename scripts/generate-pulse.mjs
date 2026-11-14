@@ -87,14 +87,18 @@ const sp = await J("data/sealed-prices.json");
 {
   const { catalogueEditionFreshness } = await import("./lib/catalogue-edition.mjs");
   const edition = catalogueEditionFreshness(sp);
-  if (edition.status === "stale" || edition.status === "partial") {
+  if (edition.status === "stale" || edition.status === "partial" || edition.status === "skip") {
     if (edition.status === "stale") {
       console.error(`\n✗ STALE EDITION — the freshest price in the catalogue is from ${edition.newest}, ${edition.ageDays} days ago.`);
       console.error("   At least one full fetch cycle was missed. This edition would wear");
       console.error("   today's date over an old market.");
-    } else {
+    } else if (edition.status === "partial") {
       console.error(`\n✗ PARTIAL FETCH — only ${edition.pct}% of products carry the newest timestamp (${edition.newest}).`);
       console.error("   A fetch ran but most products did not update.");
+    } else {
+      console.error(`\n✗ THIN CATALOGUE — ${edition.live} live priced rows. Not enough to date an edition.`);
+      console.error("   A thin file is not a healthy market. This edition would wear today's date");
+      console.error("   on too little data.");
     }
     console.error("   Generate Morning Pulse will not write a new dated edition.");
     console.error("   Later steps (The Board, share cards, commit, smoke) still run.\n");
