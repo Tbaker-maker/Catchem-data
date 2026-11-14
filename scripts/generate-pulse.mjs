@@ -115,8 +115,8 @@ const heat = await E("data/heat-report.json");
 const sg = await E("data/singles-prices.json");
 const radar = await E("data/release-radar.json");
 const der = await E("data/derived-insights.json");
-const { freshnessFromReport, formatPt } = await import("./lib/freshness.mjs");
-const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
+const { freshnessFrom, formatPt } = await import("./lib/freshness.mjs");
+const fresh = freshnessFrom(sp?.updatedAt);
 const writtenAt = formatPt(fresh.at) || fresh.label;
 const {
   esc: escHtml, pretty, money, moveLabel, cleanLine, feedStyle, headerHtml, footerHtml, assertCleanHtml, stampLabel,

@@ -21,7 +21,7 @@ import {
   spentEarlierToday,
   usageSkeleton,
 } from "./lib/ppp-plan.mjs";
-import { comparePulls } from "./lib/ppp-compare.mjs";
+import { comparePulls, indexPptCards } from "./lib/ppp-compare.mjs";
 import { checkBudget, currentRunBudget, loadBudget } from "./lib/ppp-budget.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -35,22 +35,29 @@ async function readJsonSafe(path, fallback) {
 }
 
 export async function loadQueue(root = ROOT) {
-  const sealedCfg = await readJson(join(root, "scripts/ppt-history-backfill-ids.json"));
-  const sealed = (sealedCfg.products || []).map((row) => ({
-    tcgPlayerId: String(row.tcgPlayerId),
-    keys: row.keys || [],
-  }));
   const catalog = await readJsonSafe(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] });
+  const sealed = [];
+  const seen = new Set();
   const singles = [];
   for (const item of catalog.items || []) {
-    if (item.kind !== "single" || !item.tcgplayerProductId) continue;
+    const tid = String(item?.tcgplayerProductId ?? "").trim();
+    if (!/^\d+$/.test(tid)) continue;
+    if (item.kind === "sealed") {
+      if (seen.has(tid)) continue;
+      seen.add(tid);
+      sealed.push({ tcgPlayerId: tid, name: item.name || "", keys: item.id ? [item.id] : [] });
+      continue;
+    }
+    if (item.kind !== "single") continue;
     singles.push({
-      tcgPlayerId: String(item.tcgplayerProductId),
+      tcgPlayerId: tid,
       name: item.name || "",
       set: item.set || "",
       price: Number(item.price) || 0,
     });
   }
+  // The 45-minute cap (PPP_MAX_MINUTES) and the resume cursor still bound one run.
+  // A wider sealed list does not raise the cap or clear ids already done today.
   return { sealed, singles, tcgcsv: catalog };
 }
 
@@ -338,66 +345,189 @@ function tcgcsvIndex(catalog) {
   return map;
 }
 
-async function loadTodayPulls(rawDir, prefix) {
-  if (!rawDir || !existsSync(rawDir)) return [];
-  const names = await readdir(rawDir);
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+// PPT sealed is not pulled every night. PPP sealed and PPT sealed for the same
+// product often land on different days. The compare keeps the newest file in
+// this window. Same-day only was the 0 sealed rows.
+export const COMPARE_LOOKBACK_DAYS = 7;
+
+export function shiftIsoDay(iso, days) {
+  if (!DAY.test(String(iso || ""))) return "";
+  const t = Date.parse(`${iso}T00:00:00Z`) + days * 86400000;
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+export function compareWindow(today, lookback = COMPARE_LOOKBACK_DAYS) {
+  const days = [];
+  for (let i = 0; i < lookback; i += 1) {
+    const day = shiftIsoDay(today, -i);
+    if (day) days.push(day);
+  }
+  return days;
+}
+
+function pullId(name, prefix) {
+  if (!name.startsWith(prefix) || !name.endsWith(".json") || name.includes("-lookup-")) return "";
+  const id = name.slice(prefix.length, -".json".length);
+  return /^\d+$/.test(id) ? id : "";
+}
+
+async function readJsonFile(path) {
+  try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
+}
+
+// CI writes ppp-raw-private/<day>/. The private repo stores the same pulls at raw/ppp/<day>/.
+function pppDayDirs(root, day, extraDir) {
+  const dirs = [];
+  if (extraDir && day) dirs.push(extraDir);
+  dirs.push(join(root, "ppp-raw-private", day));
+  dirs.push(join(root, "raw", "ppp", day));
+  return dirs;
+}
+
+// CI writes ppt-raw-private/<day>/. The private push nests that folder again: raw/<day>/<day>/.
+function pptDayDirs(root, day) {
+  return [
+    join(root, "ppt-raw-private", day),
+    join(root, "raw", day, day),
+    join(root, "raw", day),
+  ];
+}
+
+async function loadPppSide(root, today, prefix, extraDir) {
   const out = [];
-  for (const name of names) {
-    if (!name.startsWith(prefix) || !name.endsWith(".json") || name.includes("-lookup-")) continue;
-    try {
-      const doc = JSON.parse(await readFile(join(rawDir, name), "utf8"));
-      if (doc?.body && doc.tcgPlayerId) out.push(doc);
-    } catch { /* skip a bad file and keep the rest */ }
+  const seen = new Set();
+  for (const day of compareWindow(today)) {
+    const dirs = pppDayDirs(root, day, day === today ? extraDir : "");
+    for (const dir of dirs) {
+      if (!existsSync(dir)) continue;
+      let names = [];
+      try { names = await readdir(dir); } catch { continue; }
+      for (const name of names) {
+        const id = pullId(name, prefix);
+        if (!id || seen.has(id)) continue;
+        const doc = await readJsonFile(join(dir, name));
+        if (!doc?.body || !doc.tcgPlayerId) continue;
+        seen.add(id);
+        out.push(doc);
+      }
+    }
   }
   return out;
 }
 
-async function loadPptSealed(root, today) {
+function slimPptCard(card) {
+  const prices = card?.prices;
+  const nested = prices && typeof prices === "object" && !Array.isArray(prices) ? {
+    market: prices.market,
+    primaryPrinting: prices.primaryPrinting,
+    conditions: prices.conditions,
+    variants: prices.variants,
+  } : prices;
+  return {
+    tcgPlayerId: card.tcgPlayerId,
+    name: card.name,
+    prices: nested,
+    variants: card.variants,
+    tcgMarket: card.tcgMarket,
+    market: card.market,
+    marketPrice: card.marketPrice,
+    price: card.price,
+  };
+}
+
+export async function loadPptSealed(root, today) {
   const map = new Map();
-  const dirs = [join(root, "ppt-raw-private", today), join(root, "ppt-raw-private")];
-  for (const dir of dirs) {
-    if (!existsSync(dir)) continue;
+  for (const day of compareWindow(today)) {
+    for (const dir of pptDayDirs(root, day)) {
+      if (!existsSync(dir)) continue;
+      let names = [];
+      try { names = await readdir(dir); } catch { continue; }
+      for (const name of names) {
+        const tid = pullId(name, "sealed-");
+        if (!tid || map.has(tid)) continue;
+        const doc = await readJsonFile(join(dir, name));
+        if (doc) map.set(tid, doc);
+      }
+    }
+  }
+  const top = join(root, "ppt-raw-private");
+  if (existsSync(top)) {
     let names = [];
-    try { names = await readdir(dir); } catch { continue; }
+    try { names = await readdir(top); } catch { names = []; }
     for (const name of names) {
-      if (!name.startsWith("sealed-") || !name.endsWith(".json")) continue;
-      const tid = name.replace(/^sealed-/, "").replace(/\.json$/, "");
-      try {
-        map.set(String(tid), JSON.parse(await readFile(join(dir, name), "utf8")));
-      } catch { /* skip */ }
+      const tid = pullId(name, "sealed-");
+      if (!tid || map.has(tid)) continue;
+      const doc = await readJsonFile(join(top, name));
+      if (doc) map.set(tid, doc);
     }
   }
   return map;
 }
 
-async function loadPptCardBodies(root, today) {
-  const dir = join(root, "ppt-raw-private", today);
-  if (!existsSync(dir)) return [];
-  const names = await readdir(dir);
-  const out = [];
-  for (const name of names) {
-    if (!name.startsWith("set-") || !name.endsWith(".json")) continue;
-    try { out.push(JSON.parse(await readFile(join(dir, name), "utf8"))); } catch { /* skip */ }
+export async function loadPptCards(root, today) {
+  const index = new Map();
+  for (const day of compareWindow(today)) {
+    for (const dir of pptDayDirs(root, day)) {
+      if (!existsSync(dir)) continue;
+      let names = [];
+      try { names = await readdir(dir); } catch { continue; }
+      for (const name of names) {
+        if (!name.startsWith("set-") || !name.endsWith(".json")) continue;
+        const doc = await readJsonFile(join(dir, name));
+        if (!doc) continue;
+        const cards = Array.isArray(doc.data) ? doc.data : [];
+        const slim = [];
+        for (const card of cards) {
+          const tid = String(card?.tcgPlayerId ?? "");
+          if (!/^\d+$/.test(tid) || index.has(tid)) continue;
+          slim.push(slimPptCard(card));
+        }
+        if (slim.length) indexPptCards([{ data: slim }], index);
+      }
+    }
   }
+  return index;
+}
+
+function onlyIds(left, right) {
+  const out = [];
+  for (const id of left) if (!right.has(id)) out.push(id);
+  out.sort();
   return out;
 }
 
-export async function writeComparison({ root = ROOT, rawDir, today, tcgcsv, usage }) {
-  const pppSealed = await loadTodayPulls(rawDir, "sealed-");
-  const pppCards = await loadTodayPulls(rawDir, "card-");
+export async function writeComparison({ root = ROOT, rawDir, today, tcgcsv, usage, outFile = "" }) {
+  const pppSealed = await loadPppSide(root, today, "sealed-", rawDir || "");
+  const pppCards = await loadPppSide(root, today, "card-", rawDir || "");
+  const pptSealedByTid = await loadPptSealed(root, today);
+  const pptCardsByTid = await loadPptCards(root, today);
   const compared = comparePulls({
     pppSealed,
     pppCards,
     tcgcsvByTid: tcgcsvIndex(tcgcsv),
-    pptSealedByTid: await loadPptSealed(root, today),
-    pptCardBodies: await loadPptCardBodies(root, today),
+    pptSealedByTid,
+    pptCardsByTid,
   });
+  const pppSealedIds = new Set(pppSealed.map((row) => String(row.tcgPlayerId)));
+  const pppCardIds = new Set(pppCards.map((row) => String(row.tcgPlayerId)));
+  const pptSealedOnly = onlyIds(pptSealedByTid.keys(), pppSealedIds);
+  const pptCardsOnly = onlyIds(pptCardsByTid.keys(), pppCardIds);
   const privateReport = {
     asOf: today,
+    windowDays: COMPARE_LOOKBACK_DAYS,
     note: "Private comparison. Contains dollar prices. Do not copy into the public repo.",
     counts: {
       pppSealed: pppSealed.length,
       pppCards: pppCards.length,
+      pptSealed: pptSealedByTid.size,
+      pptCards: pptCardsByTid.size,
+      pptSealedOnly: pptSealedOnly.length,
+      pptCardsOnly: pptCardsOnly.length,
+    },
+    pptOnly: {
+      sealed: pptSealedOnly,
+      cards: pptCardsOnly,
     },
     sealedVsTcgcsv: compared.sealedVsTcgcsv,
     sealedVsPpt: compared.sealedVsPpt,
@@ -407,12 +537,22 @@ export async function writeComparison({ root = ROOT, rawDir, today, tcgcsv, usag
   const publicCompare = {
     asOf: today,
     note: compared.public.note,
+    windowDays: COMPARE_LOOKBACK_DAYS,
+    counts: {
+      pppSealed: pppSealed.length,
+      pppCards: pppCards.length,
+      pptSealed: pptSealedByTid.size,
+      pptCards: pptCardsByTid.size,
+      pptSealedOnly: pptSealedOnly.length,
+      pptCardsOnly: pptCardsOnly.length,
+    },
     sealed: compared.public.sealed,
     singles: compared.public.singles,
   };
-  if (rawDir) {
-    await mkdir(join(rawDir, ".."), { recursive: true });
-    await writeFile(join(root, "ppp-raw-private", `compare-${today}.json`), `${JSON.stringify(privateReport)}\n`);
+  const target = outFile || (rawDir ? join(root, "ppp-raw-private", `compare-${today}.json`) : "");
+  if (target) {
+    await mkdir(join(target, ".."), { recursive: true });
+    await writeFile(target, `${JSON.stringify(privateReport)}\n`);
   }
   if (usage) usage.compare = publicCompare;
   return { privateReport, publicCompare };
