@@ -306,7 +306,25 @@ export async function run() {
     radar: { ...radar, upcoming: radar.upcoming.map((row) => ({ ...row, msrp: 49.99 })) },
   });
   const releases = releaseDay.board.filter((row) => row.signal === "release");
-  t("release shows the verified non-jp row seven days out, with no MSRP", releases.length === 1 && releases[0].headline.startsWith("Deck Crafter's Collection is dated Oct 23 on the release file (checked ") && !/\b20\d{2}-\d{2}-\d{2}\b/.test(releases[0].headline) && !/msrp|\$/i.test(releases[0].headline) && !releases.some((row) => /jp/i.test(row.headline)));
+  t("a release with no market price does not board, and MSRP is not a price", releases.length === 0 && !releaseDay.board.some((row) => /No price on this line|msrp/i.test(`${row.headline || ""} ${row.why || ""}`)));
+  const pricedRadar = {
+    ...radar,
+    upcoming: [
+      { name: "Mega Greninja ex League Battle Deck", type: "product", date: "2026-10-23", confidence: "verified", market: { id: "mega-greninja-ex-league-battle-deck", name: "Mega Greninja ex League Battle Deck", price: 44, date: "2026-10-16" } },
+      { name: "Mega Greninja ex League Battle Deck", type: "product", date: "2026-10-23", confidence: "verified", market: { id: "mega-greninja-ex-league-battle-deck", name: "Mega Greninja ex League Battle Deck", price: 44, date: "2026-10-16" } },
+      { name: "Plain Deck", type: "product", date: "2026-10-23", confidence: "verified" },
+      { name: "JP: Fixture Expansion Pack", type: "jp-set", date: "2026-10-23", confidence: "verified", market: { id: "jp-pack", name: "JP Pack", price: 9, date: "2026-10-16" } },
+    ],
+  };
+  const priced = buildReadLibrary({
+    catalogue: { asOf: "2026-10-16", source: "TCGplayer market", cards: {} },
+    extra: { lag: { reads: [] }, group: { reads: [] } },
+    series: new Map(),
+    library: true,
+    radar: pricedRadar,
+  });
+  const pricedRows = priced.board.filter((row) => row.signal === "release");
+  t("one priced product id boards once and a no-price row does not", pricedRows.length === 1 && pricedRows[0].sku === "mega-greninja-ex-league-battle-deck" && /\$44\.00/.test(pricedRows[0].headline) && !/No price/i.test(pricedRows[0].headline) && !priced.board.some((row) => row.name === "Plain Deck" || /jp/i.test(row.headline || "")));
   const none = buildReadLibrary({
     catalogue: { asOf: "2026-10-11", source: "TCGplayer market", cards: {} },
     extra: { lag: { reads: [] }, group: { reads: [] } },

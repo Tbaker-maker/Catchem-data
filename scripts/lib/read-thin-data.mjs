@@ -15,6 +15,7 @@ const REASON = {
   "single-price": "This slump or recovery rests on one dated price.",
   "single-jump": "This slump or recovery is one jump between two prices.",
   "thin-listings": "This big move rests on too few listings counted.",
+  "thin-level": "A listings count with no detail line and no trend chip is left out.",
   "small-dip": "This sealed dip is too small in percent or dollars.",
   "date-mismatch": "The listings counted date is not the same day as the price date.",
   "era-mismatch": "The era tag does not come from the set release era.",
@@ -282,6 +283,25 @@ function eraHit(read, cfg) {
   return ok ? null : hit("era-mismatch");
 }
 
+function hasTrendChip(read) {
+  if (read?.chip || read?.trend) return true;
+  const signals = Array.isArray(read?.signals) ? read.signals : [];
+  return signals.some((chip) => /trend/i.test(String(chip?.kind || chip?.chip || "")));
+}
+
+// A count by itself is not a read. The detail line or a trend chip has to be there.
+function bareLevelHit(read) {
+  const kind = String(read?.readKind || read?.kind || "");
+  if (kind !== "listings") return null;
+  const n = read?.receipt?.n;
+  const prev = read?.receipt?.prev;
+  if (!Number.isInteger(n)) return null;
+  if (prev != null && prev !== "") return null;
+  const lines = Array.isArray(read?.lines) ? read.lines.filter((line) => String(line || "").trim()) : [];
+  if (lines.length || hasTrendChip(read)) return null;
+  return hit("thin-level");
+}
+
 export function thinReadHits(read, cfg) {
   if (!read) return [];
   const rules = validReadThin(cfg);
@@ -289,7 +309,7 @@ export function thinReadHits(read, cfg) {
   const row = prepareThin(read);
   const hits = [];
   const seen = new Set();
-  for (const item of [...seriesHits(row, rules), bigMoveHit(row, rules), dipHit(row, rules), dateHit(row, rules), eraHit(row, rules)]) {
+  for (const item of [...seriesHits(row, rules), bigMoveHit(row, rules), dipHit(row, rules), dateHit(row, rules), eraHit(row, rules), bareLevelHit(row)]) {
     if (!item || seen.has(item.rule)) continue;
     seen.add(item.rule);
     hits.push(item);

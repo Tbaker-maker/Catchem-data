@@ -50,6 +50,10 @@ export async function run() {
     { id: "now", name: "Today Box", listingsCounted: { n: 40, date: "2026-10-20" } },
   ] }, { asOf: "2026-10-20" });
   t("a listing count from another day is not this read", levels.length === 1 && levels[0].sku === "now" && levels[0].asOf === "2026-10-20" && levels[0].headline.includes("40 eBay listings counted on Oct 20"));
+  const named = listingLevelReads({ products: [
+    { id: "pgo-etb", name: "Pokemon GO Elite Trainer Box", listingsCounted: { n: 70, date: "2026-10-20" } },
+  ] }, { asOf: "2026-10-20" });
+  t("a listing level keeps the Pokemon accent", named.length === 1 && named[0].name.startsWith("Pokémon GO") && named[0].headline.startsWith("Pokémon GO Elite Trainer Box: 70 eBay listings counted on Oct 20"));
 
   const hist = new Map([["sv9-booster-box", [{ date: "2026-10-05", market: 100 }, { date: "2026-10-12", market: 100.5 }]]]);
   const raw = new Map([[555, { group: "SV09: Journey Together" }]]);

@@ -444,12 +444,25 @@ jobs:
         # that print. A feed build that crashes withholds the reads group (its
         # files go back to the last committed copy) instead of stopping the
         # publish of tonight's prices.
+        # One pass. Run 43589102593 wrote sealed-prices.json at 12:40:27Z,
+        # ran this step once at 13:54:13Z, and the feed commit at 14:26:39Z
+        # already had reads.json asOf 2026-11-14. A second pass was not the
+        # thing that moved the stamp. The early double pass, before sealed
+        # prices, stays where it is.
         run: |
           node scripts/build-feed.mjs || node scripts/withhold-group.mjs reads "rebuild: build-feed.mjs crashed after the price commit"
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           FEED_FRESHNESS_WARN_ONLY: "1" # the pulse is regenerated later in this run
+
+      - name: Alert when the reads day is behind the sealed prices
+        # Visible, not blocking. A 1-day gap, or a withheld reads group after
+        # a crash, prints a warning and fails this step. continue-on-error so
+        # the price commit later in the job still runs. The Morning Pulse
+        # schema guard prints the same alert and does not exit.
+        continue-on-error: true
+        run: node scripts/reads-day-alert.mjs
 
       - name: Run the read registry
         run: node scripts/run-read-registry.mjs
