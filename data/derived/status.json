@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-13",
- "generatedAt": "2026-11-14T00:36:14.230Z",
+ "generatedAt": "2026-11-14T07:16:38.800Z",
  "checks": [
   {
    "id": "price-day",
@@ -12,16 +12,16 @@
   {
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
-   "date": "2026-11-13",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-11-14",
+   "ok": false,
+   "detail": "dated 2026-11-14"
   },
   {
    "id": "reads",
    "path": "research/assets/public/reads.json",
-   "date": "2026-11-12",
-   "ok": false,
-   "detail": "dated 2026-11-12"
+   "date": "2026-11-13",
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "scanner",
@@ -32,10 +32,10 @@
   }
  ],
  "failures": [
-  "reads",
+  "listings-counted",
   "scanner"
  ],
  "alerts": [],
  "reran": [],
- "note": "Reads rebuild is not rerun here. It belongs to the nightly feed, which has to fit the 20 minute test job."
+ "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }
