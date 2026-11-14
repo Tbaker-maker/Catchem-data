@@ -14,6 +14,7 @@ import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange, dayLabel } from "./signal-chips.mjs";
 import { sourceNamesDay, speakDates } from "./read-quality.mjs";
+import { rotationPhrase } from "./board-mix.mjs";
 
 export const HEADLINE_MAX = 300;
 
@@ -279,7 +280,7 @@ export function findings(item, ctx, cfg) {
   if (item.set && item.release) bits.push(`${item.set} came out ${dateLabel(item.release, asOf)}`);
   if (era) bits.push(`${era} era`);
   const rot = ctx.rotation?.get(item.setSlug);
-  if (rot?.status) bits.push(`${rot.status === "Standard" ? "still Standard legal" : String(rot.status).toLowerCase()}`);
+  if (rot?.status) bits.push(rotationPhrase(rot.status));
   const sv = ctx.setValue?.get(item.setSlug);
   if (sv?.total > 0 && sv.priced > 1) bits.push(`its ${sv.priced} priced cards add up to ${usd(sv.total)}`);
   if (bits.length) out.push({ tag: "set", type: "set", score: 0, nums: { era, rot, sv, release: item.release }, short: `${bits[0]}${bits.length > 1 ? `, ${bits.slice(1).join(", ")}` : ""}.` });
@@ -340,15 +341,25 @@ export function leadDirection(item, fs) {
   return recent ? findingDir(recent) : 0;
 }
 
-function moveEnds(f) {
-  const st = f?.nums?.st;
-  if (Array.isArray(st?.from) && Array.isArray(st?.to) && st.from[0] && st.to[0]) return { from: String(st.from[0]), to: String(st.to[0]) };
-  const lead = f?.nums?.lead;
-  if (Array.isArray(lead?.from) && Array.isArray(lead?.to) && lead.from[0] && lead.to[0]) return { from: String(lead.from[0]), to: String(lead.to[0]) };
+function pairEnds(pair) {
+  if (Array.isArray(pair?.from) && Array.isArray(pair?.to) && pair.from[0] && pair.to[0]) return { from: String(pair.from[0]), to: String(pair.to[0]) };
   return null;
 }
 
+function moveEnds(f) {
+  return pairEnds(f?.nums?.step) || pairEnds(f?.nums?.st) || pairEnds(f?.nums?.lead);
+}
+
+// A one-week drop is a 7 day window. It cannot sit under a multi-week streak
+// by leaving window unset. #548's drop finding carries nums.step.
+export function ensureDropWindow(f) {
+  if (!f) return f;
+  if (f.tag === "drop" || f.nums?.step) f.window = 7;
+  return f;
+}
+
 export function compose(item, fs, cfg, used) {
+  for (const f of fs || []) ensureDropWindow(f);
   const ranked = fs.filter((f) => f.score > 0 && f.text).sort((a, b) => b.score - a.score);
   const kindF = item.kindLine ? { tag: "kind", type: `kind:${item.kind}`, score: cfg.weights.kind, text: item.kindLine } : null;
   if (kindF) { ranked.push(kindF); ranked.sort((a, b) => b.score - a.score); }

@@ -11,6 +11,7 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { loadReadsDayAlerts } from "./lib/reads-day-alert.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 let schemas;
@@ -128,6 +129,21 @@ try {
       problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box — "${p.name}"`);
   }
 } catch { /* either file absent: nothing to assert */ }
+
+// A stale reads board is loud here, inside the Morning Pulse schema guard.
+// It does not join `problems` and it does not exit. Generate Morning Pulse
+// sits above "Commit updated prices", and an exit from this file used to
+// stop that commit. The workflow step reads-day-alert.mjs is the red mark.
+// This print is the second place the same fact cannot stay silent.
+const readsAlerts = await loadReadsDayAlerts(ROOT);
+if (readsAlerts.length) {
+  console.error(`\n✗ READS DAY: ${readsAlerts.length} alert(s). Price publish is not stopped.`);
+  for (const line of readsAlerts) {
+    console.error(`   ${line}`);
+    console.error(`::warning::${line}`);
+  }
+  console.error("");
+}
 
 if (problems.length) {
   console.error(`\n✗ SCHEMA GUARD — ${problems.length} problem(s):`);
