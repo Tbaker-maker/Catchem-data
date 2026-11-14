@@ -361,7 +361,7 @@ function unrepeated(have, short) {
 // +1 for a finding that says the price went up, -1 for down, 0 for neither.
 export function findingDir(f) {
   const type = String(f?.type || "");
-  if (f?.tag === "trend" || f?.tag === "streak") return /up$/.test(type) ? 1 : /down$/.test(type) ? -1 : 0;
+  if (f?.tag === "trend" || f?.tag === "streak" || f?.tag === "drop") return /up$/.test(type) ? 1 : /down$/.test(type) ? -1 : 0;
   if (type === "high" || type === "nearHigh") return 1;
   if (type === "low" || type === "drawdown") return -1;
   return 0;
@@ -390,7 +390,7 @@ export function compose(item, fs, cfg, used) {
   // open on a gain, and a year gain does not lead over a fresh fall.
   const want = leadDirection(item, fs);
   const strict = item?.kind === "deep:slump" || item?.kind === "deep:recovery";
-  const against = (f) => findingDir(f) === -want && (strict || f.tag === "trend" || f.tag === "streak");
+  const against = (f) => findingDir(f) === -want && (strict || f.tag === "trend" || f.tag === "streak" || f.tag === "drop");
   const agree = want ? ranked.filter((f) => !against(f)) : ranked;
   const leadPool = agree.length ? agree : ranked;
   const lead = leadPool.find((f) => count(f) < cap) || leadPool.slice().sort((a, b) => count(a) - count(b))[0];
@@ -401,7 +401,7 @@ export function compose(item, fs, cfg, used) {
   };
   const tags = new Set([lead.tag]);
   const pick = [lead];
-  const ORDER = ["trend", "range", "listings", "ask", "peers", "streak", "activity", "set"];
+  const ORDER = ["trend", "range", "listings", "ask", "peers", "streak", "drop", "activity", "set"];
   const pool = ranked.filter((f) => f !== lead && f.short && sameWindow(f)).concat(fs.filter((f) => !(f.score > 0) && f.short && sameWindow(f)).sort((a, b) => ORDER.indexOf(a.tag) - ORDER.indexOf(b.tag)));
   for (const f of pool) {
     if (pick.length >= 3) break;
@@ -658,6 +658,30 @@ export function keepContract(next, original) {
   return readContractOk(next) || !readContractOk(original) ? next : original;
 }
 
+const MONTHS = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
+const SOURCE_DATE = `(?:(?:${MONTHS})\\s+\\d{1,2}(?:,\\s+\\d{4})?|\\d{4}-\\d{2}-\\d{2})`;
+const SOURCE_SPAN = new RegExp(`(?:${SOURCE_DATE})(?:\\s*(?:,|to|and)\\s*(?:${SOURCE_DATE}))*$`);
+
+// The date span sits at the end of the TCGplayer market clause. Later clauses
+// (sets.json, rotation-status.json, and the rest) stay as written.
+export function retargetMarketSpan(source, startDate, endDate) {
+  const text = String(source || "");
+  if (!ISO_DAY.test(String(startDate || "")) || !ISO_DAY.test(String(endDate || ""))) return text;
+  const parts = text.split("; ");
+  let changed = false;
+  const next = parts.map((part) => {
+    const at = part.indexOf("TCGplayer market");
+    if (at < 0) return part;
+    const clause = part.slice(at);
+    const span = clause.match(SOURCE_SPAN);
+    if (!span || span.index + span[0].length !== clause.length) return part;
+    changed = true;
+    const prefix = clause.slice(0, span.index).replace(/[,\s]+$/, "");
+    return `${part.slice(0, at)}${prefix}, ${startDate} and ${endDate}`;
+  });
+  return changed ? next.join("; ") : text;
+}
+
 // Rewrite the item reads. Returns the new list and a report.
 export function synthesizeReads(reads, ctx, cfg) {
   const items = reads.filter(isItemRead);
@@ -687,8 +711,8 @@ export function synthesizeReads(reads, ctx, cfg) {
         next.endDate = ends.endDate;
         // The hist gate keeps a rewrite only when source names startDate.
         // A new lead window has to say that date, or the old headline stays.
-        if (typeof next.source === "string" && next.source.includes(",")) {
-          next.source = next.source.replace(/, [^,]+$/, `, ${ends.startDate} and ${ends.endDate}`);
+        if (typeof next.source === "string" && next.source.includes("TCGplayer market")) {
+          next.source = retargetMarketSpan(next.source, ends.startDate, ends.endDate);
         }
       }
     }
