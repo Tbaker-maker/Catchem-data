@@ -13,6 +13,19 @@ import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.m
 import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
 
+const MONTH_WORDS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+
+// "Rotated april 10, 2026" and "Rotated April 10, 2026" both print with the month capitalized.
+export function rotationPhrase(status) {
+  const raw = String(status || "").trim();
+  if (!raw) return "";
+  if (raw === "Standard") return "still Standard legal";
+  let phrase = raw.replace(/^rotated\b/i, "rotated");
+  for (const name of MONTH_WORDS) {
+    phrase = phrase.replace(new RegExp(`\\b${name}\\b`, "i"), name.charAt(0).toUpperCase() + name.slice(1));
+  }
+  return phrase;
+}
 const LONG_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // A mark checked card by card later than the card file cites its own check date.
 export function markCited(set, doc) {
@@ -408,7 +421,7 @@ export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
     if (!set?.name || !set.status || !set.mark) continue;
     const rotated = /^Rotated /.test(set.status);
     const headline = rotated
-      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (${markCited(set, doc)}).${printRunSaid ? "" : " Rotated sets historically stop getting new print runs."}`
+      ? `${set.name} (mark ${set.mark}) left Standard: ${rotationPhrase(set.status)} (${markCited(set, doc)}).${printRunSaid ? "" : " Rotated sets historically stop getting new print runs."}`
       : `${set.name} (mark ${set.mark}) is Standard legal (${markCited(set, doc)}).`;
     if (!cleanCopy(headline)) continue;
     if (rotated) printRunSaid = true;
@@ -688,20 +701,31 @@ export function fitBoard(priceRows, fresh, { maxShare = PRICE_SHARE_MAX, maxBoar
 
 const PRICE_DAY = /^\d{4}-\d{2}-\d{2}$/;
 
-// The board day is the newest price file, not the stamp already on reads.json.
-// A reads file left on yesterday does not hold today's prices back.
+function dayStamp(value) {
+  const day = String(value || "").slice(0, 10);
+  return PRICE_DAY.test(day) ? day : "";
+}
+
+// The stamp is the catalogue day the reads were built from. A newer sealed
+// file or catalog file is logged and does not move the stamp.
 export async function priceBoardDay(root, fallback = "") {
-  const days = [];
-  const push = (value) => {
-    const day = String(value || "").slice(0, 10);
-    if (PRICE_DAY.test(day)) days.push(day);
+  let catalogueDay = "";
+  try {
+    catalogueDay = dayStamp(JSON.parse(await readFile(join(root, "research/assets/public/feed/catalogue.json"), "utf8")).asOf);
+  } catch { /* no catalogue day */ }
+  const built = catalogueDay || dayStamp(fallback);
+  const priceDays = [];
+  const push = (file, value) => {
+    const day = dayStamp(value);
+    if (day) priceDays.push({ file, day });
   };
-  try { push(JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8")).asOf); } catch { /* no catalog day */ }
-  try { push(JSON.parse(await readFile(join(root, "data/sealed-prices.json"), "utf8")).updatedAt); } catch { /* no sealed day */ }
-  days.sort();
-  if (days.length) return days[days.length - 1];
-  const fb = String(fallback || "").slice(0, 10);
-  return PRICE_DAY.test(fb) ? fb : "";
+  try { push("data/catalog/tcgcsv-latest.json", JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8")).asOf); } catch { /* no catalog day */ }
+  try { push("data/sealed-prices.json", JSON.parse(await readFile(join(root, "data/sealed-prices.json"), "utf8")).updatedAt); } catch { /* no sealed day */ }
+  const newer = built ? priceDays.filter((row) => row.day > built) : [];
+  if (newer.length) {
+    console.log(`board stamp stays ${built}. Newer price file ${newer.map((row) => `${row.file} ${row.day}`).join(", ")}. The reads were built from the catalogue day, so the stamp does not move.`);
+  }
+  return built;
 }
 
 // A release read with no market price does not publish. Two wordings of one

@@ -37,6 +37,9 @@ export async function run() {
     }
   });
   t("eBay fetch never gates the run", steps.some((s) => s.startsWith("Fetch sealed prices from eBay") && /continue-on-error: true/.test(s)));
+  const alertAt = steps.findIndex((s) => s.startsWith("Alert when the reads day is behind the sealed prices"));
+  t("a stale reads board alerts and does not block the price commit", alertAt > 0 && alertAt < commitAt && /continue-on-error: true/.test(steps[alertAt]) && /node scripts\/reads-day-alert\.mjs/.test(steps[alertAt]));
+  t("the price commit is not gated on the reads day alert", !/reads-day-alert/.test(steps[commitAt]));
   return fail;
 }
 
