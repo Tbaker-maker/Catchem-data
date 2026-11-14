@@ -1,14 +1,13 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { sourceNamesDay } from "../lib/read-quality.mjs";
+import { histBoardOk, nonPriceKindOk, oneKindOk, publicBoardKindOk, withholdNewReadKinds } from "../lib/read-quality.mjs";
 import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, earlierFileNote, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 // Long-history price rows (scripts/lib/history-reads.mjs): real points, own dates.
-const histKinds = new Set(["high", "low", "year", "plain", "backto", "set"]);
-const histOk = (row) => row.board === "hist" && histKinds.has(row.readKind) && row.kind === row.readKind && /^\d{4}-\d{2}-\d{2}$/.test(String(row.startDate || "")) && row.endDate === row.asOf && sourceNamesDay(row.source, row.startDate, row.asOf);
+const histOk = histBoardOk;
 
 export async function run() {
   let fail = 0;
@@ -151,11 +150,15 @@ export async function run() {
     }
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
     const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase", "deep", "year-range", "year-ago", "season", "pattern-forming", "pattern-ending", "listings-vs-price", "past-cases", "mixed", "rarity-band", "artist-band", "release-cycle", "rip"]);
+    const pathway = { id: "ppp-sold-gap-tcgcsv-1", board: "v3", readKind: "sold-gap", kind: "sold-gap" };
+    const past = { id: "scan-past-cases-x", board: "v3", readKind: "past-cases", kind: "past-cases" };
+    const held = withholdNewReadKinds([pathway, past]);
+    t("a pathway id is not a public read kind", publicBoardKindOk(pathway) === false && nonPriceKindOk(pathway) === false && oneKindOk(pathway) === false && held.dropped.length === 1 && held.dropped[0].id === pathway.id && held.kept.length === 1 && held.kept[0].id === past.id && v3Kinds.has("past-cases") && !v3Kinds.has("sold-gap"));
     const priceReads = reads.reads.filter((row) => row.board !== "v3" && row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && (priceReads.length >= 1 || noWindow || noSevenDay) && priceReads.length <= 24);
-    t("a non-price read is a streak or another kept kind", otherReads.every((row) => (row.board === "v3" && v3Kinds.has(row.readKind)) || histOk(row) || row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "volume" || row.readKind === "listing" || row.readKind === "quiet" || row.readKind === "mix" || row.readKind === "conditions" || row.readKind === "soldflat" || row.readKind === "solddown" || row.readKind === "setshare" || row.readKind === "spread" || row.readKind === "askmove" || row.readKind === "mktmove" || row.readKind === "still" || row.readKind === "streak" || row.readKind === "mover" || row.readKind === "high" || row.readKind === "set" || row.readKind === "turned" || row.readKind === "sealed" || row.readKind === "release"));
+    t("a non-price read is a streak or another kept kind", otherReads.every(nonPriceKindOk));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
     t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
@@ -183,7 +186,7 @@ export async function run() {
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
     const withoutPriceForm = (line) => shape(line).replace(/tcgplayer market:[\s\S]*$/i, "").replace(/\$[\s\S]*$/, "").trim();
     t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => withoutPriceForm(shownLine(row)))).peak <= 2);
-    t("a read is one kind", reads.reads.every((row) => (row.board === "v3" && v3Kinds.has(row.kind) && row.kind === row.readKind) || histOk(row) || row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === "streak" || row.kind === "mover" || row.kind === "high" || row.kind === "set" || row.kind === "turned" || row.kind === "sealed" || row.kind === "release" || (row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind))));
+    t("a read is one kind", reads.reads.every(oneKindOk));
     // #103 put flagged-price (outlier) and dive-teaser reads on the short
     // front. They are allowed kinds only while they carry their receipts: a
     // real price, the dive they open, and the file on disk the numbers came

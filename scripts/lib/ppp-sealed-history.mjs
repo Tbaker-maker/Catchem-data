@@ -106,6 +106,43 @@ export function chartPoints(pppRows, ownPoints) {
   return { show: true, points, ...check, fillTo: first };
 }
 
+// One own TCGplayer day. The first price kept for a day wins, so a later
+// file cannot overwrite a day we already counted.
+export function rememberOwnDay(byPid, pid, day, price) {
+  const id = Number(pid);
+  const d = String(day || "").slice(0, 10);
+  const n = Number(price);
+  if (!Number.isInteger(id) || id <= 0 || !/^\d{4}-\d{2}-\d{2}$/.test(d) || !(n > 0)) return byPid;
+  let days = byPid.get(id);
+  if (!days) { days = new Map(); byPid.set(id, days); }
+  if (!days.has(d)) days.set(d, Math.round(n * 100) / 100);
+  return byPid;
+}
+
+export function ownPoints(byPid, pid) {
+  const days = byPid.get(Number(pid));
+  if (!days) return [];
+  return [...days.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+}
+
+// Rows already paid for on the history lane. Gate them again. This does not
+// fetch. A product with no own day, a failed overlap, or no earlier day stays out.
+export function verifyStoredHistory(records, byPid, { skip = new Set() } = {}) {
+  const items = [];
+  let verified = 0;
+  let held = 0;
+  for (const rec of records || []) {
+    const pid = Number(rec?.pid);
+    if (!pid || skip.has(pid)) continue;
+    const gate = chartPoints(rec.rows || [], ownPoints(byPid, pid));
+    if (!gate.show) { held++; continue; }
+    verified++;
+    skip.add(pid);
+    items.push({ pid, points: gate.points, verifiedOverlap: gate.overlap });
+  }
+  return { items, verified, held };
+}
+
 export function progressDoc({ asOf, cap, spentBefore = 0, spentThisRun = 0, queued = 0, done = 0, verified = 0, held = 0, skipped = 0, shown = 0, status = "idle", reason = "" } = {}) {
   return {
     asOf,

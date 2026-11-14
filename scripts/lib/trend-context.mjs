@@ -247,6 +247,11 @@ function withLine(read, line) {
   const out = { ...read, trend: line };
   if (Array.isArray(read.lines)) {
     const kept = read.lines.filter((row) => row !== prev && row !== line);
+    // Card stories already use all 6 lines (deep-card-tcgcsv-86916,
+    // deep-card-tcgcsv-86351, deep-card-tcgcsv-88782). A 7th trend line
+    // fails the deep-read contract, so the line is left off.
+    const deep = read.readKind === "deep" || read.kind === "deep" || read.deep;
+    if (deep && kept.length >= 6) return read;
     out.lines = [...kept, line];
   }
   return out;

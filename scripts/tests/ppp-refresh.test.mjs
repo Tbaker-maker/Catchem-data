@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { callsFor, executePlan, loadQueue } from "../ppp-refresh.mjs";
+import { callsFor, executePlan, loadQueue, runDeadline } from "../ppp-refresh.mjs";
 import { estimateNightly, loadIdMap, mergeIdMaps, MAIN_BUDGET, orderRefreshCalls, resumeIds, spentEarlierToday, usageSkeleton } from "../lib/ppp-plan.mjs";
 import { checkBudget, currentRunBudget, loadBudget, plannedSpend } from "../lib/ppp-budget.mjs";
 import { redact } from "../lib/ppp-client.mjs";
@@ -75,6 +75,22 @@ export async function runPppRefreshTests() {
   t("credits come from x-credits-charged", ran.used.total === 6 && ran.items.sealed === 2 && ran.items.singles === 2);
   t("a lookup fills the id map used by the next detail", ran.idMap.sealed["593355"] === 572 && ran.idMap.cards["1"] === 99);
   t("raw files stay under the private day folder", (await readFile(join(rawDir, "sealed-644298.json"), "utf8")).includes("market_price"));
+  {
+    let clock = 0;
+    let sent = 0;
+    const capped = await executePlan({
+      key: "k",
+      calls: ordered,
+      fetchImpl: async () => { sent += 1; clock += 60000; return { status: 200, charged: 1, body: { data: [{ id: 7 }] } }; },
+      reserve: async () => {},
+      idMap,
+      deadline: 60000,
+      now: () => clock,
+    });
+    t("the time cap stops sending once the deadline passes and holds the rest", sent === 1 && capped.callsSent === 1 && capped.callsNotSent === ordered.length - 1 && capped.errors.some((e) => e.includes("time cap")), JSON.stringify({ sent, notSent: capped.callsNotSent, n: ordered.length }));
+  }
+  t("an unset or zero time cap means no deadline", runDeadline(undefined) === Infinity && runDeadline("0") === Infinity && runDeadline("junk") === Infinity);
+  t("a 45 minute cap lands 45 minutes after the start", runDeadline("45", 1000) === 1000 + 45 * 60000);
   t("a run with no key sends no request and spends nothing", (await executePlan({ key: "", calls: ordered, fetchImpl: async () => { throw new Error("should not fetch"); }, reserve: async () => {} })).used.total === 0);
 
   const budgeted = await executePlan({
