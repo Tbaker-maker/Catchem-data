@@ -143,6 +143,8 @@ export async function executePlan({
   alreadyDone = [],
   idMap,
   onProgress,
+  deadline = Infinity,
+  now = Date.now,
 } = {}) {
   const used = { sealed: 0, singles: 0, total: 0 };
   const items = { sealed: 0, singles: 0 };
@@ -192,6 +194,13 @@ export async function executePlan({
   const pending = (calls || []).filter((call) => call?.id && call.estimated > 0 && !finished.has(call.id));
   for (let i = 0; i < pending.length; i += 1) {
     const call = pending[i];
+    if (now() >= deadline) {
+      // Out of wall-clock time for tonight. The cursor resumes these tomorrow, and the
+      // rest of the price run keeps its share of the 6-hour job limit.
+      errors.push(`time cap reached; ${pending.length - i} calls left for the next run`);
+      for (const rest of pending.slice(i)) hold(rest);
+      break;
+    }
     if (call.kind === "detail" && !call.pppId) {
       const learned = call.bucket === "sealed" ? map.sealed[call.tcgPlayerId] : map.cards[call.tcgPlayerId];
       if (learned) {
@@ -409,6 +418,14 @@ export async function writeComparison({ root = ROOT, rawDir, today, tcgcsv, usag
   return { privateReport, publicCompare };
 }
 
+// Wall-clock cap for one run, in minutes from now. 10,000 credits at 60 requests a
+// minute is about 3 hours, which pushed the nightly job past GitHub's 6-hour limit.
+// Unset, empty, zero or junk means no cap.
+export function runDeadline(minutes, start = Date.now()) {
+  const n = Number(minutes);
+  return Number.isFinite(n) && n > 0 ? start + n * 60000 : Infinity;
+}
+
 export async function main() {
   const today = new Date().toISOString().slice(0, 10);
   const key = process.env.PKMNPRICES_API_KEY || "";
@@ -512,6 +529,7 @@ export async function main() {
       budget,
       reserveCredits: Number(budgetPlan.reserve) || 0,
       idMap,
+      deadline: runDeadline(process.env.PPP_MAX_MINUTES),
       onProgress: async ({ done, map, used }) => {
         progressWrites += 1;
         if (progressWrites % 25 !== 0) return;
