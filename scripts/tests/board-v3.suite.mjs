@@ -1,4 +1,7 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay } from "../lib/board-mix.mjs";
+import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 export async function run() {
   let fail = 0;
@@ -45,8 +48,15 @@ export async function run() {
   const nr = newsReads(news, "2026-10-12");
   t("translated news names the country, untranslated is skipped", nr.length === 2 && nr[0].headline.startsWith("Japan:") && !nr.some((r) => r.url === "u2"));
 
-  const rel = releaseReads({ releases: [{ name: "JP: Thing", date: "2026-10-16", source: "s", checked: "2026-10-09" }, { name: "Old", date: "2026-01-01", source: "s", checked: "x" }] }, "2026-10-12");
+  const rel = releaseReads({ releases: [
+    { name: "JP: Thing", date: "2026-10-16", source: "s", checked: "2026-10-09", market: { id: "jp-thing", name: "Japan: Thing", price: 12.5, date: "2026-10-12" } },
+    { name: "JP: Thing copy", date: "2026-10-18", source: "s", checked: "2026-10-09", market: { id: "jp-thing", name: "Japan: Thing", price: 13, date: "2026-10-12" } },
+    { name: "No Price Deck", date: "2026-10-20", source: "s", checked: "2026-10-09" },
+    { name: "Old", date: "2026-01-01", source: "s", checked: "x" },
+  ] }, "2026-10-12");
   t("release reads are upcoming only, country named", rel.length === 1 && rel[0].headline.startsWith("Japan: Thing is out Oct 16"));
+  t("a release with no price is not published", !rel.some((r) => /No price/i.test(r.headline) || r.name === "No Price Deck"));
+  t("one product id is one release read", rel.length === 1 && rel[0].sku === "jp-thing" && /\$12\.50/.test(rel[0].headline));
 
   const price = Array.from({ length: 10 }, (_, i) => ({ id: `p${i}`, headline: "p" }));
   const fresh = Array.from({ length: 9 }, (_, i) => ({ id: `f${i}`, headline: "f", board: "v3", family: i % 2 ? "news" : "fact" }));
@@ -71,6 +81,26 @@ export async function run() {
   t("sealed lag keeps product type and skips shared-art parents", sealed.risers.a && sealed.risers.a.lagging.map((x) => x.id).join(",") === "b");
   const withV = groupClimbReads([...up, ...flat], { start: "2026-10-05", end: "2026-10-12" })[0];
   t("climb wordings use the same numbers and pass the copy rules", withV.variants.length >= 2 && withV.variants.every((v) => cleanCopy(v) && v.includes("Flat") && v.includes("Oct 5")));
-  t("release wordings pass the copy rules", rel[0].variants.length === 2 && rel[0].variants.every(cleanCopy));
+  t("release wordings pass the copy rules", rel[0].variants.length === 2 && rel[0].variants.every(cleanCopy) && rel[0].variants.every((v) => /\$12\.50/.test(v)));
+  {
+    const seen = new Set();
+    const priced = { readKind: "release", sku: "mega-greninja-ex-league-battle-deck", headline: "Mega Greninja ex League Battle Deck is out Nov 13, 0 days from Nov 13. Mega Greninja ex League Battle Deck is listed at $44.00 on TCGplayer (Nov 13)." };
+    const bare = { readKind: "release", sku: "mega-greninja-ex-league-battle-deck", headline: "Mega Greninja ex League Battle Deck is dated Nov 13 on the release file (checked Nov 13). No price on this line." };
+    const other = { readKind: "deep", sku: "tcgcsv-1", headline: "A price read stays." };
+    t("a no-price release does not publish", keepReleaseRead(bare, seen) === false && seen.size === 0);
+    t("the same product id publishes once", keepReleaseRead(priced, seen) === true && keepReleaseRead(priced, seen) === false);
+    t("a non-release read is left alone", keepReleaseRead(other, seen) === true);
+  }
+  {
+    const root = await mkdtemp(join(tmpdir(), "board-day-"));
+    await mkdir(join(root, "data/catalog"), { recursive: true });
+    await writeFile(join(root, "data/catalog/tcgcsv-latest.json"), JSON.stringify({ asOf: "2026-11-14" }));
+    await writeFile(join(root, "data/sealed-prices.json"), JSON.stringify({ updatedAt: "2026-11-14T12:40:27.302Z" }));
+    t("the board day follows today's price files, not yesterday's reads stamp", await priceBoardDay(root, "2026-11-13") === "2026-11-14");
+    const older = await mkdtemp(join(tmpdir(), "board-day-"));
+    t("with no price file the reads stamp is the fallback", await priceBoardDay(older, "2026-11-13") === "2026-11-13");
+    await rm(root, { recursive: true, force: true });
+    await rm(older, { recursive: true, force: true });
+  }
   return fail;
 }
