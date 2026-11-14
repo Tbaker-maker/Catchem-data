@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-30T13:41:23.734Z",
+  "generatedAt": "2026-11-14T14:37:39.140Z",
   "specification": "Modelled on the one art post that landed: Base Set Charizard beside 151 Blastoise ex, same illustrator, 24 years, both hero cards, both household Pokémon.",
   "whatItIsNot": "Not scored by recency, which is what produced a common card and an underwhelming post. Latest is a data choice; this scores the editorial one.",
-  "found": 18,
+  "found": 22,
   "pairings": [
     {
       "artist": "Mitsuhiro Arita",
@@ -82,58 +82,6 @@
       "command": "node scripts/card-composite.mjs ecard2-H28 me55c-149 --label \"...\""
     },
     {
-      "artist": "Kouki Saitou",
-      "score": 91,
-      "years": 18,
-      "first": {
-        "id": "ex11-5",
-        "name": "Flareon δ",
-        "set": "Delta Species",
-        "year": "2005",
-        "rarity": "Rare Holo"
-      },
-      "last": {
-        "id": "swsh12pt5gg-GG30",
-        "name": "Pikachu",
-        "set": "Crown Zenith Galarian Gallery",
-        "year": "2023",
-        "rarity": "Trainer Gallery Rare Holo"
-      },
-      "because": [
-        "18 years apart",
-        "both are Pokémon nobody needs introduced",
-        "both are the good version, not a common",
-        "cards people actually chase"
-      ],
-      "command": "node scripts/card-composite.mjs ex11-5 swsh12pt5gg-GG30 --label \"...\""
-    },
-    {
-      "artist": "Ryo Ueda",
-      "score": 91,
-      "years": 18,
-      "first": {
-        "id": "ex6-112",
-        "name": "Venusaur ex",
-        "set": "FireRed & LeafGreen",
-        "year": "2004",
-        "rarity": "Rare Holo EX"
-      },
-      "last": {
-        "id": "swsh10-171",
-        "name": "Machamp V",
-        "set": "Astral Radiance",
-        "year": "2022",
-        "rarity": "Rare Ultra"
-      },
-      "because": [
-        "18 years apart",
-        "both are Pokémon nobody needs introduced",
-        "both are the good version, not a common",
-        "cards people actually chase"
-      ],
-      "command": "node scripts/card-composite.mjs ex6-112 swsh10-171 --label \"...\""
-    },
-    {
       "artist": "Kagemaru Himeno",
       "score": 85,
       "years": 20,
@@ -157,6 +105,31 @@
         "both are the good version, not a common"
       ],
       "command": "node scripts/card-composite.mjs base2-3 sm115-48 --label \"...\""
+    },
+    {
+      "artist": "Kouki Saitou",
+      "score": 85,
+      "years": 20,
+      "first": {
+        "id": "ecard3-146",
+        "name": "Charizard",
+        "set": "Skyridge",
+        "year": "2003",
+        "rarity": "Rare Secret"
+      },
+      "last": {
+        "id": "swsh12pt5gg-GG30",
+        "name": "Pikachu",
+        "set": "Crown Zenith Galarian Gallery",
+        "year": "2023",
+        "rarity": "Trainer Gallery Rare Holo"
+      },
+      "because": [
+        "20 years apart",
+        "both are Pokémon nobody needs introduced",
+        "both are the good version, not a common"
+      ],
+      "command": "node scripts/card-composite.mjs ecard3-146 swsh12pt5gg-GG30 --label \"...\""
     },
     {
       "artist": "Masakazu Fukuda",
@@ -183,6 +156,81 @@
         "cards people actually chase"
       ],
       "command": "node scripts/card-composite.mjs ex8-107 swsh1-141 --label \"...\""
+    },
+    {
+      "artist": "Atsuko Nishida",
+      "score": 83,
+      "years": 19,
+      "first": {
+        "id": "neo2-1",
+        "name": "Espeon",
+        "set": "Neo Discovery",
+        "year": "2001",
+        "rarity": "Rare Holo"
+      },
+      "last": {
+        "id": "swsh4-131",
+        "name": "Snorlax",
+        "set": "Vivid Voltage",
+        "year": "2020",
+        "rarity": "Rare Holo"
+      },
+      "because": [
+        "19 years apart",
+        "both are Pokémon nobody needs introduced",
+        "both are the good version, not a common"
+      ],
+      "command": "node scripts/card-composite.mjs neo2-1 swsh4-131 --label \"...\""
+    },
+    {
+      "artist": "Ryo Ueda",
+      "score": 83,
+      "years": 19,
+      "first": {
+        "id": "ex3-90",
+        "name": "Dragonite ex",
+        "set": "Dragon",
+        "year": "2003",
+        "rarity": "Rare Holo EX"
+      },
+      "last": {
+        "id": "swsh10-171",
+        "name": "Machamp V",
+        "set": "Astral Radiance",
+        "year": "2022",
+        "rarity": "Rare Ultra"
+      },
+      "because": [
+        "19 years apart",
+        "both are Pokémon nobody needs introduced",
+        "both are the good version, not a common"
+      ],
+      "command": "node scripts/card-composite.mjs ex3-90 swsh10-171 --label \"...\""
+    },
+    {
+      "artist": "Aya Kusube",
+      "score": 81,
+      "years": 18,
+      "first": {
+        "id": "ecard3-H2",
+        "name": "Arcanine",
+        "set": "Skyridge",
+        "year": "2003",
+        "rarity": "Rare Holo"
+      },
+      "last": {
+        "id": "swsh6-57",
+        "name": "Gengar",
+        "set": "Chilling Reign",
+        "year": "2021",
+        "rarity": "Rare Holo"
+      },
+      "because": [
+        "18 years apart",
+        "both are Pokémon nobody needs introduced",
+        "both are the good version, not a common"
+      ],
+      "command": "node scripts/card-composite.mjs ecard3-H2 swsh6-57 --label \"...\""
     },
     {
       "artist": "kawayoo",
@@ -236,31 +284,6 @@
       "command": "node scripts/card-composite.mjs base1-1 xy12-59 --label \"...\""
     },
     {
-      "artist": "Atsuko Nishida",
-      "score": 79,
-      "years": 17,
-      "first": {
-        "id": "ex2-6",
-        "name": "Jolteon",
-        "set": "Sandstorm",
-        "year": "2003",
-        "rarity": "Rare Holo"
-      },
-      "last": {
-        "id": "swsh4-131",
-        "name": "Snorlax",
-        "set": "Vivid Voltage",
-        "year": "2020",
-        "rarity": "Rare Holo"
-      },
-      "because": [
-        "17 years apart",
-        "both are Pokémon nobody needs introduced",
-        "both are the good version, not a common"
-      ],
-      "command": "node scripts/card-composite.mjs ex2-6 swsh4-131 --label \"...\""
-    },
-    {
       "artist": "5ban Graphics",
       "score": 79,
       "years": 12,
@@ -285,31 +308,6 @@
         "cards people actually chase"
       ],
       "command": "node scripts/card-composite.mjs bw4-98 sv6-198 --label \"...\""
-    },
-    {
-      "artist": "Midori Harada",
-      "score": 77,
-      "years": 16,
-      "first": {
-        "id": "ex2-5",
-        "name": "Flareon",
-        "set": "Sandstorm",
-        "year": "2003",
-        "rarity": "Rare Holo"
-      },
-      "last": {
-        "id": "sm10-126",
-        "name": "Lucario",
-        "set": "Unbroken Bonds",
-        "year": "2019",
-        "rarity": "Rare Holo"
-      },
-      "because": [
-        "16 years apart",
-        "both are Pokémon nobody needs introduced",
-        "both are the good version, not a common"
-      ],
-      "command": "node scripts/card-composite.mjs ex2-5 sm10-126 --label \"...\""
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-10-30T13:41:17.797Z",
- "date": "2026-10-30",
+ "generatedAt": "2026-11-14T14:37:33.516Z",
+ "date": "2026-11-14",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
-  "falsifier: 1 finding(s)",
-  "correction-hunter: 26 finding(s)",
+  "falsifier: 0 finding(s)",
+  "correction-hunter: 27 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 4 finding(s)",
   "designer: 19 finding(s)",
@@ -21,13 +21,14 @@
   "experience: 6 finding(s)",
   "improver: 8 finding(s)",
   "universe-advisor: 5 finding(s)",
+  "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
   "compliance: clean run — nothing failed, which is the point of it",
   "security: clean run — nothing failed, which is the point of it",
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 26 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 27 across four runs with nothing resolved. Volume is not work.",
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
@@ -68,6 +69,11 @@
    "agent": "breaker",
    "finding": "every finding from a week ago is still open (6).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
+   "agent": "falsifier",
+   "finding": "runs daily and has returned the same count (0) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
    "agent": "correction-hunter",
@@ -121,22 +127,6 @@
   }
  ],
  "reviewed": [
-  {
-   "from": "falsifier",
-   "owner": "tyler",
-   "what": "RT-2 failed its own kill condition",
-   "do": "publish the amendment — we said in advance this would end the thesis",
-   "score": 90,
-   "band": "ACT NOW",
-   "selfScore": 90,
-   "demotions": [],
-   "components": {
-    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
-    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
-    "actionable": "NOW (20) — somebody named can do it today",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
   {
    "from": "experience",
    "owner": "chat",
@@ -448,7 +438,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Paradox Rift listings moved -66.7% while its print window closes.\"",
+   "what": "[X] \"Obsidian Flames listings moved 240% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -480,7 +470,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Journey Together Booster Bundle — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 143 listings counted.\"",
+   "what": "[YouTube] Shrouded Fable Booster Bundle — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 147 listings counted.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -496,7 +486,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.3.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.2.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -832,7 +822,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 327 places",
+   "what": "the paid provider is called from 329 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -848,7 +838,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 68 days.",
+   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 69 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -864,7 +854,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BACKUP.md has sat untouched for 69 days.",
+   "what": "PENDING-BACKUP.md has sat untouched for 70 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -880,7 +870,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-BOX.md has sat untouched for 68 days.",
+   "what": "PENDING-BLIND-BOX.md has sat untouched for 69 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -896,7 +886,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-PACKS.md has sat untouched for 68 days.",
+   "what": "PENDING-BLIND-PACKS.md has sat untouched for 69 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -912,7 +902,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 69 days.",
+   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 70 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -928,7 +918,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CC-BREAKER.md has sat untouched for 69 days.",
+   "what": "PENDING-CC-BREAKER.md has sat untouched for 70 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1237,22 +1227,6 @@
   ],
   "tyler": [
    {
-    "from": "falsifier",
-    "owner": "tyler",
-    "what": "RT-2 failed its own kill condition",
-    "do": "publish the amendment — we said in advance this would end the thesis",
-    "score": 90,
-    "band": "ACT NOW",
-    "selfScore": 90,
-    "demotions": [],
-    "components": {
-     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
-     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
-     "actionable": "NOW (20) — somebody named can do it today",
-     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-    }
-   },
-   {
     "from": "improver",
     "owner": "tyler",
     "what": "The knowledge base is only used for one fact a day.",
@@ -1288,7 +1262,7 @@
  },
  "ratings": {
   "confirmed": 4,
-  "actNow": 1,
+  "actNow": 0,
   "queue": 9,
   "watch": 8,
   "noteOnly": 33
