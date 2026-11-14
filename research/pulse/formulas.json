@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T13:41:23.646Z",
+  "generatedAt": "2026-11-14T14:37:39.049Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -425,6 +425,7 @@
     "one artist, one family": 8,
     "one Pokémon, many hands": 8,
     "one set, one hand": 8,
+    "the trio": 1,
     "the debut": 8,
     "the pair": 8,
     "the battle": 8,
@@ -465,6 +466,25 @@
         "sv6-178",
         "sv7-149",
         "sv8-200"
+      ],
+      "count": 9,
+      "why": "A binder page is three by three, so this is a shape a collector recognises before reading anything. Framed as a selection, not a ranking - you are invited to disagree.",
+      "angle": "Nine by one artist. Which one is going in the sleeve first?"
+    },
+    {
+      "kind": "binder page",
+      "title": "Nine Tetsu Kayama illustration rares for your binder",
+      "basis": "artist field + rarity field, nine of them",
+      "cards": [
+        "rsv10pt5-139",
+        "sv8pt5-159",
+        "sv3pt5-177",
+        "sv5-212",
+        "sv4-184",
+        "me1-137",
+        "me1-144",
+        "sv4pt5-224",
+        "me6-109"
       ],
       "count": 9,
       "why": "A binder page is three by three, so this is a shape a collector recognises before reading anything. Framed as a selection, not a ranking - you are invited to disagree.",
@@ -566,23 +586,22 @@
       "angle": "Nine by one artist. Which one is going in the sleeve first?"
     },
     {
-      "kind": "binder page",
-      "title": "Nine GIDORA illustration rares for your binder",
-      "basis": "artist field + rarity field, nine of them",
+      "kind": "the spread",
+      "title": "Alakazam by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
-        "sv8-238",
-        "sv6-220",
-        "rsv10pt5-109",
-        "sv6-181",
-        "sv10-190",
-        "sv4-216",
-        "sv9-166",
-        "sv2-266",
-        "me5-114"
+        "base1-1",
+        "ecard1-1",
+        "ecard3-H1",
+        "ex14-99",
+        "dp2-2",
+        "pl2-103",
+        "swsh4-172",
+        "sv3pt5-188"
       ],
-      "count": 9,
-      "why": "A binder page is three by three, so this is a shape a collector recognises before reading anything. Framed as a selection, not a ranking - you are invited to disagree.",
-      "angle": "Nine by one artist. Which one is going in the sleeve first?"
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Alakazam. Which is the definitive one?"
     },
     {
       "kind": "the spread",
@@ -592,11 +611,11 @@
         "base1-2",
         "ecard1-4",
         "ex6-104",
+        "ex14-2",
         "dp3-2",
+        "pl1-2",
         "bw7-31",
-        "bw8-137",
-        "sm12-38",
-        "sm12-214"
+        "bw8-137"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -609,12 +628,12 @@
       "cards": [
         "base1-4",
         "ecard1-6",
+        "ecard3-146",
+        "ex15-100",
         "ex16-6",
         "dp3-3",
         "pl3-143",
-        "bw7-20",
-        "bw8-136",
-        "sm75-3"
+        "pl4-1"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -626,13 +645,13 @@
       "basis": "name + eight distinct artist values",
       "cards": [
         "base1-6",
+        "ecard3-H10",
         "ex6-109",
         "ex8-8",
         "ex13-8",
         "ex13-102",
         "hgss1-123",
-        "sm3-33",
-        "sm75-20"
+        "xy7-21"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -645,12 +664,12 @@
       "cards": [
         "base1-8",
         "ecard1-16",
+        "ecard3-H15",
+        "ex5-9",
+        "ex12-9",
         "dp7-98",
         "bw10-49",
-        "g1-42",
-        "sm2-65",
-        "swsh35-26",
-        "swsh10-72"
+        "xy3-46"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -666,9 +685,9 @@
         "ex1-101",
         "ex11-12",
         "ex13-103",
+        "dp5-9",
         "dp6-144",
-        "det1-12",
-        "sm11-71"
+        "bw11-53"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -682,11 +701,11 @@
         "base1-12",
         "ecard1-21",
         "ecard2-H19",
+        "ex5-96",
+        "ex15-8",
         "hgss1-7",
         "bw6-19",
-        "swsh2-26",
-        "sv3-199",
-        "sv3pt5-186"
+        "swsh2-26"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
@@ -700,33 +719,15 @@
         "base1-14",
         "base3-14",
         "ecard1-25",
+        "ecard3-H25",
         "ex2-98",
         "ex6-12",
         "ex13-15",
-        "ex16-12",
-        "dp7-8"
+        "ex16-12"
       ],
       "count": 8,
       "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
       "angle": "Eight artists. One Raichu. Which is the definitive one?"
-    },
-    {
-      "kind": "the spread",
-      "title": "Venusaur by eight different illustrators",
-      "basis": "name + eight distinct artist values",
-      "cards": [
-        "base1-15",
-        "ecard1-30",
-        "ex6-112",
-        "dp3-20",
-        "pl3-13",
-        "bw5-3",
-        "sm12-210",
-        "swsh35-1"
-      ],
-      "count": 8,
-      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
-      "angle": "Eight artists. One Venusaur. Which is the definitive one?"
     },
     {
       "kind": "the half page",
@@ -900,77 +901,77 @@
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Alakazam, drawn by 6 different illustrators",
+      "title": "Alakazam, drawn by 9 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-1",
         "ecard1-1",
-        "pl2-103",
-        "swsh4-172"
+        "ecard3-H1",
+        "ex14-99"
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "6 artists. One Alakazam."
+      "angle": "9 artists. One Alakazam."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Blastoise, drawn by 11 different illustrators",
+      "title": "Blastoise, drawn by 13 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-2",
         "ecard1-4",
         "ex6-104",
-        "dp3-2"
+        "ex14-2"
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Blastoise."
+      "angle": "13 artists. One Blastoise."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Charizard, drawn by 16 different illustrators",
+      "title": "Charizard, drawn by 20 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-4",
         "ecard1-6",
-        "ex16-6",
-        "dp3-3"
+        "ecard3-146",
+        "ex15-100"
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "16 artists. One Charizard."
+      "angle": "20 artists. One Charizard."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Gyarados, drawn by 13 different illustrators",
+      "title": "Gyarados, drawn by 15 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-6",
+        "ecard3-H10",
         "ex6-109",
-        "ex8-8",
-        "ex13-8"
+        "ex8-8"
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "13 artists. One Gyarados."
+      "angle": "15 artists. One Gyarados."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Machamp, drawn by 11 different illustrators",
+      "title": "Machamp, drawn by 14 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-8",
         "ecard1-16",
-        "dp7-98",
-        "bw10-49"
+        "ecard3-H15",
+        "ex5-9"
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Machamp."
+      "angle": "14 artists. One Machamp."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Magneton, drawn by 5 different illustrators",
+      "title": "Magneton, drawn by 7 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-9",
@@ -980,11 +981,11 @@
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Magneton."
+      "angle": "7 artists. One Magneton."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Mewtwo, drawn by 15 different illustrators",
+      "title": "Mewtwo, drawn by 17 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-10",
@@ -994,11 +995,11 @@
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "15 artists. One Mewtwo."
+      "angle": "17 artists. One Mewtwo."
     },
     {
       "kind": "one Pokémon, many hands",
-      "title": "Nidoking, drawn by 5 different illustrators",
+      "title": "Nidoking, drawn by 7 different illustrators",
       "basis": "name + distinct artist field",
       "cards": [
         "base1-11",
@@ -1008,7 +1009,7 @@
       ],
       "count": 4,
       "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Nidoking."
+      "angle": "7 artists. One Nidoking."
     },
     {
       "kind": "one set, one hand",
@@ -1123,6 +1124,32 @@
     },
     {
       "kind": "one artist, one family",
+      "title": "Mitsuhiro Arita drew 3 of Ghost-type nightmares",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "dp7-1",
+        "ex6-108",
+        "ex12-85"
+      ],
+      "count": 3,
+      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Mitsuhiro Arita drew 3 of them. Which one actually scared you as a kid?"
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Shizurow drew 3 of Ghost-type nightmares",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "dp7-96",
+        "pl4-97",
+        "hgss4-10"
+      ],
+      "count": 3,
+      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Shizurow drew 3 of them. Which one actually scared you as a kid?"
+    },
+    {
+      "kind": "one artist, one family",
       "title": "Eske Yoshinob drew 3 of Ghost-type nightmares",
       "basis": "artist field + a named list of 9 Pokémon",
       "cards": [
@@ -1136,42 +1163,16 @@
     },
     {
       "kind": "one artist, one family",
-      "title": "Midori Harada drew 3 of Pokémon caught napping",
-      "basis": "artist field + a named list of 20 Pokémon",
+      "title": "Ryo Ueda drew 3 of Ghost-type nightmares",
+      "basis": "artist field + a named list of 9 Pokémon",
       "cards": [
-        "ex16-13",
-        "ex10-13",
-        "ex10-14"
+        "xy4-114",
+        "dp6-16",
+        "bw11-77"
       ],
       "count": 3,
       "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "Midori Harada drew 3 of them. Late night check-in. Who's still awake?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Saki Hayashiro drew 3 of Pokémon caught napping",
-      "basis": "artist field + a named list of 20 Pokémon",
-      "cards": [
-        "sv3pt5-187",
-        "pgo-77",
-        "swsh6-224"
-      ],
-      "count": 3,
-      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "Saki Hayashiro drew 3 of them. Late night check-in. Who's still awake?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Ryo Ueda drew 3 of The pseudo-legendaries",
-      "basis": "artist field + a named list of 10 Pokémon",
-      "cards": [
-        "ex11-3",
-        "ex11-14",
-        "ex16-95"
-      ],
-      "count": 3,
-      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "Ryo Ueda drew 3 of them. Which one did you actually raise?"
+      "angle": "Ryo Ueda drew 3 of them. Which one actually scared you as a kid?"
     },
     {
       "kind": "one set, one hand",
@@ -1185,6 +1186,19 @@
       "count": 3,
       "why": "A whole set seen through one person, which is a different thing from a set seen as a checklist.",
       "angle": "3 cards in Base. Same artist."
+    },
+    {
+      "kind": "the trio",
+      "title": "Not from here, the best of each",
+      "basis": "a named list of three + rarity + price",
+      "cards": [
+        "sv5-177",
+        "bw2-47",
+        "base3-6"
+      ],
+      "count": 3,
+      "why": "Three that belong together, each at its strongest. The set is the argument.",
+      "angle": "Not from here. Which one do you actually want?"
     },
     {
       "kind": "the debut",
@@ -1372,7 +1386,7 @@
       "basis": "artist field + earliest and latest hero card",
       "cards": [
         "neo1-19",
-        "hgss3-THREE"
+        "hgss4-FOUR"
       ],
       "count": 2,
       "why": "10 years, one hand. The gap is the story and the images make it without a caption.",

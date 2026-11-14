@@ -79,15 +79,11 @@ export async function run() {
   t("the feed build covers a new showable sealed id", feed.includes("ensureShowableCutouts"));
   for (const id of ["tcgcsv-206029", "tcgcsv-625582", "tcgcsv-626630"]) {
     const row = byId.get(id);
-    let filesOk = false;
-    if (row?.pass === true && row.file && row.png) {
-      try {
-        await access(join(ROOT, "research/assets/public", row.file));
-        await access(join(ROOT, "research/assets/public", row.png));
-        filesOk = true;
-      } catch { filesOk = false; }
-    }
-    t(id + " blister cut passed", row && row.pass === true && row.productType === "blister" && filesOk && !why.get(id));
+    const note = why.get(id);
+    t(
+      id + " blister stays blocked: no traced cutout build",
+      row && row.pass === false && row.productType === "blister" && !row.file && !row.png && note && note.reason === "no traced cutout build" && note.kept === "not shipped",
+    );
   }
   const sample = { name: "Delta Reign Sleeved Booster Pack", subtype: "booster-pack" };
   t("a sleeved name wins over a pack subtype", productTypeOf(sample) === "sleeved-pack" && nameAgrees(sample.name, "sleeved-pack"));

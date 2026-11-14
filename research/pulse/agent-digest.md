@@ -1,15 +1,15 @@
-# What the machines noticed — 2026-10-30
+# What the machines noticed — 2026-11-14
 
 The overnight shift's notes. Short on purpose.
 
 ## Our own claims
 Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
-3 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
+2 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
+We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
 
-27 product(s) we featured and can no longer price:
+29 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -26,7 +26,7 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 26 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 27 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
@@ -53,8 +53,7 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (3):**
-- **[ACT NOW 90]** RT-2 failed its own kill condition — *publish the amendment — we said in advance this would end the thesis*
+**NEEDS A HUMAN — Tyler (2):**
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -65,7 +64,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 1 ACT NOW, 9 QUEUE, 8 WATCH, 33 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 33 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -73,17 +72,17 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## Where today's story goes
-- **X** — "Obsidian Flames listings moved 240% while its print window closes."
-- **YouTube** — Shrouded Fable Booster Bundle — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 147 listings counted."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.2."
+- **X** — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 142 listings counted."
+- **YouTube** — Shining Fates Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 142 listings counted."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.1."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 70 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 69 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 84 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 85 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 84 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 84 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -92,10 +91,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-57 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 357 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: type = 52. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 91% rejection rate (14/150) — *largest bucket: set = 45. A single over-broad term can eat a market.*
+56 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 386 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- 151 Booster Pack: 79% rejection rate (32/150) — *largest bucket: type = 66. A single over-broad term can eat a market.*
+- Paradox Rift Booster Pack: 73% rejection rate (41/150) — *largest bucket: exclude = 60. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -118,13 +117,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 164 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 170 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-76 open — 57 need eyes on a rendered page, 19 need a decision.
+77 open — 58 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
