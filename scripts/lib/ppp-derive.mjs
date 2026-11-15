@@ -48,16 +48,63 @@ export function offItem(title, productName = "") {
   return OFF_ITEM.some((re) => re.test(t) && !re.test(own));
 }
 
-// Keep comps that are this exact item, in USD, inside the window, then drop
-// anything under half or over double the kept median (the half-price filter),
-// and anything under a quarter or over 4x the current TCGplayer market when known
-// (a wide guard against a different item; the median filter does the real work).
-export function keepComps(rows, { asOf, kind = "single", name = "", market = null, graded = false, days = SOLD_WINDOW_DAYS } = {}) {
+// Keep comps that are this exact item, in USD, inside the window.
+// Raw comps are then kept only inside the private band around the TCGplayer
+// market on the sale date (marketOn). No band, or no market on or before that
+// date, drops the comp. The half-to-double cut against the comps' own median
+// still runs after that, so one odd price cannot set the line.
+// Graded rows are not band-filtered here. gradedStats holds a low grade whose
+// median sits above the same kind of raw-market cap.
+export function readCompBand(doc) {
+  const low = Number(doc?.rawVsDatedMarket?.low);
+  const high = Number(doc?.rawVsDatedMarket?.high);
+  const lowGradeMax = Number(doc?.lowGradeMax);
+  const lowGradeHigh = Number(doc?.lowGradeVsRawMarket);
+  if (!(low > 0) || !(high > low) || !(lowGradeMax > 0) || !(lowGradeHigh > 1)) return null;
+  return { low, high, lowGradeMax, lowGradeHigh };
+}
+
+// Latest market on or before day. series is sorted by date ascending.
+// printing, when set, is that printing's own price. No row for it means no market.
+export function marketOnDate(series, day, printing = "") {
+  if (!Array.isArray(series) || !ISO.test(String(day || ""))) return null;
+  let lo = 0;
+  let hi = series.length - 1;
+  let ans = null;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (series[mid].date <= day) { ans = series[mid]; lo = mid + 1; }
+    else hi = mid - 1;
+  }
+  if (!ans) return null;
+  const n = printing ? Number(ans.printings?.[printing]) : Number(ans.market);
+  return n > 0 ? n : null;
+}
+
+// Title phrases that name a TCGplayer printing. A longer phrase wins.
+export function printingFromTitle(title) {
+  const t = String(title || "");
+  if (/\bnon[-\s]?holo\b/i.test(t)) return "Normal";
+  if (/\breverse\s+holo(?:foil)?\b/i.test(t)) return "Reverse Holofoil";
+  const holo = /\bholo(?:foil)?\b/i.test(t);
+  const first = /\b(?:1st|first)\s+edition\b/i.test(t);
+  const unlimited = /\bunlimited\b/i.test(t);
+  if (holo && first) return "1st Edition Holofoil";
+  if (holo && unlimited) return "Unlimited Holofoil";
+  if (first) return "1st Edition";
+  if (unlimited) return "Unlimited";
+  if (holo) return "Holofoil";
+  return "";
+}
+
+export function keepComps(rows, { asOf, kind = "single", name = "", graded = false, days = SOLD_WINDOW_DAYS, band = null, marketOn = null } = {}) {
   const end = Date.parse(asOf);
   const start = end - days * DAY;
   let kept = [];
   let dropped = 0;
-  for (const row of rows || []) {
+  const list = rows || [];
+  if (!graded && !band) return { kept: [], dropped: list.length, closed: true };
+  for (const row of list) {
     const price = Number(row?.price);
     const day = String(row?.sold_at || "").slice(0, 10);
     const t = Date.parse(day);
@@ -67,14 +114,14 @@ export function keepComps(rows, { asOf, kind = "single", name = "", market = nul
       && (kind === "sealed" || row?.attribution === "exact")
       && (graded ? true : !offItem(row?.title, name));
     if (!ok) { dropped++; continue; }
-    kept.push({ price, day, grader: row.grader || null, grade: row.grade == null ? null : String(row.grade), q: row.grade_qualifier || null });
+    if (!graded) {
+      const named = printingFromTitle(row?.title);
+      const dated = typeof marketOn === "function" ? Number(marketOn(day, named)) : null;
+      if (!(dated > 0) || price < dated * band.low || price > dated * band.high) { dropped++; continue; }
+    }
+    kept.push({ price, day, grader: row.grader || null, grade: row.grade == null ? null : String(row.grade), q: row.grade_qualifier || null, title: String(row?.title || "") });
   }
-  if (!graded && Number(market) > 0) {
-    const before = kept.length;
-    kept = kept.filter((c) => c.price >= market * 0.25 && c.price <= market * 4);
-    dropped += before - kept.length;
-  }
-  if (!graded) {
+  if (!graded && kept.length) {
     const m = median(kept.map((c) => c.price));
     if (m) {
       const before = kept.length;
@@ -82,7 +129,7 @@ export function keepComps(rows, { asOf, kind = "single", name = "", market = nul
       dropped += before - kept.length;
     }
   }
-  return { kept, dropped };
+  return { kept, dropped, closed: false };
 }
 
 export function soldStats(rows, opts = {}) {
@@ -107,8 +154,21 @@ export function soldStats(rows, opts = {}) {
   };
 }
 
+function gradeNumber(grade) {
+  const n = Number(String(grade ?? "").trim());
+  return Number.isFinite(n) ? n : null;
+}
+
+function graderList(names) {
+  if (names.length === 1) return names[0];
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
 // Median by grader + grade (BGS Black Label and CGC Pristine kept apart).
+// A low grade whose median is above the private cap versus the raw market on
+// the last kept day is held, not published. No band holds every grade line.
 export function gradedStats(rows, opts = {}) {
+  if (!opts.band) return [];
   const { kept } = keepComps(rows, { ...opts, graded: true });
   const groups = new Map();
   for (const c of kept) {
@@ -125,7 +185,16 @@ export function gradedStats(rows, opts = {}) {
     // the same half-price filter inside each grade
     const keep = list.filter((c) => c.price >= m * 0.5 && c.price <= m * 2);
     if (keep.length < MIN_GRADED) continue;
-    out.push({ label: key, n: keep.length, median: r2(median(keep.map((c) => c.price))), last: keep.map((c) => c.day).sort().at(-1) });
+    const med = median(keep.map((c) => c.price));
+    const last = keep.map((c) => c.day).sort().at(-1);
+    const nGrade = gradeNumber(keep[0].grade);
+    if (nGrade != null && nGrade <= opts.band.lowGradeMax) {
+      const lastRow = keep.find((c) => c.day === last) || keep[0];
+      const named = printingFromTitle(lastRow.title);
+      const raw = typeof opts.marketOn === "function" ? Number(opts.marketOn(last, named)) : null;
+      if (!(raw > 0) || med > raw * opts.band.lowGradeHigh) continue;
+    }
+    out.push({ label: key, n: keep.length, median: r2(med), last });
   }
   return out.sort((a, b) => b.n - a.n).slice(0, 6);
 }
@@ -165,15 +234,23 @@ export function popSummary(body, { variant = "" } = {}) {
     if (Number(rep.pristine) > 0) graders[g].pristine = Number(rep.pristine);
     if (Number(rep.black_label) > 0) graders[g].blackLabel = Number(rep.black_label);
   }
+  const summed = Object.values(graders).reduce((s, g) => s + g.total, 0);
+  const across = summed > 0 ? summed : total;
+  const asOf = String(pick.updated_at || "").slice(0, 10) || null;
+  const names = Object.keys(graders);
+  const label = names.length && across > 0
+    ? `${across} graded across ${graderList(names)}${asOf ? `, as of ${asOf}` : ""}`
+    : null;
   return {
     variant: String(pick.variant || ""),
     variants: vars.length,
-    total,
+    total: across,
     gems: Number(pick.total_gems) || 0,
     gemRate: Number.isFinite(Number(pick.gem_rate)) ? Number(pick.gem_rate) : null,
     graders,
-    asOf: String(pick.updated_at || "").slice(0, 10) || null,
+    asOf,
     changed: pick.last_population_change || null,
+    ...(label ? { label } : {}),
   };
 }
 
@@ -192,17 +269,17 @@ export function eurPrice(detail, { kind = "single", variant = "" } = {}) {
 export const PUBLIC_ITEM_KEYS = new Set(["sold", "graded", "daily", "pop", "eur"]);
 export const PUBLIC_SOLD_KEYS = new Set(["n", "read", "median", "p25", "p75", "first", "last", "dropped", "days", "currency", "truncated"]);
 export const PUBLIC_GRADED_KEYS = new Set(["label", "n", "median", "last"]);
-export const PUBLIC_POP_KEYS = new Set(["variant", "variants", "total", "gems", "gemRate", "graders", "asOf", "changed"]);
+export const PUBLIC_POP_KEYS = new Set(["variant", "variants", "total", "gems", "gemRate", "graders", "asOf", "changed", "label"]);
 export const PUBLIC_EUR_KEYS = new Set(["market", "asOf"]);
 
-export function deriveItem(raw, { asOf, kind, name, market }) {
+export function deriveItem(raw, { asOf, kind, name, market, band = null, marketOn = null }) {
   const out = {};
   if (raw.comps) {
-    const opts = { asOf, kind, name, market, truncated: !!raw.comps.more };
+    const opts = { asOf, kind, name, market, band, marketOn, truncated: !!raw.comps.more };
     const sold = soldStats(raw.comps.rows, opts);
     if (sold) out.sold = sold;
     if (kind !== "sealed") {
-      const graded = gradedStats(raw.comps.gradedRows || [], { asOf, kind, name });
+      const graded = gradedStats(raw.comps.gradedRows || [], { asOf, kind, name, band, marketOn });
       if (graded.length) out.graded = graded;
     }
   }
