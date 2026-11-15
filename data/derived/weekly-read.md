@@ -3,10 +3,10 @@
 Video outline. Same parts every week. Do not say a name is a move to make.
 
 ## Heat
-- Chilling Reign Elite Trainer Box: Hot
+- Fusion Strike Pokemon Center Elite Trainer Box: Hot
 - Lost Origin Booster Bundle: Hot
 - Paradox Rift Booster Bundle: Hot
-- Fusion Strike Pokemon Center Elite Trainer Box: Hot
+- Temporal Forces Booster Bundle: Hot
 - Pitch Black Elite Trainer Box: Hot
 - Obsidian Flames Booster Pack: Hot
 

@@ -8,12 +8,12 @@
     "reserve": 1000,
     "used": {
       "sealed": 0,
-      "singles": 2467,
-      "total": 2467
+      "singles": 2472,
+      "total": 2472
     },
-    "remaining": 8737,
-    "usedToday": 11263,
-    "usedThisRun": 2467,
+    "remaining": 6265,
+    "usedToday": 13735,
+    "usedThisRun": 2472,
     "labels": {
       "used": "this run only, from x-credits-charged",
       "usedThisRun": "this run only, from x-credits-charged",
@@ -26,28 +26,28 @@
       "volume": 1322,
       "pop": 999,
       "history": 493,
-      "current": 2467
+      "current": 4939
     }
   },
   "items": {
     "sealed": 0,
-    "singles": 1304
+    "singles": 1236
   },
   "errors": [
-    "time cap reached; 40701 calls left for the next run"
+    "time cap reached; 38221 calls left for the next run"
   ],
   "estimate": {
     "budget": 10000,
     "reserve": 1000,
     "daily": 20000,
     "sealedCredits": 389,
-    "singlesCredits": 9610,
-    "total": 9999,
+    "singlesCredits": 9611,
+    "total": 10000,
     "sealedCount": 389,
     "singlesCount": 28859,
     "mappedSealed": 2586,
-    "mappedSingles": 7316,
-    "singlesThisNight": 8463,
+    "mappedSingles": 8479,
+    "singlesThisNight": 9045,
     "notes": [
       "Current-price lane is 10,000 of 20,000 daily credits; 1,000 stays in the shared reserve.",
       "Current prices only. History is 1 credit per row and is not in the nightly refresh.",
@@ -57,22 +57,22 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 2467,
-    "itemsDone": 1304,
+    "creditsUsed": 2472,
+    "itemsDone": 1236,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 40732,
-    "itemsSkipped": 40732,
+    "itemsBudgetSkipped": 38256,
+    "itemsSkipped": 38256,
     "callsSent": 2476,
     "callsFailed": 0,
-    "callsNotSent": 40732,
+    "callsNotSent": 38256,
     "rateLimitCount": 0,
     "retries": 0
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppp-raw-private and pushed to the private repo. It is not committed here.",
   "emptyIds": {
-    "skippedToday": 23,
-    "foundEmptyToday": 9,
-    "marked": 32,
+    "skippedToday": 32,
+    "foundEmptyToday": 4,
+    "marked": 36,
     "recheckDays": 7,
     "note": "Lookups PPP answered with no unique product. Skipped until a week has passed, then asked once more."
   },
@@ -112,15 +112,15 @@
     },
     "singles": {
       "vsTcgcsv": {
-        "nCompared": 1678,
-        "nExact": 1510,
-        "exactShare": 0.899880810488677,
+        "nCompared": 1563,
+        "nExact": 1355,
+        "exactShare": 0.8669225847728727,
         "medianAbsPct": 0,
-        "within5": 1660,
-        "within5Share": 0.9892729439809297,
-        "within10": 1664,
-        "within10Share": 0.9916567342073898,
-        "nOutliersOver10": 14
+        "within5": 1541,
+        "within5Share": 0.9859245041586693,
+        "within10": 1548,
+        "within10Share": 0.9904030710172744,
+        "nOutliersOver10": 15
       },
       "vsPpt": {
         "nCompared": 0,

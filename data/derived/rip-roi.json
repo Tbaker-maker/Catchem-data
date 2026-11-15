@@ -2063,10 +2063,10 @@
    "name": "Temporal Forces Elite Trainer Box",
    "set": "Temporal Forces",
    "subtype": "etb",
-   "price": 135.98,
+   "price": 135.86,
    "packs": 9,
    "contentsEV": 36.72,
-   "ev": -99.26,
+   "ev": -99.14,
    "roiPct": -73,
    "beatChance": 9.1,
    "median": 17.73
@@ -2105,11 +2105,11 @@
    "name": "Surging Sparks Booster Bundle",
    "set": "Surging Sparks",
    "subtype": "booster-bundle",
-   "price": 65.15,
+   "price": 64.84,
    "packs": 6,
    "contentsEV": 17.22,
-   "ev": -47.93,
-   "roiPct": -73.6,
+   "ev": -47.62,
+   "roiPct": -73.4,
    "beatChance": 1.5,
    "median": 10.59
   },
@@ -2367,6 +2367,20 @@
   },
   {
    "rank": 105,
+   "id": "me1-etb",
+   "name": "Mega Evolution Elite Trainer Box",
+   "set": "Mega Evolution",
+   "subtype": "etb",
+   "price": 111.56,
+   "packs": 9,
+   "contentsEV": 25.38,
+   "ev": -86.18,
+   "roiPct": -77.2,
+   "beatChance": 0.9,
+   "median": 14.49
+  },
+  {
+   "rank": 106,
    "id": "sm5-booster-box",
    "name": "Ultra Prism Booster Box",
    "set": "Ultra Prism",
@@ -2380,7 +2394,7 @@
    "median": 93.42
   },
   {
-   "rank": 106,
+   "rank": 107,
    "id": "swsh11-pack",
    "name": "Lost Origin Booster Pack",
    "set": "Lost Origin",
@@ -2394,7 +2408,7 @@
    "median": 1.48
   },
   {
-   "rank": 107,
+   "rank": 108,
    "id": "tcgcsv-257320",
    "name": "Darkness Ablaze Sleeved Booster Pack",
    "set": "SWSH03: Darkness Ablaze",
@@ -2406,20 +2420,6 @@
    "roiPct": -77.2,
    "beatChance": 1,
    "median": 1.74
-  },
-  {
-   "rank": 108,
-   "id": "me1-etb",
-   "name": "Mega Evolution Elite Trainer Box",
-   "set": "Mega Evolution",
-   "subtype": "etb",
-   "price": 111.76,
-   "packs": 9,
-   "contentsEV": 25.38,
-   "ev": -86.38,
-   "roiPct": -77.3,
-   "beatChance": 0.9,
-   "median": 14.49
   },
   {
    "rank": 109,
@@ -3309,10 +3309,10 @@
    "name": "Mega Evolution Pokemon Center Elite Trainer Box",
    "set": "Mega Evolution",
    "subtype": "pc-etb",
-   "price": 180.15,
+   "price": 180.52,
    "packs": 9,
    "contentsEV": 25.38,
-   "ev": -154.77,
+   "ev": -155.14,
    "roiPct": -85.9,
    "beatChance": 1.1,
    "median": 14.49
@@ -3715,10 +3715,10 @@
    "name": "Evolving Skies Elite Trainer Box",
    "set": "Evolving Skies",
    "subtype": "etb",
-   "price": 499.47,
+   "price": 498.74,
    "packs": 8,
    "contentsEV": 49.6,
-   "ev": -449.87,
+   "ev": -449.14,
    "roiPct": -90.1,
    "beatChance": 1.3,
    "median": 10.48
@@ -3729,10 +3729,10 @@
    "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
    "set": "Scarlet & Violet",
    "subtype": "pc-etb",
-   "price": 301.73,
+   "price": 301.53,
    "packs": 9,
    "contentsEV": 29.16,
-   "ev": -272.57,
+   "ev": -272.37,
    "roiPct": -90.3,
    "beatChance": 0,
    "median": 13.5
@@ -9608,7 +9608,7 @@
    "setId": "sv5",
    "setSlug": "sv05-temporal-forces",
    "subtype": "etb",
-   "price": 135.98,
+   "price": 135.86,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -9618,7 +9618,7 @@
     "total": 4.08
    },
    "contentsEV": 36.72,
-   "ev": -99.26,
+   "ev": -99.14,
    "roiPct": -73,
    "beatChance": 9.1,
    "median": 17.73,
@@ -9831,7 +9831,7 @@
    "setId": "sv8",
    "setSlug": "sv08-surging-sparks",
    "subtype": "booster-bundle",
-   "price": 65.15,
+   "price": 64.84,
    "packs": 6,
    "promo": 0,
    "packEV": {
@@ -9841,8 +9841,8 @@
     "total": 2.87
    },
    "contentsEV": 17.22,
-   "ev": -47.93,
-   "roiPct": -73.6,
+   "ev": -47.62,
+   "roiPct": -73.4,
    "beatChance": 1.5,
    "median": 10.59,
    "sims": 10000,
@@ -11224,6 +11224,67 @@
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },
   {
+   "id": "me1-etb",
+   "name": "Mega Evolution Elite Trainer Box",
+   "set": "Mega Evolution",
+   "setId": "me1",
+   "setSlug": "me01-mega-evolution",
+   "subtype": "etb",
+   "price": 111.56,
+   "packs": 9,
+   "promo": 0,
+   "packEV": {
+    "hits": 1.21,
+    "bulk": 1.35,
+    "rare": 0.26,
+    "total": 2.82
+   },
+   "contentsEV": 25.38,
+   "ev": -86.18,
+   "roiPct": -77.2,
+   "beatChance": 0.9,
+   "median": 14.49,
+   "sims": 10000,
+   "bulk": {
+    "perCard": 0.15,
+    "median": 0.14,
+    "n": 110,
+    "cardsPerPack": 9,
+    "raised": false,
+    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
+   },
+   "rareSlot": {
+    "avg": 0.26,
+    "n": 22
+   },
+   "slots": [
+    {
+     "rarity": "Illustration Rare",
+     "tag": null,
+     "rate": 0.1089,
+     "avgPrice": 5.09,
+     "nCards": 22,
+     "ev": 0.5541,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+     "published": "2025-09-30"
+    },
+    {
+     "rarity": "Special Illustration Rare",
+     "tag": null,
+     "rate": 0.0099,
+     "avgPrice": 65.76,
+     "nCards": 10,
+     "ev": 0.651,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+     "published": "2025-09-30"
+    }
+   ],
+   "priceAsOf": "2026-11-15",
+   "priceSource": "sealed-prices median",
+   "label": "Rip value",
+   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
+  },
+  {
    "id": "sm5-booster-box",
    "name": "Ultra Prism Booster Box",
    "set": "Ultra Prism",
@@ -11463,67 +11524,6 @@
    ],
    "priceAsOf": "2026-11-15",
    "priceSource": "TCGplayer market",
-   "label": "Rip value",
-   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
-  },
-  {
-   "id": "me1-etb",
-   "name": "Mega Evolution Elite Trainer Box",
-   "set": "Mega Evolution",
-   "setId": "me1",
-   "setSlug": "me01-mega-evolution",
-   "subtype": "etb",
-   "price": 111.76,
-   "packs": 9,
-   "promo": 0,
-   "packEV": {
-    "hits": 1.21,
-    "bulk": 1.35,
-    "rare": 0.26,
-    "total": 2.82
-   },
-   "contentsEV": 25.38,
-   "ev": -86.38,
-   "roiPct": -77.3,
-   "beatChance": 0.9,
-   "median": 14.49,
-   "sims": 10000,
-   "bulk": {
-    "perCard": 0.15,
-    "median": 0.14,
-    "n": 110,
-    "cardsPerPack": 9,
-    "raised": false,
-    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
-   },
-   "rareSlot": {
-    "avg": 0.26,
-    "n": 22
-   },
-   "slots": [
-    {
-     "rarity": "Illustration Rare",
-     "tag": null,
-     "rate": 0.1089,
-     "avgPrice": 5.09,
-     "nCards": 22,
-     "ev": 0.5541,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
-     "published": "2025-09-30"
-    },
-    {
-     "rarity": "Special Illustration Rare",
-     "tag": null,
-     "rate": 0.0099,
-     "avgPrice": 65.76,
-     "nCards": 10,
-     "ev": 0.651,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
-     "published": "2025-09-30"
-    }
-   ],
-   "priceAsOf": "2026-11-15",
-   "priceSource": "sealed-prices median",
    "label": "Rip value",
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },
@@ -16307,7 +16307,7 @@
    "setId": "me1",
    "setSlug": "me01-mega-evolution",
    "subtype": "pc-etb",
-   "price": 180.15,
+   "price": 180.52,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -16317,7 +16317,7 @@
     "total": 2.82
    },
    "contentsEV": 25.38,
-   "ev": -154.77,
+   "ev": -155.14,
    "roiPct": -85.9,
    "beatChance": 1.1,
    "median": 14.49,
@@ -18406,7 +18406,7 @@
    "setId": "swsh7",
    "setSlug": "swsh07-evolving-skies",
    "subtype": "etb",
-   "price": 499.47,
+   "price": 498.74,
    "packs": 8,
    "promo": 0,
    "packEV": {
@@ -18416,7 +18416,7 @@
     "total": 6.2
    },
    "contentsEV": 49.6,
-   "ev": -449.87,
+   "ev": -449.14,
    "roiPct": -90.1,
    "beatChance": 1.3,
    "median": 10.48,
@@ -18467,7 +18467,7 @@
    "setId": "sv1",
    "setSlug": "sv01-scarlet-and-violet-base-set",
    "subtype": "pc-etb",
-   "price": 301.73,
+   "price": 301.53,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -18477,7 +18477,7 @@
     "total": 3.24
    },
    "contentsEV": 29.16,
-   "ev": -272.57,
+   "ev": -272.37,
    "roiPct": -90.3,
    "beatChance": 0,
    "median": 13.5,

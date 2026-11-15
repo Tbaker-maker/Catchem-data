@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-15",
- "generatedAt": "2026-11-15T12:24:36.558Z",
+ "generatedAt": "2026-11-15T19:09:27.930Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -22,16 +22,16 @@
  "summary": {
   "byType": {
    "PRICE_MOVE": 4,
-   "NEWS_SOURCE_FAILING": 5,
+   "NEWS_SOURCE_FAILING": 3,
    "DATA_GAP": 1,
-   "ODD_PRICE": 96,
-   "READ_TYPE_EMPTY": 10,
-   "YOUTUBE_LEAD": 13
+   "ODD_PRICE": 94,
+   "READ_TYPE_EMPTY": 8,
+   "YOUTUBE_LEAD": 14
   },
   "bySeverity": {
    "high": 1,
    "medium": 18,
-   "low": 110
+   "low": 105
   }
  },
  "newTonight": 0,
@@ -103,18 +103,6 @@
   {
    "type": "NEWS_SOURCE_FAILING",
    "severity": "medium",
-   "key": "news-fail:Bulbagarden",
-   "line": "News source failed: Bulbagarden (HTTP 403: page blocked the fetch).",
-   "data": {
-    "source": "Bulbagarden",
-    "url": "https://bulbagarden.net/home/index.rss",
-    "error": "HTTP 403: page blocked the fetch"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
-   "severity": "medium",
    "key": "news-fail:PokeBeach",
    "line": "News source failed: PokeBeach (HTTP 403).",
    "data": {
@@ -134,19 +122,6 @@
     "url": "https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss",
     "items": 0,
     "skipped": "front-page news returned no items"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
-   "severity": "low",
-   "key": "news-empty:Bulbagarden",
-   "line": "News source returned nothing: Bulbagarden.",
-   "data": {
-    "source": "Bulbagarden",
-    "url": "https://bulbagarden.net/home/index.rss",
-    "items": 0,
-    "skipped": "HTTP 403: page blocked the fetch"
    },
    "new": false
   },
@@ -207,10 +182,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:swsh11-pack",
-   "line": "Floor left off for Lost Origin Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Lost Origin Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "swsh11-pack",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -231,22 +206,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv10-pack",
-   "line": "Floor left off for Destined Rivals Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Destined Rivals Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv10-pack",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "floor-dropped:me2-pack",
-   "line": "Floor left off for Phantasmal Flames Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "me2-pack",
-    "reason": "floor from 4 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -279,10 +242,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:zsv10pt5-bundle",
-   "line": "Floor left off for Black Bolt Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Black Bolt Booster Bundle: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "zsv10pt5-bundle",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -303,22 +266,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:rsv10pt5-bundle",
-   "line": "Floor left off for White Flare Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for White Flare Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "rsv10pt5-bundle",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "floor-dropped:sm2-etb",
-   "line": "Floor left off for Guardians Rising Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "sm2-etb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -351,10 +302,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv9-bb",
-   "line": "Floor left off for Journey Together Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Journey Together Booster Bundle: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv9-bb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -494,23 +445,11 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "floor-dropped:sv7-pc-etb",
-   "line": "Floor left off for Stellar Crown Pokemon Center Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "sv7-pc-etb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
    "key": "floor-dropped:sv8-pc-etb",
-   "line": "Floor left off for Surging Sparks Pokemon Center Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Surging Sparks Pokemon Center Elite Trainer Box: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv8-pc-etb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -555,10 +494,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me4-etb",
-   "line": "Floor left off for Chaos Rising Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Chaos Rising Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me4-etb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -570,18 +509,6 @@
    "line": "Floor left off for Chaos Rising Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me4-bb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "floor-dropped:me4-pc-etb",
-   "line": "Floor left off for Chaos Rising Pokemon Center Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "me4-pc-etb",
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
@@ -603,10 +530,22 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me3-etb",
-   "line": "Floor left off for Perfect Order Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Perfect Order Elite Trainer Box: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me3-etb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:me2pt5-bb",
+   "line": "Floor left off for Ascended Heroes Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "me2pt5-bb",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -627,22 +566,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me2-bb",
-   "line": "Floor left off for Phantasmal Flames Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Phantasmal Flames Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me2-bb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "floor-dropped:me1-booster-box",
-   "line": "Floor left off for Mega Evolution Booster Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "me1-booster-box",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -675,10 +602,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv8pt5-bb",
-   "line": "Floor left off for Prismatic Evolutions Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Prismatic Evolutions Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv8pt5-bb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -759,10 +686,22 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv3pt5-etb",
-   "line": "Floor left off for 151 Elite Trainer Box: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for 151 Elite Trainer Box: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv3pt5-etb",
-    "reason": "floor from 4 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:sv3pt5-upc",
+   "line": "Floor left off for 151 Ultra Premium Collection: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv3pt5-upc",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -902,10 +841,10 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "floor-dropped:me5-pack",
-   "line": "Floor left off for Pitch Black Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "key": "floor-dropped:me4-pack",
+   "line": "Floor left off for Chaos Rising Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
-    "id": "me5-pack",
+    "id": "me4-pack",
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
@@ -927,10 +866,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv4-bundle",
-   "line": "Floor left off for Paradox Rift Booster Bundle: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Paradox Rift Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv4-bundle",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -962,23 +901,11 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "floor-dropped:swsh10-pack",
-   "line": "Floor left off for Astral Radiance Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "swsh10-pack",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
    "key": "floor-dropped:swsh12-pack",
-   "line": "Floor left off for Silver Tempest Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Silver Tempest Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "swsh12-pack",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -998,8 +925,20 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
+   "key": "floor-dropped:swsh9-pack",
+   "line": "Floor left off for Brilliant Stars Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh9-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
    "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.17, more than 10x from peer median.",
+   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.26, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-277004",
     "group": "swsh-alt",
@@ -1012,11 +951,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-497606",
-   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $289.66, more than 10x from peer median.",
+   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $288.91, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-497606",
     "group": "ir",
-    "ratio": 17.42,
+    "ratio": 17.43,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1025,11 +964,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264206",
-   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $86.38, more than 10x from peer median.",
+   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $88.18, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264206",
     "group": "tg",
-    "ratio": 13.41,
+    "ratio": 13.63,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1038,7 +977,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179007",
-   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.47, more than 10x from peer median.",
+   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.48, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179007",
     "group": "prism",
@@ -1064,11 +1003,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264209",
-   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $68.80, more than 10x from peer median.",
+   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $68.81, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264209",
     "group": "tg",
-    "ratio": 10.68,
+    "ratio": 10.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1077,11 +1016,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179011",
-   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.12, more than 10x from peer median.",
+   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.15, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179011",
     "group": "prism",
-    "ratio": 0.06,
+    "ratio": 0.07,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1103,11 +1042,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264221",
-   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $85.18, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $84.93, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264221",
     "group": "tg",
-    "ratio": 13.23,
+    "ratio": 13.13,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1120,7 +1059,7 @@
    "data": {
     "id": "tcgcsv-264222",
     "group": "tg",
-    "ratio": 10.77,
+    "ratio": 10.72,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1142,11 +1081,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-633031",
-   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $283.54, more than 10x from peer median.",
+   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $278.75, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-633031",
     "group": "sir",
-    "ratio": 11.52,
+    "ratio": 11.29,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1155,11 +1094,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-284137",
-   "line": "Held for a check: Giratina V (Alternate Full Art) (SWSH11: Lost Origin) at $825.74, more than 10x from peer median.",
+   "line": "Held for a check: Giratina V (Alternate Full Art) (SWSH11: Lost Origin) at $820.91, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-284137",
     "group": "swsh-alt",
-    "ratio": 13.94,
+    "ratio": 14.02,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1181,11 +1120,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-517045",
-   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $291.39, more than 10x from peer median.",
+   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $292.22, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-517045",
     "group": "sir",
-    "ratio": 11.84,
+    "ratio": 11.83,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1194,7 +1133,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $5.05, more than 10x from peer median.",
+   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $5.04, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253149",
     "group": "swsh-alt",
@@ -1220,11 +1159,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-477057",
-   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $224.02, more than 10x from peer median.",
+   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $222.86, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-477057",
     "group": "gg",
-    "ratio": 22.14,
+    "ratio": 21.96,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1233,11 +1172,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-642558",
-   "line": "Held for a check: Seismitoad - 105/086 (SV: Black Bolt) at $192.88, more than 10x from peer median.",
+   "line": "Held for a check: Seismitoad - 105/086 (SV: Black Bolt) at $192.14, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-642558",
     "group": "ir",
-    "ratio": 15.84,
+    "ratio": 15.8,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1258,12 +1197,25 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
+   "key": "held:tcgcsv-726567",
+   "line": "Held for a check: Kecleon - 117/103 (ME06: Delta Reign) at $33.95, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-726567",
+    "group": "ir",
+    "ratio": 11.19,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
    "key": "held:tcgcsv-274467",
-   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $19.05, more than 10x from peer median.",
+   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $19.11, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-274467",
     "group": "radiant",
-    "ratio": 11.94,
+    "ratio": 12.25,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -1272,7 +1224,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $26.01, more than 10x from peer median.",
+   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $26.08, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253171",
     "group": "swsh-alt",
@@ -1311,7 +1263,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-234088",
-   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $29.89, 1st Edition price below its own unlimited price.",
+   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $29.82, 1st Edition price below its own unlimited price.",
    "data": {
     "id": "tcgcsv-234088",
     "group": "swsh-alt",
@@ -1406,17 +1358,6 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:mktmove",
-   "line": "Read type \"mktmove\" produced nothing tonight.",
-   "data": {
-    "kind": "mktmove",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
    "key": "empty:climb",
    "line": "Read type \"climb\" produced nothing tonight.",
    "data": {
@@ -1450,17 +1391,6 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:listings",
-   "line": "Read type \"listings\" produced nothing tonight.",
-   "data": {
-    "kind": "listings",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
    "key": "empty:sealedchase",
    "line": "Read type \"sealedchase\" produced nothing tonight.",
    "data": {
@@ -1473,14 +1403,31 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24831:2026-11-15",
-   "line": "ME06: Delta Reign: 14 creator videos on 6 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "line": "ME06: Delta Reign: 15 creator videos on 6 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
     "label": "ME06: Delta Reign",
     "channels": 6,
-    "videos": 14,
+    "videos": 15,
     "weighted": 6,
+    "from": "2026-11-09",
+    "to": "2026-11-15"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24269:2026-11-15",
+   "line": "SV10: Destined Rivals: 6 creator videos on 4 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24269,
+    "label": "SV10: Destined Rivals",
+    "channels": 4,
+    "videos": 6,
+    "weighted": 4,
     "from": "2026-11-09",
     "to": "2026-11-15"
    },
@@ -1506,12 +1453,12 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24269:2026-11-15",
-   "line": "SV10: Destined Rivals: 5 creator videos on 4 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "key": "yt:set_attention:24380:2026-11-15",
+   "line": "ME01: Mega Evolution: 5 creator videos on 4 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 24269,
-    "label": "SV10: Destined Rivals",
+    "ref": 24380,
+    "label": "ME01: Mega Evolution",
     "channels": 4,
     "videos": 5,
     "weighted": 4,
@@ -1558,13 +1505,13 @@
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
    "key": "yt:set_attention:24541:2026-11-15",
-   "line": "ME: Ascended Heroes: 5 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "line": "ME: Ascended Heroes: 6 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
     "label": "ME: Ascended Heroes",
     "channels": 3,
-    "videos": 5,
+    "videos": 6,
     "weighted": 3,
     "from": "2026-11-09",
     "to": "2026-11-15"
@@ -1574,12 +1521,12 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24380:2026-11-15",
-   "line": "ME01: Mega Evolution: 4 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "key": "yt:sealed_attention:668496:2026-11-15",
+   "line": "Ascended Heroes Elite Trainer Box: 4 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
-    "kind": "set_attention",
-    "ref": 24380,
-    "label": "ME01: Mega Evolution",
+    "kind": "sealed_attention",
+    "ref": 668496,
+    "label": "Ascended Heroes Elite Trainer Box",
     "channels": 3,
     "videos": 4,
     "weighted": 3,
@@ -1608,12 +1555,12 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:668496:2026-11-15",
-   "line": "Ascended Heroes Elite Trainer Box: 3 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "key": "yt:sealed_attention:712102:2026-11-15",
+   "line": "Delta Reign Elite Trainer Box: 3 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
-    "ref": 668496,
-    "label": "Ascended Heroes Elite Trainer Box",
+    "ref": 712102,
+    "label": "Delta Reign Elite Trainer Box",
     "channels": 3,
     "videos": 3,
     "weighted": 3,
@@ -1625,15 +1572,15 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:712102:2026-11-15",
-   "line": "Delta Reign Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "key": "yt:sealed_attention:624676:2026-11-15",
+   "line": "Destined Rivals Elite Trainer Box: 3 creator videos on 3 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
-    "ref": 712102,
-    "label": "Delta Reign Elite Trainer Box",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
+    "ref": 624676,
+    "label": "Destined Rivals Elite Trainer Box",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
     "from": "2026-11-09",
     "to": "2026-11-15"
    },
@@ -1642,14 +1589,14 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:624676:2026-11-15",
-   "line": "Destined Rivals Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
+   "key": "yt:set_attention:2848:2026-11-15",
+   "line": "SWSH07: Evolving Skies: 3 creator videos on 2 channels, 2026-11-09 to 2026-11-15 (unverified lead).",
    "data": {
-    "kind": "sealed_attention",
-    "ref": 624676,
-    "label": "Destined Rivals Elite Trainer Box",
+    "kind": "set_attention",
+    "ref": 2848,
+    "label": "SWSH07: Evolving Skies",
     "channels": 2,
-    "videos": 2,
+    "videos": 3,
     "weighted": 2,
     "from": "2026-11-09",
     "to": "2026-11-15"
