@@ -65,17 +65,36 @@ export function readCompBand(doc) {
 }
 
 // Latest market on or before day. series is sorted by date ascending.
-export function marketOnDate(series, day) {
+// printing, when set, is that printing's own price. No row for it means no market.
+export function marketOnDate(series, day, printing = "") {
   if (!Array.isArray(series) || !ISO.test(String(day || ""))) return null;
   let lo = 0;
   let hi = series.length - 1;
   let ans = null;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
-    if (series[mid].date <= day) { ans = series[mid].market; lo = mid + 1; }
+    if (series[mid].date <= day) { ans = series[mid]; lo = mid + 1; }
     else hi = mid - 1;
   }
-  return Number(ans) > 0 ? Number(ans) : null;
+  if (!ans) return null;
+  const n = printing ? Number(ans.printings?.[printing]) : Number(ans.market);
+  return n > 0 ? n : null;
+}
+
+// Title phrases that name a TCGplayer printing. A longer phrase wins.
+export function printingFromTitle(title) {
+  const t = String(title || "");
+  if (/\bnon[-\s]?holo\b/i.test(t)) return "Normal";
+  if (/\breverse\s+holo(?:foil)?\b/i.test(t)) return "Reverse Holofoil";
+  const holo = /\bholo(?:foil)?\b/i.test(t);
+  const first = /\b(?:1st|first)\s+edition\b/i.test(t);
+  const unlimited = /\bunlimited\b/i.test(t);
+  if (holo && first) return "1st Edition Holofoil";
+  if (holo && unlimited) return "Unlimited Holofoil";
+  if (first) return "1st Edition";
+  if (unlimited) return "Unlimited";
+  if (holo) return "Holofoil";
+  return "";
 }
 
 export function keepComps(rows, { asOf, kind = "single", name = "", graded = false, days = SOLD_WINDOW_DAYS, band = null, marketOn = null } = {}) {
@@ -96,10 +115,11 @@ export function keepComps(rows, { asOf, kind = "single", name = "", graded = fal
       && (graded ? true : !offItem(row?.title, name));
     if (!ok) { dropped++; continue; }
     if (!graded) {
-      const dated = typeof marketOn === "function" ? Number(marketOn(day)) : null;
+      const named = printingFromTitle(row?.title);
+      const dated = typeof marketOn === "function" ? Number(marketOn(day, named)) : null;
       if (!(dated > 0) || price < dated * band.low || price > dated * band.high) { dropped++; continue; }
     }
-    kept.push({ price, day, grader: row.grader || null, grade: row.grade == null ? null : String(row.grade), q: row.grade_qualifier || null });
+    kept.push({ price, day, grader: row.grader || null, grade: row.grade == null ? null : String(row.grade), q: row.grade_qualifier || null, title: String(row?.title || "") });
   }
   if (!graded && kept.length) {
     const m = median(kept.map((c) => c.price));
@@ -169,7 +189,9 @@ export function gradedStats(rows, opts = {}) {
     const last = keep.map((c) => c.day).sort().at(-1);
     const nGrade = gradeNumber(keep[0].grade);
     if (nGrade != null && nGrade <= opts.band.lowGradeMax) {
-      const raw = typeof opts.marketOn === "function" ? Number(opts.marketOn(last)) : null;
+      const lastRow = keep.find((c) => c.day === last) || keep[0];
+      const named = printingFromTitle(lastRow.title);
+      const raw = typeof opts.marketOn === "function" ? Number(opts.marketOn(last, named)) : null;
       if (!(raw > 0) || med > raw * opts.band.lowGradeHigh) continue;
     }
     out.push({ label: key, n: keep.length, median: r2(med), last });

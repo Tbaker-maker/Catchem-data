@@ -3,13 +3,14 @@
 // research/assets/public/market-depth/: sold median/count/quartiles, graded medians,
 // sold comps per day, population counts and the Cardmarket EUR price, each with a date.
 // No comp titles, listing urls, comp ids, seller countries or raw rows.
-import { readFile, readdir } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { readFile, readdir, mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { execFileSync, spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PUBLIC_ITEM_KEYS, PUBLIC_SOLD_KEYS, PUBLIC_GRADED_KEYS, PUBLIC_POP_KEYS, PUBLIC_EUR_KEYS, soldStats, keepComps, dailySold, popSummary, offItem, deriveItem, gradedStats, readCompBand, marketOnDate } from "../lib/ppp-derive.mjs";
+import { PUBLIC_ITEM_KEYS, PUBLIC_SOLD_KEYS, PUBLIC_GRADED_KEYS, PUBLIC_POP_KEYS, PUBLIC_EUR_KEYS, soldStats, keepComps, dailySold, popSummary, offItem, deriveItem, gradedStats, readCompBand, marketOnDate, printingFromTitle } from "../lib/ppp-derive.mjs";
 import { checkBudget, loadBudget } from "../lib/ppp-budget.mjs";
-import { priorityOrder } from "../ppp-enrich.mjs";
+import { priorityOrder, deriveAll, dayMarket } from "../ppp-enrich.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 let fail = 0;
@@ -44,8 +45,8 @@ export async function runNoPppRawPublicTests() {
   // unit: derivation rules
   const asOf = "2026-11-12";
   const row = (price, day = "2026-11-10", extra = {}) => ({ price, currency: "USD", sold_at: day, attribution: "exact", title: "Charizard ex 223/197", grader: null, ...extra });
-  const wide = { low: 0.01, high: 100, lowGradeMax: 6, lowGradeHigh: 2 };
-  const band = { low: 0.5, high: 2, lowGradeMax: 6, lowGradeHigh: 2 };
+  const wide = { low: 0.02, high: 40, lowGradeMax: 9, lowGradeHigh: 4 };
+  const band = { low: 0.6, high: 1.7, lowGradeMax: 5, lowGradeHigh: 1.8 };
   t("fewer than 5 comps is hidden", soldStats([row(10), row(11), row(12), row(13)], { asOf, band: wide, marketOn: () => 12 }) === null);
   const s = soldStats([row(10), row(11), row(12), row(13), row(14), row(2), row(90)], { asOf, band: wide, marketOn: () => 12 });
   t("half-price filter drops 2 and 90", s && s.n === 5 && s.median === 12 && s.dropped === 2, JSON.stringify(s));
@@ -57,14 +58,23 @@ export async function runNoPppRawPublicTests() {
   t("EUR rows are not in the USD median", keepComps([row(10, "2026-11-10", { currency: "EUR" })], gate).kept.length === 0);
   t("comps outside 90 days are out", keepComps([row(10, "2026-07-01")], gate).kept.length === 0);
   t("a sold median with no comp in 45 days is hidden", soldStats([1, 2, 3, 4, 5].map(() => row(10, "2026-09-01")), { asOf, band: wide, marketOn: () => 10 }) === null);
-  t("dated market band drops a comp under half the market that day", keepComps([row(9), row(40), row(41), row(42)], { asOf, band, marketOn: () => 40 }).kept.length === 3);
-  t("a comp over double the dated market is dropped even inside 4x", keepComps([row(100), row(40), row(41), row(42), row(43)], { asOf, band, marketOn: () => 40 }).kept.length === 4);
+  t("a comp under the band low is dropped", keepComps([row(9), row(40), row(41), row(42)], { asOf, band, marketOn: () => 40 }).kept.length === 3);
+  t("a comp over the band high is dropped", keepComps([row(100), row(40), row(41), row(42), row(43)], { asOf, band, marketOn: () => 40 }).kept.length === 4);
   t("no band withholds every raw comp", keepComps([row(40)], { asOf, marketOn: () => 40 }).closed === true && soldStats([row(40), row(41), row(42), row(43), row(44)], { asOf, marketOn: () => 40 }) === null);
   t("no dated market drops the comp", keepComps([row(40), row(41), row(42), row(43), row(44)], { asOf, band, marketOn: () => null }).kept.length === 0);
   t("fewer than 5 comps after the band is hidden", soldStats([row(40), row(41), row(42), row(90), row(91)], { asOf, band, marketOn: () => 40 }) === null);
-  t("a missing band config is not a band", readCompBand(null) === null && readCompBand({ rawVsDatedMarket: { low: 2, high: 1 }, lowGradeMax: 6, lowGradeVsRawMarket: 2 }) === null);
+  t("a missing band config is not a band", readCompBand(null) === null && readCompBand({ rawVsDatedMarket: { low: 2, high: 1 }, lowGradeMax: 5, lowGradeVsRawMarket: 1.8 }) === null);
   t("market on a gap day is the latest earlier day", marketOnDate([{ date: "2026-09-26", market: 1333.56 }, { date: "2026-10-21", market: 1300.35 }], "2026-09-28") === 1333.56);
   t("a sale before any market has none", marketOnDate([{ date: "2026-09-26", market: 1333.56 }], "2026-08-28") === null);
+  const jolteon = [{ date: "2026-10-30", market: 420.99, printings: { Holofoil: 189.22, "Reverse Holofoil": 420.99 } }];
+  const onPrint = (day, printing) => marketOnDate(jolteon, day, printing);
+  const rev = (price) => row(price, "2026-11-10", { title: "Jolteon 7/113 Reverse Holo" });
+  t("a title names its printing", printingFromTitle("Jolteon Reverse Holo") === "Reverse Holofoil" && printingFromTitle("Unlimited Holo") === "Unlimited Holofoil" && printingFromTitle("Non-Holo") === "Normal" && printingFromTitle("plain card") === "");
+  t("the day market is the max across printings", JSON.stringify(dayMarket({ market: 189.22, printing: "Holofoil", printings: [{ name: "Holofoil", price: 189.22 }, { name: "Reverse Holofoil", price: 420.99 }] })) === JSON.stringify({ market: 420.99, printings: { Holofoil: 189.22, "Reverse Holofoil": 420.99 } }));
+  t("an unnamed title uses the highest printing", marketOnDate(jolteon, "2026-11-10") === 420.99);
+  t("a reverse holo title under that printing band is dropped", keepComps([200, 210, 220, 230, 240].map(rev), { asOf, band, marketOn: onPrint }).kept.length === 0);
+  t("a reverse holo title inside that printing band is kept", keepComps([450, 460, 470, 480, 490].map(rev), { asOf, band, marketOn: onPrint }).kept.length === 5);
+  t("a named printing with no dated price is dropped", keepComps([rev(180)], { asOf, band, marketOn: (day, printing) => marketOnDate([{ date: "2026-10-30", market: 189.22, printings: { Holofoil: 189.22 } }], day, printing) }).kept.length === 0);
   const gradedRow = (price, grade) => ({ price, currency: "USD", sold_at: "2026-11-10", attribution: "exact", title: "x", grader: "PSA", grade });
   t("a low grade far above the raw market is held", gradedStats([gradedRow(5100, "1"), gradedRow(5300, "1"), gradedRow(4850, "1")], { asOf, band, marketOn: () => 1300.35 }).length === 0);
   t("a high grade above the raw market is kept", gradedStats([gradedRow(5000, "10"), gradedRow(5100, "10"), gradedRow(4900, "10")], { asOf, band, marketOn: () => 1300 }).length === 1);
@@ -83,6 +93,39 @@ export async function runNoPppRawPublicTests() {
   t("a Cardmarket price near our market is kept", deriveItem({ detail: { body: { prices: [{ source: "cardmarket", currency: "EUR", market_price: 310, created_at: "2026-11-11T00:00:00Z" }] } } }, { asOf, kind: "sealed", name: "x", market: 463.02 })?.eur?.market === 310);
   t("sealed come first in priority", priorityOrder([{ pid: 1, kind: "single", market: 900 }, { pid: 2, kind: "sealed", market: 5 }])[0].pid === 2);
   t("PPP lanes fit the daily plan", checkBudget(loadBudget()).length === 0, checkBudget(loadBudget()).join("; "));
+
+  const bandLeak = /low["']?\s*[:=]\s*0\.5\b[\s\S]{0,180}high["']?\s*[:=]\s*2\b[\s\S]{0,180}lowGradeMax["']?\s*[:=]\s*6\b[\s\S]{0,220}(?:lowGradeHigh|lowGradeVsRawMarket)["']?\s*[:=]\s*2\b/;
+  const leakHits = [];
+  const walk = async (dir) => {
+    let ents = [];
+    try { ents = await readdir(dir, { withFileTypes: true }); } catch { return; }
+    for (const ent of ents) {
+      const p = join(dir, ent.name);
+      if (ent.isDirectory()) { await walk(p); continue; }
+      if (!/\.(mjs|js|json)$/.test(ent.name)) continue;
+      const text = await readFile(p, "utf8");
+      if (bandLeak.test(text)) leakHits.push(p.slice(ROOT.length + 1));
+    }
+  };
+  await walk(join(ROOT, "scripts/tests"));
+  await walk(join(ROOT, "scripts/fixtures"));
+  t("no public test or fixture copies the private comp band", leakHits.length === 0, leakHits.join(", "));
+
+  const scratch = await mkdtemp(join(tmpdir(), "ppp-band-"));
+  const depth = join(scratch, "research/assets/public/market-depth");
+  await mkdir(depth, { recursive: true });
+  const frozen = "{\"asOf\":\"2026-11-14\",\"items\":{}}\n";
+  await writeFile(join(depth, "00.json"), frozen);
+  const env = { ...process.env, PPP_ENRICH_ROOT: scratch };
+  delete env.PKMNPRICES_API_KEY;
+  const missing = spawnSync(process.execPath, [join(ROOT, "scripts/ppp-enrich.mjs"), "--derive"], { cwd: ROOT, env, encoding: "utf8" });
+  const afterBytes = await readFile(join(depth, "00.json"), "utf8");
+  t("no band file exits 1 and leaves market-depth unchanged", missing.status === 1 && afterBytes === frozen, `exit ${missing.status} ${missing.stderr}`);
+  let threw = false;
+  try { await deriveAll({ products: [], asOf, band: null, rawDir: scratch }); }
+  catch (err) { threw = /band is missing/.test(String(err?.message || "")); }
+  t("deriveAll throws when the band is missing and writes nothing", threw && afterBytes === frozen);
+  await rm(scratch, { recursive: true, force: true });
 
   // repo: raw never tracked, only derived files public
   let tracked = [];
