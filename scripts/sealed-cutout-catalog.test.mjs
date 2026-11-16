@@ -42,7 +42,11 @@ export async function run() {
   const missing = [];
   for (const product of show) {
     const row = byId.get(product.id);
-    if (!row) { missing.push(product.id); continue; }
+    if (!row) {
+      const note = why.get(product.id);
+      if (!note || !note.reason) missing.push(product.id);
+      continue;
+    }
     if (row.pass === true) {
       if (!row.file || !row.png) missing.push(product.id + " no file");
       else {
@@ -84,15 +88,15 @@ export async function run() {
     [],
     "no scale file, so no cutout was built",
   );
-  t("a new showable id is blocked with the true reason and a pass is left alone", uncovered.rows.length === 1 && uncovered.rows[0].id === "tcgcsv-1" && uncovered.rows[0].pass === false && !uncovered.rows[0].file && uncovered.notes[0].reason === "no scale file, so no cutout was built" && uncovered.notes[0].kept === "not shipped");
+  t("an untraced showable id is noted and not given a cut row", uncovered.rows.length === 0 && uncovered.notes.length === 1 && uncovered.notes[0].id === "tcgcsv-1" && uncovered.notes[0].reason === "no scale file, so no cutout was built" && uncovered.notes[0].kept === "not shipped");
   const feed = await readFile(join(ROOT, "scripts/build-feed.mjs"), "utf8");
   t("the feed build covers a new showable sealed id", feed.includes("ensureShowableCutouts"));
   for (const id of ["tcgcsv-206029", "tcgcsv-625582", "tcgcsv-626630"]) {
     const row = byId.get(id);
     const note = why.get(id);
     t(
-      id + " blister stays blocked: no traced cutout build",
-      row && row.pass === false && row.productType === "blister" && !row.file && !row.png && note && note.reason === "no traced cutout build" && note.kept === "not shipped",
+      id + " blister has no cut row: no traced cutout build",
+      !row && note && note.reason === "no traced cutout build" && note.kept === "not shipped",
     );
   }
   const sample = { name: "Delta Reign Sleeved Booster Pack", subtype: "booster-pack" };

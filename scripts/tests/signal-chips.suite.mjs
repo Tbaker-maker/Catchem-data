@@ -286,7 +286,7 @@ export async function run() {
     {},
   ).tiles || {};
   t("a start 3 days early gets no price tile", !earlyTile.price);
-  t("public price counts still make a data tile when private cuts are not loaded", earlyTile.data && earlyTile.data.prices === 2 && earlyTile.data.since === "2026-10-07" && earlyTile.data.through === "2026-10-17" && earlyTile.data.bars == null && !/flatAbs|cuts/.test(JSON.stringify(earlyTile.data)));
+  t("public price counts do not make a bar-less data tile", !earlyTile.data);
   const fiveUp = [
     ["2026-10-01", 10.1],
     ["2026-10-08", 10.2],

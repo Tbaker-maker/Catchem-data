@@ -55,27 +55,20 @@ export async function ensureShowableCutouts(root = ROOT) {
   let scaleOk = false;
   try { await access(scalePath(root)); scaleOk = true; } catch { scaleOk = false; }
   if (!scaleOk) {
-    const reason = "no scale file, so no cutout was built";
-    const blocked = await writeBlocked(root, prices, cuts, review, missing, reason);
-    return { missing: missing.length, blocked, cut: false, reason };
+    throw new Error(`no scale file, so no cutout was built (${missing.length} showable ids uncovered)`);
   }
   const ids = missing.map((product) => product.id).join(",");
-  const code = await new Promise((resolve) => {
+  const code = await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [join(root, "scripts/build-sealed-cutouts.mjs")], {
       cwd: root,
       env: { ...process.env, ONLY_IDS: ids },
       stdio: "inherit",
     });
-    child.on("error", () => resolve(1));
+    child.on("error", (err) => reject(err));
     child.on("exit", (status) => resolve(status ?? 1));
   });
   if (code !== 0) {
-    const reason = "cutout build failed, so no cutout was built";
-    const again = await load(join(root, "data/sealed-cutouts.json"), cuts);
-    const againReview = await load(join(root, "data/sealed-cutout-review.json"), review);
-    const still = missing.filter((product) => !(again.products || []).some((row) => row.id === product.id));
-    const blocked = await writeBlocked(root, prices, again, againReview, still, reason);
-    return { missing: missing.length, blocked, cut: false, reason };
+    throw new Error(`cutout build failed, so no cutout was built (exit ${code})`);
   }
   return { missing: missing.length, blocked: 0, cut: true };
 }

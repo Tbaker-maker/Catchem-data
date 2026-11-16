@@ -298,7 +298,8 @@ try {
   const cutouts = await ensureShowableCutouts(ROOT);
   console.log(JSON.stringify({ cutouts }));
 } catch (err) {
-  console.error(`sealed cutouts skipped: ${err.message}`);
+  console.error(`sealed cutouts failed: ${err.message}`);
+  throw err;
 }
 const health = await writeHealth(ROOT);
 // YouTube learning loop (official API, private store). Before the flagger so

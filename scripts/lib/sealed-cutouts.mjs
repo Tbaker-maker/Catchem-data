@@ -216,13 +216,11 @@ export function showableProducts(prices, catalog, readsDoc, extraIds = FEED_MUST
 export function uncoveredCutouts(showable, cuts, review, reason) {
   const have = new Set((cuts || []).map((row) => row && row.id).filter(Boolean));
   const noted = new Set((review || []).map((row) => row && row.id).filter(Boolean));
-  const rows = [];
   const notes = [];
   for (const product of showable || []) {
     if (!product || !product.id || have.has(product.id)) continue;
     const type = productTypeOf(product) || "";
-    rows.push(cutoutRow(product, { pass: false, productType: type }));
     if (!noted.has(product.id)) notes.push({ id: product.id, productType: type, reason: String(reason || ""), kept: "not shipped" });
   }
-  return { rows, notes };
+  return { rows: [], notes };
 }

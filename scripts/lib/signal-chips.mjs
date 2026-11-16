@@ -700,16 +700,13 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
       span: spanWords(counts.since, asOf),
       source: src,
     };
-    // Bars need the private scale. Counts and dates are public and stay when
-    // that scale is not loaded. No cutoff is written either way.
+    // A data tile is the bar. Counts without a bar are not a tile.
     if (depth || conf) {
       tiles.data = {
         bars: depth ? depth.bars : conf.bars,
         of: depth ? depth.of : (conf.of || 3),
         ...base,
       };
-    } else {
-      tiles.data = base;
     }
   }
   const move = all.find((chip) => chip.kind === "move");
