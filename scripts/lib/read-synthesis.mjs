@@ -153,11 +153,19 @@ function changeAt(pts, asOf, days, cfg) {
   return { days: span, asked: days, from: p, to: last, pct: pct(p[1], last[1]) };
 }
 
-function weekSamples(pts, asOf) {
+export function weekSamples(pts, asOf) {
   const weeks = [];
   for (let k = 0; k <= 12; k += 1) {
     const p = nearestPoint(pts, addDays(asOf, -7 * k), 3);
     if (!p) break;
+    if (weeks.length === 0) {
+      // weeks[0] is the latest point; reject if it is more than 1 day off asOf
+      if (Math.abs(dayNum(asOf) - dayNum(p[0])) > 1) break;
+      weeks.push(p);
+      continue;
+    }
+    const gap = dayNum(weeks[weeks.length - 1][0]) - dayNum(p[0]);
+    if (gap < 6 || gap > 8) break;
     weeks.push(p);
   }
   return weeks;
@@ -246,11 +254,13 @@ export function findings(item, ctx, cfg) {
   // One finding per window. A read leads with one of them, never several at once.
   const moves = WINDOWS.map((w) => ch[w]).filter((c) => c && Math.abs(c.pct) >= cfg.trendMinPct[c.asked] && Math.abs(c.to[1] - c.from[1]) >= cfg.minTrendUsd);
   for (const move of moves) {
+    const rounded = r0(move.pct);
+    if (Math.abs(rounded) < 1) continue; // no "Up 0%" or "Down 0%"
     const when = move.days === 7 ? "in a week" : move.days === 30 ? "over 30 days" : move.days === 90 ? "in the last 90 days" : move.days === 365 ? "on the year" : `in ${move.days} days`;
     const over = move.days === 365 ? "a year" : move.days === 7 ? "a week" : `${move.days} days`;
     out.push({ tag: "trend", type: `trend${move.asked}${move.pct >= 0 ? "up" : "down"}`, window: move.days, score: cfg.weights.trend * (Math.abs(move.pct) / cfg.trendMinPct[move.asked]), nums: { lead: move },
-      text: `${move.pct >= 0 ? "Up" : "Down"} ${r0(move.pct)}% ${when}: ${title} went from ${at(move.from, asOf)} to ${usd(move.to[1])} on ${monthDay(asOf)}.`,
-      short: `${move.pct >= 0 ? "Up" : "Down"} ${r0(move.pct)}% over ${over}, to ${usd(last[1])} on ${monthDay(asOf)}.` });
+      text: `${move.pct >= 0 ? "Up" : "Down"} ${rounded}% ${when}: ${title} went from ${at(move.from, asOf)} to ${usd(move.to[1])} on ${monthDay(asOf)}.`,
+      short: `${move.pct >= 0 ? "Up" : "Down"} ${rounded}% over ${over}, to ${usd(last[1])} on ${monthDay(asOf)}.` });
   }
   // Weekly streak and how often it moved
   const st = weeklyStreak(pts, asOf, cfg.streakWeekUsd);
@@ -262,9 +272,11 @@ export function findings(item, ctx, cfg) {
     if (step && step.usd >= cfg.minTrendUsd) {
       const down = step.dir < 0;
       const pctStep = r0(pct(step.from[1], step.to[1]));
-      out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.drop, nums: { step },
-        text: `${down ? "Down" : "Up"} ${pctStep}% in one week: ${title} went from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.`,
-        short: `${down ? "Down" : "Up"} ${pctStep}% in one week, from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.` });
+      if (Math.abs(pctStep) >= 1) {
+        out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.drop, nums: { step },
+          text: `${down ? "Down" : "Up"} ${pctStep}% in one week: ${title} went from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.`,
+          short: `${down ? "Down" : "Up"} ${pctStep}% in one week, from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.` });
+      }
     }
   }
   const mv = movedDays(pts, asOf);
