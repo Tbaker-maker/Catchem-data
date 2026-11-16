@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples, ensureDropWindow } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -266,14 +266,6 @@ await rm(root, { recursive: true, force: true });
   t("Crispin's 90 day line drops when the dates differ", span !== 90 && pct === 31.5 && dropped && dropped.text.includes("$29.89") && dropped.text.includes("$20.47") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/38%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
   const kept = compose(item, [lead, sameWindow, peak], CFG);
   t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
-  const week = {
-    tag: "drop", type: "dropdown", score: 3, window: 90,
-    nums: { step: { dir: -1, from: ["2026-11-06", 23.2], to: [to, 20.47], usd: 2.73 } },
-    text: "Down 12% in one week: Crispin (Prismatic Evolutions) 171/131 went from $23.20 on Nov 6 to $20.47 on Nov 13.",
-    short: "Down 12% in one week, from $23.20 on Nov 6 to $20.47 on Nov 13.",
-  };
-  const underStreak = compose(item, [lead, week, peak], CFG);
-  t("a one-week drop does not sit under a multi-week streak", ensureDropWindow(week).window === 7 && week.window === 7 && underStreak && underStreak.lead.tag === "streak" && !/one week/.test(underStreak.text) && !underStreak.pick.some((f) => f.tag === "drop"));
 }
 
 {

@@ -397,19 +397,10 @@ function pairEnds(pair) {
 }
 
 function moveEnds(f) {
-  return pairEnds(f?.nums?.step) || pairEnds(f?.nums?.st) || pairEnds(f?.nums?.lead);
-}
-
-// A one-week drop is a 7 day window. It cannot sit under a multi-week streak
-// by leaving window unset. #548's drop finding carries nums.step.
-export function ensureDropWindow(f) {
-  if (!f) return f;
-  if (f.tag === "drop" || f.nums?.step) f.window = 7;
-  return f;
+  return pairEnds(f?.nums?.st) || pairEnds(f?.nums?.lead);
 }
 
 export function compose(item, fs, cfg, used) {
-  for (const f of fs || []) ensureDropWindow(f);
   const ranked = fs.filter((f) => f.score > 0 && f.text).sort((a, b) => b.score - a.score);
   const kindF = item.kindLine ? { tag: "kind", type: `kind:${item.kind}`, score: cfg.weights.kind, text: item.kindLine } : null;
   if (kindF) { ranked.push(kindF); ranked.sort((a, b) => b.score - a.score); }
