@@ -13,8 +13,8 @@
 //   EBAY_CERT_ID  — your eBay developer Cert ID (Client Secret)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { gzipSync } from "node:zlib";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { recordBuyoutHarvest } from "./buyout-tape.mjs";
@@ -597,6 +597,38 @@ async function mapConcurrent(items, fn, concurrency) {
   return results;
 }
 
+// EBAY_REPLAY=1 (dress rehearsal): no eBay call. The newest saved night,
+// data/raw/ebay-sealed/YYYY-MM-DD.json.gz, stands in for tonight's eBay rows,
+// and the normal write path below (wipe guard, real-listing gate, TCGplayer
+// pricing, sealed-prices.json, the raw archive, the buyout tape) runs on it.
+// The archive holds the rows we wrote that night, not eBay's raw items, so
+// the per-listing filter is not replayed.
+async function loadEbayReplay(dataDir) {
+  const dir = join(dataDir, "raw", "ebay-sealed");
+  let files = [];
+  try { files = (await readdir(dir)).filter((name) => /^\d{4}-\d{2}-\d{2}\.json\.gz$/.test(name)).sort(); }
+  catch { files = []; }
+  const latest = files.at(-1);
+  if (!latest) throw new Error("EBAY_REPLAY: no saved data/raw/ebay-sealed/YYYY-MM-DD.json.gz");
+  const day = latest.slice(0, 10);
+  const saved = JSON.parse(gunzipSync(await readFile(join(dir, latest))).toString("utf8"));
+  const products = Array.isArray(saved?.products) ? saved.products : [];
+  if (!products.length) throw new Error(`EBAY_REPLAY: ${latest} has no products`);
+  let filteredKnown = 0;
+  try {
+    const ft = JSON.parse(await readFile(join(dir, `${day}.filtered-total.json`), "utf8"));
+    filteredKnown = Number(ft?.filteredTotalKnown) || 0;
+  } catch { filteredKnown = 0; }
+  const harvestSaved = [];
+  for (const row of products) {
+    const point = Array.isArray(row?.priceHistory) ? row.priceHistory.find((p) => p?.date === day) : null;
+    if (point && typeof point.total === "number") {
+      harvestSaved.push({ id: row.id, browseTotal: point.total, price: Number(point.price) > 0 ? point.price : null, name: row.name, date: day });
+    }
+  }
+  return { file: latest, day, products, filteredKnown, harvestSaved };
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 async function main() {
   console.log("📦 Loading product list...");
@@ -659,18 +691,26 @@ async function main() {
   const tcgMids = await loadTcgListedMedians(root);
   console.log(`   seller gate ${sellerMin ? "on" : "off (no private config)"} · TCGplayer listed medians ${tcgMids.size}`);
 
-  console.log("🔑 Authenticating with eBay...");
-  const token = await getEbayToken();
-  console.log("   → ✓ token acquired.");
+  const replay = process.env.EBAY_REPLAY === "1" ? await loadEbayReplay(DATA_DIR) : null;
+  let token = null;
+  if (replay) {
+    console.log(`EBAY_REPLAY: replaying saved ${replay.file} (${replay.products.length} rows, no eBay API call)`);
+  } else {
+    console.log("🔑 Authenticating with eBay...");
+    token = await getEbayToken();
+    console.log("   → ✓ token acquired.");
+  }
 
   await (await import("./heartbeat.mjs")).beat("fetch");
-console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
+  if (!replay) console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const today = new Date().toISOString().split("T")[0];
   const startTs = Date.now();
-  const harvestSaved = [];
-  let filteredKnown = 0;
+  const harvestSaved = replay ? replay.harvestSaved : [];
+  let filteredKnown = replay ? replay.filteredKnown : 0;
 
-  const updated = await mapConcurrent(products, async (product) => {
+  const updated = replay
+    ? replay.products.filter((row) => !only || only.has(row.id))
+    : await mapConcurrent(products, async (product) => {
     try {
       const [floor, ceiling] = priceBoundsFor(product);
       const { items, total: browseTotal } = await searchEbay(token, product.searchQuery, floor, ceiling);
@@ -922,7 +962,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
 main().then(async () => {
   // Listing counts for everything the price step does not cover. Own budget,
   // own 429 stop; a failure here never fails the sealed run.
-  if (process.env.ONLY || process.env.SKIP_LISTING_COUNTS) return;
+  if (process.env.ONLY || process.env.SKIP_LISTING_COUNTS || process.env.EBAY_REPLAY === "1") return;
   try { const { runListingCounts } = await import("./fetch-listing-counts.mjs"); await runListingCounts({ afterSealedStep: true }); }
   catch (e) { console.error(`listing counts skipped: ${e?.message || e}`); }
 }).catch(async (err) => {

@@ -1,8 +1,8 @@
 {
-  "asOf": "2026-11-13",
+  "asOf": "2026-11-14",
   "note": "Cutouts for sealed products the site can show. A fail is listed and the file is not shipped. Pixel height already includes the shared scale. Factors are not in this repo.",
   "passed": 172,
-  "failed": 45,
+  "failed": 49,
   "products": [
     {
       "id": "base1-booster-box",
@@ -2032,10 +2032,24 @@
       "height": 672
     },
     {
+      "id": "tcgcsv-206029",
+      "siteId": "tcgcsv-206029",
+      "tcgPlayerId": 206029,
+      "productType": "blister",
+      "pass": false
+    },
+    {
       "id": "tcgcsv-206040",
       "siteId": "tcgcsv-206040",
       "tcgPlayerId": 206040,
       "productType": "build-battle",
+      "pass": false
+    },
+    {
+      "id": "tcgcsv-265253",
+      "siteId": "tcgcsv-265253",
+      "tcgPlayerId": 265253,
+      "productType": "",
       "pass": false
     },
     {
@@ -2054,6 +2068,20 @@
       "siteId": "tcgcsv-537417",
       "tcgPlayerId": 537417,
       "productType": "case",
+      "pass": false
+    },
+    {
+      "id": "tcgcsv-625582",
+      "siteId": "tcgcsv-625582",
+      "tcgPlayerId": 625582,
+      "productType": "blister",
+      "pass": false
+    },
+    {
+      "id": "tcgcsv-626630",
+      "siteId": "tcgcsv-626630",
+      "tcgPlayerId": 626630,
+      "productType": "blister",
       "pass": false
     },
     {
@@ -2154,6 +2182,13 @@
       "png": null,
       "width": null,
       "height": null
+    },
+    {
+      "id": "tcgcsv-709018",
+      "siteId": "tcgcsv-709018",
+      "tcgPlayerId": 709018,
+      "productType": "case",
+      "pass": false
     },
     {
       "id": "tcgcsv-709029",
@@ -2259,13 +2294,6 @@
       "png": "cutouts/zsv10pt5-etb.png",
       "width": 786,
       "height": 749
-    },
-    {
-      "id": "tcgcsv-265253",
-      "siteId": "tcgcsv-265253",
-      "tcgPlayerId": 265253,
-      "productType": "",
-      "pass": false
     }
   ]
 }
