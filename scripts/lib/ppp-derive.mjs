@@ -244,7 +244,7 @@ export function popSummary(body, { variant = "" } = {}) {
   return {
     variant: String(pick.variant || ""),
     variants: vars.length,
-    total: across,
+    total: total,
     gems: Number(pick.total_gems) || 0,
     gemRate: Number.isFinite(Number(pick.gem_rate)) ? Number(pick.gem_rate) : null,
     graders,

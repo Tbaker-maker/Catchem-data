@@ -47,9 +47,11 @@ export async function runNoPppRawPublicTests() {
   const row = (price, day = "2026-11-10", extra = {}) => ({ price, currency: "USD", sold_at: day, attribution: "exact", title: "Charizard ex 223/197", grader: null, ...extra });
   const wide = { low: 0.02, high: 40, lowGradeMax: 9, lowGradeHigh: 4 };
   const band = { low: 0.6, high: 1.7, lowGradeMax: 5, lowGradeHigh: 1.8 };
+  t("public tests never use the private band values", JSON.stringify(band) !== JSON.stringify({ low: 0.5, high: 2, lowGradeMax: 6, lowGradeHigh: 2 }) && JSON.stringify(wide) !== JSON.stringify({ low: 0.5, high: 2, lowGradeMax: 6, lowGradeHigh: 2 }));
+
   t("fewer than 5 comps is hidden", soldStats([row(10), row(11), row(12), row(13)], { asOf, band: wide, marketOn: () => 12 }) === null);
   const s = soldStats([row(10), row(11), row(12), row(13), row(14), row(2), row(90)], { asOf, band: wide, marketOn: () => 12 });
-  t("half-price filter drops 2 and 90", s && s.n === 5 && s.median === 12 && s.dropped === 2, JSON.stringify(s));
+  t("low and high outliers are dropped", s && s.n === 5 && s.median === 12 && s.dropped === 2, JSON.stringify(s));
   t("graded titles are not raw comps", offItem("PSA 10 Charizard ex", "Charizard ex"));
   t("a Booster Bundle may say bundle", !offItem("Surging Sparks Booster Bundle sealed", "Surging Sparks Booster Bundle"));
   t("a single promo is not an ETB comp", offItem("PSA 10 Charizard V Champion's Path Elite Trainer Box Promo", "Champion's Path Elite Trainer Box"));
