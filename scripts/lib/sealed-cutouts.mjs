@@ -198,13 +198,13 @@ export function showableProducts(prices, catalog, readsDoc, extraIds = FEED_MUST
     const key = String(id || "");
     if (!key) return;
     const row = index.get(key);
-    if (!row) return;
+    if (!row || row.browse === false) return;
     wanted.set(row.id, row);
   };
   for (const product of prices || []) {
     if (!product || !product.id) continue;
     const row = index.get(product.id) || index.get("tcgcsv-" + (Number(product.tcgPlayerId) || pidFromId(product.id))) || product;
-    if (row && row.id) wanted.set(row.id, row);
+    if (row && row.id && row.browse !== false) wanted.set(row.id, row);
   }
   for (const id of sealedReadIds(readsDoc)) add(id);
   for (const id of extraIds || []) add(id);

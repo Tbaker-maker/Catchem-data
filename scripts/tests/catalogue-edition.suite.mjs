@@ -38,6 +38,7 @@ export async function run() {
   const pulse = await readFile(join(ROOT, "scripts/generate-pulse.mjs"), "utf8");
   t("pulse checks catalogue freshness before writing", pulse.includes("catalogueEditionFreshness"));
   t("pulse exits 0 when the catalogue is stale or partial", /edition\.status === "stale"[\s\S]*process\.exit\(0\)/.test(pulse));
+  t("a thin catalogue does not get today's date", /edition\.status === "skip"/.test(pulse) && /THIN CATALOGUE/.test(pulse));
   const assertSrc = await readFile(join(ROOT, "scripts/publish-assert.mjs"), "utf8");
   t("publish-assert still names STALE EDITION", /STALE EDITION/.test(assertSrc));
   t("publish-assert still exits 1 on stale or partial", /status === "stale"[\s\S]*process\.exit\(1\)[\s\S]*status === "partial"[\s\S]*process\.exit\(1\)/.test(assertSrc));

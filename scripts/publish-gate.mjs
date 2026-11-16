@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gateReads, RULES, checkMeter, unpublishMeter } from "./lib/publish-gate.mjs";
+import { gateReads, RULES, checkMeter, unpublishMeter, refuseMissingBoard } from "./lib/publish-gate.mjs";
 import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
@@ -34,6 +34,11 @@ if (previewOnly) {
   process.exit(0);
 }
 const readsPath = join(PUB, "reads.json");
+const missingBoard = refuseMissingBoard(existsSync(readsPath));
+if (missingBoard) {
+  console.error(missingBoard);
+  process.exit(1);
+}
 const doc = await J(readsPath, { reads: [] });
 const chips = (await J(join(PUB, "signal-chips.json"), {}))?.byId || {};
 const listings = {};

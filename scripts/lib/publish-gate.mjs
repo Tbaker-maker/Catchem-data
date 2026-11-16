@@ -6,6 +6,7 @@ import { storyUnstable } from "./read-stability.mjs";
 import { lowValueMove } from "./feed-rank.mjs";
 import { BACK_TO_RECENT_DAYS } from "./history-reads.mjs";
 import { addDays } from "./market-meter.mjs";
+import { publicBoardKindOk } from "./read-quality.mjs";
 
 export const SHORT_MAX = 35; // same short window cap as the Price tile (#374)
 export const VINTAGE_CUTOFF = "2003-06-01";
@@ -30,6 +31,7 @@ export const RULES = [
   ["repeat", "Same read as the previous day"],
   ["advice", "Advice wording from the shared copy rules"],
   ["tiles", "Priced card or sealed read with no flip tiles"],
+  ["kind", "New read kind stays private"],
   ["pattern-rate", "Pattern line leads with a bare rate under 50%"],
   ["ratio", "Sealed multiple does not match the dated dollar pair, one decimal"],
   ["own-date", "A listings count is not from the read date"],
@@ -253,6 +255,7 @@ export function checkRead(read, ctx = {}) {
   }
   for (const l of r.lines || []) { const hit = flagLine(l, { field: "lines", id: r.id }); if (hit.length) { flags.push({ rule: "advice", action: "drop", note: hit[0].phrase }); break; } }
   if (pricedProduct(r) && !hasTiles(chip)) flags.push({ rule: "tiles", action: "drop", note: "priced read with no tiles" });
+  if ((r.kind || r.readKind) && !publicBoardKindOk(r)) flags.push({ rule: "kind", action: "drop", note: `${r.kind || ""}/${r.readKind || ""} stays private` });
   if (bareLowPattern(r)) flags.push({ rule: "pattern-rate", action: "drop", note: String(r.headline || r.pattern?.line || "").slice(0, 80) });
   if (ratioOff(r)) flags.push({ rule: "ratio", action: "drop", note: "multiple does not match the dated prices" });
   if ((r.readKind === "listings" || r.kind === "listings") && ctx.asOf && r.asOf && r.asOf !== ctx.asOf) flags.push({ rule: "own-date", action: "drop", note: `${r.asOf} on a ${ctx.asOf} read` });
@@ -285,6 +288,11 @@ export function checkRead(read, ctx = {}) {
   if (speciesNumberMismatch(r)) flags.push({ rule: "species-number", action: "drop", note: "species line names another printing" });
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
+}
+
+export function refuseMissingBoard(exists) {
+  if (exists) return null;
+  return "publish gate: research/assets/public/reads.json is missing. Not publishing an empty board.";
 }
 
 export function gateReads(reads, ctx = {}, { maxDropShare = 0.25 } = {}) {
