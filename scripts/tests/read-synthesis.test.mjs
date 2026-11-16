@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -213,3 +213,21 @@ await rm(root, { recursive: true, force: true });
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
+
+{
+  // weekSamples gap tests: 1, 8, 10 days
+  const asOf = "2026-11-16";
+  function pts(gaps) {
+    const out = [[asOf, 10]];
+    let d = asOf;
+    for (const g of gaps) {
+      d = addDays(d, -g);
+      out.push([d, 9]);
+    }
+    return out.reverse();
+  }
+  t("gap of 1 day is rejected for weeks[1]", weekSamples(pts([1]), asOf).length < 2);
+  t("gap of 8 days is accepted", weekSamples(pts([8]), asOf).length >= 2);
+  t("gap of 10 days is rejected", weekSamples(pts([10]), asOf).length < 2);
+  t("weeks[0] is the latest point", weekSamples(pts([7]), asOf)[0][0] === asOf);
+}
