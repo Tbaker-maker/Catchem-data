@@ -1,20 +1,20 @@
 {
- "generatedAt": "2026-11-15T22:03:17.052Z",
- "date": "2026-11-15",
+ "generatedAt": "2026-11-16T16:14:03.154Z",
+ "date": "2026-11-16",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 29 finding(s)",
+  "correction-hunter: 30 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 4 finding(s)",
   "designer: 19 finding(s)",
   "theme-scout: 25 finding(s)",
-  "teacher: 11 finding(s)",
+  "teacher: 10 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 28 finding(s)",
+  "steward: 27 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -28,14 +28,14 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 29 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 30 across four runs with nothing resolved. Volume is not work.",
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: FARMING — findings climbed 22 → 22 → 22 → 25 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: BROKEN RECORD — 10 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "steward: FARMING — findings climbed 4 → 4 → 5 → 28 across four runs with nothing resolved. Volume is not work.",
-  "steward: OVER-BUDGET — 28 findings against a ceiling of 8. An unreadable list is an unread list.",
+  "teacher: BROKEN RECORD — 9 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "steward: FARMING — findings climbed 4 → 4 → 5 → 27 across four runs with nothing resolved. Volume is not work.",
+  "steward: OVER-BUDGET — 27 findings against a ceiling of 8. An unreadable list is an unread list.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -434,7 +434,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 142 listings counted.\"",
+   "what": "[X] \"Temporal Forces listings moved 17.4% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -466,7 +466,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Shining Fates Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 142 listings counted.\"",
+   "what": "[YouTube] Fusion Strike Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 130 listings counted.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -482,7 +482,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.1.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -834,7 +834,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 84 days.",
+   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 85 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -850,7 +850,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BACKUP.md has sat untouched for 85 days.",
+   "what": "PENDING-BACKUP.md has sat untouched for 86 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -866,7 +866,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-BOX.md has sat untouched for 84 days.",
+   "what": "PENDING-BLIND-BOX.md has sat untouched for 85 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -882,7 +882,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-PACKS.md has sat untouched for 84 days.",
+   "what": "PENDING-BLIND-PACKS.md has sat untouched for 85 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -898,7 +898,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 85 days.",
+   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 86 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -914,7 +914,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CC-BREAKER.md has sat untouched for 85 days.",
+   "what": "PENDING-CC-BREAKER.md has sat untouched for 86 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
