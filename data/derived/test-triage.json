@@ -4,6 +4,34 @@
   "blocked": [],
   "withheld": [
     {
+      "key": "reads",
+      "label": "reads",
+      "paths": [
+        "research/assets/public/reads.json",
+        "research/assets/public/today.json",
+        "research/assets/public/reads-preview.json",
+        "research/assets/public/signal-chips.json",
+        "research/assets/public/feed/item-reads",
+        "research/assets/public/feed/read-synth.json",
+        "research/assets/public/feed/extra-reads.json",
+        "research/assets/public/feed/read-library.json",
+        "research/assets/public/feed/lead-order.json",
+        "research/assets/public/feed/facts",
+        "research/assets/public/feed/facts.json",
+        "research/assets/public/feed/today"
+      ],
+      "tests": [
+        {
+          "name": "held-reads.suite.mjs",
+          "detail": "1 failed",
+          "section": "feature suites",
+          "inner": [
+            "no held or unverified card appears in any read"
+          ]
+        }
+      ]
+    },
+    {
       "key": "cutouts",
       "label": "sealed cutouts",
       "paths": [
@@ -25,9 +53,21 @@
   "monitor": [],
   "warning": [],
   "paths": [
+    "research/assets/public/reads.json",
+    "research/assets/public/today.json",
+    "research/assets/public/reads-preview.json",
+    "research/assets/public/signal-chips.json",
+    "research/assets/public/feed/item-reads",
+    "research/assets/public/feed/read-synth.json",
+    "research/assets/public/feed/extra-reads.json",
+    "research/assets/public/feed/read-library.json",
+    "research/assets/public/feed/lead-order.json",
+    "research/assets/public/feed/facts",
+    "research/assets/public/feed/facts.json",
+    "research/assets/public/feed/today",
     "research/assets/public/cutouts",
     "research/assets/public/sealed-cutouts.json"
   ],
-  "summary": "Prices fetch, commit and publish tonight.\nWithheld: sealed cutouts. The site keeps the last good copy of research/assets/public/cutouts, research/assets/public/sealed-cutouts.json. Failing tests:\n- sealed-cutout-qa.suite.mjs (every showable sealed id passed or is blocked tcgcsv-709017)",
-  "at": "2026-11-15T20:04:01.842Z"
+  "summary": "Prices fetch, commit and publish tonight.\nWithheld: reads. The site keeps the last good copy of research/assets/public/reads.json, research/assets/public/today.json, research/assets/public/reads-preview.json, research/assets/public/signal-chips.json, research/assets/public/feed/item-reads, research/assets/public/feed/read-synth.json, research/assets/public/feed/extra-reads.json, research/assets/public/feed/read-library.json, research/assets/public/feed/lead-order.json, research/assets/public/feed/facts, research/assets/public/feed/facts.json, research/assets/public/feed/today. Failing tests:\n- held-reads.suite.mjs (no held or unverified card appears in any read)\nWithheld: sealed cutouts. The site keeps the last good copy of research/assets/public/cutouts, research/assets/public/sealed-cutouts.json. Failing tests:\n- sealed-cutout-qa.suite.mjs (every showable sealed id passed or is blocked tcgcsv-709017)",
+  "at": "2026-11-16T13:53:51.875Z"
 }
