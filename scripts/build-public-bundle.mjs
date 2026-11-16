@@ -357,8 +357,8 @@ function releaseFor(setName, groupId) {
   return releaseBySet.get(n) || null;
 }
 
-let RUN_AT = null;
-try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { RUN_AT = null; }
+// TCGplayer market prices are dated by catalog.asOf. That file has a day, not an hour.
+// The PPT run clock is not this feed.
 
 const rawById = new Map();
 const sets = new Map();
@@ -835,7 +835,7 @@ try {
 } catch { /* receipts stay empty if the log is missing */ }
 
 let updatedAt = null;
-try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
+// Movers, the feed, and the indexes are TCGplayer market (catalog.asOf). No hour is stored on that file, so this clock stays empty rather than borrowing the PPT run.
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 

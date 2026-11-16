@@ -77,29 +77,74 @@ export function pptSealedMarket(body) {
   return null;
 }
 
+function positive(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function printingNode(table, variant) {
+  if (!table || typeof table !== "object" || Array.isArray(table)) return null;
+  const want = normalizeVariant(variant);
+  const keys = Object.keys(table);
+  if (!keys.length) return null;
+  if (!want) return keys.length === 1 ? table[keys[0]] : null;
+  for (const key of keys) {
+    if (normalizeVariant(key) === want) return table[key];
+  }
+  return null;
+}
+
+// PPT v2 set cards nest the market. prices is an object, not a list of rows:
+// prices.variants[printing]["Near Mint"].price, and variants[printing].marketPrice
+// when conditionUsed starts with Near Mint. A flat tcgMarket is only the fixture shape.
+function pptCardPrice(card, variant) {
+  const want = normalizeVariant(variant);
+  const list = Array.isArray(card.conditions) ? card.conditions
+    : Array.isArray(card.prices) ? card.prices
+    : Array.isArray(card.variants) ? card.variants
+    : null;
+  if (list) {
+    const hit = list.find((row) => {
+      const cond = String(row?.condition || row?.name || "");
+      if (cond && cond !== "Near Mint" && cond !== "NM") return false;
+      return normalizeVariant(row.variant || row.printing || row.name) === want || (!want && !normalizeVariant(row.variant || row.printing || ""));
+    }) || list.find((row) => String(row?.condition || row?.name || "") === "Near Mint" || String(row?.condition || "") === "NM");
+    if (hit) {
+      const n = positive(hit.tcgMarket || hit.market || hit.marketPrice || hit.price);
+      if (n != null) return n;
+    }
+  }
+  const nested = card.prices && typeof card.prices === "object" && !Array.isArray(card.prices) ? card.prices : null;
+  const fromVariants = printingNode(nested?.variants, want);
+  const near = fromVariants && (fromVariants["Near Mint"] || fromVariants.NM);
+  const nestedPrice = positive(near?.price ?? near?.market ?? near?.marketPrice);
+  if (nestedPrice != null) return nestedPrice;
+  const printing = printingNode(card.variants, want);
+  const used = String(printing?.conditionUsed || "");
+  if (/^near mint\b/i.test(used)) {
+    const n = positive(printing?.marketPrice ?? printing?.price);
+    if (n != null) return n;
+  }
+  const primary = normalizeVariant(nested?.primaryPrinting || "");
+  if (!want || (primary && want === primary)) {
+    const nm = positive(nested?.conditions?.["Near Mint"]?.price ?? nested?.conditions?.NM?.price);
+    if (nm != null) return nm;
+    const market = positive(nested?.market);
+    if (market != null) return market;
+  }
+  return positive(card.tcgMarket || card.market || card.marketPrice || card.price);
+}
+
 export function pptCardMarket(body, tcgPlayerId, variant) {
   const wantId = String(tcgPlayerId);
-  const want = normalizeVariant(variant);
   const cards = Array.isArray(body?.data) ? body.data
     : Array.isArray(body?.cards) ? body.cards
     : body && typeof body === "object" && (body.tcgPlayerId || body.tcgplayerProductId) ? [body]
     : [];
   const card = cards.find((row) => String(row?.tcgPlayerId || row?.tcgplayerProductId || row?.productId || "") === wantId);
   if (!card) return null;
-  const conditions = card.conditions || card.prices || card.variants || [];
-  if (Array.isArray(conditions)) {
-    const hit = conditions.find((row) => {
-      const cond = String(row?.condition || row?.name || "");
-      if (cond && cond !== "Near Mint" && cond !== "NM") return false;
-      return normalizeVariant(row.variant || row.printing || row.name) === want || (!want && !normalizeVariant(row.variant || row.printing || ""));
-    }) || conditions.find((row) => String(row?.condition || row?.name || "") === "Near Mint" || String(row?.condition || "") === "NM");
-    if (hit) {
-      const n = Number(hit.tcgMarket || hit.market || hit.marketPrice || hit.price);
-      if (n > 0) return { price: n, source: "pokemonpricetracker" };
-    }
-  }
-  const n = Number(card.tcgMarket || card.market || card.marketPrice || card.price);
-  return n > 0 ? { price: n, source: "pokemonpricetracker" } : null;
+  const price = pptCardPrice(card, variant);
+  return price != null ? { price, source: "pokemonpricetracker" } : null;
 }
 
 function median(values) {
@@ -107,6 +152,13 @@ function median(values) {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+function percentile(values, p) {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const idx = Math.min(sorted.length - 1, Math.max(0, Math.ceil(p * sorted.length) - 1));
+  return sorted[idx];
 }
 
 export function agreement(rows) {
@@ -127,6 +179,7 @@ export function agreement(rows) {
     exactShare: compared.length ? exact / compared.length : null,
     medianAbsPct: median(absPct),
     medianAbsUsd: median(absUsd),
+    p90AbsUsd: percentile(absUsd, 0.9),
     within5,
     within5Share: compared.length ? within5 / compared.length : null,
     within10,
@@ -151,11 +204,30 @@ export function publicAgreement(stats) {
   };
 }
 
-export function comparePulls({ pppSealed = [], pppCards = [], tcgcsvByTid = new Map(), pptSealedByTid = new Map(), pptCardBodies = [] }) {
+function cardsIn(body) {
+  if (Array.isArray(body?.data)) return body.data;
+  if (Array.isArray(body?.cards)) return body.cards;
+  if (body && typeof body === "object" && (body.tcgPlayerId || body.tcgplayerProductId)) return [body];
+  return [];
+}
+
+export function indexPptCards(bodies, into = new Map()) {
+  for (const body of bodies || []) {
+    for (const card of cardsIn(body)) {
+      const tid = String(card?.tcgPlayerId || card?.tcgplayerProductId || card?.productId || "");
+      if (!/^\d+$/.test(tid) || into.has(tid)) continue;
+      into.set(tid, card);
+    }
+  }
+  return into;
+}
+
+export function comparePulls({ pppSealed = [], pppCards = [], tcgcsvByTid = new Map(), pptSealedByTid = new Map(), pptCardBodies = [], pptCardsByTid = null }) {
   const sealedTcg = [];
   const sealedPpt = [];
   const cardTcg = [];
   const cardPpt = [];
+  const pptCards = pptCardsByTid instanceof Map ? pptCardsByTid : indexPptCards(pptCardBodies);
   for (const item of pppSealed) {
     const tid = String(item.tcgPlayerId);
     const ppp = pppSealedMarket(item.body);
@@ -184,20 +256,18 @@ export function comparePulls({ pppSealed = [], pppCards = [], tcgcsvByTid = new 
           baselineSource: "tcgcsv",
         });
       }
-      for (const body of pptCardBodies) {
-        const ppt = pptCardMarket(body, tid, printing.variant);
-        if (ppt) {
-          cardPpt.push({
-            kind: "single",
-            tcgPlayerId: tid,
-            name: item.body?.name || tid,
-            variant: printing.variant,
-            ppp: ppp.price,
-            baseline: ppt.price,
-            baselineSource: "ppt",
-          });
-          break;
-        }
+      const pptCard = pptCards.get(tid);
+      const ppt = pptCard ? pptCardMarket(pptCard, tid, printing.variant) : null;
+      if (ppt) {
+        cardPpt.push({
+          kind: "single",
+          tcgPlayerId: tid,
+          name: item.body?.name || tid,
+          variant: printing.variant,
+          ppp: ppp.price,
+          baseline: ppt.price,
+          baselineSource: "ppt",
+        });
       }
     }
   }
