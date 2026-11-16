@@ -96,7 +96,7 @@ const sp = await J("data/sealed-prices.json");
       console.error(`\n✗ PARTIAL FETCH — only ${edition.pct}% of products carry the newest timestamp (${edition.newest}).`);
       console.error("   A fetch ran but most products did not update.");
     } else {
-      console.error(`\n✗ THIN CATALOGUE — ${edition.live} live priced rows. Not enough to date an edition.`);
+      console.error(`\n✗ THIN CATALOGUE: ${edition.live} live priced rows. Not enough to date an edition.`);
       console.error("   A thin file is not a healthy market. This edition would wear today's date");
       console.error("   on too little data.");
     }

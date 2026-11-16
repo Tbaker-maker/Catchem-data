@@ -23,7 +23,7 @@ catch {
 
 export function unreadableFileProblem(path, spec, error) {
   if (spec?.optional) return null;
-  return `${path}: unreadable or not valid JSON (${error.message}) — ${spec?.readers} scripts depend on it`;
+  return `${path}: unreadable or not valid JSON (${error.message}). ${spec?.readers} scripts depend on it`;
 }
 
 const problems = [];
@@ -112,7 +112,7 @@ function scan(node, path, file, depth, impossible, now) {
     const forwardLooking = FUTURE_OK.test(k) || /(upcoming|radar|release|schedule|calendar|window|print)/i.test(file + path);
     if (typeof v === "string" && isDateField(k) && !forwardLooking && /^\d{4}-\d{2}-\d{2}/.test(v)) {
       const ts = Date.parse(v);
-      if (Number.isFinite(ts) && ts - now > SKEW_MS) impossible.push(file + at + " = " + v + " — recorded in the future");
+      if (Number.isFinite(ts) && ts - now > SKEW_MS) impossible.push(file + at + " = " + v + ", recorded in the future");
     }
     if (v && typeof v === "object") scan(v, at, file, depth + 1, impossible, now);
   }
@@ -142,7 +142,7 @@ export function specialtyBoxProblems(classes, rows) {
   for (const p of rows || []) {
     const set = p?.setId ?? p?.set;
     if (classes?.[set] === "specialty" && p?.subtype === "booster-box")
-      problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box — "${p?.name}"`);
+      problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box: "${p?.name}"`);
   }
   return problems;
 }
