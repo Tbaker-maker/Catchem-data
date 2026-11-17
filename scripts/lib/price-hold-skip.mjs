@@ -128,6 +128,11 @@ export async function scrubHeldOutputs(root) {
       if (!doc || !doc.items) continue;
       let changed = false;
       for (const id of Object.keys(doc.items)) {
+        if (held.has(id)) {
+          delete doc.items[id];
+          changed = true;
+          continue;
+        }
         const rows = Array.isArray(doc.items[id]) ? doc.items[id] : [];
         const next = dropHeldReads(rows, held);
         if (next.length !== rows.length) {
