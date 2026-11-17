@@ -1,8 +1,9 @@
 // A held or unverified card must not show up in a read, a chip, a mover, or a set-value top.
-import { readFile, readdir } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dropHeldChips, dropHeldReads, loadHeldIds, mentionsHeld } from "../lib/price-hold-skip.mjs";
+import { dropHeldChips, dropHeldReads, loadHeldIds, mentionsHeld, scrubHeldOutputs } from "../lib/price-hold-skip.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = join(ROOT, "research/assets/public");
@@ -25,6 +26,29 @@ export async function run() {
     t("a held card's chip is left out after stamping", r.dropped === 1 && !r.doc.byId["move-tcgcsv-85289-7"] && r.doc.byId["move-tcgcsv-1-7"] && !r.doc.bySku.a && r.doc.samples.length === 0);
   }
   t("the hold file has cards", held.size > 1000);
+  {
+    // A card the rating flags "check" after build-feed ran must still leave the
+    // reads, chips and item reads when the scrub runs again (2026-11-16 nightly).
+    const tmp = await mkdtemp(join(tmpdir(), "held-scrub-"));
+    try {
+      const pub = join(tmp, "research/assets/public");
+      await mkdir(join(pub, "feed/rating"), { recursive: true });
+      await mkdir(join(pub, "feed/item-reads"), { recursive: true });
+      await writeFile(join(pub, "feed/rating/06.json"), JSON.stringify({ rows: [{ id: "tcgcsv-9", check: true }, { id: "tcgcsv-8" }] }));
+      await writeFile(join(pub, "reads.json"), JSON.stringify({ count: 2, reads: [{ id: "deep-set-x", family: "deep", lines: ["tcgcsv-9 up"] }, { id: "ok", family: "move", sku: "tcgcsv-8" }] }));
+      await writeFile(join(pub, "signal-chips.json"), JSON.stringify({ byId: { "move-tcgcsv-9-30": { s: 1 }, "move-tcgcsv-8-30": { s: 1 } }, samples: [] }));
+      await writeFile(join(pub, "feed/item-reads/09.json"), JSON.stringify({ items: { "tcgcsv-9": [{ id: "deep-rating-ir-above" }], "tcgcsv-8": [{ id: "keep" }] } }));
+      await scrubHeldOutputs(tmp);
+      const reads = JSON.parse(await readFile(join(pub, "reads.json"), "utf8"));
+      const chips = JSON.parse(await readFile(join(pub, "signal-chips.json"), "utf8"));
+      const items = JSON.parse(await readFile(join(pub, "feed/item-reads/09.json"), "utf8"));
+      t("a card flagged by the rating leaves reads, chips and item reads", reads.reads.length === 1 && reads.reads[0].id === "ok" && !chips.byId["move-tcgcsv-9-30"] && !!chips.byId["move-tcgcsv-8-30"] && !items.items["tcgcsv-9"] && !!items.items["tcgcsv-8"]);
+    } finally {
+      await rm(tmp, { recursive: true, force: true });
+    }
+    const writer = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
+    t("reads are scrubbed again after the rating build", writer.lastIndexOf("scrubHeldOutputs(ROOT)") > writer.indexOf("build-card-rating.mjs"));
+  }
   const leaked = [];
   const note = (where, row) => {
     if (mentionsHeld(row, held)) leaked.push(`${where}:${row?.id || row?.sku || ""}`);

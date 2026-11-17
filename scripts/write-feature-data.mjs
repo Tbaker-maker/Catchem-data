@@ -5,7 +5,7 @@ import {
   assignMarks, buildListings, buildReleases, buildSetValueDoc, datedDay, idsForCatalogSet,
   loadPriceMap, nonEmptyDoc, readOptionalJson, ROTATION_SOURCES, ROTATION_EXPECTED, shouldWrite,
 } from "./lib/feature-data.mjs";
-import { loadHeldIds } from "./lib/price-hold-skip.mjs";
+import { loadHeldIds, scrubHeldOutputs } from "./lib/price-hold-skip.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(ROOT, "research/assets/public");
@@ -143,3 +143,8 @@ if (!sameHeld) {
   await writeSetValues(heldAfter);
   console.log(JSON.stringify({ setValueRebuilt: { heldBefore: skipIds.size, heldAfter: heldAfter.size, pricedCards, unpricedCards } }));
 }
+// build-feed scrubbed reads, chips, item reads and facts with the held set from
+// before the rating build. A card the rating newly flags stayed in them and
+// failed held-reads, which withheld every read on 2026-11-16 (tcgcsv-676038).
+// Scrub again with the final held set. The scrub is idempotent.
+console.log(JSON.stringify({ heldReadsAfterRating: await scrubHeldOutputs(ROOT) }));
