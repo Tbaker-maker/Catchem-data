@@ -1,15 +1,15 @@
-# What the machines noticed — 2026-11-17
+# What the machines noticed — 2026-11-18
 
-The overnight shift's notes. Short on purpose.
+Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
-Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
+Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
 2 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
+We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
 
-32 product(s) we featured and can no longer price:
+33 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -26,9 +26,9 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 31 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 32 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- correction-hunter: OVER-BUDGET — 31 findings against a ceiling of 30. An unreadable list is an unread list.
+- correction-hunter: OVER-BUDGET — 32 findings against a ceiling of 30. An unreadable list is an unread list.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
@@ -71,18 +71,21 @@ Gaps in what we watch:
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
+## What the market did
+- **product** — Ascended Heroes Booster Bundle moved 10.8% — about 3.0× its own typical daily swing. *Measured against its own 33 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+
 ## Where today's story goes
-- **X** — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 131 listings counted."
-- **YouTube** — Lost Origin Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 131 listings counted."
+- **X** — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted."
+- **YouTube** — Twilight Masquerade Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.8."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 87 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 88 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 87 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 87 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 88 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 89 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 88 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 88 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -91,10 +94,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-53 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 386 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: type = 52. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 95% rejection rate (8/150) — *largest bucket: set = 59. A single over-broad term can eat a market.*
+52 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 406 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 73% rejection rate (41/150) — *largest bucket: exclude = 53. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 95% rejection rate (7/150) — *largest bucket: set = 57. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -117,13 +120,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 675 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 188 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 194 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-80 open — 61 need eyes on a rendered page, 19 need a decision.
+81 open — 62 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

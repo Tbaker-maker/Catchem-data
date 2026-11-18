@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-17T16:50:40.321Z",
- "date": "2026-11-17",
+ "generatedAt": "2026-11-18T16:33:35.789Z",
+ "date": "2026-11-18",
  "checked": 175,
  "warned": 0,
- "blocked": 5,
+ "blocked": 6,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
   {
@@ -12,7 +12,7 @@
    "median": 166.88,
    "high": null,
    "floor": 170,
-   "listings": 71,
+   "listings": 68,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -25,9 +25,22 @@
    "median": 1032.84,
    "high": null,
    "floor": 1100,
-   "listings": 9,
+   "listings": 11,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
+   ],
+   "warns": [],
+   "topPricedTitles": null
+  },
+  {
+   "id": "sm10-booster-box",
+   "name": "Unbroken Bonds Booster Box",
+   "median": 2724.4,
+   "high": null,
+   "floor": 4000,
+   "listings": 4,
+   "reasons": [
+    "only 4 listings — too thin to headline"
    ],
    "warns": [],
    "topPricedTitles": null
@@ -38,7 +51,7 @@
    "median": 695.74,
    "high": null,
    "floor": 700,
-   "listings": 9,
+   "listings": 30,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
    ],
@@ -48,7 +61,7 @@
   {
    "id": "swsh1-etb",
    "name": "Sword & Shield Base Elite Trainer Box",
-   "median": 178.5,
+   "median": 178.64,
    "high": null,
    "floor": 167,
    "listings": 11,
@@ -63,8 +76,8 @@
    "name": "Sword & Shield Booster Pack",
    "median": 11.78,
    "high": null,
-   "floor": 10.45,
-   "listings": 7,
+   "floor": 10.25,
+   "listings": 6,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5."
    ],

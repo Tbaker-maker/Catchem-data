@@ -2101,20 +2101,6 @@
   },
   {
    "rank": 86,
-   "id": "sv8-bb",
-   "name": "Surging Sparks Booster Bundle",
-   "set": "Surging Sparks",
-   "subtype": "booster-bundle",
-   "price": 65.19,
-   "packs": 6,
-   "contentsEV": 17.16,
-   "ev": -48.03,
-   "roiPct": -73.7,
-   "beatChance": 1.5,
-   "median": 10.62
-  },
-  {
-   "rank": 87,
    "id": "sv3pt5-pack",
    "name": "151 Booster Pack",
    "set": "151",
@@ -2126,6 +2112,20 @@
    "roiPct": -73.9,
    "beatChance": 10.7,
    "median": 2.01
+  },
+  {
+   "rank": 87,
+   "id": "sv8-bb",
+   "name": "Surging Sparks Booster Bundle",
+   "set": "Surging Sparks",
+   "subtype": "booster-bundle",
+   "price": 65.67,
+   "packs": 6,
+   "contentsEV": 17.16,
+   "ev": -48.51,
+   "roiPct": -73.9,
+   "beatChance": 1.5,
+   "median": 10.62
   },
   {
    "rank": 88,
@@ -2385,10 +2385,10 @@
    "name": "Mega Evolution Elite Trainer Box",
    "set": "Mega Evolution",
    "subtype": "etb",
-   "price": 110.99,
+   "price": 110.81,
    "packs": 9,
    "contentsEV": 25.29,
-   "ev": -85.7,
+   "ev": -85.52,
    "roiPct": -77.2,
    "beatChance": 0.9,
    "median": 14.35
@@ -2819,10 +2819,10 @@
    "name": "Temporal Forces Pokemon Center Elite Trainer Box",
    "set": "Temporal Forces",
    "subtype": "pc-etb",
-   "price": 205.66,
+   "price": 206.22,
    "packs": 9,
    "contentsEV": 36.45,
-   "ev": -169.21,
+   "ev": -169.77,
    "roiPct": -82.3,
    "beatChance": 8.7,
    "median": 17.73
@@ -3099,10 +3099,10 @@
    "name": "Paradox Rift Pokemon Center Elite Trainer Box",
    "set": "Paradox Rift",
    "subtype": "pc-etb",
-   "price": 196.98,
+   "price": 196.66,
    "packs": 9,
    "contentsEV": 30.33,
-   "ev": -166.65,
+   "ev": -166.33,
    "roiPct": -84.6,
    "beatChance": 0.2,
    "median": 13.5
@@ -3267,10 +3267,10 @@
    "name": "Mega Evolution Pokemon Center Elite Trainer Box",
    "set": "Mega Evolution",
    "subtype": "pc-etb",
-   "price": 179.98,
+   "price": 179.77,
    "packs": 9,
    "contentsEV": 25.29,
-   "ev": -154.69,
+   "ev": -154.48,
    "roiPct": -85.9,
    "beatChance": 1.1,
    "median": 14.35
@@ -3715,11 +3715,11 @@
    "name": "Evolving Skies Elite Trainer Box",
    "set": "Evolving Skies",
    "subtype": "etb",
-   "price": 496.17,
+   "price": 489.98,
    "packs": 8,
    "contentsEV": 48.96,
-   "ev": -447.21,
-   "roiPct": -90.1,
+   "ev": -441.02,
+   "roiPct": -90,
    "beatChance": 1.3,
    "median": 10.48
   },
@@ -3729,10 +3729,10 @@
    "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
    "set": "Scarlet & Violet",
    "subtype": "pc-etb",
-   "price": 301.58,
+   "price": 302.53,
    "packs": 9,
    "contentsEV": 29.07,
-   "ev": -272.51,
+   "ev": -273.46,
    "roiPct": -90.4,
    "beatChance": 0,
    "median": 13.59
@@ -9835,77 +9835,6 @@
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },
   {
-   "id": "sv8-bb",
-   "name": "Surging Sparks Booster Bundle",
-   "set": "Surging Sparks",
-   "setId": "sv8",
-   "setSlug": "sv08-surging-sparks",
-   "subtype": "booster-bundle",
-   "price": 65.19,
-   "packs": 6,
-   "promo": 0,
-   "packEV": {
-    "hits": 1.09,
-    "bulk": 1.26,
-    "rare": 0.51,
-    "total": 2.86
-   },
-   "contentsEV": 17.16,
-   "ev": -48.03,
-   "roiPct": -73.7,
-   "beatChance": 1.5,
-   "median": 10.62,
-   "sims": 10000,
-   "bulk": {
-    "perCard": 0.14,
-    "median": 0.14,
-    "n": 149,
-    "cardsPerPack": 9,
-    "raised": false,
-    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
-   },
-   "rareSlot": {
-    "avg": 0.51,
-    "n": 34
-   },
-   "slots": [
-    {
-     "rarity": "Illustration Rare",
-     "tag": null,
-     "rate": 0.0767,
-     "avgPrice": 7.13,
-     "nCards": 23,
-     "ev": 0.5468,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
-     "published": "2024-11-08"
-    },
-    {
-     "rarity": "Special Illustration Rare",
-     "tag": null,
-     "rate": 0.0115,
-     "avgPrice": 39.44,
-     "nCards": 10,
-     "ev": 0.4536,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
-     "published": "2024-11-08"
-    },
-    {
-     "rarity": "Hyper Rare",
-     "tag": "Gold",
-     "rate": 0.0053,
-     "avgPrice": 17.03,
-     "nCards": 6,
-     "ev": 0.0903,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
-     "published": "2024-11-08"
-    }
-   ],
-   "priceAsOf": "2026-11-18",
-   "priceSource": "sealed-prices median",
-   "label": "Rip value",
-   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
-  },
-  {
    "id": "sv3pt5-pack",
    "name": "151 Booster Pack",
    "set": "151",
@@ -9973,6 +9902,77 @@
    ],
    "priceAsOf": "2026-11-18",
    "priceSource": "TCGplayer market",
+   "label": "Rip value",
+   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
+  },
+  {
+   "id": "sv8-bb",
+   "name": "Surging Sparks Booster Bundle",
+   "set": "Surging Sparks",
+   "setId": "sv8",
+   "setSlug": "sv08-surging-sparks",
+   "subtype": "booster-bundle",
+   "price": 65.67,
+   "packs": 6,
+   "promo": 0,
+   "packEV": {
+    "hits": 1.09,
+    "bulk": 1.26,
+    "rare": 0.51,
+    "total": 2.86
+   },
+   "contentsEV": 17.16,
+   "ev": -48.51,
+   "roiPct": -73.9,
+   "beatChance": 1.5,
+   "median": 10.62,
+   "sims": 10000,
+   "bulk": {
+    "perCard": 0.14,
+    "median": 0.14,
+    "n": 149,
+    "cardsPerPack": 9,
+    "raised": false,
+    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
+   },
+   "rareSlot": {
+    "avg": 0.51,
+    "n": 34
+   },
+   "slots": [
+    {
+     "rarity": "Illustration Rare",
+     "tag": null,
+     "rate": 0.0767,
+     "avgPrice": 7.13,
+     "nCards": 23,
+     "ev": 0.5468,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+     "published": "2024-11-08"
+    },
+    {
+     "rarity": "Special Illustration Rare",
+     "tag": null,
+     "rate": 0.0115,
+     "avgPrice": 39.44,
+     "nCards": 10,
+     "ev": 0.4536,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+     "published": "2024-11-08"
+    },
+    {
+     "rarity": "Hyper Rare",
+     "tag": "Gold",
+     "rate": 0.0053,
+     "avgPrice": 17.03,
+     "nCards": 6,
+     "ev": 0.0903,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+     "published": "2024-11-08"
+    }
+   ],
+   "priceAsOf": "2026-11-18",
+   "priceSource": "sealed-prices median",
    "label": "Rip value",
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },
@@ -11311,7 +11311,7 @@
    "setId": "me1",
    "setSlug": "me01-mega-evolution",
    "subtype": "etb",
-   "price": 110.99,
+   "price": 110.81,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -11321,7 +11321,7 @@
     "total": 2.81
    },
    "contentsEV": 25.29,
-   "ev": -85.7,
+   "ev": -85.52,
    "roiPct": -77.2,
    "beatChance": 0.9,
    "median": 14.35,
@@ -13682,7 +13682,7 @@
    "setId": "sv5",
    "setSlug": "sv05-temporal-forces",
    "subtype": "pc-etb",
-   "price": 205.66,
+   "price": 206.22,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -13692,7 +13692,7 @@
     "total": 4.05
    },
    "contentsEV": 36.45,
-   "ev": -169.21,
+   "ev": -169.77,
    "roiPct": -82.3,
    "beatChance": 8.7,
    "median": 17.73,
@@ -15132,7 +15132,7 @@
    "setId": "sv4",
    "setSlug": "sv04-paradox-rift",
    "subtype": "pc-etb",
-   "price": 196.98,
+   "price": 196.66,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -15142,7 +15142,7 @@
     "total": 3.37
    },
    "contentsEV": 30.33,
-   "ev": -166.65,
+   "ev": -166.33,
    "roiPct": -84.6,
    "beatChance": 0.2,
    "median": 13.5,
@@ -16084,7 +16084,7 @@
    "setId": "me1",
    "setSlug": "me01-mega-evolution",
    "subtype": "pc-etb",
-   "price": 179.98,
+   "price": 179.77,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -16094,7 +16094,7 @@
     "total": 2.81
    },
    "contentsEV": 25.29,
-   "ev": -154.69,
+   "ev": -154.48,
    "roiPct": -85.9,
    "beatChance": 1.1,
    "median": 14.35,
@@ -18406,7 +18406,7 @@
    "setId": "swsh7",
    "setSlug": "swsh07-evolving-skies",
    "subtype": "etb",
-   "price": 496.17,
+   "price": 489.98,
    "packs": 8,
    "promo": 0,
    "packEV": {
@@ -18416,8 +18416,8 @@
     "total": 6.12
    },
    "contentsEV": 48.96,
-   "ev": -447.21,
-   "roiPct": -90.1,
+   "ev": -441.02,
+   "roiPct": -90,
    "beatChance": 1.3,
    "median": 10.48,
    "sims": 10000,
@@ -18467,7 +18467,7 @@
    "setId": "sv1",
    "setSlug": "sv01-scarlet-and-violet-base-set",
    "subtype": "pc-etb",
-   "price": 301.58,
+   "price": 302.53,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -18477,7 +18477,7 @@
     "total": 3.23
    },
    "contentsEV": 29.07,
-   "ev": -272.51,
+   "ev": -273.46,
    "roiPct": -90.4,
    "beatChance": 0,
    "median": 13.59,
