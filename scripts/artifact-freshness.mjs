@@ -35,6 +35,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pulseAsOfStale } from "./lib/sealed-market-pulse.mjs";
 import { collectGitAddPaths } from "./lib/git-add-paths.mjs";
+import { staticAssetExcuse } from "./lib/static-asset-freshness.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WF = join(ROOT, ".github", "workflows");
@@ -245,7 +246,7 @@ const stale = [];
 
 for (const r of rows) {
   const label = `${r.p}`.padEnd(42);
-  const excuse = SLOW[r.p];
+  const excuse = SLOW[r.p] || staticAssetExcuse(r.p);
 
   if (r.days === null) {
     if (r.unwired) {

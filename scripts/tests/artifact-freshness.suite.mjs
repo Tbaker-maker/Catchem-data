@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectGitAddPaths } from "../lib/git-add-paths.mjs";
+import { freshnessBlocks, staticAssetExcuse } from "../lib/static-asset-freshness.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -45,6 +46,20 @@ export async function run() {
   t("the sealed workflow does not promise true", !live.includes("true"));
   t("the sealed workflow still promises sealed-prices.json", live.includes("data/sealed-prices.json"));
   t("the sealed workflow still promises the logo glob", live.includes("research/assets/img/*/logo.png"));
+
+  t("a stale set logo is not a freshness failure",
+    staticAssetExcuse("research/assets/img/baseset/logo.png") !== ""
+    && staticAssetExcuse("research/assets/img/*/logo.png") !== ""
+    && freshnessBlocks("research/assets/img/baseset/logo.png", 9, "") === false);
+  t("a stale data file is still a freshness failure",
+    staticAssetExcuse("data/sealed-prices.json") === ""
+    && staticAssetExcuse("research/assets/public/counts.json") === ""
+    && staticAssetExcuse("data/derived/listing-counts/") === ""
+    && freshnessBlocks("data/sealed-prices.json", 9, "") === true
+    && freshnessBlocks("data/sealed-prices.json", 1, "") === false);
+
+  const guard = await readFile(join(ROOT, "scripts/artifact-freshness.mjs"), "utf8");
+  t("the freshness guard uses the static logo excuse", guard.includes("staticAssetExcuse(r.p)"));
 
   return fail;
 }
