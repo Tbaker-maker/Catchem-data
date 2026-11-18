@@ -4,8 +4,9 @@
 // output against a schema, then writes the digest, the radar, and the
 // public releases file. A missing key or a bad response writes nothing.
 //
-// Key: XAI_API_KEY (repo secret). Model: XAI_MODEL, default grok-4.7.
-// Never commit a key. Tests inject a fake fetch and a fake key.
+// Key: XAI_API_KEY (repo secret). Model: XAI_MODEL, or grok-4.7 when unset.
+// grok-4.7 is the id in https://docs.x.ai/developers/models
+// and https://docs.x.ai/developers/grok-4-7 . Web search is the Responses tool.
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -24,7 +25,10 @@ const NEWS_FILE = join(DIGEST_DIR, "news.json");
 const PUBLIC_RELEASES = join(ROOT, "research", "assets", "public", "releases.json");
 
 const CHECKED_BY = "research-script";
-const MODEL_DEFAULT = "grok-4.7";
+// Confirmed against https://docs.x.ai/developers/models (2026-11-17).
+export const MODEL_DEFAULT = "grok-4.7";
+const BLOCK_STATUS = new Set([401, 403, 429]);
+const GONE_STATUS = new Set([404, 410]);
 
 // Parts 1 and 2 only. Part 3 is the account pass and is not this job.
 function partsOneAndTwo(text) {
@@ -105,17 +109,59 @@ function extractText(data) {
   return "";
 }
 
-async function defaultResolveUrl(url, fetchImpl) {
+function headerGet(res, name) {
+  const h = res?.headers;
+  if (!h) return "";
+  if (typeof h.get === "function") return String(h.get(name) || "");
+  const key = Object.keys(h).find((k) => k.toLowerCase() === name.toLowerCase());
+  return key ? String(h[key] || "") : "";
+}
+
+// 401, 403, 429, and a bot challenge mean the host answered. Keep the claim
+// and tag it. Drop only 404, 410, a DNS failure, or a timeout.
+export function classifyHttp(res) {
+  const status = Number(res?.status);
+  if (GONE_STATUS.has(status)) return { keep: false, reason: String(status) };
+  const mitigated = headerGet(res, "cf-mitigated");
+  const datadome = headerGet(res, "x-datadome");
+  const hint = String(res?.bodyHint || "").toLowerCase();
+  const challenge = Boolean(mitigated || datadome || /captcha|cf-challenge|just a moment|attention required|bot challenge/.test(hint));
+  if (BLOCK_STATUS.has(status) || challenge) return { keep: true, tag: "exists, unverified" };
+  if (status === 405) return { keep: null, reason: "head-not-allowed" };
+  if (res?.ok || (status >= 200 && status < 400)) return { keep: true, tag: null };
+  if (status > 0) return { keep: true, tag: "exists, unverified" };
+  return { keep: false, reason: "no-status" };
+}
+
+export function asVerdict(value) {
+  if (value === true) return { keep: true, tag: null };
+  if (value === false || value == null) return { keep: false, reason: "no" };
+  return value;
+}
+
+// One request. A second request happens only when HEAD is not allowed.
+// A block, a 404, a DNS error, or a timeout is never retried.
+export async function defaultResolveUrl(url, fetchImpl) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), URL_TIMEOUT_MS);
+  const once = (method) => fetchImpl(url, { method, signal: ctrl.signal, redirect: "follow" });
   try {
-    const res = await fetchImpl(url, { method: "HEAD", signal: ctrl.signal, redirect: "follow" });
-    if (res.ok || (res.status >= 300 && res.status < 400)) return true;
-    // Some hosts reject HEAD. One GET with a short read is the fallback.
-    const get = await fetchImpl(url, { method: "GET", signal: ctrl.signal, redirect: "follow" });
-    return get.ok;
-  } catch {
-    return false;
+    let res;
+    try {
+      res = await once("HEAD");
+    } catch {
+      return { keep: false, reason: "dns-or-timeout" };
+    }
+    let verdict = classifyHttp(res);
+    if (verdict.reason !== "head-not-allowed") return verdict;
+    try {
+      res = await once("GET");
+    } catch {
+      return { keep: false, reason: "dns-or-timeout" };
+    }
+    verdict = classifyHttp(res);
+    if (verdict.reason === "head-not-allowed") return { keep: true, tag: "exists, unverified" };
+    return verdict;
   } finally {
     clearTimeout(timer);
   }
@@ -305,13 +351,18 @@ export async function runDailyResearch(opts = {}) {
       dropped.push({ reason: "already in news.json", url });
       continue;
     }
-    const ok = await resolveUrl(url);
-    if (!ok) {
-      dropped.push({ reason: "URL did not resolve", url });
-      log.error("dropped claim, URL did not resolve: " + url);
+    const verdict = asVerdict(await resolveUrl(url));
+    if (!verdict.keep) {
+      dropped.push({ reason: verdict.reason || "URL did not resolve", url });
+      log.error("dropped claim, URL did not resolve: " + url + " (" + (verdict.reason || "no") + ")");
       continue;
     }
-    keptClaims.push({ text: claim.text || "", url, sources: (claim.sources || []).filter(isHttpUrl) });
+    keptClaims.push({
+      text: claim.text || "",
+      url,
+      sources: (claim.sources || []).filter(isHttpUrl),
+      urlStatus: verdict.tag || "ok",
+    });
   }
 
   const { radar: nextRadar, changed, droppedPast } = applyRadar(radar, obj.radar, today);
@@ -319,8 +370,12 @@ export async function runDailyResearch(opts = {}) {
 
   const note = changed ? "radar updated" : "radar checked, no change";
   const head = "> RADAR: " + note + "\n\n";
+  const unverified = keptClaims.filter((c) => c.urlStatus === "exists, unverified");
+  const tagBlock = unverified.length
+    ? "\n\n## Source check\n" + unverified.map((c) => "- exists, unverified: " + c.url).join("\n") + "\n"
+    : "";
   const body = String(obj.digest).trim();
-  const digestText = head + body + "\n";
+  const digestText = head + body + tagBlock + (tagBlock ? "" : "\n");
 
   // Write only after the schema passed and the drops are decided.
   // A rerun the same day overwrites the same path.

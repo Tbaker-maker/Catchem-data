@@ -3,7 +3,7 @@
 import { mkdtemp, mkdir, writeFile, readFile, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { runDailyResearch } from "../daily-research.mjs";
+import { runDailyResearch, defaultResolveUrl, MODEL_DEFAULT } from "../daily-research.mjs";
 
 const PROMPT = `# Catch'em Daily Research Brief
 
@@ -203,6 +203,96 @@ export async function run() {
     await runDailyResearch({ apiKey: "fake-key", root, today, fetchImpl: fakeFetch(second), resolveUrl: alwaysResolve, writePublic });
     const digest = await readFile(join(root, "research", "digests", today + ".md"), "utf8");
     t("same day rerun overwrites", /Second run/.test(digest) && !/First run/.test(digest));
+  }
+
+  // 403 is kept and tagged. 404 is dropped. A block is not retried.
+  {
+    const quiet = { ...baseRadar, upcoming: baseRadar.upcoming.filter((x) => x.name !== "Past Set") };
+    const root = await fixture(quiet);
+    const hits = {};
+    const body = JSON.stringify({
+      digest: "# Research Digest - 2026-11-17\n\n## Flags\nNo flags.\n\n## New since yesterday\nTwo claims.\n\n## Radar check\n- Future Set: on schedule.",
+      claims: [
+        { text: "blocked host", url: "https://blocked.example/page", sources: ["https://blocked.example/page"] },
+        { text: "missing page", url: "https://missing.example/gone", sources: ["https://missing.example/gone"] },
+      ],
+      radar: null,
+      nothingNew: false,
+    });
+    const fetchImpl = async (url, opts) => {
+      const u = String(url);
+      if (u.includes("api.x.ai")) {
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({ output_text: body }),
+        };
+      }
+      hits[u] = (hits[u] || 0) + 1;
+      if (opts?.method !== "HEAD") throw new Error("retried " + u);
+      if (u.includes("blocked.example")) return { ok: false, status: 403, headers: { get() { return ""; } } };
+      if (u.includes("missing.example")) return { ok: false, status: 404, headers: { get() { return ""; } } };
+      return { ok: true, status: 200, headers: { get() { return ""; } } };
+    };
+    const r = await runDailyResearch({ apiKey: "fake-key", root, today, fetchImpl, writePublic });
+    const digest = await readFile(r.digestPath, "utf8");
+    t("403 is kept", r.ok && r.keptClaims.some((c) => c.url === "https://blocked.example/page" && c.urlStatus === "exists, unverified"));
+    t("403 is tagged in the digest", digest.includes("exists, unverified: https://blocked.example/page"));
+    t("403 is not retried", hits["https://blocked.example/page"] === 1);
+    t("404 is dropped", r.dropped.some((d) => d.url === "https://missing.example/gone" && d.reason === "404"));
+    t("404 is not retried", hits["https://missing.example/gone"] === 1);
+  }
+
+  {
+    const headers = { get(name) { return name.toLowerCase() === "cf-mitigated" ? "challenge" : ""; } };
+    const challenge = await defaultResolveUrl("https://challenge.example/a", async (_url, opts) => {
+      if (opts?.method !== "HEAD") throw new Error("retried challenge");
+      return { ok: true, status: 200, headers };
+    });
+    t("a bot challenge is kept and tagged", challenge.keep === true && challenge.tag === "exists, unverified");
+    const timed = await defaultResolveUrl("https://slow.example/a", async () => {
+      const err = new Error("aborted");
+      err.name = "AbortError";
+      throw err;
+    });
+    t("a timeout is dropped", timed.keep === false && timed.reason === "dns-or-timeout");
+  }
+
+  {
+    const prev = process.env.XAI_MODEL;
+    delete process.env.XAI_MODEL;
+    let sent = "";
+    const root = await fixture({ ...baseRadar, upcoming: baseRadar.upcoming.filter((x) => x.name !== "Past Set") });
+    const body = JSON.stringify({
+      digest: "# Research Digest - 2026-11-17\n\n## Flags\nNo flags.\n\n## New since yesterday\nNothing new today.\n\n## Radar check\n- Future Set: on schedule.",
+      claims: [],
+      radar: null,
+      nothingNew: true,
+    });
+    await runDailyResearch({
+      apiKey: "fake-key",
+      root,
+      today,
+      resolveUrl: alwaysResolve,
+      writePublic,
+      fetchImpl: async (_url, opts) => {
+        sent = opts.body;
+        return { ok: true, status: 200, text: async () => JSON.stringify({ output_text: body }) };
+      },
+    });
+    if (prev === undefined) delete process.env.XAI_MODEL;
+    else process.env.XAI_MODEL = prev;
+    t("unset XAI_MODEL sends grok-4.7", MODEL_DEFAULT === "grok-4.7" && sent.includes('"model":"grok-4.7"'));
+  }
+
+  {
+    const wf = await readFile(new URL("../../.github/workflows/daily-research.yml", import.meta.url), "utf8");
+    t("the job starts when sealed prices completes", /workflow_run:/.test(wf) && wf.includes("Update sealed prices") && wf.includes("completed"));
+    t("the fallback cron is 18:30 UTC on weekdays", /30 18 \* \* 1-5/.test(wf));
+    t("the mid-run 14:46 cron is gone", !/46 14/.test(wf));
+    t("there is no wait loop", !/sleep /.test(wf));
+    t("a live price run exits without a push", wf.includes("exiting without a push"));
+    t("the fallback skips an existing digest", wf.includes("already exists"));
   }
 
   return fail;
