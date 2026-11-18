@@ -187,6 +187,7 @@ if (problems.length) {
   console.error(`\n✗ SCHEMA GUARD — ${problems.length} problem(s):`);
   for (const p of problems) console.error(`   ${p}`);
   console.error("");
+  // Fail closed, including when the registry is missing: no schemas.json
   process.exit(1);
 }
 console.log(`✓ schema guard: ${Object.keys(schemas.files || {}).length} data files match their shape`);
