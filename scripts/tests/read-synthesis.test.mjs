@@ -13,6 +13,51 @@ const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesi
 console.log("read synthesis");
 t("fixture limits load", CFG != null);
 t("missing limits do not load", validSynth({}) === null && validSynth({ ...CFG, weights: {} }) === null);
+
+// A 12 week streak and a 90 day line that does not use those dates. The 90 day line drops.
+{
+  const from = "2026-08-20";
+  const to = "2026-11-13";
+  const span = dayNum(to) - dayNum(from);
+  const pct = Math.round((Math.abs(20 - 40) / 40) * 1000) / 10;
+  const lead = {
+    tag: "streak", type: "streakdown", window: span, score: 12,
+    nums: { st: { n: 12, dir: -1, from: [from, 40], to: [to, 20] } },
+    text: "Lower for 12 weeks running: Sample Card moved from $40 on Aug 20 to $20 on Nov 13.",
+    short: "It has closed lower 12 weeks running, from $40 on Aug 20.",
+  };
+  const otherWindow = {
+    tag: "trend", type: "trend90down", window: 90, score: 5,
+    nums: { lead: { days: 90, asked: 90, from: ["2026-08-15", 50], to: [to, 20], pct: -60 } },
+    text: "Down 60% in the last 90 days: Sample Card went from $50 on Aug 15 to $20 on Nov 13.",
+    short: "Down 60% over 90 days, to $20 on Nov 13.",
+  };
+  const sameWindow = {
+    tag: "trend", type: "trendspandown", window: span, score: 4,
+    nums: { lead: { days: span, asked: span, from: [from, 40], to: [to, 20], pct: -pct } },
+    text: `Down ${pct}% in ${span} days: Sample Card went from $40 on Aug 20 to $20 on Nov 13.`,
+    short: `Down ${pct}% over ${span} days, to $20 on Nov 13.`,
+  };
+  const peak = {
+    tag: "range", type: "drawdown", score: 2,
+    nums: { hi: ["2025-03-27", 80], now: [to, 20] },
+    text: "Still 75% under its peak of $80 on Mar 27, 2025: Sample Card is at $20 on Nov 13.",
+    short: "It is still 75% under its peak of $80 on Mar 27, 2025.",
+  };
+  const item = { title: "Sample Card", kind: "backto" };
+  const dropped = compose(item, [lead, otherWindow, peak], CFG);
+  t("a 90 day line drops when the dates differ", span !== 90 && pct === 50 && dropped && dropped.text.includes("$40") && dropped.text.includes("$20") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/60%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
+  const kept = compose(item, [lead, sameWindow, peak], CFG);
+  t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
+}
+
+{
+  const item = { pts: [["2026-11-07", 10], ["2026-11-14", 10]], title: "Sample Card", asOf: "2026-11-14", set: "Sample Set", setSlug: "sample-set", release: "2023-08-11" };
+  const ctx = { rotation: new Map([["sample-set", { status: "Rotated April 10, 2026" }]]), peers: new Map(), listings: new Map(), asks: new Map(), setValue: new Map(), market: null };
+  const row = findings(item, ctx, CFG).find((f) => f.tag === "set");
+  t("a set line capitalizes the rotation month", row && row.short.includes("rotated April 10, 2026") && !/april/.test(row.short));
+}
+
 t("a short headline stays whole", capHeadline("Up 4% over 7 days.") === "Up 4% over 7 days.");
 const longLead = "Up 214% on the year: Lugia went from $9.85 on Oct 30, 2025 to $30.90 on Oct 29.";
 const longMore = `${longLead} It is up 24% over 7 days, up 33% over 30 days and up 39% over 90 days. That beats its set over 30 days, and the wider market too. That is its highest price on file, back to Feb 8, 2024, above the earlier peak.`;
@@ -228,51 +273,6 @@ await rm(root, { recursive: true, force: true });
   t("gap of 8 days is accepted", weekSamples(pts([8]), asOf).length >= 2);
   t("gap of 10 days is rejected", weekSamples(pts([10]), asOf).length < 2);
   t("weeks[0] is the latest point", weekSamples(pts([7]), asOf)[0][0] === asOf);
-}
-
-// Crispin (Prismatic Evolutions) 171/131: $29.89 on Aug 20 to $20.47 on Nov 13,
-// and a 90 day line that does not use those dates. The 90 day line drops.
-{
-  const from = "2026-08-20";
-  const to = "2026-11-13";
-  const span = dayNum(to) - dayNum(from);
-  const pct = Math.round((Math.abs(20.47 - 29.89) / 29.89) * 1000) / 10;
-  const lead = {
-    tag: "streak", type: "streakdown", window: span, score: 12,
-    nums: { st: { n: 12, dir: -1, from: [from, 29.89], to: [to, 20.47] } },
-    text: "Lower for 12 weeks running: Crispin (Prismatic Evolutions) 171/131 moved from $29.89 on Aug 20 to $20.47 on Nov 13.",
-    short: "It has closed lower 12 weeks running, from $29.89 on Aug 20.",
-  };
-  const otherWindow = {
-    tag: "trend", type: "trend90down", window: 90, score: 5,
-    nums: { lead: { days: 90, asked: 90, from: ["2026-08-15", 33.02], to: [to, 20.47], pct: -38 } },
-    text: "Down 38% in the last 90 days: Crispin (Prismatic Evolutions) 171/131 went from $33.02 on Aug 15 to $20.47 on Nov 13.",
-    short: "Down 38% over 90 days, to $20.47 on Nov 13.",
-  };
-  const sameWindow = {
-    tag: "trend", type: "trendspandown", window: span, score: 4,
-    nums: { lead: { days: span, asked: span, from: [from, 29.89], to: [to, 20.47], pct: -pct } },
-    text: `Down ${pct}% in ${span} days: Crispin (Prismatic Evolutions) 171/131 went from $29.89 on Aug 20 to $20.47 on Nov 13.`,
-    short: `Down ${pct}% over ${span} days, to $20.47 on Nov 13.`,
-  };
-  const peak = {
-    tag: "range", type: "drawdown", score: 2,
-    nums: { hi: ["2025-03-27", 64.75], now: [to, 20.47] },
-    text: "Still 68% under its peak of $64.75 on Mar 27, 2025: Crispin (Prismatic Evolutions) 171/131 is at $20.47 on Nov 13.",
-    short: "It is still 68% under its peak of $64.75 on Mar 27, 2025.",
-  };
-  const item = { title: "Crispin (Prismatic Evolutions) 171/131", kind: "backto" };
-  const dropped = compose(item, [lead, otherWindow, peak], CFG);
-  t("Crispin's 90 day line drops when the dates differ", span !== 90 && pct === 31.5 && dropped && dropped.text.includes("$29.89") && dropped.text.includes("$20.47") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/38%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
-  const kept = compose(item, [lead, sameWindow, peak], CFG);
-  t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
-}
-
-{
-  const item = { pts: [["2026-11-07", 10], ["2026-11-14", 10]], title: "Pikachu", asOf: "2026-11-14", set: "Obsidian Flames", setSlug: "obsidian-flames", release: "2023-08-11" };
-  const ctx = { rotation: new Map([["obsidian-flames", { status: "Rotated April 10, 2026" }]]), peers: new Map(), listings: new Map(), asks: new Map(), setValue: new Map(), market: null };
-  const row = findings(item, ctx, CFG).find((f) => f.tag === "set");
-  t("a set line capitalizes the rotation month", row && row.short.includes("rotated April 10, 2026") && !/april/.test(row.short));
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }

@@ -14,12 +14,16 @@ import { dirname, join } from "node:path";
 import { loadReadsDayAlerts } from "./lib/reads-day-alert.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-let schemas;
+let schemas = { files: {} };
+let missingRegistry = false;
 try { schemas = JSON.parse(await readFile(join(ROOT, "data/schemas.json"), "utf-8")); }
 catch {
   // A missing registry used to exit 0, so Morning Pulse treated "no schemas" as a pass.
+  // It still fails closed. The exit stays on the problem list, below the reads
+  // day alert, so that alert can print without becoming the exit that stops
+  // the price commit.
   console.error("schema guard: no schemas.json");
-  process.exit(1);
+  missingRegistry = true;
 }
 
 export function unreadableFileProblem(path, spec, error) {
@@ -28,6 +32,7 @@ export function unreadableFileProblem(path, spec, error) {
 }
 
 const problems = [];
+if (missingRegistry) problems.push("schema guard: no schemas.json");
 for (const [path, spec] of Object.entries(schemas.files || {})) {
   let d;
   try { d = JSON.parse(await readFile(join(ROOT, path), "utf-8")); }
