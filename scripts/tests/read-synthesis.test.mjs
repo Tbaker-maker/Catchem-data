@@ -3,8 +3,9 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
+import { compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
 let fail = 0;
@@ -165,15 +166,15 @@ await rm(root, { recursive: true, force: true });
   const weekCfg = validSynth({ ...raw, streakWeekUsd: 1 });
   const asOf = "2026-11-12";
   const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
-  const itemOf = (pts) => ({ pts, title: "Deino (White Flare) 146/086", asOf });
-  const flatFs = findings(itemOf(weekly([11.5, 11.78, 15.64, 15.66, 16.14, 16.25, 17.08, 17.41, 17.5])), {}, weekCfg);
+  const itemOf = (pts) => ({ pts, title: "Sample Card", asOf });
+  const flatFs = findings(itemOf(weekly([10, 10.4, 16, 16, 16, 16, 16, 16, 16])), {}, weekCfg);
   t("flat then one drop is not a streak", !flatFs.some((f) => f.tag === "streak" || /weeks running/.test(`${f.text || ""} ${f.short || ""}`)));
   t("a move that is not the latest week is not one week", !flatFs.some((f) => f.tag === "drop" || /in one week/.test(`${f.text || ""} ${f.short || ""}`)));
   const stepAsOf = "2026-11-05";
-  const stepPts = [11.78, 15.64, 15.66, 16.14, 16.25, 17.08, 17.41, 17.5].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
-  const stepFs = findings({ pts: stepPts, title: "Deino (White Flare) 146/086", asOf: stepAsOf }, {}, weekCfg);
+  const stepPts = [8, 10, 10, 10, 10, 10, 10, 10].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
+  const stepFs = findings({ pts: stepPts, title: "Sample Card", asOf: stepAsOf }, {}, weekCfg);
   const drop = stepFs.find((f) => f.type === "dropdown");
-  t("flat then one drop names the size and the date", drop?.text === "Down 25% in one week: Deino (White Flare) 146/086 went from $15.64 on Oct 29 to $11.78 on Nov 5.", drop?.text || "");
+  t("flat then one drop names the size and the date", drop?.text === "Down 20% in one week: Sample Card went from $10.00 on Oct 29 to $8.00 on Nov 5.", drop?.text || "");
   t("the one drop sentence has no banned word", !!drop && !hasBannedWord(drop.text) && !/[\u2014\u2013]/.test(drop.text));
   t("the one week score is the drop weight", drop?.score === weekCfg.weights.drop);
   const eight = findings(itemOf(weekly([20, 22, 24, 26, 28, 30, 32, 34, 36])), {}, weekCfg);
@@ -212,8 +213,6 @@ await rm(root, { recursive: true, force: true });
   t("a drop finding has a direction", findingDir({ tag: "drop", type: "dropdown" }) === -1 && findingDir({ tag: "drop", type: "dropup" }) === 1);
 }
 
-if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
-
 {
   // weekSamples gap tests: 1, 8, 10 days
   const asOf = "2026-11-16";
@@ -231,3 +230,5 @@ if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 
   t("gap of 10 days is rejected", weekSamples(pts([10]), asOf).length < 2);
   t("weeks[0] is the latest point", weekSamples(pts([7]), asOf)[0][0] === asOf);
 }
+
+if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
