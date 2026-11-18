@@ -285,6 +285,22 @@ async function callXai({ apiKey, model, input, fetchImpl }) {
   }
 }
 
+// Copies radar.updated into research/assets/public/releases.json.
+// writePublicReleases reads the radar file, so the radar write has to land
+// first. A skipped write is a failed run: the caller restores the radar
+// and does not write the digest, so yesterday's files stay.
+export async function stampPublicReleases(root, writePublic) {
+  let wrote = false;
+  if (typeof writePublic === "function") {
+    wrote = await writePublic(root);
+  } else {
+    const { writePublicReleases } = await import("./lib/feature-data.mjs");
+    wrote = await writePublicReleases(root);
+  }
+  if (!wrote) return { ok: false, error: "public releases were not written from the radar" };
+  return { ok: true };
+}
+
 export async function runDailyResearch(opts = {}) {
   const {
     apiKey = process.env.XAI_API_KEY,
@@ -379,26 +395,24 @@ export async function runDailyResearch(opts = {}) {
 
   // Write only after the schema passed and the drops are decided.
   // A rerun the same day overwrites the same path.
+  // Radar first, then stampPublicReleases copies radar.updated into the
+  // public releases file. If that copy does not land, restore the radar
+  // and skip the digest.
   await mkdir(digestDir, { recursive: true });
+  const prevRadarText = await readFile(radarPath, "utf8");
   await writeFile(radarPath, JSON.stringify(nextRadar, null, 2) + "\n");
-  await writeFile(digestPath, digestText);
-
-  let publicWrote = false;
-  if (typeof writePublic === "function") {
-    publicWrote = await writePublic(root);
-  } else {
-    try {
-      const { writePublicReleases } = await import("./lib/feature-data.mjs");
-      publicWrote = await writePublicReleases(root);
-    } catch (e) {
-      log.error("public releases not written: " + e.message);
-    }
+  const stamped = await stampPublicReleases(root, writePublic);
+  if (!stamped.ok) {
+    await writeFile(radarPath, prevRadarText);
+    log.error(stamped.error);
+    return { ok: false, error: stamped.error, wrote: false };
   }
-  if (!publicWrote) log.error("public releases were not written from the radar");
+  await writeFile(digestPath, digestText);
 
   const usage = called.data?.usage || null;
   const searches = called.data?.server_side_tool_usage?.SERVER_SIDE_TOOL_WEB_SEARCH || 0;
   log.log("wrote " + digestPath + " (" + note + ", " + keptClaims.length + " claims kept, " + dropped.length + " dropped)");
+  log.log("public releases checked date copied from the radar");
   if (usage || searches) log.log("usage: " + JSON.stringify({ usage, searches }));
 
   return {
@@ -411,7 +425,7 @@ export async function runDailyResearch(opts = {}) {
     keptClaims,
     dropped,
     droppedPast,
-    publicWrote,
+    publicWrote: true,
     usage,
     searches,
   };

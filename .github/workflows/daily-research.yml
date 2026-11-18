@@ -1,8 +1,11 @@
-# Research digest. Replaces the disabled Anthropic daily-research workflow.
+# Research digest. Replaces the disabled daily-research workflow that used a
+# paid chat API and had no weekday schedule.
 # Primary trigger: Update sealed prices finishes (any conclusion), so this
 # does not start inside the 5:50 to 9:30 AM PT price window.
 # Fallback: weekdays at 18:30 UTC (10:30 AM PST / 11:30 AM PDT), after that
-# window. The fallback skips when today's digest is already on disk.
+# window.
+# schedule and workflow_run both skip when today's digest is already on disk.
+# workflow_dispatch is the only force.
 # A price run still in progress exits 0 and does not push. There is no wait
 # loop and no push after a timeout.
 # Key: repo secret XAI_API_KEY. Model: XAI_MODEL, or grok-4.7 when unset
@@ -39,7 +42,7 @@ jobs:
         run: |
           skip=0
           day=$(date -u +%F)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "research/digests/${day}.md" ]; then
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ -f "research/digests/${day}.md" ]; then
             echo "digest for ${day} already exists; skipping"
             skip=1
           fi

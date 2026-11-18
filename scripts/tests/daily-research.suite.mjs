@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runDailyResearch, defaultResolveUrl, MODEL_DEFAULT } from "../daily-research.mjs";
+import { dailyResearchVendorProblem } from "../check-daily-research-vendor.mjs";
 
 const PROMPT = `# Catch'em Daily Research Brief
 
@@ -292,7 +293,13 @@ export async function run() {
     t("the mid-run 14:46 cron is gone", !/46 14/.test(wf));
     t("there is no wait loop", !/sleep /.test(wf));
     t("a live price run exits without a push", wf.includes("exiting without a push"));
-    t("the fallback skips an existing digest", wf.includes("already exists"));
+    t("schedule and workflow_run skip an existing digest", wf.includes('!= "workflow_dispatch"') && wf.includes("already exists"));
+    t("only workflow_dispatch forces a run", !wf.includes('= "schedule"'));
+    const src = await readFile(new URL("../daily-research.mjs", import.meta.url), "utf8");
+    t("xAI schedule is allowed", dailyResearchVendorProblem(wf, src) === "");
+    t("an old paid-chat key is rejected", dailyResearchVendorProblem(wf.replace("XAI_API_KEY", "ANTHROPIC_API_KEY"), src) === "anthropic-key");
+    t("an old paid-chat call is rejected", dailyResearchVendorProblem(wf, src + "\nfetch('https://api.anthropic.com/v1/messages')") === "anthropic-call");
+    t("a claude model call is rejected", dailyResearchVendorProblem(wf, src + "\nconst model = 'claude-sonnet'") === "claude-call");
   }
 
   return fail;
