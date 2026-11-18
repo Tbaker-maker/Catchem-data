@@ -1,8 +1,8 @@
 {
-  "asOf": "2026-11-13",
+  "asOf": "2026-11-17",
   "note": "Cutouts for sealed products the site can show. A fail is listed and the file is not shipped. Pixel height already includes the shared scale. Factors are not in this repo.",
-  "passed": 172,
-  "failed": 45,
+  "passed": 173,
+  "failed": 46,
   "products": [
     {
       "id": "base1-booster-box",
@@ -230,6 +230,17 @@
       "pass": true,
       "file": "cutouts/me2pt5-tin.webp",
       "png": "cutouts/me2pt5-tin.png",
+      "width": 447,
+      "height": 557
+    },
+    {
+      "id": "me2pt5-tin-mega-emboar-ex",
+      "siteId": "tcgcsv-702496",
+      "tcgPlayerId": 702496,
+      "productType": "tin",
+      "pass": true,
+      "file": "cutouts/me2pt5-tin-mega-emboar-ex.webp",
+      "png": "cutouts/me2pt5-tin-mega-emboar-ex.png",
       "width": 447,
       "height": 557
     },
@@ -2010,6 +2021,13 @@
       "height": null
     },
     {
+      "id": "tcgcsv-111280",
+      "siteId": "tcgcsv-111280",
+      "tcgPlayerId": 111280,
+      "productType": "etb",
+      "pass": false
+    },
+    {
       "id": "tcgcsv-123741",
       "siteId": "tcgcsv-123741",
       "tcgPlayerId": 123741,
@@ -2036,6 +2054,13 @@
       "siteId": "tcgcsv-206040",
       "tcgPlayerId": 206040,
       "productType": "build-battle",
+      "pass": false
+    },
+    {
+      "id": "tcgcsv-265253",
+      "siteId": "tcgcsv-265253",
+      "tcgPlayerId": 265253,
+      "productType": "",
       "pass": false
     },
     {
@@ -2259,13 +2284,6 @@
       "png": "cutouts/zsv10pt5-etb.png",
       "width": 786,
       "height": 749
-    },
-    {
-      "id": "tcgcsv-265253",
-      "siteId": "tcgcsv-265253",
-      "tcgPlayerId": 265253,
-      "productType": "",
-      "pass": false
     }
   ]
 }

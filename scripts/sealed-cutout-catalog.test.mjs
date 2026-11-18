@@ -71,6 +71,11 @@ export async function run() {
   const skies = byId.get("tcgcsv-98026");
   const skiesWhy = why.get("tcgcsv-98026");
   t("tcgcsv-98026 stays blocked: the catalog photo is 200 by 239, under the 360px floor", skies && skies.pass === false && !skies.file && !skies.png && skiesWhy && skiesWhy.reason === "source photo is too small" && skiesWhy.kept === "not shipped");
+  const breakpoint = byId.get("tcgcsv-111280");
+  const breakpointWhy = why.get("tcgcsv-111280");
+  t("tcgcsv-111280 stays blocked: the product photo is 182 by 187, under the 360px floor", breakpoint && breakpoint.pass === false && !breakpoint.file && !breakpoint.png && breakpointWhy && breakpointWhy.reason === "source photo is too small" && breakpointWhy.kept === "not shipped");
+  const emboar = byId.get("me2pt5-tin-mega-emboar-ex");
+  t("the Mega Emboar tin cutout shipped from the product photo", emboar && emboar.pass === true && emboar.png === "cutouts/me2pt5-tin-mega-emboar-ex.png" && emboar.file === "cutouts/me2pt5-tin-mega-emboar-ex.webp");
 
   const shippedFail = (cuts.products || []).filter((r) => r.pass === true && (!String(r.file || "").startsWith("cutouts/") || /\.jpe?g$/i.test(String(r.file || ""))));
   t("a pass row is a cutout image", shippedFail.length === 0);

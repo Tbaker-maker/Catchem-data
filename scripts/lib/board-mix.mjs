@@ -310,9 +310,30 @@ export function releaseReads(releasesDoc, asOf, { days = 45 } = {}) {
   return out;
 }
 
+// One page is one news read. Victory Road updates an event URL in place, so the
+// digest can hold the old title and the new title. The id and the link are the
+// URL, so both would land on the board as the same read. The newer date is the
+// page. The older title is not a second story.
+function onePageItems(items) {
+  const best = new Map();
+  for (const it of items || []) {
+    const url = String(it?.url || "");
+    if (!url) continue;
+    const prev = best.get(url);
+    if (!prev) { best.set(url, it); continue; }
+    const date = String(it.date || "");
+    const prevDate = String(prev.date || "");
+    const published = String(it.published || "");
+    const prevPublished = String(prev.published || "");
+    if (date > prevDate || (date === prevDate && published > prevPublished)) best.set(url, it);
+  }
+  const winners = new Set(best.values());
+  return (items || []).filter((it) => winners.has(it));
+}
+
 // One country-named line per source item. Japanese items need an English title on file.
 export function newsReads(newsDoc, asOf, { days = 7, max = 5, perSource = 2 } = {}) {
-  const items = newsDoc?.filters?.news?.items || [];
+  const items = onePageItems(newsDoc?.filters?.news?.items || []);
   const since = addDays(asOf, -days);
   const out = [];
   const country = { jp: "Japan", cn: "China", kr: "Korea", tw: "Taiwan" };

@@ -44,6 +44,13 @@ export async function run() {
     { title: "EN item", url: "u3", date: "2026-10-12", source: "Siliconera" }] } } };
   const nr = newsReads(news, "2026-10-12");
   t("translated news names the country, untranslated is skipped", nr.length === 2 && nr[0].headline.startsWith("Japan:") && !nr.some((r) => r.url === "u2"));
+  const samePage = newsReads({ filters: { news: { items: [
+    { title: "Results are up", url: "https://example.test/event/", date: "2026-10-12", published: "2026-10-12T21:00:00.000Z", source: "Example Desk" },
+    { title: "Stream details", url: "https://example.test/event/", date: "2026-10-10", published: "2026-10-10T16:00:00.000Z", source: "Example Desk" },
+    { title: "A different page", url: "https://example.test/other/", date: "2026-10-11", source: "Example Desk" },
+  ] } } }, "2026-10-12", { days: 10, max: 10, perSource: 6 });
+  t("one page is one news read and it is the newer story", samePage.length === 2 && samePage[0].headline.startsWith("Results are up") && !samePage.some((r) => r.headline.startsWith("Stream details")));
+  t("news read ids and links are unique", new Set(samePage.map((r) => r.id)).size === samePage.length && new Set(samePage.map((r) => r.href)).size === samePage.length);
 
   const rel = releaseReads({ releases: [{ name: "JP: Thing", date: "2026-10-16", source: "s", checked: "2026-10-09" }, { name: "Old", date: "2026-01-01", source: "s", checked: "x" }] }, "2026-10-12");
   t("release reads are upcoming only, country named", rel.length === 1 && rel[0].headline.startsWith("Japan: Thing is out Oct 16"));
