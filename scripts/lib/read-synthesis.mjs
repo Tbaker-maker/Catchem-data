@@ -320,16 +320,17 @@ export function findings(item, ctx, cfg) {
       short: `eBay asks sit ${r0(g)}% ${g > 0 ? "above" : "under"} that, ${body}.` });
     else out.push({ tag: "ask", type: "askInline", score: 0, nums: { ask, now: last }, short: `eBay asks are close to it, ${body}.` });
   }
-  // Set context, always supporting
+  // Set context, always supporting. A folded section does not inherit the parent set.
+  const facts = setFacts(item);
   const bits = [];
-  const era = eraTagOf(item.release);
-  if (item.set && item.release) bits.push(`${item.set} came out ${dateLabel(item.release, asOf)}`);
+  const era = eraTagOf(facts.release);
+  if (facts.set && facts.release) bits.push(`${facts.set} came out ${dateLabel(facts.release, asOf)}`);
   if (era) bits.push(`${era} era`);
-  const rot = ctx.rotation?.get(item.setSlug);
+  const rot = facts.slug ? ctx.rotation?.get(facts.slug) : null;
   if (rot?.status) bits.push(rotationPhrase(rot.status));
-  const sv = ctx.setValue?.get(item.setSlug);
+  const sv = facts.slug ? ctx.setValue?.get(facts.slug) : null;
   if (sv?.total > 0 && sv.priced > 1) bits.push(`its ${sv.priced} priced cards add up to ${usd(sv.total)}`);
-  if (bits.length) out.push({ tag: "set", type: "set", score: 0, nums: { era, rot, sv, release: item.release }, short: `${bits[0]}${bits.length > 1 ? `, ${bits.slice(1).join(", ")}` : ""}.` });
+  if (bits.length) out.push({ tag: "set", type: "set", score: 0, nums: { era, rot, sv, release: facts.release }, short: `${bits[0]}${bits.length > 1 ? `, ${bits.slice(1).join(", ")}` : ""}.` });
   const clean = (t) => !t || (!BANNED.test(t) && !DASH.test(t) && !SOLD.test(t));
   return out.filter((f) => (f.text || f.short) && clean(f.text) && clean(f.short));
 }
@@ -511,6 +512,27 @@ export async function loadContext(root, asOf, cfg) {
   return { series, rows, setRel, peers, market, listings, asks, rotation, setValue };
 }
 
+function normSetName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+// The card's own set id, not the folded parent and not a shorter name.
+// "30th Celebration" does not carry "30th Celebration Classic Collection".
+export function sameHomeSet(row) {
+  const ownId = Number(row?.groupId);
+  const homeId = Number(row?.homeGroupId);
+  if (Number.isInteger(ownId) && ownId > 0 && Number.isInteger(homeId) && homeId > 0 && ownId !== homeId) return false;
+  const own = normSetName(row?.ownSet);
+  const home = normSetName(row?.set);
+  if (own && home && own !== home) return false;
+  return true;
+}
+
+export function setFacts(item) {
+  if (!sameHomeSet(item)) return { set: item?.ownSet || "", slug: "", release: "" };
+  return { set: item?.set || "", slug: item?.setSlug || "", release: item?.release || "" };
+}
+
 function firstSentence(s) { return String(s || "").split(/(?<=[.!?])\s/)[0]; }
 const HIST_KINDS = new Set(["year", "backto", "high", "low", "plain", "year-range", "year-ago", "streak", "single", "sealed"]);
 
@@ -519,14 +541,29 @@ export function itemOf(read, ctx) {
   const row = ctx.rows.get(read.sku) || {};
   if (!pts || pts.length < 2) return null;
   const sealed = row.kind === "sealed" || read.readKind === "sealed";
-  const title = sealed ? String(row.name || read.name || "") : cardTitle({ name: row.name || read.name, set: row.set || read.set, number: row.num || read.number });
+  const ownSet = row.ownSet || row.set || read.set || "";
+  const same = sameHomeSet({ ...row, set: row.set, ownSet: row.ownSet });
+  const setSlug = same ? (row.setSlug || "") : "";
+  const titleSet = same ? (row.set || ownSet) : ownSet;
+  const title = sealed ? String(row.name || read.name || "") : cardTitle({ name: row.name || read.name, set: titleSet || ownSet, number: row.num || read.number });
   if (!title) return null;
   const kind = String(read.readKind || read.kind || "");
   const own = HIST_KINDS.has(kind) ? "" : firstSentence(read.headline);
+  const release = same
+    ? String(row.release || (setSlug ? ctx.setRel.get(setSlug) : "") || "").slice(0, 10)
+    : (folded ? foldRelease(row, ctx) : "");
   // A "weeks running" sentence is a price finding, not the read's own kind.
   // Keeping it here would republish a streak the week floor just rejected.
   const kindLine = own && !CONDITION.test(own) && !/weeks running/.test(own) ? own : "";
-  return { id: read.sku, pts, title, asOf: read.asOf, set: row.set || read.set || "", setSlug: row.setSlug || "", release: String(row.release || ctx.setRel.get(row.setSlug) || "").slice(0, 10), sealed, kind: kind === "deep" ? `deep:${read.deep}` : kind, kindLine };
+  return {
+    id: read.sku, pts, title, asOf: read.asOf,
+    set: titleSet || ownSet, ownSet, setSlug,
+    groupId: Number.isInteger(Number(row.groupId)) ? Number(row.groupId) : null,
+    homeGroupId: Number.isInteger(Number(row.homeGroupId)) ? Number(row.homeGroupId) : null,
+    release, sealed,
+    kind: kind === "deep" ? `deep:${read.deep}` : kind,
+    kindLine,
+  };
 }
 
 
