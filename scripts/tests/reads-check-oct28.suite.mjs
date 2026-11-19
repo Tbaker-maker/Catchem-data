@@ -49,12 +49,12 @@ export async function run() {
   // 2) 30th Celebration: one-day spike is not a 30-day baseline; one read, one figure.
   const CFG = validSynth({
     maxOpeningShare: 0.3, minSignals: 2, ebayMinListings: 5, listingsMinN: 5, listingsMinChangePct: 5,
-    spreadMinPct: 5, peerMinN: 5, peerMinGapPts: 5, nearHighPct: 3, drawdownMinPct: 10, streakMinWeeks: 3,
+    spreadMinPct: 5, peerMinN: 5, peerMinGapPts: 5, nearHighPct: 3, drawdownMinPct: 10, streakMinWeeks: 3, streakWeekUsd: 0.5,
     divergenceMinPct: 5, longMinDays: 14, minTrendUsd: 0.5, peerMinPrice: 5, peerInlineMaxPts: 2,
     spikeRatio: 1.6, baselineSpikeRatio: 1.12, neighborBand: 0.1,
     trendMinPct: { 7: 3, 30: 3, 90: 5, 365: 5 },
     slackDays: { 7: 2, 30: 3, 90: 5, 365: 7 },
-    weights: { high: 3, low: 3, nearHigh: 2, drawdown: 2, trend: 2, divergence: 2, streak: 2, peers: 1, listings: 1, spread: 1, kind: 1 },
+    weights: { high: 3, low: 3, nearHigh: 2, drawdown: 2, trend: 2, divergence: 2, streak: 2, drop: 4, peers: 1, listings: 1, spread: 1, kind: 1 },
   });
   const etbPts = [
     ["2026-09-26", 146.84],

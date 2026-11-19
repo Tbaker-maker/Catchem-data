@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE } from "../lib/read-synthesis.mjs";
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -13,6 +13,51 @@ const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesi
 console.log("read synthesis");
 t("fixture limits load", CFG != null);
 t("missing limits do not load", validSynth({}) === null && validSynth({ ...CFG, weights: {} }) === null);
+
+// A 12 week streak and a 90 day line that does not use those dates. The 90 day line drops.
+{
+  const from = "2026-08-20";
+  const to = "2026-11-13";
+  const span = dayNum(to) - dayNum(from);
+  const pct = Math.round((Math.abs(20 - 40) / 40) * 1000) / 10;
+  const lead = {
+    tag: "streak", type: "streakdown", window: span, score: 12,
+    nums: { st: { n: 12, dir: -1, from: [from, 40], to: [to, 20] } },
+    text: "Lower for 12 weeks running: Sample Card moved from $40 on Aug 20 to $20 on Nov 13.",
+    short: "It has closed lower 12 weeks running, from $40 on Aug 20.",
+  };
+  const otherWindow = {
+    tag: "trend", type: "trend90down", window: 90, score: 5,
+    nums: { lead: { days: 90, asked: 90, from: ["2026-08-15", 50], to: [to, 20], pct: -60 } },
+    text: "Down 60% in the last 90 days: Sample Card went from $50 on Aug 15 to $20 on Nov 13.",
+    short: "Down 60% over 90 days, to $20 on Nov 13.",
+  };
+  const sameWindow = {
+    tag: "trend", type: "trendspandown", window: span, score: 4,
+    nums: { lead: { days: span, asked: span, from: [from, 40], to: [to, 20], pct: -pct } },
+    text: `Down ${pct}% in ${span} days: Sample Card went from $40 on Aug 20 to $20 on Nov 13.`,
+    short: `Down ${pct}% over ${span} days, to $20 on Nov 13.`,
+  };
+  const peak = {
+    tag: "range", type: "drawdown", score: 2,
+    nums: { hi: ["2025-03-27", 80], now: [to, 20] },
+    text: "Still 75% under its peak of $80 on Mar 27, 2025: Sample Card is at $20 on Nov 13.",
+    short: "It is still 75% under its peak of $80 on Mar 27, 2025.",
+  };
+  const item = { title: "Sample Card", kind: "backto" };
+  const dropped = compose(item, [lead, otherWindow, peak], CFG);
+  t("a 90 day line drops when the dates differ", span !== 90 && pct === 50 && dropped && dropped.text.includes("$40") && dropped.text.includes("$20") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/60%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
+  const kept = compose(item, [lead, sameWindow, peak], CFG);
+  t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
+}
+
+{
+  const item = { pts: [["2026-11-07", 10], ["2026-11-14", 10]], title: "Sample Card", asOf: "2026-11-14", set: "Sample Set", setSlug: "sample-set", release: "2023-08-11" };
+  const ctx = { rotation: new Map([["sample-set", { status: "Rotated April 10, 2026" }]]), peers: new Map(), listings: new Map(), asks: new Map(), setValue: new Map(), market: null };
+  const row = findings(item, ctx, CFG).find((f) => f.tag === "set");
+  t("a set line capitalizes the rotation month", row && row.short.includes("rotated April 10, 2026") && !/april/.test(row.short));
+}
+
 t("a short headline stays whole", capHeadline("Up 4% over 7 days.") === "Up 4% over 7 days.");
 const longLead = "Up 214% on the year: Lugia went from $9.85 on Oct 30, 2025 to $30.90 on Oct 29.";
 const longMore = `${longLead} It is up 24% over 7 days, up 33% over 30 days and up 39% over 90 days. That beats its set over 30 days, and the wider market too. That is its highest price on file, back to Feb 8, 2024, above the earlier peak.`;
@@ -155,6 +200,32 @@ await rm(root, { recursive: true, force: true });
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
 }
 
+{
+  const raw = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
+  delete raw.streakWeekUsd;
+  t("a missing week floor does not load", validSynth(raw) === null);
+  const noDrop = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
+  delete noDrop.weights.drop;
+  t("a missing drop weight does not load", validSynth(noDrop) === null);
+  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1 });
+  const asOf = "2026-11-12";
+  const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
+  const itemOf = (pts) => ({ pts, title: "Sample Card", asOf });
+  const flatFs = findings(itemOf(weekly([10, 10.4, 16, 16, 16, 16, 16, 16, 16])), {}, weekCfg);
+  t("flat then one drop is not a streak", !flatFs.some((f) => f.tag === "streak" || /weeks running/.test(`${f.text || ""} ${f.short || ""}`)));
+  t("a move that is not the latest week is not one week", !flatFs.some((f) => f.tag === "drop" || /in one week/.test(`${f.text || ""} ${f.short || ""}`)));
+  const stepAsOf = "2026-11-05";
+  const stepPts = [8, 10, 10, 10, 10, 10, 10, 10].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
+  const stepFs = findings({ pts: stepPts, title: "Sample Card", asOf: stepAsOf }, {}, weekCfg);
+  const drop = stepFs.find((f) => f.type === "dropdown");
+  t("flat then one drop names the size and the date", drop?.text === "Down 20% in one week: Sample Card went from $10.00 on Oct 29 to $8.00 on Nov 5.", drop?.text || "");
+  t("the one drop sentence has no banned word", !!drop && !hasBannedWord(drop.text) && !/[\u2014\u2013]/.test(drop.text));
+  t("the one week score is the drop weight", drop?.score === weekCfg.weights.drop);
+  const eight = findings(itemOf(weekly([20, 22, 24, 26, 28, 30, 32, 34, 36])), {}, weekCfg);
+  const streak = eight.find((f) => f.type === "streakdown");
+  t("eight real lower weeks are still a streak", /Lower for 8 weeks running/.test(streak?.text || ""), streak?.text || "");
+}
+
 // Receipts: the full facts move to the side file, reads.json keeps a short pointer.
 {
   const big = { id: "r1", sku: "tcgcsv-1", headline: "x", receipt: { from: 1, synth: { lead: "high", title: "T", signals: ["range", "trend"], now: ["2026-10-23", 5], facts: [{ tag: "range", type: "high", nums: { hi: ["2026-01-01", 4], now: ["2026-10-23", 5] } }], sources: ["a", "b"] } } };
@@ -164,6 +235,44 @@ await rm(root, { recursive: true, force: true });
   t("reads.json keeps lead, title, signals and the closing point", reads[0].receipt.synth.lead === "high" && reads[0].receipt.synth.title === "T" && reads[0].receipt.synth.signals.length === 2 && reads[0].receipt.synth.now[1] === 5 && reads[0].receipt.synth.facts === SYNTH_FILE && reads[0].receipt.from === 1);
   t("reads without a synthesized receipt are untouched", reads[1] === plain);
   t("the pointer is smaller than the full receipt", JSON.stringify(reads[0]).length < JSON.stringify(big).length);
+}
+
+{
+  const start = "2026-10-13";
+  const end = "2026-11-12";
+  const cases = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-sources.json", import.meta.url), "utf8"));
+  for (const [id, source, want] of cases) {
+    t(`${id} source keeps every clause`, retargetMarketSpan(source, start, end) === want);
+  }
+  const gain = compose(
+    { title: "Card", kind: "single" },
+    [
+      { tag: "drop", type: "dropdown", score: 50, window: 7, text: "Down 20% in one week: Card went from $10 on Nov 5 to $8 on Nov 12.", short: "Down 20% in one week." },
+      { tag: "trend", type: "trend30up", score: 8, window: 30, text: "Up 40% over 30 days: Card went from $5 on Oct 13 to $8 on Nov 12.", short: "Up 40% over 30 days." },
+    ],
+    { maxOpeningShare: 0.5, minSignals: 1, weights: { kind: 1 } },
+    null,
+  );
+  t("a one-week drop does not lead a gain read", gain && gain.lead.tag === "trend" && gain.lead.type === "trend30up");
+  t("a drop finding has a direction", findingDir({ tag: "drop", type: "dropdown" }) === -1 && findingDir({ tag: "drop", type: "dropup" }) === 1);
+}
+
+{
+  // weekSamples gap tests: 1, 8, 10 days
+  const asOf = "2026-11-16";
+  function pts(gaps) {
+    const out = [[asOf, 10]];
+    let d = asOf;
+    for (const g of gaps) {
+      d = addDays(d, -g);
+      out.push([d, 9]);
+    }
+    return out.reverse();
+  }
+  t("gap of 1 day is rejected for weeks[1]", weekSamples(pts([1]), asOf).length < 2);
+  t("gap of 8 days is accepted", weekSamples(pts([8]), asOf).length >= 2);
+  t("gap of 10 days is rejected", weekSamples(pts([10]), asOf).length < 2);
+  t("weeks[0] is the latest point", weekSamples(pts([7]), asOf)[0][0] === asOf);
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }
