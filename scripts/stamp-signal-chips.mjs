@@ -8,7 +8,7 @@ import { readSignals } from "./lib/signal-chips.mjs";
 import { mergeHistory } from "./lib/read-facts.mjs";
 import { likeForLikePoints } from "./lib/real-listing.mjs";
 import { dropHeldChips, loadHeldIds, mentionsHeld } from "./lib/price-hold-skip.mjs";
-import { loadListingIndex, loadReadThinData, thinReadBlock, writeReadFlags } from "./lib/read-thin-data.mjs";
+import { loadListingIndex, loadReadFlags, loadReadThinData, thinReadBlock, withoutFlaggedReads, writeReadFlags } from "./lib/read-thin-data.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC = join(ROOT, "research/assets/public");
@@ -447,7 +447,13 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   const cleaned = dropHeldChips(out, await loadHeldIds(root));
   if (cleaned.dropped) console.log(`signal chips: ${cleaned.dropped} held chip(s) left out`);
   await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(cleaned.doc)}\n`);
-  if (writeReads) await writeFile(readsPath, `${JSON.stringify(bundle, null, 1)}\n`);
+  if (writeReads) {
+    const prior = await loadReadFlags(root, asOf);
+    const next = withoutFlaggedReads((bundle.reads || []).filter((row) => row && !dropIds.has(row.id)), prior);
+    bundle.reads = next;
+    bundle.count = next.length;
+    await writeFile(readsPath, `${JSON.stringify(bundle, null, 1)}\n`);
+  }
   console.log(`signal chips: ${count} reads, ${feedCount} feed rows, ${scored} with a score`);
   return { count, wrote: true, asOf };
 }

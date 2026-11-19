@@ -6,7 +6,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/p
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, moverRow, pretty, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, moverRow, pretty, samePrintingPoints, slug,
   MOVERS_NOTE,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
@@ -63,7 +63,24 @@ function addPoint(map, pid, date, market) {
   if (!map.has(id)) map.set(id, new Map());
   map.get(id).set(String(date), Math.round(v * 100) / 100);
 }
+function addDaily(pid, date, row) {
+  const id = Number(pid);
+  const day = String(date || "");
+  if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+  const prices = new Map();
+  for (const p of row?.printings || []) {
+    const name = String(p?.name || "");
+    const n = Number(p?.price);
+    if (name && n > 0) prices.set(name, Math.round(n * 100) / 100);
+  }
+  const printing = String(row?.printing || "");
+  const market = Number(row?.market);
+  if (printing && market > 0 && !prices.has(printing)) prices.set(printing, Math.round(market * 100) / 100);
+  if (!dailyByPid.has(id)) dailyByPid.set(id, new Map());
+  dailyByPid.get(id).set(day, { printing, prices });
+}
 const series = new Map();
+const dailyByPid = new Map();
 const lowByPid = new Map();
 // PPT Near Mint history (data/history/market-backfill) moved to the private repo on 2026-10-10.
 // Public builds use TCGCSV days only. A day TCGCSV does not have stays a gap.
@@ -83,15 +100,22 @@ try {
     if (!file.endsWith(".json")) continue;
     const day = file.slice(0, 10);
     const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
-    for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
+    for (const row of doc.prices || []) {
+      addPoint(series, row.id, day, row.market);
+      addDaily(row.id, day, row);
+    }
   }
 } catch { /* daily files are the canonical series */ }
 const FILL = loadFillMap(ROOT);
 let fillProducts = 0;
 function histFor(pid) {
-  const days = series.get(Number(pid));
-  if (!days) return [];
-  return dropTiledCycles([...days.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1));
+  const id = Number(pid);
+  const days = series.get(id);
+  const base = days ? [...days.entries()] : [];
+  const daily = dailyByPid.get(id);
+  const rows = daily ? samePrintingPoints(base, daily) : base;
+  if (!rows.length) return [];
+  return dropTiledCycles(rows.sort((a, b) => a[0] < b[0] ? -1 : 1));
 }
 
 const PRODUCT_WORD = /\b(deck|booster|elite trainer|\btin\b|\bbox\b|bundle|\bpack\b|case|collection|binder|sleeve|playmat|album|\bcoin\b|display)\b/i;
@@ -443,6 +467,9 @@ for (const item of items) {
     })(),
     price,
     printing: item.printing || null,
+    groupId: Number.isInteger(Number(item.groupId)) ? Number(item.groupId) : null,
+    homeGroupId: Number.isInteger(Number(set.groupId)) ? Number(set.groupId) : null,
+    ownSet: pretty(item.set || ""),
     ...(printings.length ? { printings } : {}),
     pid,
     artist,

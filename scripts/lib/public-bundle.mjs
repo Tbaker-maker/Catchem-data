@@ -1146,6 +1146,40 @@ export function spikeDates(points) {
   return out;
 }
 
+// A day's headline market can name a different printing than the day before.
+// Lock to the latest daily row's printing. A daily date that lacks it is
+// omitted, so an older headline cannot stand in. A date with no daily row
+// (archive only) keeps its point.
+export function samePrintingPoints(points, dailyDays) {
+  const days = dailyDays instanceof Map ? dailyDays : new Map();
+  const base = [];
+  for (const p of points || []) {
+    const date = String(Array.isArray(p) ? p[0] : "");
+    const price = Number(Array.isArray(p) ? p[1] : NaN);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !(price > 0)) continue;
+    base.push([date, Math.round(price * 100) / 100]);
+  }
+  if (!days.size) return base;
+  let end = "";
+  for (const date of days.keys()) if (String(date) > end) end = String(date);
+  const lock = String(days.get(end)?.printing || "");
+  if (!lock) return base;
+  const priceOf = (row) => {
+    const prices = row?.prices;
+    const raw = prices instanceof Map ? prices.get(lock) : prices?.[lock];
+    const n = Number(raw);
+    return n > 0 ? Math.round(n * 100) / 100 : null;
+  };
+  const byDate = new Map(base);
+  for (const [date, row] of days) {
+    const day = String(date);
+    const n = priceOf(row);
+    if (n > 0) byDate.set(day, n);
+    else byDate.delete(day);
+  }
+  return [...byDate.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+}
+
 // Spikes are left off the chart. They are not redrawn at a capped price.
 export function chartSeries(points) {
   const pts = seriesOf(points);

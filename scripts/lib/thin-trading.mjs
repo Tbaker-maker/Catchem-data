@@ -9,6 +9,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { monthDay } from "./takes.mjs";
+import { samePrintingPoints } from "./public-bundle.mjs";
 
 export const THIN_WINDOW_DAYS = 30;
 export const THIN_MAX_CHANGES = 3;
@@ -113,6 +114,7 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
   const points = new Map();
   const low = new Map();
   const printing = new Map();
+  const dailyById = new Map();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return { points, low, printing, days: [] };
   const start = addDays(asOf, -windowDays);
   const dir = join(root, "data/history/tcgcsv-daily");
@@ -129,8 +131,24 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
       if (!points.has(id)) points.set(id, []);
       points.get(id).push([day, market]);
       if (row.printing) printing.set(id, String(row.printing));
+      const prices = new Map();
+      for (const p of row.printings || []) {
+        const name = String(p?.name || "");
+        const n = Number(p?.price);
+        if (name && n > 0) prices.set(name, Math.round(n * 100) / 100);
+      }
+      const named = String(row.printing || "");
+      if (named && market > 0 && !prices.has(named)) prices.set(named, Math.round(market * 100) / 100);
+      if (!dailyById.has(id)) dailyById.set(id, new Map());
+      dailyById.get(id).set(day, { printing: named, prices });
       if (day === asOf && Number(row.low) > 0) low.set(id, Math.round(Number(row.low) * 100) / 100);
     }
+  }
+  for (const [id, daily] of dailyById) {
+    if (!daily.size) continue;
+    points.set(id, samePrintingPoints(points.get(id) || [], daily));
+    const endRow = daily.get(asOf) || [...daily.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).at(-1)?.[1];
+    if (endRow?.printing) printing.set(id, String(endRow.printing));
   }
   if (days.includes(asOf)) await fillRawLows(dir, asOf, printing, low);
   return { points, low, printing, days };
