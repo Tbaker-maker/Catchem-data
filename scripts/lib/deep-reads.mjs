@@ -44,11 +44,43 @@ export function sparkOf(pts, n = 48) {
   return out.map((p) => [p[0], p[1]]);
 }
 
+export function deepReadId(kind, raw) {
+  const full = `deep-${kind}-${raw}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (full.length <= 90) return full;
+  // A cut at 90 hid two different ids. The tail is a hash of the full id.
+  let h = 2166136261;
+  for (let i = 0; i < full.length; i += 1) {
+    h ^= full.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const suffix = (h >>> 0).toString(36);
+  const head = full.slice(0, 90 - suffix.length - 1).replace(/-+$/g, "");
+  return `${head}-${suffix}`;
+}
+
+// The set page, card page, and product page stay on the primary read.
+// A second read about that page gets its own link so the feed can keep both.
+const LINK_MARK = {
+  chase: "chase",
+  anniversary: "anniversary",
+  slump: "slump",
+  recovery: "recovery",
+  rotation: "rotation",
+  rip: "rip",
+};
+
+export function scopedHref(kind, href) {
+  const base = String(href || "").split("#")[0];
+  if (!base) return "";
+  const mark = LINK_MARK[kind];
+  return mark ? `${base}#${mark}` : base;
+}
+
 export function row(kind, id, name, headline, lines, asOf, source, extra = {}) {
   const spokenHead = speakDates(headline, asOf);
   const ls = lines.map((line) => speakDates(line, asOf)).filter(ok).slice(0, 6);
   if (!ok(spokenHead) || ls.length < 3) return null;
-  return { id: `deep-${kind}-${id}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 90), readKind: "deep", kind: "deep", deep: kind, board: DEEP_TAG, family: "deep", name, headline: spokenHead, path: spokenHead, lines: ls, asOf, source: speakDates(source, asOf), ...extra };
+  return { id: deepReadId(kind, id), readKind: "deep", kind: "deep", deep: kind, board: DEEP_TAG, family: "deep", name, headline: spokenHead, path: spokenHead, lines: ls, asOf, source: speakDates(source, asOf), ...extra };
 }
 
 // Same basket on every date: cards with a price on all of them.
@@ -460,7 +492,7 @@ export function anniversaryReads(cards, { asOf, sets, window = 7 }) {
       top ? `Top card tonight: ${cardTitle(top)} at ${usd(top.pts.at(-1)[1])}.` : "",
       `Released ${dateLabel(s.release, asOf)} (sets.json).`,
       s.release < "2024-03-01" ? "Our price history starts Feb 2024, so this compares the past year." : "Measured from one week after release.",
-    ], asOf, `TCGplayer market, ${since} and ${asOf}; sets.json`, { href: `/sets/${s.slug}`, startDate: since, endDate: asOf });
+    ], asOf, `TCGplayer market, ${since} and ${asOf}; sets.json`, { href: scopedHref("anniversary", `/sets/${s.slug}`), startDate: since, endDate: asOf });
     if (rr) out.push(rr);
   }
   return out;
@@ -505,7 +537,7 @@ export function recoveryWatch(cards, { asOf, max = 15, skip = new Set() }) {
       `Peak ${usd(peak[1])} on ${dateLabel(peak[0], asOf)}.`,
       `Low ${usd(trough[1])} on ${dateLabel(trough[0], asOf)}.`,
       `Tonight (${monthDay(asOf)}): ${usd(now[1])}, TCGplayer market.`,
-    ], asOf, `TCGplayer market, ${peak[0]} to ${asOf}`, { sku: c.id, href: `/c/${c.id}`, price: now[1], chart: { label: "TCGplayer market", points: sparkOf(c.pts.filter((p) => p[0] >= peak[0])) }, startDate: peak[0], endDate: asOf, weight: now[1] });
+    ], asOf, `TCGplayer market, ${peak[0]} to ${asOf}`, { sku: c.id, href: scopedHref("recovery", `/c/${c.id}`), price: now[1], chart: { label: "TCGplayer market", points: sparkOf(c.pts.filter((p) => p[0] >= peak[0])) }, startDate: peak[0], endDate: asOf, weight: now[1] });
     if (rr) out.push(rr);
   }
   return out.sort((x, y) => y.weight - x.weight).slice(0, max);
