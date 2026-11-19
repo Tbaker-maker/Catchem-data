@@ -6,7 +6,7 @@ import {
   median, mean, pctChange, monthEnds, changesFor, zScores, streakFrom, breadthBlock,
   whatChanged, buildFromSeries, assertLimits, limitsOk, dayNumberToIso, parseHistRow,
   directionOf, proseHasBanned, pickRepresentative, highBelow, joinMirror, archiveAbout, ownOnlyAbout, priceBasket, ownMonthSpan, yearAgo,
-  releaseForSet, markUnreleased, pulseAsOfStale,
+  releaseForSet, markUnreleased, pulseAsOfStale, pulseFeedOff, pulseFreshnessFails,
 } from "../lib/sealed-market-pulse.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -222,6 +222,15 @@ t("script has no live cutoff numbers", (() => {
   t("pulse asOf more than 2 days older than the rest of the published data fails", pulseAsOfStale("2026-10-27", "2026-10-30") === true);
   t("a missing pulse date fails the freshness check", pulseAsOfStale("", "2026-10-30") === true);
   t("a newer pulse date is not stale", pulseAsOfStale("2026-10-30", "2026-10-27") === false);
+  t("flag off is the only skip", pulseFeedOff({ flag: "off" }) === true && pulseFeedOff({ flag: "on" }) === false && pulseFeedOff({}) === false && pulseFeedOff(null) === false);
+  t("an off feed skips a stale pulse date", pulseFreshnessFails({ flag: "off", private: true }, "2026-01-01", "2026-02-01", 2) === false);
+  t("an on feed still fails a stale pulse date", pulseFreshnessFails({ flag: "on", private: true }, "2026-01-01", "2026-02-01", 2) === true);
+  t("a missing flag still fails a stale pulse date", pulseFreshnessFails({}, "2026-01-01", "2026-02-01", 2) === true && pulseFreshnessFails(null, "2026-01-01", "2026-02-01", 2) === true);
+  t("an on feed with a fresh date passes", pulseFreshnessFails({ flag: "on" }, "2026-02-01", "2026-02-02", 2) === false);
+  const feedDoc = JSON.parse(readFileSync(join(ROOT, "data/sealed-market-pulse.json"), "utf8"));
+  const livePulse = JSON.parse(readFileSync(join(ROOT, "research/assets/public/sealed-market-pulse.json"), "utf8"));
+  const liveCounts = JSON.parse(readFileSync(join(ROOT, "research/assets/public/counts.json"), "utf8"));
+  t("the checked-in feed is off, so its old public date is not a freshness failure", pulseFeedOff(feedDoc) === true && pulseFreshnessFails(feedDoc, livePulse.asOf, liveCounts.asOf, 2) === false);
 }
 
 if (failed) {
