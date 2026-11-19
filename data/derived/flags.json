@@ -1,6 +1,6 @@
 {
- "asOf": "2026-11-18",
- "generatedAt": "2026-11-18T15:57:02.096Z",
+ "asOf": "2026-11-19",
+ "generatedAt": "2026-11-19T13:24:36.166Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,34 +21,32 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 5,
+   "PRICE_MOVE": 3,
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
    "ODD_PRICE": 93,
-   "READ_TYPE_EMPTY": 6,
-   "YOUTUBE_LEAD": 16,
-   "HYPE_EFFECT": 5,
-   "CROWDED_CALL": 2
+   "READ_TYPE_EMPTY": 8,
+   "YOUTUBE_LEAD": 17
   },
   "bySeverity": {
    "high": 1,
-   "medium": 27,
+   "medium": 21,
    "low": 105
   }
  },
- "newTonight": 11,
+ "newTonight": 0,
  "flags": [
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:85267:2026-11-18",
-   "line": "Entei (H8) (Aquapolis): $639.00 (2026-11-17) to $285.04 (2026-11-18) on TCGplayer market, down 55%.",
+   "key": "move:87531:2026-11-19",
+   "line": "Misty's Gyarados (Gym Challenge): $425.00 (2026-11-18) to $189.50 (2026-11-19) on TCGplayer market, down 55%.",
    "data": {
-    "id": "tcgcsv-85267",
-    "from": 639,
-    "to": 285.04,
-    "fromDay": "2026-11-17",
-    "toDay": "2026-11-18",
+    "id": "tcgcsv-87531",
+    "from": 425,
+    "to": 189.5,
+    "fromDay": "2026-11-18",
+    "toDay": "2026-11-19",
     "pct": -55.4,
     "kind": "single"
    },
@@ -57,63 +55,31 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:86342:2026-11-18",
-   "line": "Jolteon (POP Series 3): $65.00 (2026-11-17) to $112.50 (2026-11-18) on TCGplayer market, up 73%.",
+   "key": "move:244313:2026-11-19",
+   "line": "Sun & Moon GX Challenge Box [Incineroar] (SM Base Set): $99.95 (2026-11-18) to $172.48 (2026-11-19) on TCGplayer market, up 73%.",
    "data": {
-    "id": "tcgcsv-86342",
-    "from": 65,
-    "to": 112.5,
-    "fromDay": "2026-11-17",
-    "toDay": "2026-11-18",
-    "pct": 73.1,
-    "kind": "single"
+    "id": "tcgcsv-244313",
+    "from": 99.95,
+    "to": 172.48,
+    "fromDay": "2026-11-18",
+    "toDay": "2026-11-19",
+    "pct": 72.6,
+    "kind": "sealed"
    },
    "new": false
   },
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:86088:2026-11-18",
-   "line": "Hippowdon Lv.X (Rising Rivals): $90.00 (2026-11-17) to $135.00 (2026-11-18) on TCGplayer market, up 50%.",
+   "key": "move:85495:2026-11-19",
+   "line": "Flareon (POP Series 3): $23.65 (2026-11-18) to $53.51 (2026-11-19) on TCGplayer market, up 126%.",
    "data": {
-    "id": "tcgcsv-86088",
-    "from": 90,
-    "to": 135,
-    "fromDay": "2026-11-17",
-    "toDay": "2026-11-18",
-    "pct": 50,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:557105:2026-11-18",
-   "line": "Nest Ball - 181/198 (Europe Championships) [Staff] (League & Championship Cards): $45.00 (2026-11-17) to $85.55 (2026-11-18) on TCGplayer market, up 90%.",
-   "data": {
-    "id": "tcgcsv-557105",
-    "from": 45,
-    "to": 85.55,
-    "fromDay": "2026-11-17",
-    "toDay": "2026-11-18",
-    "pct": 90.1,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:98192:2026-11-18",
-   "line": "Jigglypuff (#12) (XY Trainer Kit: Bisharp & Wigglytuff): $5.00 (2026-11-17) to $17.50 (2026-11-18) on TCGplayer market, up 250%.",
-   "data": {
-    "id": "tcgcsv-98192",
-    "from": 5,
-    "to": 17.5,
-    "fromDay": "2026-11-17",
-    "toDay": "2026-11-18",
-    "pct": 250,
+    "id": "tcgcsv-85495",
+    "from": 23.65,
+    "to": 53.51,
+    "fromDay": "2026-11-18",
+    "toDay": "2026-11-19",
+    "pct": 126.3,
     "kind": "single"
    },
    "new": false
@@ -279,7 +245,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -303,7 +269,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -507,7 +473,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -855,7 +821,7 @@
     "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1344,17 +1310,6 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:low",
-   "line": "Read type \"low\" produced nothing tonight.",
-   "data": {
-    "kind": "low",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
    "key": "empty:year",
    "line": "Read type \"year\" produced nothing tonight.",
    "data": {
@@ -1388,6 +1343,17 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
+   "data": {
+    "kind": "mktmove",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
    "key": "empty:climb",
    "line": "Read type \"climb\" produced nothing tonight.",
    "data": {
@@ -1408,27 +1374,49 @@
    "new": false
   },
   {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24831:2026-11-18",
-   "line": "ME06: Delta Reign: 11 creator videos on 6 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:listings",
+   "line": "Read type \"listings\" produced nothing tonight.",
    "data": {
-    "kind": "set_attention",
-    "ref": 24831,
-    "label": "ME06: Delta Reign",
-    "channels": 6,
-    "videos": 11,
-    "weighted": 6,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "kind": "listings",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:sealedchase",
+   "line": "Read type \"sealedchase\" produced nothing tonight.",
+   "data": {
+    "kind": "sealedchase",
+    "lastNight": 0
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24541:2026-11-18",
-   "line": "ME: Ascended Heroes: 6 creator videos on 4 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-11-19",
+   "line": "ME06: Delta Reign: 12 creator videos on 5 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24831,
+    "label": "ME06: Delta Reign",
+    "channels": 5,
+    "videos": 12,
+    "weighted": 5,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24541:2026-11-19",
+   "line": "ME: Ascended Heroes: 6 creator videos on 4 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
@@ -1436,84 +1424,67 @@
     "channels": 4,
     "videos": 6,
     "weighted": 4,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24380:2026-11-18",
-   "line": "ME01: Mega Evolution: 5 creator videos on 3 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-11-19",
+   "line": "Print runs: 6 creator videos on 3 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
-    "kind": "set_attention",
-    "ref": 24380,
-    "label": "ME01: Mega Evolution",
+    "kind": "print_run",
+    "ref": null,
+    "label": "Print runs",
     "channels": 3,
-    "videos": 5,
-    "weighted": 3,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "videos": 6,
+    "weighted": 6,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24269:2026-11-18",
-   "line": "SV10: Destined Rivals: 5 creator videos on 3 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24269,
-    "label": "SV10: Destined Rivals",
-    "channels": 3,
-    "videos": 5,
-    "weighted": 3,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23821:2026-11-18",
-   "line": "SV: Prismatic Evolutions: 4 creator videos on 3 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:23821:2026-11-19",
+   "line": "SV: Prismatic Evolutions: 5 creator videos on 3 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23821,
     "label": "SV: Prismatic Evolutions",
     "channels": 3,
+    "videos": 5,
+    "weighted": 3,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24380:2026-11-19",
+   "line": "ME01: Mega Evolution: 4 creator videos on 3 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24380,
+    "label": "ME01: Mega Evolution",
+    "channels": 3,
     "videos": 4,
     "weighted": 3,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:712102:2026-11-18",
-   "line": "Delta Reign Elite Trainer Box: 3 creator videos on 3 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
-   "data": {
-    "kind": "sealed_attention",
-    "ref": 712102,
-    "label": "Delta Reign Elite Trainer Box",
-    "channels": 3,
-    "videos": 3,
-    "weighted": 3,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24448:2026-11-18",
-   "line": "ME02: Phantasmal Flames: 3 creator videos on 3 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:24448:2026-11-19",
+   "line": "ME02: Phantasmal Flames: 3 creator videos on 3 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24448,
@@ -1521,33 +1492,50 @@
     "channels": 3,
     "videos": 3,
     "weighted": 3,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-11-18",
-   "line": "Print runs: 4 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:23651:2026-11-19",
+   "line": "SV08: Surging Sparks: 3 creator videos on 3 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
-    "kind": "print_run",
-    "ref": null,
-    "label": "Print runs",
+    "kind": "set_attention",
+    "ref": 23651,
+    "label": "SV08: Surging Sparks",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24269:2026-11-19",
+   "line": "SV10: Destined Rivals: 4 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24269,
+    "label": "SV10: Destined Rivals",
     "channels": 2,
     "videos": 4,
-    "weighted": 4,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "weighted": 2,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:668496:2026-11-18",
-   "line": "Ascended Heroes Elite Trainer Box: 3 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:sealed_attention:668496:2026-11-19",
+   "line": "Ascended Heroes Elite Trainer Box: 3 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
     "ref": 668496,
@@ -1555,16 +1543,16 @@
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-11-18",
-   "line": "ME: 30th Celebration: 3 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-11-19",
+   "line": "ME: 30th Celebration: 3 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
@@ -1572,16 +1560,16 @@
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:704143:2026-11-18",
-   "line": "30th Celebration Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:sealed_attention:704143:2026-11-19",
+   "line": "30th Celebration Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
     "ref": 704143,
@@ -1589,16 +1577,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2867:2026-11-18",
-   "line": "Celebrations: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:2867:2026-11-19",
+   "line": "Celebrations: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 2867,
@@ -1606,16 +1594,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:624676:2026-11-18",
-   "line": "Destined Rivals Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:sealed_attention:712102:2026-11-19",
+   "line": "Delta Reign Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
+   "data": {
+    "kind": "sealed_attention",
+    "ref": 712102,
+    "label": "Delta Reign Elite Trainer Box",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-11-13",
+    "to": "2026-11-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:sealed_attention:624676:2026-11-19",
+   "line": "Destined Rivals Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
     "ref": 624676,
@@ -1623,16 +1628,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:card_attention:728061:2026-11-18",
-   "line": "Mega Rayquaza ex - 138/103: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:card_attention:728061:2026-11-19",
+   "line": "Mega Rayquaza ex - 138/103: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "card_attention",
     "ref": 728061,
@@ -1640,33 +1645,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23651:2026-11-18",
-   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:24325:2026-11-19",
+   "line": "SV: Black Bolt: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 23651,
-    "label": "SV08: Surging Sparks",
+    "ref": 24325,
+    "label": "SV: Black Bolt",
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2848:2026-11-18",
-   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-11-12 to 2026-11-18 (unverified lead).",
+   "key": "yt:set_attention:2848:2026-11-19",
+   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-11-13 to 2026-11-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 2848,
@@ -1674,141 +1679,10 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-12",
-    "to": "2026-11-18"
+    "from": "2026-11-13",
+    "to": "2026-11-19"
    },
    "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24722:2026-11-18",
-   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.8% over 30 days (n=27, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "label": "30th Celebration",
-    "n": 27,
-    "medianPct": -4.8,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24831:2026-11-18",
-   "line": "Heavy creator attention on Delta Reign this week. Past sets with this much attention moved -4.8% over 30 days (n=27, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "label": "Delta Reign",
-    "n": 27,
-    "medianPct": -4.8,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:set:SV: Prismatic Evolutions:2026-11-18",
-   "line": "Heavy creator attention on Prismatic Evolutions this week. Past sets with this much attention moved -4.8% over 30 days (n=27, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "label": "Prismatic Evolutions",
-    "n": 27,
-    "medianPct": -4.8,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:sealed:sealed:704190:2026-11-18",
-   "line": "Heavy creator attention on 30th Celebration Ultra-Premium Collection [Day] this week. Past sealed products with this much attention moved -6.1% over 30 days (n=20, 2026-05-09 to 2026-10-10).",
-   "data": {
-    "level": "sealed",
-    "label": "30th Celebration Ultra-Premium Collection [Day]",
-    "n": 20,
-    "medianPct": -6.1,
-    "from": "2026-05-09",
-    "to": "2026-10-10",
-    "surface": "sealed",
-    "source": "data/derived/hype-effect-sealed.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:sealed:sealed:712094:2026-11-18",
-   "line": "Heavy creator attention on Delta Reign Booster Box this week. Past sealed products with this much attention moved -6.1% over 30 days (n=20, 2026-05-09 to 2026-10-10).",
-   "data": {
-    "level": "sealed",
-    "label": "Delta Reign Booster Box",
-    "n": 20,
-    "medianPct": -6.1,
-    "from": "2026-05-09",
-    "to": "2026-10-10",
-    "surface": "sealed",
-    "source": "data/derived/hype-effect-sealed.json"
-   },
-   "new": true
-  },
-  {
-   "type": "CROWDED_CALL",
-   "severity": "low",
-   "key": "crowded:set:group:24722:down:2026-11-14",
-   "line": "Crowded down-direction attention on set 30th Celebration: 3 creators, 3 calls, 2026-11-14 to 2026-11-14. Past crowded calls moved -5.5% over 30 days (n=23, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "subjectKey": "group:24722",
-    "label": "30th Celebration",
-    "n": 23,
-    "medianPct": -5.5,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "creators": 3,
-    "calls": 3,
-    "direction": "down",
-    "windowFrom": "2026-11-14",
-    "windowTo": "2026-11-14",
-    "surface": "set",
-    "source": "data/derived/crowded-calls-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "CROWDED_CALL",
-   "severity": "low",
-   "key": "crowded:set:group:24831:down:2026-11-14",
-   "line": "Crowded down-direction attention on set Delta Reign: 4 creators, 5 calls, 2026-11-14 to 2026-11-14. Past crowded calls moved -5.5% over 30 days (n=23, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "subjectKey": "group:24831",
-    "label": "Delta Reign",
-    "n": 23,
-    "medianPct": -5.5,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "creators": 4,
-    "calls": 5,
-    "direction": "down",
-    "windowFrom": "2026-11-14",
-    "windowTo": "2026-11-14",
-    "surface": "set",
-    "source": "data/derived/crowded-calls-set.json"
-   },
-   "new": true
   }
  ]
 }

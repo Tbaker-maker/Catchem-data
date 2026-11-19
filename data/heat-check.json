@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-11-18",
+  "asOf": "2026-11-19",
   "method": "Each input is a z-score against that product's own trailing 90 days. Weights: listings 0.40, TCGplayer market momentum 0.30, Google Trends 0.20, new YouTube videos 0.10. A missing input is left out and the score is marked partial. 50 is the middle.",
   "eligibility": "Scored when at least one input has 30 days: 30 one-day listing changes, or 30 TCGplayer market prices with 30 momentum readings. Listing changes across a gap in our eBay history are not counted.",
   "marketHistory": {
@@ -7,7 +7,7 @@
     "tcgcsvProducts": 173,
     "pptProducts": 0,
     "first": "2026-09-25",
-    "last": "2026-11-17"
+    "last": "2026-11-18"
   },
   "skipped": {
     "trends": "Google Trends was not called. The pytrends package is not installed, so this input is empty.",
@@ -15,17 +15,67 @@
   },
   "products": [
     {
-      "id": "swsh8-pc-etb",
-      "name": "Fusion Strike Pokemon Center Elite Trainer Box",
-      "score": 97,
+      "id": "me3-etb",
+      "name": "Perfect Order Elite Trainer Box",
+      "score": 95,
       "label": "Hot",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": -6,
-        "listingChangeZ": 3.477,
+        "listingChange": -18,
+        "listingChangeZ": 2.932,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.000057866790647898014,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh8-etb",
+      "name": "Fusion Strike Elite Trainer Box",
+      "score": 94,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -40,
+        "listingChangeZ": 2.81,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.007109605565434718,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh7-pc-etb",
+      "name": "Evolving Skies Pokemon Center Elite Trainer Box",
+      "score": 92,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -3,
+        "listingChangeZ": 2.48,
         "listingDays": 36,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -38,134 +88,32 @@
       }
     },
     {
-      "id": "sv6pt5-bb",
-      "name": "Shrouded Fable Booster Bundle",
-      "score": 93,
+      "id": "sv3-pc-etb",
+      "name": "Obsidian Flames Pokemon Center Elite Trainer Box",
+      "score": 92,
       "label": "Hot",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": -50,
-        "listingChangeZ": 2.663,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.003992810427394078,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me3-pack",
-      "name": "Perfect Order Booster Pack",
-      "score": 88,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -9,
-        "listingChangeZ": 1.969,
+        "listingChange": -3,
+        "listingChangeZ": 2.447,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.04170824845150811,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "sv2-booster-box",
-      "name": "Paldea Evolved Booster Box",
-      "score": 87,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -4,
-        "listingChangeZ": 1.908,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.015684453828091582,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sm11-booster-box",
-      "name": "Unified Minds Booster Box",
-      "score": 85,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 1.717,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.026967752177735616,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh8-booster-box",
-      "name": "Fusion Strike Booster Box",
-      "score": 83,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -4,
-        "listingChangeZ": 1.566,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.024495469792978453,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me2-pack",
-      "name": "Phantasmal Flames Booster Pack",
-      "score": 83,
+      "id": "sv4-pc-etb",
+      "name": "Paradox Rift Pokemon Center Elite Trainer Box",
+      "score": 89,
       "label": "Hot",
       "partial": true,
       "weightsUsed": [
@@ -173,11 +121,34 @@
       ],
       "inputs": {
         "listingChange": -6,
-        "listingChangeZ": 1.592,
+        "listingChangeZ": 2.128,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.0014226437462953045,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm4-booster-box",
+      "name": "Crimson Invasion Booster Box",
+      "score": 87,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 1.862,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.0038868657739355994,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -188,8 +159,83 @@
       }
     },
     {
-      "id": "swsh2-etb",
-      "name": "Rebel Clash Elite Trainer Box",
+      "id": "swsh3-booster-box",
+      "name": "Darkness Ablaze Booster Box",
+      "score": 87,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -5,
+        "listingChangeZ": 1.898,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.021686348459234672,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me4-etb",
+      "name": "Chaos Rising Elite Trainer Box",
+      "score": 85,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -10,
+        "listingChangeZ": 1.747,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.004645396787134937,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh35-pack",
+      "name": "Champion's Path Booster Pack",
+      "score": 84,
+      "label": "Hot",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -4,
+        "listingChangeZ": 1.65,
+        "listingDays": 33,
+        "tcgplayerMomentum": 0.009744029888423267,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv4pt5-bb",
+      "name": "Paldean Fates Booster Bundle",
       "score": 82,
       "label": "Hot",
       "partial": true,
@@ -197,37 +243,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 1.483,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.012371035019450694,
+        "listingChange": -3,
+        "listingChangeZ": 1.49,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.02274400697725576,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sm12-booster-box",
-      "name": "Cosmic Eclipse Booster Box",
-      "score": 81,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 1.476,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.006544852144287905,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -240,32 +261,7 @@
     {
       "id": "me3-bb",
       "name": "Perfect Order Booster Bundle",
-      "score": 81,
-      "label": "Hot",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -7,
-        "listingChangeZ": 1.461,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.017871069813044427,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me5-booster-box",
-      "name": "Pitch Black Booster Box",
-      "score": 81,
+      "score": 82,
       "label": "Hot",
       "partial": true,
       "weightsUsed": [
@@ -273,11 +269,11 @@
       ],
       "inputs": {
         "listingChange": -8,
-        "listingChangeZ": 1.421,
+        "listingChangeZ": 1.546,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.03878993596707725,
+        "tcgplayerMomentum": -0.02240174363895342,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -288,59 +284,9 @@
       }
     },
     {
-      "id": "swsh11-pack",
-      "name": "Lost Origin Booster Pack",
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
       "score": 78,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -5,
-        "listingChangeZ": 1.262,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.021867298376816446,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8-etb",
-      "name": "Surging Sparks Elite Trainer Box",
-      "score": 78,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -6,
-        "listingChangeZ": 1.274,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.02374930563403399,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh7-pack",
-      "name": "Evolving Skies Booster Pack",
-      "score": 77,
       "label": "Warm",
       "partial": true,
       "weightsUsed": [
@@ -348,11 +294,11 @@
       ],
       "inputs": {
         "listingChange": -7,
-        "listingChangeZ": 1.199,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.014927442462335017,
+        "listingChangeZ": 1.243,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0762523540597475,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -363,8 +309,181 @@
       }
     },
     {
-      "id": "me5-pack",
-      "name": "Pitch Black Booster Pack",
+      "id": "swsh11-bundle",
+      "name": "Lost Origin Booster Bundle",
+      "score": 77,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 1.229,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "zsv10pt5-etb",
+      "name": "Black Bolt Elite Trainer Box",
+      "score": 76,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -6,
+        "listingChangeZ": 1.153,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.04242595816083983,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me4-pack",
+      "name": "Chaos Rising Booster Pack",
+      "score": 76,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -5,
+        "listingChangeZ": 1.13,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.04770242889661558,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me3-booster-box",
+      "name": "Perfect Order Booster Box",
+      "score": 76,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -7,
+        "listingChangeZ": 1.16,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.016475238793298486,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh12-booster-box",
+      "name": "Silver Tempest Booster Box",
+      "score": 76,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -3,
+        "listingChangeZ": 1.128,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.03666506137572634,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me1-pack",
+      "name": "Mega Evolution Booster Pack",
+      "score": 75,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -3,
+        "listingChangeZ": 1.125,
+        "listingDays": 32,
+        "tcgplayerMomentum": 0.019347998939835742,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv8-pack",
+      "name": "Surging Sparks Booster Pack",
+      "score": 75,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -6,
+        "listingChangeZ": 1.097,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.00196372877440254,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me2-booster-box",
+      "name": "Phantasmal Flames Booster Box",
       "score": 74,
       "label": "Warm",
       "partial": true,
@@ -373,11 +492,11 @@
       ],
       "inputs": {
         "listingChange": -6,
-        "listingChangeZ": 1.071,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.026429671646169717,
+        "listingChangeZ": 1.025,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.02403094076083445,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -388,8 +507,8 @@
       }
     },
     {
-      "id": "sv8-booster-box",
-      "name": "Surging Sparks Booster Box",
+      "id": "me5-pc-etb",
+      "name": "Pitch Black Pokemon Center Elite Trainer Box",
       "score": 74,
       "label": "Warm",
       "partial": true,
@@ -398,48 +517,21 @@
       ],
       "inputs": {
         "listingChange": -5,
-        "listingChangeZ": 1.049,
+        "listingChangeZ": 1.034,
         "listingDays": 34,
-        "tcgplayerMomentum": 0.012713904335389659,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "zsv10pt5-bundle",
-      "name": "Black Bolt Booster Bundle",
-      "score": 73,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -5,
-        "listingChangeZ": 1.002,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.00813700656788674,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv9-etb",
-      "name": "Journey Together Elite Trainer Box",
+      "id": "sv8-pc-etb",
+      "name": "Surging Sparks Pokemon Center Elite Trainer Box",
       "score": 73,
       "label": "Warm",
       "partial": true,
@@ -448,48 +540,21 @@
       ],
       "inputs": {
         "listingChange": -3,
-        "listingChangeZ": 0.992,
+        "listingChangeZ": 1.017,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.012603532048065302,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "sm35-etb",
-      "name": "Shining Legends Elite Trainer Box",
-      "score": 73,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.988,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.011634280510120165,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8-bb",
-      "name": "Surging Sparks Booster Bundle",
+      "id": "zsv10pt5-bundle",
+      "name": "Black Bolt Booster Bundle",
       "score": 72,
       "label": "Warm",
       "partial": true,
@@ -498,57 +563,11 @@
       ],
       "inputs": {
         "listingChange": -5,
-        "listingChangeZ": 0.946,
+        "listingChangeZ": 0.96,
         "listingDays": 36,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": 0.005093674772354673,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv2-bundle",
-      "name": "Paldea Evolved Booster Bundle",
-      "score": 71,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.877,
-        "listingDays": 33,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sm2-etb",
-      "name": "Guardians Rising Elite Trainer Box",
-      "score": 70,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.857,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.024063550968340897,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -559,8 +578,33 @@
       }
     },
     {
-      "id": "sv2-pc-etb",
-      "name": "Paldea Evolved Pokemon Center Elite Trainer Box",
+      "id": "sv9-booster-box",
+      "name": "Journey Together Booster Box",
+      "score": 72,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -4,
+        "listingChangeZ": 0.925,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0071879866778854495,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv10-bb",
+      "name": "Destined Rivals Booster Bundle",
       "score": 70,
       "label": "Warm",
       "partial": true,
@@ -568,23 +612,25 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.848,
+        "listingChange": -5,
+        "listingChangeZ": 0.844,
         "listingDays": 36,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": 0.05515117800534375,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "sv6-booster-box",
-      "name": "Twilight Masquerade Booster Box",
-      "score": 70,
+      "id": "sv9-pack",
+      "name": "Journey Together Booster Pack",
+      "score": 69,
       "label": "Warm",
       "partial": true,
       "weightsUsed": [
@@ -592,11 +638,11 @@
       ],
       "inputs": {
         "listingChange": -3,
-        "listingChangeZ": 0.838,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.007075729370559114,
+        "listingChangeZ": 0.798,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.05048232967497457,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -607,8 +653,33 @@
       }
     },
     {
-      "id": "sv3pt5-bb",
-      "name": "151 Booster Bundle",
+      "id": "swsh8-pack",
+      "name": "Fusion Strike Booster Pack",
+      "score": 68,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -3,
+        "listingChangeZ": 0.773,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.038888646282601025,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh12-pack",
+      "name": "Silver Tempest Booster Pack",
       "score": 68,
       "label": "Warm",
       "partial": true,
@@ -617,11 +688,11 @@
       ],
       "inputs": {
         "listingChange": -4,
-        "listingChangeZ": 0.734,
+        "listingChangeZ": 0.755,
         "listingDays": 34,
-        "tcgplayerMomentum": 0.008584884322321518,
+        "tcgplayerMomentum": 0.007094420696909465,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -632,8 +703,8 @@
       }
     },
     {
-      "id": "sv1-booster-box",
-      "name": "Scarlet & Violet Base Booster Box",
+      "id": "sv10-pack",
+      "name": "Destined Rivals Booster Pack",
       "score": 67,
       "label": "Warm",
       "partial": true,
@@ -641,35 +712,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.727,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
+        "listingChange": -4,
+        "listingChangeZ": 0.69,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.033307723595606964,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "cel25-etb",
-      "name": "Celebrations Elite Trainer Box",
-      "score": 64,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -3,
-        "listingChangeZ": 0.569,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.07855769119838163,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -680,17 +728,17 @@
       }
     },
     {
-      "id": "swsh10-pc-etb",
-      "name": "Astral Radiance Pokemon Center Elite Trainer Box",
-      "score": 63,
+      "id": "me2pt5-tin",
+      "name": "Ascended Heroes Tin",
+      "score": 66,
       "label": "Warm",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.53,
+        "listingChange": -5,
+        "listingChangeZ": 0.68,
         "listingDays": 36,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -703,9 +751,9 @@
       }
     },
     {
-      "id": "sv7-pack",
-      "name": "Stellar Crown Booster Pack",
-      "score": 63,
+      "id": "sv6-etb",
+      "name": "Twilight Masquerade Elite Trainer Box",
+      "score": 65,
       "label": "Warm",
       "partial": true,
       "weightsUsed": [
@@ -713,11 +761,11 @@
       ],
       "inputs": {
         "listingChange": -2,
-        "listingChangeZ": 0.515,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.002558108763727862,
+        "listingChangeZ": 0.601,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0018631053389952523,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -728,21 +776,46 @@
       }
     },
     {
-      "id": "me1-booster-box",
-      "name": "Mega Evolution Booster Box",
-      "score": 62,
+      "id": "me5-etb",
+      "name": "Pitch Black Elite Trainer Box",
+      "score": 64,
       "label": "Warm",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.474,
+        "listingChange": -4,
+        "listingChangeZ": 0.556,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.00963153296286856,
+        "tcgplayerMomentum": -0.028819745258151674,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh10-pack",
+      "name": "Astral Radiance Booster Pack",
+      "score": 63,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.517,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.04750518167004425,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -763,7 +836,7 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.508,
+        "listingChangeZ": 0.495,
         "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -776,83 +849,83 @@
       }
     },
     {
+      "id": "me2-bb",
+      "name": "Phantasmal Flames Booster Bundle",
+      "score": 62,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.479,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.05430266187868116,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv6pt5-etb",
+      "name": "Shrouded Fable Elite Trainer Box",
+      "score": 61,
+      "label": "Warm",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.435,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0029752352269905025,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me2pt5-pack",
+      "name": "Ascended Heroes Booster Pack",
+      "score": 60,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.395,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.030721871903037212,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
       "id": "sm3-etb",
       "name": "Burning Shadows Elite Trainer Box",
-      "score": 61,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.435,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.02441217887275582,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me4-etb",
-      "name": "Chaos Rising Elite Trainer Box",
-      "score": 61,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -3,
-        "listingChangeZ": 0.457,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.004794381794854585,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv5-booster-box",
-      "name": "Temporal Forces Booster Box",
-      "score": 61,
-      "label": "Warm",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.441,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.036497494568711986,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me1-pack",
-      "name": "Mega Evolution Booster Pack",
       "score": 60,
       "label": "Steady",
       "partial": true,
@@ -861,11 +934,11 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.411,
-        "listingDays": 32,
-        "tcgplayerMomentum": 0.026815642458100752,
+        "listingChangeZ": 0.414,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.022296180904423535,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -876,59 +949,9 @@
       }
     },
     {
-      "id": "me2pt5-etb",
-      "name": "Ascended Heroes Elite Trainer Box",
-      "score": 59,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -3,
-        "listingChangeZ": 0.346,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.07592739369718371,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8pt5-bb",
-      "name": "Prismatic Evolutions Booster Bundle",
-      "score": 59,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -5,
-        "listingChangeZ": 0.373,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.10207510880471149,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv7-etb",
-      "name": "Stellar Crown Elite Trainer Box",
-      "score": 59,
+      "id": "swsh45-pack",
+      "name": "Shining Fates Booster Pack",
+      "score": 60,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -936,11 +959,34 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.363,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.00584922055541548,
+        "listingChangeZ": 0.412,
+        "listingDays": 33,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv5-booster-box",
+      "name": "Temporal Forces Booster Box",
+      "score": 60,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 0.408,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.03421988934962439,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -953,7 +999,7 @@
     {
       "id": "swsh4-booster-box",
       "name": "Vivid Voltage Booster Box",
-      "score": 59,
+      "score": 60,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -961,11 +1007,11 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.358,
+        "listingChangeZ": 0.385,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.009409895806192115,
+        "tcgplayerMomentum": 0.011204955402666084,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -976,17 +1022,17 @@
       }
     },
     {
-      "id": "me3-pc-etb",
-      "name": "Perfect Order Pokemon Center Elite Trainer Box",
-      "score": 58,
+      "id": "me2pt5-pc-etb",
+      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
+      "score": 59,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.324,
+        "listingChange": -2,
+        "listingChangeZ": 0.364,
         "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -999,8 +1045,204 @@
       }
     },
     {
-      "id": "me4-pack",
-      "name": "Chaos Rising Booster Pack",
+      "id": "swsh6-pack",
+      "name": "Chilling Reign Booster Pack",
+      "score": 59,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.357,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.0190024484516238,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh3-etb",
+      "name": "Darkness Ablaze Elite Trainer Box",
+      "score": 59,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 0.379,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.04423832537690253,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm12-etb",
+      "name": "Hidden Fates Elite Trainer Box",
+      "score": 59,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.357,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0005191261575050454,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me1-etb",
+      "name": "Mega Evolution Elite Trainer Box",
+      "score": 59,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.344,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me5-bb",
+      "name": "Pitch Black Booster Bundle",
+      "score": 59,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.369,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.012223370248383825,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh9-booster-box",
+      "name": "Brilliant Stars Booster Box",
+      "score": 58,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 0.329,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.00907638652358056,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh12pt5-pack",
+      "name": "Crown Zenith Booster Pack",
+      "score": 58,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 0.304,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv6-bb",
+      "name": "Twilight Masquerade Booster Bundle",
+      "score": 58,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -6,
+        "listingChangeZ": 0.338,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.008821265762832375,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv2-pack",
+      "name": "Paldea Evolved Booster Pack",
       "score": 57,
       "label": "Steady",
       "partial": true,
@@ -1009,11 +1251,11 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.267,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.05527537823937645,
+        "listingChangeZ": 0.285,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.040032300997442705,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1024,8 +1266,8 @@
       }
     },
     {
-      "id": "swsh12pt5-bb",
-      "name": "Crown Zenith Booster Bundle",
+      "id": "sv4pt5-pack",
+      "name": "Paldean Fates Booster Pack",
       "score": 57,
       "label": "Steady",
       "partial": true,
@@ -1033,12 +1275,35 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -3,
-        "listingChangeZ": 0.292,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.003603239202403574,
+        "listingChange": -1,
+        "listingChangeZ": 0.302,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh12-etb",
+      "name": "Silver Tempest Elite Trainer Box",
+      "score": 57,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -2,
+        "listingChangeZ": 0.274,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.022144017454920784,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1049,8 +1314,8 @@
       }
     },
     {
-      "id": "swsh5-booster-box",
-      "name": "Battle Styles Booster Box",
+      "id": "swsh7-pack",
+      "name": "Evolving Skies Booster Pack",
       "score": 56,
       "label": "Steady",
       "partial": true,
@@ -1058,12 +1323,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.251,
+        "listingChange": -2,
+        "listingChangeZ": 0.252,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.01627719001671002,
+        "tcgplayerMomentum": -0.011721086389726798,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1084,11 +1349,11 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.252,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.07930202865654723,
+        "listingChangeZ": 0.248,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.07906446904702602,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1099,8 +1364,8 @@
       }
     },
     {
-      "id": "swsh12-pack",
-      "name": "Silver Tempest Booster Pack",
+      "id": "sv6pt5-bb",
+      "name": "Shrouded Fable Booster Bundle",
       "score": 56,
       "label": "Steady",
       "partial": true,
@@ -1108,12 +1373,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.226,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.006536365525066756,
+        "listingChange": -2,
+        "listingChangeZ": 0.232,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.003455747466932113,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1124,8 +1389,8 @@
       }
     },
     {
-      "id": "swsh5-pack",
-      "name": "Battle Styles Booster Pack",
+      "id": "swsh9-pc-etb",
+      "name": "Brilliant Stars Pokemon Center Elite Trainer Box",
       "score": 55,
       "label": "Steady",
       "partial": true,
@@ -1133,24 +1398,22 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.189,
+        "listingChange": -3,
+        "listingChangeZ": 0.197,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.04012365881043811,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "sv9-bb",
-      "name": "Journey Together Booster Bundle",
+      "id": "swsh7-booster-box",
+      "name": "Evolving Skies Booster Box",
       "score": 55,
       "label": "Steady",
       "partial": true,
@@ -1159,36 +1422,11 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.208,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.05014731819479212,
+        "listingChangeZ": 0.214,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0004179532475795389,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me1-bb",
-      "name": "Mega Evolution Booster Bundle",
-      "score": 55,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.204,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.007021406937441577,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1222,8 +1460,8 @@
       }
     },
     {
-      "id": "sv7-booster-box",
-      "name": "Stellar Crown Booster Box",
+      "id": "sv7-bb",
+      "name": "Stellar Crown Booster Bundle",
       "score": 55,
       "label": "Steady",
       "partial": true,
@@ -1232,128 +1470,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.213,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.02690117810126469,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "rsv10pt5-wf-pc-etb",
-      "name": "White Flare Pokemon Center Elite Trainer Box",
-      "score": 55,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 0.217,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh9-pc-etb",
-      "name": "Brilliant Stars Pokemon Center Elite Trainer Box",
-      "score": 54,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 0.163,
+        "listingChangeZ": 0.216,
         "listingDays": 36,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": -0.018184840245833778,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh12pt5-premium",
-      "name": "Crown Zenith Special Collection",
-      "score": 54,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.148,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv4-bundle",
-      "name": "Paradox Rift Booster Bundle",
-      "score": 54,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.162,
-        "listingDays": 33,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me3-booster-box",
-      "name": "Perfect Order Booster Box",
-      "score": 54,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.168,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.014704583834615703,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1364,8 +1485,8 @@
       }
     },
     {
-      "id": "me2-pc-etb",
-      "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
+      "id": "sv3pt5-upc",
+      "name": "151 Ultra Premium Collection",
       "score": 54,
       "label": "Steady",
       "partial": true,
@@ -1373,15 +1494,42 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -1,
+        "listingChangeZ": 0.179,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.027958932736288578,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh9-pack",
+      "name": "Brilliant Stars Booster Pack",
+      "score": 54,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
         "listingChangeZ": 0.156,
         "listingDays": 34,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": -0.02372681994449677,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
         "googleTrends": null,
         "youtube": null
       }
@@ -1397,11 +1545,36 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.154,
+        "listingChangeZ": 0.151,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.021341227479139135,
+        "tcgplayerMomentum": 0.019564072474685057,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv3pt5-pack",
+      "name": "151 Booster Pack",
+      "score": 53,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -1,
+        "listingChangeZ": 0.111,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.0183869706479729,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1422,11 +1595,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.126,
+        "listingChangeZ": 0.116,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.016653963157575058,
+        "tcgplayerMomentum": -0.016776811080064902,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1437,8 +1610,8 @@
       }
     },
     {
-      "id": "xy12-booster-box",
-      "name": "Evolutions Booster Box",
+      "id": "swsh12pt5-premium",
+      "name": "Crown Zenith Special Collection",
       "score": 53,
       "label": "Steady",
       "partial": true,
@@ -1446,17 +1619,15 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.101,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.0438198419676461,
+        "listingChange": -1,
+        "listingChangeZ": 0.105,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
@@ -1474,9 +1645,9 @@
         "listingChange": 0,
         "listingChangeZ": 0.119,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.009141035332888015,
+        "tcgplayerMomentum": 0.010208404932815496,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1487,31 +1658,8 @@
       }
     },
     {
-      "id": "me1-etb",
-      "name": "Mega Evolution Elite Trainer Box",
-      "score": 53,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.138,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh45-pack",
-      "name": "Shining Fates Booster Pack",
+      "id": "sv2-pc-etb",
+      "name": "Paldea Evolved Pokemon Center Elite Trainer Box",
       "score": 53,
       "label": "Steady",
       "partial": true,
@@ -1520,8 +1668,8 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.114,
-        "listingDays": 32,
+        "listingChangeZ": 0.113,
+        "listingDays": 36,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -1533,8 +1681,31 @@
       }
     },
     {
-      "id": "swsh12-etb",
-      "name": "Silver Tempest Elite Trainer Box",
+      "id": "sv1-booster-box",
+      "name": "Scarlet & Violet Base Booster Box",
+      "score": 53,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": 0.139,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv8-bb",
+      "name": "Surging Sparks Booster Bundle",
       "score": 53,
       "label": "Steady",
       "partial": true,
@@ -1543,11 +1714,34 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": 0.122,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.023835698730048316,
+        "listingChangeZ": 0.131,
+        "listingDays": 36,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv5-bb",
+      "name": "Temporal Forces Booster Bundle",
+      "score": 53,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": -3,
+        "listingChangeZ": 0.136,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.007461187802909497,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1558,8 +1752,8 @@
       }
     },
     {
-      "id": "sv5-pc-etb",
-      "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+      "id": "rsv10pt5-etb",
+      "name": "White Flare Elite Trainer Box",
       "score": 53,
       "label": "Steady",
       "partial": true,
@@ -1568,85 +1762,16 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.105,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
+        "listingChangeZ": 0.11,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.010666552150157771,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me4-pc-etb",
-      "name": "Chaos Rising Pokemon Center Elite Trainer Box",
-      "score": 52,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.063,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv9-booster-box",
-      "name": "Journey Together Booster Box",
-      "score": 52,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.067,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.01113908738678382,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
         ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv3-bundle",
-      "name": "Obsidian Flames Booster Bundle",
-      "score": 52,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.072,
-        "listingDays": 33,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
@@ -1662,11 +1787,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.075,
+        "listingChangeZ": 0.063,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.01042607943806051,
+        "tcgplayerMomentum": -0.01149815735196813,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1677,8 +1802,8 @@
       }
     },
     {
-      "id": "sv4-pc-etb",
-      "name": "Paradox Rift Pokemon Center Elite Trainer Box",
+      "id": "sv4-bundle",
+      "name": "Paradox Rift Booster Bundle",
       "score": 52,
       "label": "Steady",
       "partial": true,
@@ -1686,9 +1811,9 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.063,
-        "listingDays": 36,
+        "listingChange": 1,
+        "listingChangeZ": 0.094,
+        "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -1712,9 +1837,9 @@
         "listingChange": 0,
         "listingChangeZ": 0.072,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.019333824256027476,
+        "tcgplayerMomentum": 0.019255239260141277,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1725,31 +1850,8 @@
       }
     },
     {
-      "id": "swsh12-bundle",
-      "name": "Silver Tempest Booster Bundle",
-      "score": 52,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.095,
-        "listingDays": 33,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh9-booster-box",
-      "name": "Brilliant Stars Booster Box",
+      "id": "swsh5-booster-box",
+      "name": "Battle Styles Booster Box",
       "score": 51,
       "label": "Steady",
       "partial": true,
@@ -1758,64 +1860,16 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": 0.037,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.008789070278389488,
+        "listingChangeZ": 0.021,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.013703372952296622,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
         ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "cel25-upc",
-      "name": "Celebrations Ultra Premium Collection",
-      "score": 51,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": 0.053,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.02774660397280937,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv10-pc-etb",
-      "name": "Destined Rivals Pokemon Center Elite Trainer Box",
-      "score": 51,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0.045,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
@@ -1833,9 +1887,9 @@
         "listingChange": 0,
         "listingChangeZ": 0.046,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.009850899928095846,
+        "tcgplayerMomentum": -0.013773684524743035,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1846,44 +1900,44 @@
       }
     },
     {
-      "id": "swsh6-pc-etb",
-      "name": "Chilling Reign Pokemon Center Elite Trainer Box",
-      "score": 50,
+      "id": "sv3-bundle",
+      "name": "Obsidian Flames Booster Bundle",
+      "score": 51,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": 0,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me1-enhanced-booster-box",
-      "name": "Mega Evolution Enhanced Booster Box",
-      "score": 50,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": 0.005,
+        "listingChange": 1,
+        "listingChangeZ": 0.035,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.01407991715056367,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "score": 51,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": 0.027,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.011165304952742261,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1894,8 +1948,54 @@
       }
     },
     {
-      "id": "sv5-bb",
-      "name": "Temporal Forces Booster Bundle",
+      "id": "swsh12-bundle",
+      "name": "Silver Tempest Booster Bundle",
+      "score": 51,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": 0.04,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm1-etb",
+      "name": "Sun & Moon Elite Trainer Box",
+      "score": 51,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": 0.03,
+        "listingDays": 36,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me4-bb",
+      "name": "Chaos Rising Booster Bundle",
       "score": 50,
       "label": "Steady",
       "partial": true,
@@ -1904,11 +2004,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.005,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.008081087895357109,
+        "listingChangeZ": 0.018,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0054730681695025485,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1919,9 +2019,9 @@
       }
     },
     {
-      "id": "swsh6-booster-box",
-      "name": "Chilling Reign Booster Box",
-      "score": 49,
+      "id": "swsh12pt5-bb",
+      "name": "Crown Zenith Booster Bundle",
+      "score": 50,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -1929,11 +2029,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.039,
+        "listingChangeZ": 0.013,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.0032994206943035564,
+        "tcgplayerMomentum": -0.0034577361111715055,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -1944,9 +2044,9 @@
       }
     },
     {
-      "id": "swsh12pt5-pack",
-      "name": "Crown Zenith Booster Pack",
-      "score": 49,
+      "id": "swsh7-etb",
+      "name": "Evolving Skies Elite Trainer Box",
+      "score": 50,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -1954,14 +2054,64 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.043,
-        "listingDays": 33,
+        "listingChangeZ": -0.017,
+        "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": null,
         "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv7-etb",
+      "name": "Stellar Crown Elite Trainer Box",
+      "score": 50,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.011,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.004289554923349481,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh4-pack",
+      "name": "Vivid Voltage Booster Pack",
+      "score": 50,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": 0.015,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.01298126033935687,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
         "googleTrends": null,
         "youtube": null
       }
@@ -1990,79 +2140,6 @@
       }
     },
     {
-      "id": "swsh3-pack",
-      "name": "Darkness Ablaze Booster Pack",
-      "score": 49,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.022,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.026816867710098835,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv10-booster-box",
-      "name": "Destined Rivals Booster Box",
-      "score": 49,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": -1,
-        "listingChangeZ": -0.021,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.039915016036148665,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh7-pc-etb",
-      "name": "Evolving Skies Pokemon Center Elite Trainer Box",
-      "score": 49,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.025,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
       "id": "sm2-booster-box",
       "name": "Guardians Rising Booster Box",
       "score": 49,
@@ -2077,7 +2154,7 @@
         "listingDays": 36,
         "tcgplayerMomentum": -7.771561172376096e-16,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2088,8 +2165,8 @@
       }
     },
     {
-      "id": "sv4pt5-pc-etb",
-      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
+      "id": "swsh11-booster-box",
+      "name": "Lost Origin Booster Box",
       "score": 49,
       "label": "Steady",
       "partial": true,
@@ -2097,22 +2174,24 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": -2,
-        "listingChangeZ": -0.057,
+        "listingChange": 0,
+        "listingChangeZ": -0.03,
         "listingDays": 34,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": 0.0014665341820006006,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "sv6-pc-etb",
-      "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
+      "id": "sv8pt5-etb",
+      "name": "Prismatic Evolutions Elite Trainer Box",
       "score": 49,
       "label": "Steady",
       "partial": true,
@@ -2121,7 +2200,57 @@
       ],
       "inputs": {
         "listingChange": -1,
-        "listingChangeZ": -0.032,
+        "listingChangeZ": -0.028,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.05006185567010324,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh2-etb",
+      "name": "Rebel Clash Elite Trainer Box",
+      "score": 49,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.042,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.011697565781869756,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv6pt5-pc-etb",
+      "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
+      "score": 49,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.043,
         "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -2134,8 +2263,8 @@
       }
     },
     {
-      "id": "rsv10pt5-bundle",
-      "name": "White Flare Booster Bundle",
+      "id": "sv5-etb",
+      "name": "Temporal Forces Elite Trainer Box",
       "score": 49,
       "label": "Steady",
       "partial": true,
@@ -2144,11 +2273,34 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.02,
+        "listingChangeZ": -0.056,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh5-pack",
+      "name": "Battle Styles Booster Pack",
+      "score": 48,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.099,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.03788511965904684,
+        "tcgplayerMomentum": 0.039285714285713924,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2159,8 +2311,8 @@
       }
     },
     {
-      "id": "swsh10-booster-box",
-      "name": "Astral Radiance Booster Box",
+      "id": "sm4-etb",
+      "name": "Crimson Invasion Elite Trainer Box",
       "score": 48,
       "label": "Steady",
       "partial": true,
@@ -2169,86 +2321,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.073,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.0006477808342282287,
+        "listingChangeZ": -0.067,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.008602768174680087,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh12pt5-etb",
-      "name": "Crown Zenith Elite Trainer Box",
-      "score": 48,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.072,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.0038827109750081412,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv10-etb",
-      "name": "Destined Rivals Elite Trainer Box",
-      "score": 48,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.072,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.043225745065854415,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh7-booster-box",
-      "name": "Evolving Skies Booster Box",
-      "score": 48,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.068,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.0025384406828354855,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2282,17 +2359,42 @@
       }
     },
     {
-      "id": "zsv10pt5-bb-pc-etb",
-      "name": "Black Bolt Pokemon Center Elite Trainer Box",
-      "score": 47,
+      "id": "sv8pt5-pack",
+      "name": "Prismatic Evolutions Booster Pack",
+      "score": 48,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.128,
+        "listingChange": 0,
+        "listingChangeZ": -0.076,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.04733168733361848,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv6-pc-etb",
+      "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
+      "score": 48,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.07,
         "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
@@ -2305,8 +2407,8 @@
       }
     },
     {
-      "id": "swsh6-pack",
-      "name": "Chilling Reign Booster Pack",
+      "id": "swsh6-etb",
+      "name": "Chilling Reign Elite Trainer Box",
       "score": 47,
       "label": "Steady",
       "partial": true,
@@ -2315,58 +2417,8 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.139,
+        "listingChangeZ": -0.116,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.020114986702740922,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv9-pack",
-      "name": "Journey Together Booster Pack",
-      "score": 47,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.128,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.053708246839025975,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh11-bundle",
-      "name": "Lost Origin Booster Bundle",
-      "score": 47,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.128,
-        "listingDays": 33,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -2378,8 +2430,8 @@
       }
     },
     {
-      "id": "me3-etb",
-      "name": "Perfect Order Elite Trainer Box",
+      "id": "sm2-etb",
+      "name": "Guardians Rising Elite Trainer Box",
       "score": 47,
       "label": "Steady",
       "partial": true,
@@ -2388,11 +2440,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.113,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.0000963029624782008,
+        "listingChangeZ": -0.138,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.022254185954641237,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2403,8 +2455,8 @@
       }
     },
     {
-      "id": "sv8pt5-etb",
-      "name": "Prismatic Evolutions Elite Trainer Box",
+      "id": "sv7-booster-box",
+      "name": "Stellar Crown Booster Box",
       "score": 47,
       "label": "Steady",
       "partial": true,
@@ -2412,12 +2464,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.139,
+        "listingChange": 1,
+        "listingChangeZ": -0.107,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.06050625411994448,
+        "tcgplayerMomentum": 0.027584280167487263,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2428,8 +2480,33 @@
       }
     },
     {
-      "id": "sm12-etb",
-      "name": "Hidden Fates Elite Trainer Box",
+      "id": "sm5-booster-box",
+      "name": "Ultra Prism Booster Box",
+      "score": 47,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.126,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.03955810336147492,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me2pt5-etb",
+      "name": "Ascended Heroes Elite Trainer Box",
       "score": 46,
       "label": "Steady",
       "partial": true,
@@ -2437,17 +2514,88 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.178,
+        "listingChange": 0,
+        "listingChangeZ": -0.17,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.0012543439369946396,
+        "tcgplayerMomentum": -0.06766695311552684,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
         ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm12-booster-box",
+      "name": "Cosmic Eclipse Booster Box",
+      "score": 46,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.162,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.009539117558613919,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv7-pc-etb",
+      "name": "Stellar Crown Pokemon Center Elite Trainer Box",
+      "score": 46,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.16,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv9-pc-etb",
+      "name": "Journey Together Pokemon Center Elite Trainer Box",
+      "score": 45,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.187,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
@@ -2455,7 +2603,7 @@
     {
       "id": "swsh11-etb",
       "name": "Lost Origin Elite Trainer Box",
-      "score": 46,
+      "score": 45,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -2463,11 +2611,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.152,
+        "listingChangeZ": -0.191,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.008652868771941491,
+        "tcgplayerMomentum": -0.007161301773443096,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2478,129 +2626,8 @@
       }
     },
     {
-      "id": "me2-booster-box",
-      "name": "Phantasmal Flames Booster Box",
-      "score": 46,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.143,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.02237428649238582,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me5-pc-etb",
-      "name": "Pitch Black Pokemon Center Elite Trainer Box",
-      "score": 46,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.167,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me4-bb",
-      "name": "Chaos Rising Booster Bundle",
-      "score": 45,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.186,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.006447344540995048,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh3-booster-box",
-      "name": "Darkness Ablaze Booster Box",
-      "score": 45,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.209,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.023095807930976542,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "mega-forces-tin",
-      "name": "Mega Forces Tin",
-      "score": 45,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 5,
-        "listingChangeZ": -0.195,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv3-pc-etb",
-      "name": "Obsidian Flames Pokemon Center Elite Trainer Box",
+      "id": "sv4pt5-pc-etb",
+      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
       "score": 45,
       "label": "Steady",
       "partial": true,
@@ -2610,7 +2637,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": -0.19,
-        "listingDays": 36,
+        "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -2622,8 +2649,8 @@
       }
     },
     {
-      "id": "sv6-pack",
-      "name": "Twilight Masquerade Booster Pack",
+      "id": "sv4-pack",
+      "name": "Paradox Rift Booster Pack",
       "score": 45,
       "label": "Steady",
       "partial": true,
@@ -2632,11 +2659,11 @@
       ],
       "inputs": {
         "listingChange": 0,
-        "listingChangeZ": -0.22,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.0009975626561906648,
+        "listingChangeZ": -0.208,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.06321807304855542,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2647,9 +2674,9 @@
       }
     },
     {
-      "id": "me2pt5-pack",
-      "name": "Ascended Heroes Booster Pack",
-      "score": 44,
+      "id": "me5-pack",
+      "name": "Pitch Black Booster Pack",
+      "score": 45,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
@@ -2657,11 +2684,59 @@
       ],
       "inputs": {
         "listingChange": 1,
-        "listingChangeZ": -0.224,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.029175975818110267,
+        "listingChangeZ": -0.195,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.01624930802044966,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv8pt5-pc-etb",
+      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
+      "score": 45,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.22,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv7-pack",
+      "name": "Stellar Crown Booster Pack",
+      "score": 45,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.181,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0024791784302655717,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2684,9 +2759,9 @@
         "listingChange": 0,
         "listingChangeZ": -0.251,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.036003575443901426,
+        "tcgplayerMomentum": 0.039651427040228615,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2697,8 +2772,8 @@
       }
     },
     {
-      "id": "sv2-pack",
-      "name": "Paldea Evolved Booster Pack",
+      "id": "swsh3-pack",
+      "name": "Darkness Ablaze Booster Pack",
       "score": 44,
       "label": "Steady",
       "partial": true,
@@ -2707,11 +2782,11 @@
       ],
       "inputs": {
         "listingChange": 1,
-        "listingChangeZ": -0.242,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.03524813539873761,
+        "listingChangeZ": -0.257,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.0247766968197074,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2722,49 +2797,26 @@
       }
     },
     {
-      "id": "sv4pt5-etb",
-      "name": "Paldean Fates Elite Trainer Box",
-      "score": 44,
+      "id": "sv8pt5-sc",
+      "name": "Prismatic Evolutions Surprise Box",
+      "score": 43,
       "label": "Steady",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.226,
+        "listingChange": 1,
+        "listingChangeZ": -0.297,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.003692729348933388,
+        "tcgplayerMomentum": -0.042857664176497834,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
           "TCGplayer market via TCGCSV"
         ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8pt5-pc-etb",
-      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
-      "score": 44,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.229,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
@@ -2780,11 +2832,11 @@
       ],
       "inputs": {
         "listingChange": 1,
-        "listingChangeZ": -0.282,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.07722171067366768,
+        "listingChangeZ": -0.278,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.07583192268957939,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2795,8 +2847,8 @@
       }
     },
     {
-      "id": "me4-booster-box",
-      "name": "Chaos Rising Booster Box",
+      "id": "zsv10pt5-bb-pc-etb",
+      "name": "Black Bolt Pokemon Center Elite Trainer Box",
       "score": 42,
       "label": "Steady",
       "partial": true,
@@ -2805,11 +2857,374 @@
       ],
       "inputs": {
         "listingChange": 2,
-        "listingChangeZ": -0.305,
+        "listingChangeZ": -0.322,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.010918868365676682,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv10-etb",
+      "name": "Destined Rivals Elite Trainer Box",
+      "score": 42,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.313,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.039593140911399094,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv9-bb",
+      "name": "Journey Together Booster Bundle",
+      "score": 42,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.327,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.040916042008031894,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me2pt5-bb",
+      "name": "Ascended Heroes Booster Bundle",
+      "score": 41,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 2,
+        "listingChangeZ": -0.36,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.031064140747485425,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm3-booster-box",
+      "name": "Burning Shadows Booster Box",
+      "score": 41,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 0,
+        "listingChangeZ": -0.374,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.007866190849231014,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh6-booster-box",
+      "name": "Chilling Reign Booster Box",
+      "score": 41,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.352,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.0024566970888344475,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me2-pc-etb",
+      "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
+      "score": 41,
+      "label": "Steady",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.344,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh10-booster-box",
+      "name": "Astral Radiance Booster Box",
+      "score": 40,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.414,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0019680617986492788,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh5-etb",
+      "name": "Battle Styles Elite Trainer Box",
+      "score": 40,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.387,
+        "listingDays": 36,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me4-pc-etb",
+      "name": "Chaos Rising Pokemon Center Elite Trainer Box",
+      "score": 40,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.392,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh11-pack",
+      "name": "Lost Origin Booster Pack",
+      "score": 40,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.42,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.01486285565070955,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv10-pc-etb",
+      "name": "Destined Rivals Pokemon Center Elite Trainer Box",
+      "score": 39,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.436,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "mega-forces-tin",
+      "name": "Mega Forces Tin",
+      "score": 39,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 10,
+        "listingChangeZ": -0.436,
+        "listingDays": 35,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me3-pack",
+      "name": "Perfect Order Booster Pack",
+      "score": 39,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 2,
+        "listingChangeZ": -0.434,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.03427151361035674,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv10-booster-box",
+      "name": "Destined Rivals Booster Box",
+      "score": 38,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.499,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.04079761923977776,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv8-booster-box",
+      "name": "Surging Sparks Booster Box",
+      "score": 37,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 2,
+        "listingChangeZ": -0.519,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.01156098360326796,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2822,19 +3237,19 @@
     {
       "id": "sv3-pack",
       "name": "Obsidian Flames Booster Pack",
-      "score": 42,
-      "label": "Steady",
+      "score": 36,
+      "label": "Cool",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.333,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.007425023322678914,
+        "listingChange": 2,
+        "listingChangeZ": -0.595,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.007430989752734041,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2845,47 +3260,51 @@
       }
     },
     {
-      "id": "swsh12-pc-etb",
-      "name": "Silver Tempest Pokemon Center Elite Trainer Box",
-      "score": 42,
-      "label": "Steady",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 0,
-        "listingChangeZ": -0.329,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh5-etb",
-      "name": "Battle Styles Elite Trainer Box",
-      "score": 41,
-      "label": "Steady",
+      "id": "swsh2-booster-box",
+      "name": "Rebel Clash Booster Box",
+      "score": 36,
+      "label": "Cool",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
         "listingChange": 1,
-        "listingChangeZ": -0.364,
+        "listingChangeZ": -0.574,
         "listingDays": 36,
-        "tcgplayerMomentum": null,
+        "tcgplayerMomentum": 0.0005327121118867684,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me1-booster-box",
+      "name": "Mega Evolution Booster Box",
+      "score": 35,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 2,
+        "listingChangeZ": -0.601,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.009116195871848753,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
         "googleTrends": null,
         "youtube": null
       }
@@ -2893,19 +3312,19 @@
     {
       "id": "sv5-pack",
       "name": "Temporal Forces Booster Pack",
-      "score": 41,
-      "label": "Steady",
+      "score": 35,
+      "label": "Cool",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.353,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.0249797639440541,
+        "listingChange": 2,
+        "listingChangeZ": -0.605,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.02111140803668099,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -2916,9 +3335,9 @@
       }
     },
     {
-      "id": "sv3pt5-pack",
-      "name": "151 Booster Pack",
-      "score": 40,
+      "id": "sv1-pc-etb",
+      "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
+      "score": 34,
       "label": "Cool",
       "partial": true,
       "weightsUsed": [
@@ -2926,58 +3345,8 @@
       ],
       "inputs": {
         "listingChange": 1,
-        "listingChangeZ": -0.402,
+        "listingChangeZ": -0.645,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.0216244361991198,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh35-pack",
-      "name": "Champion's Path Booster Pack",
-      "score": 40,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.388,
-        "listingDays": 32,
-        "tcgplayerMomentum": 0.011341381848977372,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv6pt5-pc-etb",
-      "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
-      "score": 40,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.426,
-        "listingDays": 34,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -2989,9 +3358,9 @@
       }
     },
     {
-      "id": "sv8-pc-etb",
-      "name": "Surging Sparks Pokemon Center Elite Trainer Box",
-      "score": 40,
+      "id": "xy12-booster-box",
+      "name": "Evolutions Booster Box",
+      "score": 33,
       "label": "Cool",
       "partial": true,
       "weightsUsed": [
@@ -2999,132 +3368,11 @@
       ],
       "inputs": {
         "listingChange": 2,
-        "listingChangeZ": -0.417,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv4pt5-pack",
-      "name": "Paldean Fates Booster Pack",
-      "score": 39,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.443,
-        "listingDays": 33,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me5-etb",
-      "name": "Pitch Black Elite Trainer Box",
-      "score": 39,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.454,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.031096288152026808,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8pt5-sc",
-      "name": "Prismatic Evolutions Surprise Box",
-      "score": 39,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.438,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.03912440526355687,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv6pt5-etb",
-      "name": "Shrouded Fable Elite Trainer Box",
-      "score": 39,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.433,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.006828042756186425,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "rsv10pt5-etb",
-      "name": "White Flare Elite Trainer Box",
-      "score": 39,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.431,
+        "listingChangeZ": -0.729,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.00992500797050233,
+        "tcgplayerMomentum": 0.04284253998313958,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3135,9 +3383,109 @@
       }
     },
     {
-      "id": "me2pt5-pc-etb",
-      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
-      "score": 38,
+      "id": "me4-booster-box",
+      "name": "Chaos Rising Booster Box",
+      "score": 32,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 5,
+        "listingChangeZ": -0.77,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.011701679178853786,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "rsv10pt5-bundle",
+      "name": "White Flare Booster Bundle",
+      "score": 32,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 4,
+        "listingChangeZ": -0.744,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.03849114417352428,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv3pt5-bb",
+      "name": "151 Booster Bundle",
+      "score": 31,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 4,
+        "listingChangeZ": -0.813,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.008240173814545892,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv8-etb",
+      "name": "Surging Sparks Elite Trainer Box",
+      "score": 31,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 3,
+        "listingChangeZ": -0.778,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.02101845237099731,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv2-booster-box",
+      "name": "Paldea Evolved Booster Box",
+      "score": 30,
       "label": "Cool",
       "partial": true,
       "weightsUsed": [
@@ -3145,8 +3493,81 @@
       ],
       "inputs": {
         "listingChange": 2,
-        "listingChangeZ": -0.509,
+        "listingChangeZ": -0.864,
         "listingDays": 34,
+        "tcgplayerMomentum": 0.017043155366551987,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "me3-pc-etb",
+      "name": "Perfect Order Pokemon Center Elite Trainer Box",
+      "score": 30,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 4,
+        "listingChangeZ": -0.856,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv3pt5-etb",
+      "name": "151 Elite Trainer Box",
+      "score": 29,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 3,
+        "listingChangeZ": -0.898,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.010263963389215425,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh8-pc-etb",
+      "name": "Fusion Strike Pokemon Center Elite Trainer Box",
+      "score": 29,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.883,
+        "listingDays": 36,
         "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
         "tcgplayerDays": 0,
@@ -3160,346 +3581,6 @@
     {
       "id": "sv3-booster-box",
       "name": "Obsidian Flames Booster Box",
-      "score": 38,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.49,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.025036992679128733,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh4-pack",
-      "name": "Vivid Voltage Booster Pack",
-      "score": 38,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.497,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.01362262618972443,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv5-etb",
-      "name": "Temporal Forces Elite Trainer Box",
-      "score": 37,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.537,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh6-etb",
-      "name": "Chilling Reign Elite Trainer Box",
-      "score": 35,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.631,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh7-etb",
-      "name": "Evolving Skies Elite Trainer Box",
-      "score": 35,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.625,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh2-booster-box",
-      "name": "Rebel Clash Booster Box",
-      "score": 35,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.603,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.000487147180550096,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv3pt5-etb",
-      "name": "151 Elite Trainer Box",
-      "score": 34,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.672,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.009439310265048295,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv10-bb",
-      "name": "Destined Rivals Booster Bundle",
-      "score": 34,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.648,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.05494831128779243,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv9-pc-etb",
-      "name": "Journey Together Pokemon Center Elite Trainer Box",
-      "score": 33,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.73,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv4pt5-bb",
-      "name": "Paldean Fates Booster Bundle",
-      "score": 33,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.687,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.028696678487376448,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv8pt5-pack",
-      "name": "Prismatic Evolutions Booster Pack",
-      "score": 33,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -0.725,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.044234813104214954,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv1-pc-etb",
-      "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
-      "score": 33,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.688,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me2pt5-bb",
-      "name": "Ascended Heroes Booster Bundle",
-      "score": 31,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 5,
-        "listingChangeZ": -0.798,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.03679102523062616,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me2-etb",
-      "name": "Phantasmal Flames Elite Trainer Box",
-      "score": 31,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -0.811,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.07702886794354513,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sm5-booster-box",
-      "name": "Ultra Prism Booster Box",
       "score": 29,
       "label": "Cool",
       "partial": true,
@@ -3507,12 +3588,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -0.882,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.041708249602257164,
+        "listingChange": 2,
+        "listingChangeZ": -0.917,
+        "listingDays": 34,
+        "tcgplayerMomentum": 0.024081104015006183,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3523,8 +3604,58 @@
       }
     },
     {
-      "id": "sv4-pack",
-      "name": "Paradox Rift Booster Pack",
+      "id": "me2-pack",
+      "name": "Phantasmal Flames Booster Pack",
+      "score": 29,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 3,
+        "listingChangeZ": -0.886,
+        "listingDays": 36,
+        "tcgplayerMomentum": -0.0021258268201896913,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv6-pack",
+      "name": "Twilight Masquerade Booster Pack",
+      "score": 29,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 3,
+        "listingChangeZ": -0.899,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0012910792084810385,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv2-bundle",
+      "name": "Paldea Evolved Booster Bundle",
       "score": 28,
       "label": "Cool",
       "partial": true,
@@ -3532,50 +3663,23 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -0.942,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.06258202781054267,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv3pt5-upc",
-      "name": "151 Ultra Premium Collection",
-      "score": 27,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -1.017,
+        "listingChange": 1,
+        "listingChangeZ": -0.962,
         "listingDays": 34,
-        "tcgplayerMomentum": 0.027991489963176575,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "swsh8-pack",
-      "name": "Fusion Strike Booster Pack",
-      "score": 26,
+      "id": "sv6-booster-box",
+      "name": "Twilight Masquerade Booster Box",
+      "score": 28,
       "label": "Cool",
       "partial": true,
       "weightsUsed": [
@@ -3583,11 +3687,11 @@
       ],
       "inputs": {
         "listingChange": 4,
-        "listingChangeZ": -1.034,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.04607855484985346,
+        "listingChangeZ": -0.963,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.006665090045618216,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3598,8 +3702,58 @@
       }
     },
     {
-      "id": "swsh12-booster-box",
-      "name": "Silver Tempest Booster Box",
+      "id": "sv8pt5-bb",
+      "name": "Prismatic Evolutions Booster Bundle",
+      "score": 27,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 8,
+        "listingChangeZ": -1.019,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.09629781902072476,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sm11-booster-box",
+      "name": "Unified Minds Booster Box",
+      "score": 27,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -0.994,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.025549030670358075,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv4pt5-etb",
+      "name": "Paldean Fates Elite Trainer Box",
       "score": 26,
       "label": "Cool",
       "partial": true,
@@ -3608,11 +3762,11 @@
       ],
       "inputs": {
         "listingChange": 3,
-        "listingChangeZ": -1.031,
+        "listingChangeZ": -1.07,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.03687404140093242,
+        "tcgplayerMomentum": -0.00488901082302462,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3623,8 +3777,31 @@
       }
     },
     {
-      "id": "me5-bb",
-      "name": "Pitch Black Booster Bundle",
+      "id": "swsh10-pc-etb",
+      "name": "Astral Radiance Pokemon Center Elite Trainer Box",
+      "score": 25,
+      "label": "Cool",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -1.089,
+        "listingDays": 36,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "cel25-upc",
+      "name": "Celebrations Ultra Premium Collection",
       "score": 25,
       "label": "Cool",
       "partial": true,
@@ -3633,11 +3810,11 @@
       ],
       "inputs": {
         "listingChange": 5,
-        "listingChangeZ": -1.11,
+        "listingChangeZ": -1.084,
         "listingDays": 34,
-        "tcgplayerMomentum": 0.0174457251698783,
+        "tcgplayerMomentum": -0.030777894299352404,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3648,8 +3825,8 @@
       }
     },
     {
-      "id": "zsv10pt5-etb",
-      "name": "Black Bolt Elite Trainer Box",
+      "id": "swsh12pt5-etb",
+      "name": "Crown Zenith Elite Trainer Box",
       "score": 23,
       "label": "Cool",
       "partial": true,
@@ -3657,12 +3834,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 6,
-        "listingChangeZ": -1.218,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.04303959561719928,
+        "listingChange": 3,
+        "listingChangeZ": -1.22,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.004366907218176896,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3673,8 +3850,8 @@
       }
     },
     {
-      "id": "sm3-booster-box",
-      "name": "Burning Shadows Booster Box",
+      "id": "sv9-etb",
+      "name": "Journey Together Elite Trainer Box",
       "score": 23,
       "label": "Cool",
       "partial": true,
@@ -3682,12 +3859,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 1,
-        "listingChangeZ": -1.215,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.007668099127952521,
+        "listingChange": 4,
+        "listingChangeZ": -1.183,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.012670664446963742,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3698,8 +3875,8 @@
       }
     },
     {
-      "id": "sm4-etb",
-      "name": "Crimson Invasion Elite Trainer Box",
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
       "score": 23,
       "label": "Cool",
       "partial": true,
@@ -3707,12 +3884,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -1.21,
+        "listingChange": 4,
+        "listingChangeZ": -1.194,
         "listingDays": 36,
-        "tcgplayerMomentum": 0.009191145771554776,
+        "tcgplayerMomentum": -0.009658180904608793,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3723,33 +3900,8 @@
       }
     },
     {
-      "id": "sv8-pack",
-      "name": "Surging Sparks Booster Pack",
-      "score": 23,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 6,
-        "listingChangeZ": -1.204,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.00013749484394343092,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh3-etb",
-      "name": "Darkness Ablaze Elite Trainer Box",
+      "id": "me5-booster-box",
+      "name": "Pitch Black Booster Box",
       "score": 22,
       "label": "Cool",
       "partial": true,
@@ -3757,231 +3909,12 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -1.254,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.0467465574572965,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh9-pack",
-      "name": "Brilliant Stars Booster Pack",
-      "score": 21,
-      "label": "Cool",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 5,
-        "listingChangeZ": -1.334,
-        "listingDays": 33,
-        "tcgplayerMomentum": -0.02861170095921517,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "me2pt5-tin",
-      "name": "Ascended Heroes Tin",
-      "score": 20,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 7,
-        "listingChangeZ": -1.374,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv7-pc-etb",
-      "name": "Stellar Crown Pokemon Center Elite Trainer Box",
-      "score": 20,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -1.374,
-        "listingDays": 34,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv6-etb",
-      "name": "Twilight Masquerade Elite Trainer Box",
-      "score": 20,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 5,
-        "listingChangeZ": -1.383,
-        "listingDays": 34,
-        "tcgplayerMomentum": -0.003344135085062039,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh11-booster-box",
-      "name": "Lost Origin Booster Box",
-      "score": 19,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -1.449,
-        "listingDays": 34,
-        "tcgplayerMomentum": 0.0014798659419388294,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sm1-etb",
-      "name": "Sun & Moon Elite Trainer Box",
-      "score": 17,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 3,
-        "listingChangeZ": -1.621,
-        "listingDays": 36,
-        "tcgplayerMomentum": null,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 0,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": null,
-        "tcgplayerSources": [],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "swsh10-pack",
-      "name": "Astral Radiance Booster Pack",
-      "score": 16,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 7,
-        "listingChangeZ": -1.648,
-        "listingDays": 33,
-        "tcgplayerMomentum": 0.04507287119923076,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv7-bb",
-      "name": "Stellar Crown Booster Bundle",
-      "score": 15,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
-        "listingChange": 2,
-        "listingChangeZ": -1.721,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.02266793739588724,
-        "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
-        "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
-        "googleTrends": null,
-        "youtube": null
-      }
-    },
-    {
-      "id": "sv10-pack",
-      "name": "Destined Rivals Booster Pack",
-      "score": 14,
-      "label": "Cold",
-      "partial": true,
-      "weightsUsed": [
-        "listings"
-      ],
-      "inputs": {
         "listingChange": 8,
-        "listingChangeZ": -1.823,
-        "listingDays": 36,
-        "tcgplayerMomentum": -0.03484348051538133,
+        "listingChangeZ": -1.284,
+        "listingDays": 34,
+        "tcgplayerMomentum": -0.0373477873477871,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -3992,8 +3925,56 @@
       }
     },
     {
-      "id": "sv6-bb",
-      "name": "Twilight Masquerade Booster Bundle",
+      "id": "swsh8-booster-box",
+      "name": "Fusion Strike Booster Box",
+      "score": 20,
+      "label": "Cold",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 3,
+        "listingChangeZ": -1.373,
+        "listingDays": 36,
+        "tcgplayerMomentum": 0.022914480451213137,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 36,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": "2026-09-25",
+        "tcgplayerSources": [
+          "TCGplayer market via TCGCSV"
+        ],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh6-pc-etb",
+      "name": "Chilling Reign Pokemon Center Elite Trainer Box",
+      "score": 18,
+      "label": "Cold",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 1,
+        "listingChangeZ": -1.508,
+        "listingDays": 36,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "sv5-pc-etb",
+      "name": "Temporal Forces Pokemon Center Elite Trainer Box",
       "score": 13,
       "label": "Cold",
       "partial": true,
@@ -4001,37 +3982,35 @@
         "listings"
       ],
       "inputs": {
-        "listingChange": 55,
-        "listingChangeZ": -1.905,
-        "listingDays": 36,
-        "tcgplayerMomentum": 0.010108946155457765,
+        "listingChange": 3,
+        "listingChangeZ": -1.872,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
     },
     {
-      "id": "me2-bb",
-      "name": "Phantasmal Flames Booster Bundle",
-      "score": 12,
+      "id": "me2-etb",
+      "name": "Phantasmal Flames Elite Trainer Box",
+      "score": 11,
       "label": "Cold",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 8,
-        "listingChangeZ": -2.011,
+        "listingChange": 6,
+        "listingChangeZ": -2.062,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.06299757058118327,
+        "tcgplayerMomentum": -0.07960722587257729,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -4042,21 +4021,21 @@
       }
     },
     {
-      "id": "swsh8-etb",
-      "name": "Fusion Strike Elite Trainer Box",
-      "score": 4,
+      "id": "me1-enhanced-booster-box",
+      "name": "Mega Evolution Enhanced Booster Box",
+      "score": 10,
       "label": "Cold",
       "partial": true,
       "weightsUsed": [
         "listings"
       ],
       "inputs": {
-        "listingChange": 40,
-        "listingChangeZ": -3.106,
+        "listingChange": 76,
+        "listingChangeZ": -2.248,
         "listingDays": 34,
-        "tcgplayerMomentum": -0.0067447132369603535,
+        "tcgplayerMomentum": -0.017696186101500144,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 36,
         "tcgplayerStaleSince": null,
         "tcgplayerFrom": "2026-09-25",
         "tcgplayerSources": [
@@ -4067,9 +4046,32 @@
       }
     },
     {
-      "id": "sm4-booster-box",
-      "name": "Crimson Invasion Booster Box",
-      "score": 2,
+      "id": "rsv10pt5-wf-pc-etb",
+      "name": "White Flare Pokemon Center Elite Trainer Box",
+      "score": 9,
+      "label": "Cold",
+      "partial": true,
+      "weightsUsed": [
+        "listings"
+      ],
+      "inputs": {
+        "listingChange": 28,
+        "listingChangeZ": -2.358,
+        "listingDays": 34,
+        "tcgplayerMomentum": null,
+        "tcgplayerMomentumZ": null,
+        "tcgplayerDays": 0,
+        "tcgplayerStaleSince": null,
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
+        "googleTrends": null,
+        "youtube": null
+      }
+    },
+    {
+      "id": "swsh12-pc-etb",
+      "name": "Silver Tempest Pokemon Center Elite Trainer Box",
+      "score": 7,
       "label": "Cold",
       "partial": true,
       "weightsUsed": [
@@ -4077,16 +4079,14 @@
       ],
       "inputs": {
         "listingChange": 2,
-        "listingChangeZ": -3.71,
+        "listingChangeZ": -2.6,
         "listingDays": 36,
-        "tcgplayerMomentum": -0.004170331445645714,
+        "tcgplayerMomentum": null,
         "tcgplayerMomentumZ": null,
-        "tcgplayerDays": 35,
+        "tcgplayerDays": 0,
         "tcgplayerStaleSince": null,
-        "tcgplayerFrom": "2026-09-25",
-        "tcgplayerSources": [
-          "TCGplayer market via TCGCSV"
-        ],
+        "tcgplayerFrom": null,
+        "tcgplayerSources": [],
         "googleTrends": null,
         "youtube": null
       }
