@@ -88,6 +88,18 @@ export async function run() {
   const wired = extractMentions("Moonbreon is undervalued", buildCatalogueIndex(FIXTURE));
   t("youtube mentions use the matcher", wired.cards.length === 1 && wired.cards[0] === 102 && wired.reasons["card:102"] === "nickname");
 
+  const setPair = [
+    { tcgplayerProductId: 11, id: "tcgcsv-11", groupId: 111, set: "ME: 30th Celebration", name: "Greninja ex", number: "21/128", rarity: "Rare", kind: "single" },
+    { tcgplayerProductId: 22, id: "tcgcsv-22", groupId: 222, set: "ME: 30th Celebration Classic Collection", name: "Greninja BREAK", number: "41/122", rarity: "Rare", kind: "single" },
+  ];
+  const setIdx = buildCardIndex(setPair);
+  const shortSet = matchCards("Greninja BREAK from 30th Celebration", setIdx);
+  t("a shorter set name does not match the longer set", shortSet.matches.length === 0);
+  const fullSet = matchCards("Greninja BREAK from 30th Celebration Classic Collection", setIdx);
+  t("the full set name matches that set id only", fullSet.matches.length === 1 && fullSet.matches[0].pid === 22 && fullSet.matches[0].groupId === 222);
+  const parentOnly = matchCards("Greninja ex from 30th Celebration", setIdx);
+  t("the parent set name matches the parent set id only", parentOnly.matches.length === 1 && parentOnly.matches[0].pid === 11 && parentOnly.matches[0].groupId === 111);
+
   let catalogue = null;
   try { catalogue = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8")); } catch { catalogue = null; }
   t("catalogue file is present", !!catalogue?.items?.length);

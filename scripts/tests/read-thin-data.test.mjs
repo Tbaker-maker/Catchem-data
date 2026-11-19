@@ -7,7 +7,7 @@ import { flagLine } from "../lib/copy-rules.mjs";
 import { eraOf } from "../lib/board-mix.mjs";
 import { eraOfSet } from "../lib/extra-reads.mjs";
 import {
-  clearReadThinCache, dropThinReads, gateReads, releaseEra, thinReadBlock, thinReadHits, writeReadFlags,
+  clearReadThinCache, dropThinReads, gateReads, loadReadFlags, releaseEra, thinReadBlock, thinReadHits, withoutFlaggedReads, writeReadFlags,
 } from "../lib/read-thin-data.mjs";
 
 let fail = 0;
@@ -229,6 +229,14 @@ try {
   const partialDrop = await dropThinReads([{ id: "also-quiet", name: "Also", headline: "Flat.", price: 11 }], root, "2026-10-23");
   const partialFlag = JSON.parse(await readFile(join(root, "data/derived/read-flags/2026-10-23.json"), "utf8"));
   t("a config missing one limit blocks the read", partialDrop.length === 0 && partialFlag.flags[0].reason === "thin data limits not loaded");
+
+  const board = [{ id: "keep-ok", headline: "Quiet line." }, { id: "rip-fake-box", headline: "Rip value is a share of the market price." }];
+  t("no flag list drops nothing", withoutFlaggedReads(board, []).length === 2 && withoutFlaggedReads(board, null).length === 2);
+  await writeReadFlags(root, "2026-10-24", [{ id: "rip-fake-box", rule: "date-mismatch", reason: "The listings counted date is not the same day as the price date.", read: { id: "rip-fake-box" } }]);
+  const prior = await loadReadFlags(root, "2026-10-24");
+  const left = withoutFlaggedReads(board, prior);
+  t("a flagged read stays out even when this pass would keep it", left.length === 1 && left[0].id === "keep-ok" && prior.some((row) => row.id === "rip-fake-box"));
+  t("an undated day does not invent a flag", (await loadReadFlags(root, "not-a-day")).length === 0);
 } finally {
   if (prevFile == null) delete process.env.READ_THIN_DATA_FILE;
   else process.env.READ_THIN_DATA_FILE = prevFile;
