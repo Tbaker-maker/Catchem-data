@@ -273,7 +273,7 @@ export function findings(item, ctx, cfg) {
       const down = step.dir < 0;
       const pctStep = r0(pct(step.from[1], step.to[1]));
       if (Math.abs(pctStep) >= 1) {
-        out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, score: cfg.weights.drop, nums: { step },
+        out.push({ tag: "drop", type: `drop${down ? "down" : "up"}`, window: 7, score: cfg.weights.drop, nums: { step },
           text: `${down ? "Down" : "Up"} ${pctStep}% in one week: ${title} went from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.`,
           short: `${down ? "Down" : "Up"} ${pctStep}% in one week, from ${at(step.from, asOf)} to ${usd(step.to[1])} on ${dateLabel(step.to[0], asOf)}.` });
       }
@@ -337,9 +337,11 @@ export function findings(item, ctx, cfg) {
 function saidMove(text, dir, pct, days) {
   const t = String(text || "");
   const n = String(days);
-  const window = n === "365" ? "a year" : `${n} days`;
-  if (new RegExp(`\\b${dir} ${pct}% over ${window}\\b`, "i").test(t)) return true;
-  if (new RegExp(`\\bover ${window} it is ${dir} ${pct}%\\b`, "i").test(t)) return true;
+  const windows = n === "365" ? ["a year"] : (n === "7" || n === "week") ? ["7 days", "a week", "one week"] : [`${n} days`];
+  for (const window of windows) {
+    if (new RegExp(`\\b${dir} ${pct}% (?:over|in) ${window}\\b`, "i").test(t)) return true;
+    if (new RegExp(`\\bover ${window} it is ${dir} ${pct}%\\b`, "i").test(t)) return true;
+  }
   return false;
 }
 
@@ -357,6 +359,8 @@ function unrepeated(have, short) {
   // "Down 27% over 30 days, to $537.33 on Nov 11." after a lead that already said down 27% over 30 days.
   const trend = s.match(/^(Up|Down) (\d+)% over (\d+) days, to /);
   if (trend && saidMove(have, trend[1].toLowerCase(), trend[2], trend[3])) return "";
+  const week = s.match(/^(Up|Down) (\d+)% (?:in one week|in a week|over a week)\b/i);
+  if (week && saidMove(have, week[1].toLowerCase(), week[2], 7)) return "";
   const that = s.match(/^That (trails|beats) its set over (\d+) days: (up|down) (\d+)% against (.*)$/i);
   if (that && saidMove(have, that[3], that[4], that[2])) {
     const verb = that[1].toLowerCase() === "beats" ? "Ahead of" : "Trailing";
