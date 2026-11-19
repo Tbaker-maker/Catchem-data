@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { nearestPoint, addDays, dateLabel, dayNum, oneNightMove } from "./history-reads.mjs";
 import { speakDates } from "./read-quality.mjs";
+import { scopedHref } from "./deep-reads.mjs";
 
 const BAN = banGuard("rich reads");
 const LOW = new Set(["Common", "Uncommon", "Rare", "Code Card", "Promo", "None", ""]);
@@ -298,7 +299,7 @@ export function ripReads(doc, { max = 6 } = {}) {
       `Dated rip value file, price date ${dateLabel(r.priceAsOf, asOf)}.`,
     ].filter(Boolean);
     const read = rowBase("rip", `rip-${r.id}`, r.name, headline, lines.filter(Boolean), asOf, `rip value file, ${r.priceAsOf}`, {
-      sku: r.id, href: `/p/${r.id}`,
+      sku: r.id, href: scopedHref("rip", `/p/${r.id}`),
       why: "Rip value is the estimated contents from dated pull rates and singles prices, set next to that day's market price.",
       startDate: pubs[0] || r.priceAsOf, endDate: r.priceAsOf,
       receipt: { price: r.price, contentsEV: r.contentsEV, pctOfPrice },

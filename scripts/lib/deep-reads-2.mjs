@@ -8,7 +8,7 @@ import { monthDay } from "./takes.mjs";
 import { addDays, dateLabel } from "./history-reads.mjs";
 import { jumpyQuote } from "./jumpy-price.mjs";
 import { speciesToken } from "./fact-reads.mjs";
-import { row, valueOn, sparkOf } from "./deep-reads.mjs";
+import { row, valueOn, sparkOf, scopedHref } from "./deep-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
 import { assessThin } from "./thin-trading.mjs";
 
@@ -198,7 +198,7 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15, jumpy = null, series
     const rr = row("chase", g.set, short(g.set), head, [
       ...body,
       foot,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total, lineIds: [...lineIds, ""] });
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: scopedHref("chase", g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : ""), chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total, lineIds: [...lineIds, ""] });
     if (rr) out.push(rr);
   }
   return out;
@@ -227,7 +227,7 @@ export function slumpWatch(cards, tagsOf, { asOf, max = 12, skip = new Set() }) 
       `Tonight (${monthDay(asOf)}): ${usd(s.z)}.`,
       y ? `A year ago: ${usd(y)}.` : `No price on file a year ago.`,
       `TCGplayer market, singles only.`,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} to ${asOf}`, { sku: s.c.id, href: `/c/${s.c.id}`, price: s.z, chart: { label: "TCGplayer market, past year", points: sparkOf(s.c.pts.filter((p) => p[0] >= addDays(asOf, -365))) }, startDate: s.peak[0], endDate: asOf });
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} to ${asOf}`, { sku: s.c.id, href: scopedHref("slump", `/c/${s.c.id}`), price: s.z, chart: { label: "TCGplayer market, past year", points: sparkOf(s.c.pts.filter((p) => p[0] >= addDays(asOf, -365))) }, startDate: s.peak[0], endDate: asOf });
     if (rr) out.push(rr);
   }
   return out;
