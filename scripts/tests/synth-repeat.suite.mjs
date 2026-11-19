@@ -90,6 +90,21 @@ export async function run() {
   t("why without dates does not invent them", whyPlain(78.83, 55.83) === "Down $23.00 on those two dates.");
   t("no em or en dash in the headline or why", !/[\u2014\u2013]/.test(`${text} ${wideText} ${beatText} ${keptText}`) && !/\b(?:sold|sales)\b/i.test(text));
 
+  const weekTrend = {
+    tag: "trend", score: 10, window: 7,
+    text: "Down 20% in a week: Example went from $10.00 on Oct 1 to $8.00 on Oct 8.",
+    short: "Down 20% over a week, to $8.00 on Oct 8.",
+  };
+  const weekDrop = {
+    tag: "drop", score: 4, window: 7,
+    text: "Down 20% in one week: Example went from $10.00 on Oct 1 to $8.00 on Oct 8.",
+    short: "Down 20% in one week, from $10.00 on Oct 1 to $8.00 on Oct 8.",
+  };
+  const trendFirst = joined(weekTrend, [weekDrop])?.text || "";
+  const dropFirst = joined({ ...weekDrop, score: 10 }, [{ ...weekTrend, score: 4 }])?.text || "";
+  t("a 7 day trend lead does not repeat the drop", count(trendFirst, "20%") === 1 && !trendFirst.includes("in one week, from"));
+  t("a drop lead does not repeat the 7 day trend", count(dropFirst, "20%") === 1 && !dropFirst.includes("over a week"));
+
   return fail;
 }
 
