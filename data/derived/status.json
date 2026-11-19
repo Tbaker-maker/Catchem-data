@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-18",
- "generatedAt": "2026-11-19T00:51:03.720Z",
+ "generatedAt": "2026-11-19T08:18:27.603Z",
  "checks": [
   {
    "id": "price-day",
@@ -12,9 +12,9 @@
   {
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
-   "date": "2026-11-18",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-11-19",
+   "ok": false,
+   "detail": "dated 2026-11-19"
   },
   {
    "id": "reads",
@@ -32,6 +32,7 @@
   }
  ],
  "failures": [
+  "listings-counted",
   "scanner"
  ],
  "alerts": [],
