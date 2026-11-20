@@ -1,9 +1,10 @@
-# Script research scan — 2026-11-19
+# Script research scan — 2026-11-20
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
 ## Flags
-No flags.
+- DATE_CHANGE: Flowing Fists (ME07 / FLO, Mega Lucario Z ex — EN of JP Aura Seeker) (radar 2027-02-05, seen 2027-02-06) — Serebii https://www.serebii.net/card/flowingfists
+- NEW_SET: MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon — Pokémon press https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C
 
 ## Radar check
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
