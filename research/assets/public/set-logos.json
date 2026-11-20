@@ -1,6 +1,6 @@
 {
   "source": "Catalogue logos by set id. A published logo is /img/{setId}/logo.png when that file is the official logo for the same id. A set with no official logo uses a branded tile at its own path. Remote logo URLs are never published.",
-  "read": "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pok\u00e9mon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
+  "read": "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
   "rejectSha256": {
     "genericSet": "97bd74b939562df8df81ca5adb37db55632fea64eca631208e02152344c6ee3b",
     "genericPromo": "7d7c739c448dfb28d03b38310f834e0cfdd748d8a37dcc34169a4f8c33bd2dd7"
@@ -1645,7 +1645,7 @@
     "pgo": {
       "setId": "pgo",
       "slug": "pokemon-go",
-      "name": "Pok\u00e9mon GO",
+      "name": "Pokémon GO",
       "logo": "/img/pgo/logo.png",
       "src": "/img/pgo/logo.png"
     },
@@ -1740,7 +1740,7 @@
     "pokemon-go": {
       "setId": "pgo",
       "slug": "pokemon-go",
-      "name": "Pok\u00e9mon GO",
+      "name": "Pokémon GO",
       "logo": "/img/pgo/logo.png",
       "src": "/img/pgo/logo.png"
     },
@@ -3355,6 +3355,34 @@
       "kind": "tile",
       "text": true,
       "flag": "the allowed host returned the generic logo for this id, not a set logo"
+    },
+    "me07-flowing-fists": {
+      "setId": "me07flowingfists",
+      "slug": "me07-flowing-fists",
+      "name": "ME07: Flowing Fists",
+      "logo": "/img/me07flowingfists/logo.png",
+      "src": "/img/me07flowingfists/logo.png",
+      "width": 640,
+      "height": 220,
+      "bytes": 8042,
+      "sha256": "6244df42becffef05adc55b790c4c26cc3f5ff86c1ff02fb67e0413ed192a3e3",
+      "kind": "tile",
+      "text": true,
+      "flag": "no allowed logo"
+    },
+    "me07flowingfists": {
+      "setId": "me07flowingfists",
+      "slug": "me07-flowing-fists",
+      "name": "ME07: Flowing Fists",
+      "logo": "/img/me07flowingfists/logo.png",
+      "src": "/img/me07flowingfists/logo.png",
+      "width": 640,
+      "height": 220,
+      "bytes": 8042,
+      "sha256": "6244df42becffef05adc55b790c4c26cc3f5ff86c1ff02fb67e0413ed192a3e3",
+      "kind": "tile",
+      "text": true,
+      "flag": "no allowed logo"
     }
   },
   "noLogo": []
