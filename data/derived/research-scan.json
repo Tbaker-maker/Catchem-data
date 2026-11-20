@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-20",
- "generatedAt": "2026-11-20T13:21:50.536Z",
+ "generatedAt": "2026-11-20T16:05:20.948Z",
  "method": "Script. Reads news.json (fetched nightly from free feeds), release-radar.json, TCGCSV groups. Leads only; never edits the radar.",
  "newsLeads": [
   {
@@ -20,6 +20,13 @@
    "urls": []
   },
   {
+   "date": "2026-11-27",
+   "name": "JP: Card Illustration Figure Collection 30th CELEBRATION (Pikachu figure + card)",
+   "confidence": "verified",
+   "status": "no second source in tonight's files",
+   "urls": []
+  },
+  {
    "date": "2026-12-04",
    "name": "30th Celebration — Sylveon ex & Greninja ex Tins",
    "confidence": "single-source",
@@ -34,17 +41,7 @@
    "urls": []
   }
  ],
- "radarLeads": [
-  {
-   "type": "DATE_CHANGE",
-   "name": "Flowing Fists (ME07 / FLO, Mega Lucario Z ex — EN of JP Aura Seeker)",
-   "radarDate": "2027-02-05",
-   "seenDate": "2027-02-06",
-   "source": "Serebii",
-   "url": "https://www.serebii.net/card/flowingfists",
-   "confidence": "single-source"
-  }
- ],
+ "radarLeads": [],
  "leftForAi": [
   "Japanese product pages with no feed (pokemon-card.com product posts beyond the news list).",
   "Second-source confirmation for single-source dates.",
