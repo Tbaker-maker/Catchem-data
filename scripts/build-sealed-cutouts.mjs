@@ -21,6 +21,30 @@ async function loadJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
+// A source under the cutter's 360px floor is blocked. No size is invented.
+async function sourceTooSmall(url) {
+  if (!url) return false;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+    if (!res.ok) return false;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length >= 24 && buf[0] === 0x89 && buf[1] === 0x50) {
+      const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);
+      return h < 360 || w < 70;
+    }
+    // JPEG: scan for a SOF marker.
+    for (let i = 2; i < buf.length - 9; i++) {
+      if (buf[i] !== 0xff) continue;
+      const marker = buf[i + 1];
+      if (marker === 0xc0 || marker === 0xc1 || marker === 0xc2) {
+        const h = buf.readUInt16BE(i + 5), w = buf.readUInt16BE(i + 7);
+        return h < 360 || w < 70;
+      }
+    }
+    return false;
+  } catch { return false; }
+}
+
 function runPython(jobPath, outPath) {
   const script = join(ROOT, "scripts", "sealed-cutout-cut.py");
   return new Promise((resolve, reject) => {
@@ -30,7 +54,15 @@ function runPython(jobPath, outPath) {
   });
 }
 
-const scale = JSON.parse(await readFile(scalePath(), "utf8"));
+let scale = null;
+try { scale = JSON.parse(await readFile(scalePath(), "utf8")); }
+catch {
+  if (!ONLY.size) {
+    console.error("cutout scale file is missing. No sizes were invented and no file was rewritten.");
+    process.exit(1);
+  }
+  console.log("cutout scale file is missing. Named ids with no traced build are blocked. No sizes were invented.");
+}
 const prices = await loadJson(join(ROOT, "data/sealed-prices.json"));
 const catalog = await loadJson(join(ROOT, "data/sealed-products.json")).catch(() => []);
 const reads = await loadJson(join(ROOT, "research/assets/public/reads.json")).catch(() => ({ reads: [] }));
@@ -64,7 +96,12 @@ for (const product of products) {
   }
   const height = targetHeight(type, scale, BASE_PX);
   if (height == null) {
-    skipped.push({ product, type, reason: "no scale for this product type" });
+    if (scale) {
+      skipped.push({ product, type, reason: "no scale for this product type" });
+      continue;
+    }
+    // No scale file: do not invent a size. The row is blocked below as no traced build.
+    skipped.push({ product, type, reason: "no traced cutout build", noScale: true });
     continue;
   }
   const src = sourceFor(product, { overrides, crosscheck });
@@ -88,18 +125,29 @@ const review = [];
 for (const product of products) {
   const skip = skipped.find((s) => s.product.id === product.id);
   if (skip) {
+    let reason = skip.reason;
+    if (skip.noScale) {
+      const tiny = await sourceTooSmall(sourceFor(product, { overrides, crosscheck }).url);
+      if (tiny) reason = "source photo is too small";
+    }
     rows.push(cutoutRow(product, { pass: false, productType: skip.type || "" }));
-    review.push({ id: product.id, productType: skip.type || "", reason: skip.reason, kept: "not shipped" });
+    review.push({ id: product.id, productType: skip.type || "", reason, kept: "not shipped" });
     continue;
   }
   const hit = metrics[product.id] || {};
-  const reasons = judgeCut(hit.flags || { download: false });
-  const pass = reasons.length === 0 && hit.pass === true;
+  const traced = Object.prototype.hasOwnProperty.call(metrics, product.id);
+  const reasons = traced ? judgeCut(hit.flags || { download: false }) : [];
+  const pass = traced && reasons.length === 0 && hit.pass === true;
   if (!pass) {
     await unlink(join(outDir, product.id + ".png")).catch(() => {});
     await unlink(join(outDir, product.id + ".webp")).catch(() => {});
+    let reason = traced ? (reasons.join(", ") || "no cutout") : "no traced cutout build";
+    if (!traced) {
+      const tiny = await sourceTooSmall(sourceFor(product, { overrides, crosscheck }).url);
+      if (tiny) reason = "source photo is too small";
+    }
     rows.push(cutoutRow(product, { pass: false, productType: hit.productType || productTypeOf(product) }));
-    review.push({ id: product.id, productType: hit.productType || productTypeOf(product), reason: reasons.join(", ") || "no cutout", kept: "not shipped" });
+    review.push({ id: product.id, productType: hit.productType || productTypeOf(product), reason, kept: "not shipped" });
     continue;
   }
   rows.push(cutoutRow(product, {

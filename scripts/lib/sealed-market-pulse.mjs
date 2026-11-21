@@ -177,6 +177,17 @@ export function pulseAsOfStale(pulseAsOf, publishedAsOf, maxDays = 2) {
   return days > maxDays;
 }
 
+// The sealed-market pulse document carries the switch. Off is the only skip.
+// A missing document or any other flag still fails a stale date.
+export function pulseFeedOff(doc) {
+  return !!doc && doc.flag === "off";
+}
+
+export function pulseFreshnessFails(doc, pulseAsOf, publishedAsOf, maxDays = 2) {
+  if (pulseFeedOff(doc)) return false;
+  return pulseAsOfStale(pulseAsOf, publishedAsOf, maxDays);
+}
+
 export function yearAgo(points) {
   const real = (points || [])
     .filter((p) => p && p.date && p.price != null && Number.isFinite(p.price))

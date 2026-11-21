@@ -72,6 +72,18 @@ export async function run() {
   const skiesWhy = why.get("tcgcsv-98026");
   t("tcgcsv-98026 stays blocked: the catalog photo is 200 by 239, under the 360px floor", skies && skies.pass === false && !skies.file && !skies.png && skiesWhy && skiesWhy.reason === "source photo is too small" && skiesWhy.kept === "not shipped");
 
+  const emboar = byId.get("me2pt5-tin-mega-emboar-ex");
+  const emboarWhy = why.get("me2pt5-tin-mega-emboar-ex");
+  t("me2pt5-tin-mega-emboar-ex stays blocked: no traced cutout build", emboar && emboar.pass === false && !emboar.file && !emboar.png && emboarWhy && emboarWhy.reason === "no traced cutout build" && emboarWhy.kept === "not shipped");
+  const breakpoint = byId.get("tcgcsv-111280");
+  const breakpointWhy = why.get("tcgcsv-111280");
+  t("tcgcsv-111280 stays blocked: the product photo is under the 360px floor", breakpoint && breakpoint.pass === false && !breakpoint.file && !breakpoint.png && breakpointWhy && breakpointWhy.reason === "source photo is too small" && breakpointWhy.kept === "not shipped");
+  for (const id of ["sv5-pc-etb-iron-leaves", "sv5-etb-iron-leaves-ex", "sv8-bb-retail", "sv5-pc-etb-walking-wake", "sv5-etb-walking-wake", "tcgcsv-192230"]) {
+    const row = byId.get(id);
+    const note = why.get(id);
+    t(id + " stays blocked: no traced cutout build", row && row.pass === false && !row.file && !row.png && note && note.reason === "no traced cutout build" && note.kept === "not shipped");
+  }
+
   const shippedFail = (cuts.products || []).filter((r) => r.pass === true && (!String(r.file || "").startsWith("cutouts/") || /\.jpe?g$/i.test(String(r.file || ""))));
   t("a pass row is a cutout image", shippedFail.length === 0);
   const leaked = (review.products || []).filter((r) => r.kept && r.kept !== "not shipped");
