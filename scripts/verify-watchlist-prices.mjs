@@ -8,6 +8,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+
+if (pptOff()) {
+  console.log(pptOffBanner("scripts/verify-watchlist-prices.mjs"));
+  process.exit(0);
+}
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this until the runner kills the job. A hung job

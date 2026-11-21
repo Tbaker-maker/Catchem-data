@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { HORIZONS, priceAtHorizon, addDays } from "./self-check.mjs";
 import { BAND, bandResult, scoreClaims, rankClaims, creatorWeights, statedHorizon } from "./youtube.mjs";
 import { theirVerdict, mapChannel, directionOf, THEIR_FLAT_BAND_PCT } from "./tcgci.mjs";
+import { pptOff } from "./ppt-off.mjs";
 
 export const TCGCI_SOURCE = "tcgci-derived";
 export { BAND, HORIZONS };
@@ -47,7 +48,7 @@ export async function loadLongHistoryPriceBook(root, { sealedDirs = null } = {})
   } catch {}
 
   // Long sealed archive (fill gaps only — daily/TCGCSV already win on overlap)
-  const dirs = sealedDirs || ["data/history/ppt-sealed-private", "data/history/ppt-sealed"];
+  const dirs = pptOff() ? [] : (sealedDirs || ["data/history/ppt-sealed-private", "data/history/ppt-sealed"]);
   for (const dir of dirs) {
     let names = [];
     try { names = await readdir(join(root, dir)); } catch { continue; }

@@ -7,6 +7,7 @@
 // folder is missing and stays missing.
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { pptOff } from "./ppt-off.mjs";
 
 export const TCGCSV_DIR = "data/history/tcgplayer-market";
 export const PPT_DIR = "data/history/ppt-sealed-private";
@@ -36,8 +37,9 @@ export async function loadMarketHistory(root, { allowPpt = false } = {}) {
   const tcg = await readFolder(root, TCGCSV_DIR);
   // PPT days are never read into a public build (licence: PPT data stays
   // private). Only a private run that passes { allowPpt: true } reads them.
-  const mounted = allowPpt ? await readFolder(root, PPT_DIR) : new Map();
-  const legacy = allowPpt ? await readFolder(root, PPT_DIR_LEGACY) : new Map();
+  const usePpt = allowPpt && !pptOff();
+  const mounted = usePpt ? await readFolder(root, PPT_DIR) : new Map();
+  const legacy = usePpt ? await readFolder(root, PPT_DIR_LEGACY) : new Map();
   const ppt = mounted.size ? mounted : legacy;
   if (!ppt.size) console.log("No PPT sealed history mounted. Those days are skipped, not filled.");
   const ids = new Set([...tcg.keys(), ...ppt.keys()]);

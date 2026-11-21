@@ -2,6 +2,7 @@
 // A missing file is a log line, not a throw.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { pptOff } from "./ppt-off.mjs";
 
 export const PPT_PRIVATE_DIR = "data/history/ppt-sealed-private";
 export const PPT_PUBLIC_DIR = "data/history/ppt-sealed";
@@ -12,6 +13,10 @@ export async function readJsonIfPresent(path) {
 }
 
 export async function readCrosscheck(root, name) {
+  if (pptOff()) {
+    console.log(`PPT_OFF: ${name} was not read.`);
+    return null;
+  }
   for (const rel of [`ppt-raw-private/crosscheck/${name}`, `data/private/${name}`]) {
     const doc = await readJsonIfPresent(join(root, rel));
     if (doc) return doc;

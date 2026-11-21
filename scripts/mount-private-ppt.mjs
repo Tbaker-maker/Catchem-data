@@ -8,6 +8,7 @@ import { spawn } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { redact, restorePrivate, restoreRecentSealed } from "./lib/private-ppt.mjs";
 import { clonePrivate } from "./lib/private-clone.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -21,6 +22,9 @@ function run(cmd, args, env) {
 }
 
 export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
+  if (pptOff()) {
+    return { mounted: false, reason: "PPT_OFF: private PPT was not mounted. No PPT file was read." };
+  }
   if (!token) {
     return { mounted: false, reason: "PRIVATE_DATA_TOKEN is not set. PPT history stays unmounted. No public raw is written." };
   }
@@ -54,6 +58,10 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/mount-private-ppt.mjs"));
+    process.exit(0);
+  }
   const result = await mountPrivate({ token: process.env.PRIVATE_DATA_TOKEN || "" });
   let files = 0;
   const sealedDir = join(ROOT, "data/history/ppt-sealed-private");

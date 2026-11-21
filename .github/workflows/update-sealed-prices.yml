@@ -24,6 +24,9 @@ jobs:
       actions: read # The failure summary reads this run's own step results
       issues: write # A refused or rolled back publish opens an issue
       pull-requests: write # A red run opens one fix branch
+    env:
+      # Unset keeps every PPT call on. Set repository variable PPT_OFF to 1 to skip them.
+      PPT_OFF: ${{ vars.PPT_OFF }}
     steps:
       - name: Checkout
         # The branch tip at checkout time, not the commit the run was queued on.

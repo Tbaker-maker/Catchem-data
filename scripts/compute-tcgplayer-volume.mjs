@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { VOLUME_FILE, VOLUME_STATE_FILE, catalogIndex, mergeVolumeDoc, publicVolumeDoc, serializeVolumeDoc, setVolumes } from "./lib/tcgplayer-volume.mjs";
 import { volumeReads } from "./lib/volume-reads.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -41,6 +42,7 @@ export async function volumesFromRawDir(rawDir, index) {
 }
 
 export async function updateVolumeFile({ root = ROOT, rawDirs = [], today = new Date().toISOString().slice(0, 10) } = {}) {
+  if (pptOff()) return { written: false, files: 0, cards: 0, skipped: true, reason: "PPT_OFF: volume raw was not read" };
   const catalog = await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] });
   const index = catalogIndex(catalog.items || []);
   const outPath = join(root, VOLUME_FILE);

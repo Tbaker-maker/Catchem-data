@@ -1,4 +1,5 @@
 // Credit plan for PokemonPriceTracker. No network. No prices. No key.
+import { assertPptCallAllowed } from "./ppt-off.mjs";
 export const DAILY_CREDITS = 20000;
 export const MAIN_BUDGET = 16000;
 export const RESERVE_BUDGET = 4000;
@@ -128,6 +129,7 @@ export function isDailyCap(status, body, retryAfter) {
 }
 
 export async function fetchWithBackoff(url, key, { request, sleep, random = Math.random, now = Date.now, maxAttempts = 5 } = {}) {
+  assertPptCallAllowed();
   let rateLimits = 0;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const res = await request(url, key);

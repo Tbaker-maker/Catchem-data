@@ -9,6 +9,7 @@ import { READERS } from "./lib/public-sources.mjs";
 import { imageGapReport } from "./lib/image-gap.mjs";
 import { buildLiteShards } from "./lib/public-search-shards.mjs";
 import { flag } from "./flags.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -39,7 +40,7 @@ export async function writeHealth(root = ROOT, nowMs = Date.now()) {
   const accuracy = await readJson(root, "research/assets/public/accuracy.json");
   const track = await readJson(root, "research/assets/public/track-record.json");
   const today = await readJson(root, "research/assets/public/today.json");
-  const ppt = await readJson(root, "data/ppt/run-report.json");
+  const ppt = pptOff() ? null : await readJson(root, "data/ppt/run-report.json");
   const heartbeat = await readJson(root, "data/heartbeat.json");
   const beatRows = [];
   if (heartbeat && typeof heartbeat === "object") {

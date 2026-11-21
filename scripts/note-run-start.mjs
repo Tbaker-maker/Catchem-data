@@ -3,10 +3,12 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { runNightlyChecks } from "./run-nightly-checks.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 export async function noteRunStart(root = ROOT, startedAt = new Date().toISOString()) {
+  if (pptOff()) return { startedAt, skipped: true, reason: "PPT_OFF" };
   const dir = join(root, "data/ppt");
   await mkdir(dir, { recursive: true });
   const body = { startedAt };
@@ -15,6 +17,10 @@ export async function noteRunStart(root = ROOT, startedAt = new Date().toISOStri
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/note-run-start.mjs"));
+    process.exit(0);
+  }
   const body = await noteRunStart();
   console.log(`run start ${body.startedAt}`);
   // This file already runs in the nightly workflow before the price fetch.

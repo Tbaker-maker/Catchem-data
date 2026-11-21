@@ -6,6 +6,7 @@ import { promisify } from "node:util";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { findBackcalcLeaks, findPptPriceKeys, safetyVerdict } from "./lib/run-report.mjs";
+import { isPptDataPath, pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const exec = promisify(execFile);
@@ -15,7 +16,9 @@ async function readJson(path) {
 }
 
 export async function checkSafety(root = ROOT) {
-  const push = await readJson(join(root, "data/ppt/push-status.json"));
+  const push = pptOff()
+    ? { expected: false, pushed: false, reason: "PPT_OFF: push status was not read" }
+    : await readJson(join(root, "data/ppt/push-status.json"));
   let tracked = [];
   try {
     const { stdout } = await exec("git", ["ls-files"], { cwd: root });
@@ -28,6 +31,7 @@ export async function checkSafety(root = ROOT) {
   const fieldHits = [];
   for (const rel of tracked) {
     if (!rel.endsWith(".json")) continue;
+    if (pptOff() && isPptDataPath(rel)) continue;
     let body;
     try { body = JSON.parse(await readFile(join(root, rel), "utf8")); } catch { continue; }
     for (const hit of findPptPriceKeys(body, rel)) fieldHits.push(hit);

@@ -5,6 +5,7 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { BASE, buildUrl, defaultRequest, fetchPpp, pppLimiter, redact } from "./lib/ppp-client.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 import {
   DAILY_CREDITS,
   MAIN_BUDGET,
@@ -437,6 +438,7 @@ function slimPptCard(card) {
 }
 
 export async function loadPptSealed(root, today) {
+  if (pptOff()) return new Map();
   const map = new Map();
   for (const day of compareWindow(today)) {
     for (const dir of pptDayDirs(root, day)) {
@@ -466,6 +468,7 @@ export async function loadPptSealed(root, today) {
 }
 
 export async function loadPptCards(root, today) {
+  if (pptOff()) return new Map();
   const index = new Map();
   for (const day of compareWindow(today)) {
     for (const dir of pptDayDirs(root, day)) {

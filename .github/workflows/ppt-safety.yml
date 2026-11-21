@@ -9,6 +9,8 @@ jobs:
   safety:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      PPT_OFF: ${{ vars.PPT_OFF }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

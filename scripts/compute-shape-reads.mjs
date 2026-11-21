@@ -7,6 +7,7 @@ import { basename, dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { SHAPE_STATE_FILE, cardFacts } from "./lib/shape-facts.mjs";
 import { catalogIndex, scrapeDayOf } from "./lib/tcgplayer-volume.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -60,6 +61,7 @@ export function mergeShapeDoc(prev, fresh, { updatedOn } = {}) {
 }
 
 export async function updateShapeFile({ root = ROOT, rawDirs = [], today = "" } = {}) {
+  if (pptOff()) return { written: false, files: 0, cards: 0, graded: 0, skipped: true, reason: "PPT_OFF: shape raw was not read" };
   const catalog = await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] });
   const index = catalogIndex(catalog.items || []);
   const statePath = join(root, SHAPE_STATE_FILE);

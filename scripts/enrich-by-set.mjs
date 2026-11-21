@@ -30,6 +30,12 @@ import { existsSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 import { loadEnv, requireKey } from "./lib/load-env.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+
+if (pptOff()) {
+  console.log(pptOffBanner("scripts/enrich-by-set.mjs"));
+  process.exit(0);
+}
 
 loadEnv();
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");

@@ -12,6 +12,12 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PPT_SOURCE } from "./lib/market-history.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+
+if (pptOff()) {
+  console.log(pptOffBanner("scripts/import-history-backfill.mjs"));
+  process.exit(0);
+}
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const RAW = process.env.PPT_RAW_DIR || "ppt-history-raw";

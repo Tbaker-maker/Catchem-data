@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { slabCandidates, slabStatus } from "./lib/ppt-slabs.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -11,6 +12,10 @@ function enabledFlag() {
 }
 
 export async function writeSlabStatus(root = ROOT) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/ppt-slabs.mjs"));
+    return { status: "skipped", creditsUsed: 0, reason: "PPT_OFF" };
+  }
   // singles-enrichment.json is PPT-valued and private; it is only here when mounted.
   let enrich = { cards: [] };
   try { enrich = JSON.parse(await readFile(join(root, "data/singles-enrichment.json"), "utf8")); } catch { /* not mounted */ }
