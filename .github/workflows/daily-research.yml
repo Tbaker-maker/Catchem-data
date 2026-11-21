@@ -52,23 +52,27 @@ jobs:
             skip=1
           fi
           echo "skip=$skip" >> "$GITHUB_OUTPUT"
-      - name: Run research script
+      - name: Check artifact freshness before the paid call
+        # A stale main cannot be committed. Run this before the paid script
+        # so that call never starts. schema-guard and reply-line-guard stay
+        # after the script, because they read what the script wrote.
+        id: fresh
         if: steps.gate.outputs.skip != '1'
+        run: node scripts/artifact-freshness.mjs
+      - name: Run research script
+        if: success() && steps.gate.outputs.skip != '1'
         env:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           XAI_MODEL: ${{ vars.XAI_MODEL }}
         run: node scripts/daily-research.mjs
       - name: schema-guard
-        if: steps.gate.outputs.skip != '1'
+        if: success() && steps.gate.outputs.skip != '1'
         run: node scripts/schema-guard.mjs
       - name: reply-line-guard
-        if: steps.gate.outputs.skip != '1'
+        if: success() && steps.gate.outputs.skip != '1'
         run: node scripts/reply-line-guard.mjs
-      - name: artifact-freshness
-        if: steps.gate.outputs.skip != '1'
-        run: node scripts/artifact-freshness.mjs
       - name: Commit and push
-        if: steps.gate.outputs.skip != '1'
+        if: success() && steps.gate.outputs.skip != '1'
         run: |
           git config user.name "catchem-research-bot"
           git config user.email "bot@catchemtcg.com"

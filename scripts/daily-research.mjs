@@ -11,6 +11,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { flagLine } from "./lib/copy-rules.mjs";
 
 const FETCH_TIMEOUT_MS = 120000;
 const URL_TIMEOUT_MS = 8000;
@@ -189,7 +190,18 @@ function stripBookkeeping(o) {
   return JSON.stringify(rest);
 }
 
-function applyRadar(prev, proposed, today) {
+// A source that does not resolve is not a source. A row is verified only
+// when two different hosts still resolve.
+async function resolvedSources(sources, resolveUrl) {
+  const kept = [];
+  for (const url of sources) {
+    const verdict = asVerdict(await resolveUrl(url));
+    if (verdict.keep) kept.push(url);
+  }
+  return kept;
+}
+
+export async function applyRadar(prev, proposed, today, resolveUrl) {
   const base = dayNum(today);
   const incoming = Array.isArray(proposed?.upcoming) ? proposed.upcoming : (prev.upcoming || []);
   const kept = [];
@@ -202,7 +214,8 @@ function applyRadar(prev, proposed, today) {
       droppedPast.push(row.name || row.date);
       continue;
     }
-    const sources = Array.isArray(row.sources) ? row.sources.filter(isHttpUrl) : [];
+    const raw = Array.isArray(row.sources) ? row.sources.filter(isHttpUrl) : [];
+    const sources = await resolvedSources(raw, resolveUrl);
     const next = { ...row, sources };
     if (independentCount(sources) < 2) next.confidence = "single-source";
     kept.push(next);
@@ -301,6 +314,76 @@ export async function stampPublicReleases(root, writePublic) {
   return { ok: true };
 }
 
+const DASH_RE = /[\u2014\u2013]/;
+
+async function loadCreatorNames(root) {
+  const read = async (rel) => {
+    try { return JSON.parse(await readFile(join(root, rel), "utf8")); }
+    catch { return null; }
+  };
+  const names = [];
+  const accounts = await read("data/observed-accounts.json");
+  const channels = await read("config/youtube-channels.json");
+  for (const row of accounts?.accounts || []) if (row?.handle) names.push(String(row.handle));
+  for (const row of channels?.channels || []) {
+    if (row?.name) names.push(String(row.name));
+    if (row?.handle) names.push(String(row.handle).replace(/^@/, ""));
+  }
+  return [...new Set(names.filter((name) => name.length >= 4))];
+}
+
+// Advice phrases and dashes come from copy-rules. Creator names come from
+// the watch lists. Collectr is never public copy. A hit writes nothing.
+export function digestBlockReason(text, creatorNames) {
+  const src = String(text || "");
+  if (DASH_RE.test(src)) return "em or en dash";
+  if (flagLine(src).some((flag) => flag.rule !== "dash")) return "advice phrase";
+  if (/\bcollectr\b/i.test(src)) return "Collectr";
+  const names = (creatorNames || []).filter((name) => name.length >= 4);
+  if (names.length) {
+    const body = names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    if (new RegExp("(?<![A-Za-z0-9_])(?:" + body + ")(?![A-Za-z0-9_])", "i").test(src)) return "creator name";
+  }
+  return "";
+}
+
+function withoutModelClaims(markdown) {
+  return String(markdown || "").replace(/\n+## Claims\b[\s\S]*?(?=\n## |\s*$)/gi, "").trim();
+}
+
+function withoutDroppedLines(markdown, dropped) {
+  const needles = [];
+  for (const row of dropped || []) {
+    if (row?.url) needles.push(String(row.url));
+    const text = String(row?.text || "").trim();
+    if (text.length >= 12) needles.push(text);
+  }
+  if (!needles.length) return markdown;
+  return String(markdown || "").split("\n").filter((line) => !needles.some((needle) => line.includes(needle))).join("\n").trim();
+}
+
+function claimsSection(keptClaims) {
+  if (!keptClaims.length) return "## Claims\nNone.";
+  const lines = keptClaims.map((claim) => {
+    const text = String(claim.text || "").trim();
+    return text ? "- " + text + " " + claim.url : "- " + claim.url;
+  });
+  return "## Claims\n" + lines.join("\n");
+}
+
+export function assembleDigest({ note, modelDigest, keptClaims, dropped }) {
+  const head = "> RADAR: " + note + "\n\n";
+  const unverified = (keptClaims || []).filter((claim) => claim.urlStatus === "exists, unverified");
+  const tagBlock = unverified.length
+    ? "\n\n## Source check\n" + unverified.map((claim) => "- exists, unverified: " + claim.url).join("\n") + "\n"
+    : "";
+  const body = withoutDroppedLines(withoutModelClaims(modelDigest), dropped);
+  const claims = claimsSection(keptClaims || []);
+  const digestText = head + body + "\n\n" + claims + tagBlock + (tagBlock ? "" : "\n");
+  const leaked = (dropped || []).filter((row) => row?.url && digestText.includes(row.url));
+  return { digestText, leaked };
+}
+
 export async function runDailyResearch(opts = {}) {
   const {
     apiKey = process.env.XAI_API_KEY,
@@ -381,19 +464,30 @@ export async function runDailyResearch(opts = {}) {
     });
   }
 
-  const { radar: nextRadar, changed, droppedPast } = applyRadar(radar, obj.radar, today);
+  const { radar: nextRadar, changed, droppedPast } = await applyRadar(radar, obj.radar, today, resolveUrl);
   for (const name of droppedPast) log.error("dropped passed date: " + name);
 
   const note = changed ? "radar updated" : "radar checked, no change";
-  const head = "> RADAR: " + note + "\n\n";
-  const unverified = keptClaims.filter((c) => c.urlStatus === "exists, unverified");
-  const tagBlock = unverified.length
-    ? "\n\n## Source check\n" + unverified.map((c) => "- exists, unverified: " + c.url).join("\n") + "\n"
-    : "";
-  const body = String(obj.digest).trim();
-  const digestText = head + body + tagBlock + (tagBlock ? "" : "\n");
+  const { digestText, leaked } = assembleDigest({
+    note,
+    modelDigest: obj.digest,
+    keptClaims,
+    dropped,
+  });
+  if (leaked.length) {
+    const error = "Dropped claim still in the digest. Nothing written.";
+    log.error(error);
+    return { ok: false, error, wrote: false };
+  }
+  const names = await loadCreatorNames(root);
+  const blocked = digestBlockReason(digestText, names);
+  if (blocked) {
+    const error = "Digest blocked (" + blocked + "). Nothing written.";
+    log.error(error);
+    return { ok: false, error, wrote: false, blocked };
+  }
 
-  // Write only after the schema passed and the drops are decided.
+  // Write only after the schema passed, drops are out, and the copy check passed.
   // A rerun the same day overwrites the same path.
   // Radar first, then stampPublicReleases copies radar.updated into the
   // public releases file. If that copy does not land, restore the radar
