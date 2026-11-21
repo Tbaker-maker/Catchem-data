@@ -27,6 +27,11 @@ jobs:
         run: node scripts/patch-guard-audit-ci.mjs
       - name: Guard audit
         run: node scripts/guard-audit.mjs
+      - name: Review guards
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/review-guards.mjs
       - name: Artifact freshness
         # Main's data age is not a pull request's code. When the nightly is late,
         # this went red on every crew PR at once (Oct 23 to 26). It runs on main only;
