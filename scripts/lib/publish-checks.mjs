@@ -1,6 +1,7 @@
 // Checks around the public-data publish. Every limit lives in catchem-data-private
 // (config/publish-checks.json). This file stores no numbers. No limits, no push:
 // the site keeps last night's data and the job goes red.
+import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -90,15 +91,46 @@ export function checkBuild({ files, before, cfg, today, runDay }) {
   return [...new Set(problems)];
 }
 
+// The branch API is not the ref the push just updated. Run 43710618279
+// force-pushed 3b5a34c8, waited liveWaitSec, then the API check disagreed
+// and the restore push still showed the remote tip as 3b5a34c8
+// (`+ 3b5a34c8...d6f9f32e`). git ls-remote is the same read the restore uses.
+// A non-ok API response is a failed read, not a different tip. An empty
+// read does not pass.
+export function judgeTip({ pushed, httpOk, httpSha, gitSha }) {
+  const git = String(gitSha || "").trim();
+  const http = httpOk ? String(httpSha || "").trim() : "";
+  const got = git || http;
+  if (!got) return "public-data tip could not be read";
+  if (got !== pushed) return "public-data tip is not the commit just pushed";
+  return "";
+}
+
+function defaultRemoteTip() {
+  return new Promise((resolve) => {
+    execFile("git", ["ls-remote", "origin", "refs/heads/public-data"], { timeout: 20000, encoding: "utf8" }, (err, stdout) => {
+      if (err) return resolve("");
+      resolve(String(stdout || "").split(/\s+/)[0] || "");
+    });
+  });
+}
+
 // Live check after the push: the site must serve tonight's reads day and the
 // public-data tip must be the commit just pushed.
-export async function checkLive({ sha, asOf, fetchImpl = fetch }) {
+export async function checkLive({ sha, asOf, fetchImpl = fetch, remoteTip } = {}) {
   const problems = [];
+  let gitSha = "";
+  if (typeof remoteTip === "function") gitSha = String((await remoteTip()) || "");
+  else if (fetchImpl === fetch) gitSha = await defaultRemoteTip();
+  let httpOk = false;
+  let httpSha = "";
   try {
-    const tip = await fetchImpl("https://api.github.com/repos/Tbaker-maker/Catchem-data/branches/public-data", { headers: { "User-Agent": "catchem-publish-checks" }, signal: AbortSignal.timeout(20000) });
-    const got = tip.ok ? (await tip.json())?.commit?.sha : "";
-    if (got !== sha) problems.push("public-data tip is not the commit just pushed");
-  } catch { problems.push("public-data tip could not be read"); }
+    const tip = await fetchImpl("https://api.github.com/repos/Tbaker-maker/Catchem-data/branches/public-data", { headers: { "User-Agent": "catchem-publish-checks", Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(20000) });
+    httpOk = Boolean(tip.ok);
+    if (tip.ok) httpSha = String((await tip.json())?.commit?.sha || "");
+  } catch { /* judgeTip records the failed read */ }
+  const tipProblem = judgeTip({ pushed: sha, httpOk, httpSha, gitSha });
+  if (tipProblem) problems.push(tipProblem);
   try {
     const res = await fetchImpl(`https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/${sha}/research/assets/public/reads.json`, { signal: AbortSignal.timeout(30000) });
     const doc = res.ok ? await res.json() : null;
