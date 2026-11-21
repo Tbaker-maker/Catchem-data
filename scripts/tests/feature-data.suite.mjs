@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  assignMarks, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
-  readOptionalJson, releaseMarketItem, rotationStatus, shouldWrite,
+  assignMarks, buildReleases, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
+  publicReleaseName, readOptionalJson, releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 import { loadHeldIds } from "../lib/price-hold-skip.mjs";
 import { catalogSetCount, setCountFollowsCatalog } from "../lib/set-quarantine.mjs";
@@ -145,7 +145,12 @@ export async function run() {
   const releases = JSON.parse(await readFile(join(PUB, "releases.json"), "utf8"));
   const verified = (radar.upcoming || []).filter((row) => row.confidence === "verified");
   const blob = JSON.stringify(releases);
-  t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === row.name && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
+  t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === publicReleaseName(row.name) && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
+  const dashed = buildReleases({
+    updated: "2026-11-20",
+    upcoming: [{ name: "30th Celebration \u2014 Binder Collection", date: "2026-12-04", type: "product", confidence: "verified", note: "pokemon.com/us/pokemon-tcg/product-gallery/30th-celebration-binder-collection" }],
+  }, [], []);
+  t("a radar em dash is published as a colon", dashed.releases.length === 1 && dashed.releases[0].name === "30th Celebration: Binder Collection" && publicReleaseName("Mega Lucario Z ex \u2014 EN") === "Mega Lucario Z ex: EN" && !/[\u2014\u2013]/.test(JSON.stringify(dashed)));
   t("release links are copied from the radar file", releases.releases.every((row) => {
     const src = verified.find((item) => item.name === row.name);
     return Boolean(src && row.source && src.note.includes(row.source) && officialSource(src.note) === row.source);

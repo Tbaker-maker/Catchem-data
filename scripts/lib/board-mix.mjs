@@ -26,7 +26,7 @@ import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads, dayNum, stampHistReceipt } from "./history-reads.mjs";
 import { speakDates, publicBoardKindOk, withholdNewReadKinds } from "./read-quality.mjs";
-import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
+import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle, scopedHref } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
 import { loadWindowSeries } from "./thin-trading.mjs";
@@ -414,7 +414,7 @@ export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
       : `${set.name} (mark ${set.mark}) is Standard legal (${markCited(set, doc)}).`;
     if (!cleanCopy(headline)) continue;
     if (rotated) printRunSaid = true;
-    out.push({ id: `rotation-set-${set.slug}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: set.name, set: set.name, headline, path: headline, asOf, href: `/sets/${set.slug}`, source: `rotation-status.json, ${doc.asOf}`, receipt: { set: set.slug, mark: set.mark, status: set.status, asOf: doc.asOf } });
+    out.push({ id: `rotation-set-${set.slug}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: set.name, set: set.name, headline, path: headline, asOf, href: scopedHref("rotation", `/sets/${set.slug}`), source: `rotation-status.json, ${doc.asOf}`, receipt: { set: set.slug, mark: set.mark, status: set.status, asOf: doc.asOf } });
     if (out.length >= max) break;
   }
   return out;
@@ -977,16 +977,22 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const priceDedup = priceRows.filter((r) => { const k = r.readKind === "set" ? r.id : (r.sku || r.id); if (seenSku.has(k)) return false; seenSku.add(k); return true; });
   // One product page once per night: a later row that links to the same card or product is dropped.
   const seenHref = new Set();
-  // A set page can carry a deep dive and also a rotation or birthday line. The
-  // Feed keys rows by link, so a second row on the same set page keeps its
-  // words but loses the link. The deep dive keeps the link: it is the set read.
-  const diveSets = new Set(priceDedup.filter((r) => r.readKind === "deep" && r.deep === "set").map((r) => String(r.href || "")).filter(Boolean));
+  // A set deep dive owns /sets/{slug}. Rotation, chase, and birthday reads
+  // use their own link from the generator. If a second row still arrives on
+  // the same set path, the dive keeps it. Blanking the dive was the bug.
+  const diveSets = new Set(
+    [...priceDedup, ...fresh]
+      .filter((r) => r.readKind === "deep" && r.deep === "set")
+      .map((r) => String(r.href || "").split("#")[0])
+      .filter(Boolean),
+  );
   const seenSet = new Set();
   const oneSet = (r) => {
     const h = String(r.href || "");
-    if (!/^\/sets\//.test(h)) return;
+    if (!/^\/sets\//.test(h) || h.includes("#")) return;
     const dive = r.readKind === "deep" && r.deep === "set";
-    if (seenSet.has(h) || (!dive && diveSets.has(h))) r.href = "";
+    if (dive) { seenSet.add(h); return; }
+    if (seenSet.has(h) || diveSets.has(h)) r.href = "";
     else seenSet.add(h);
   };
   const onePage = (r) => {

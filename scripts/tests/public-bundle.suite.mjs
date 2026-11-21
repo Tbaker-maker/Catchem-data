@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { histBoardOk, nonPriceKindOk, oneKindOk, publicBoardKindOk, withholdNewReadKinds } from "../lib/read-quality.mjs";
-import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, earlierFileNote, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, earlierFileNote, feedWindow, headlineFor, illustratorCredit, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -17,6 +17,7 @@ export async function run() {
   };
 
   t("money drops zero, blank, and NaN", money(0) === null && money(null) === null && money("nope") === null && money(12.5) === "$12.50");
+  t("a dash-only illustrator is not a credit", illustratorCredit("\u2014") === "" && illustratorCredit("\u2013") === "" && illustratorCredit("Ken Sugimori") === "Ken Sugimori");
   t("a cheap base or a wild move is not a percent", changePct(1.5, 3) === null && changePct(10, 20) === null && changePct(10, 12) === 20);
   const down = [];
   for (let i = 0; i < 60; i++) {

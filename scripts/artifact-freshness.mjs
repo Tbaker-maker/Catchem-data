@@ -33,20 +33,24 @@ import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { pulseAsOfStale } from "./lib/sealed-market-pulse.mjs";
+import { pulseFreshnessFails } from "./lib/sealed-market-pulse.mjs";
 import { collectGitAddPaths } from "./lib/git-add-paths.mjs";
 import { staticAssetExcuse } from "./lib/static-asset-freshness.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WF = join(ROOT, ".github", "workflows");
 
-function publishedAsOf(rel) {
+function publishedDoc(rel) {
   try {
-    const doc = JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
-    return String(doc.asOf || "").slice(0, 10);
+    return JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
   } catch {
-    return "";
+    return null;
   }
+}
+
+function publishedAsOf(rel) {
+  const doc = publishedDoc(rel);
+  return String((doc && doc.asOf) || "").slice(0, 10);
 }
 
 // crontab -> roughly how many hours between runs. Only the shapes this repo
@@ -290,7 +294,9 @@ if (suspect) {
 }
 const pulseDay = publishedAsOf("research/assets/public/sealed-market-pulse.json");
 const countsDay = publishedAsOf("research/assets/public/counts.json");
-if (pulseAsOfStale(pulseDay, countsDay, 2)) {
+// The public slim file has no switch. The feed document does (flag off, private).
+const pulseFeed = publishedDoc("data/sealed-market-pulse.json");
+if (pulseFreshnessFails(pulseFeed, pulseDay, countsDay, 2)) {
   console.log(`✗ pulse asOf ${pulseDay || "missing"} is more than 2 days older than counts.json ${countsDay || "missing"}`);
   process.exit(1);
 }

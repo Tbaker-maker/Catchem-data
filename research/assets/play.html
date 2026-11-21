@@ -361,7 +361,7 @@
       <p class="note" id="lang-note">English prints only. Japanese is a different button — Storm Emeralda is not Delta Reign.</p>
       </div>
       <div class="row lab-only" style="margin:0 0 12px">
-        <button type="button" class="ghost" id="btn-tonight">Tonight’s parent</button>
+        <button type="button" class="ghost" id="btn-tonight">Tonight's post</button>
       </div>
       <input type="search" id="q" placeholder="Venasuar → Venusaur · 151 · Arita" autocomplete="off" autocorrect="on" autocapitalize="words" spellcheck="true" enterkeyhint="search" />
       <div id="q-hints"></div>
@@ -438,9 +438,8 @@
       </div>
       <div class="media" id="seat-row" aria-label="Seat" hidden>
         <button type="button" class="go" id="seat-fun" data-seat="free">Free · fun</button>
-        <button type="button" class="ghost" id="seat-pay" data-seat="studio">Premium · monetize</button>
       </div>
-      <p class="note" id="edit-seat" hidden>Free edit. Catch'Em stays on the picture. Premium ($9/mo) if you monetize.</p>
+      <p class="note" id="edit-seat" hidden>Free edit. Catch'Em stays on the picture.</p>
       <img id="preview" alt="Picture preview" />
       <p class="note" id="compose-note"></p>
       </div>
@@ -517,7 +516,6 @@
         </select>
         <select class="tiny" id="out-cluster">
           <option value="tcg">TCG</option>
-          <option value="nft">NFT</option>
           <option value="other">other</option>
         </select>
         <button type="button" class="go" id="btn-out">Log</button>
@@ -528,7 +526,7 @@
     <section id="review">
       <p class="lab">Original Content Rewards · 8 Sep 2026</p>
       <div class="auth">
-        <p>X pays qualified Home Timeline impressions on <b>original</b> posts — your writing, a photo you took, your take. Official card stills are TPC. A mark on the scan does not make it original. Facts never sit on the card. The picture is an edit: crop + the fact as the sentence. Free is fun and wears Catch'Em. Premium takes Catch'Em off if you monetize. Caption and camera are still what X pays. A 151 dump is not.</p>
+        <p>X pays qualified Home Timeline impressions on <b>original</b> posts — your writing, a photo you took, your take. Official card stills are TPC. A mark on the scan does not make it original. Facts never sit on the card. The picture is an edit: crop + the fact as the sentence. Catch'Em stays on the picture. Caption and camera are still what X pays. A 151 dump is not.</p>
       </div>
       <p class="lab">Closed beta · Discord</p>
       <div class="auth">
@@ -583,24 +581,10 @@
       <div class="seats">
         <button type="button" class="seat on" id="seat-free" data-seat="free">
           <b>Free · fun</b>
-          <span>Facts write the picture. Catch'Em stays on the edit. The desk is yours. Monetize needs Premium.</span>
-        </button>
-        <button type="button" class="seat" id="seat-studio" data-seat="studio">
-          <b>Premium · $9/mo</b>
-          <span>Monetize the file. Your mark or a clean file. Catch'Em comes off the edit. We bill when beta closes — unlock on this phone now.</span>
+          <span>Facts write the picture. Catch'Em stays on the edit. The desk is yours.</span>
         </button>
       </div>
-      <p class="note" id="seat-note">Free is for fun. Premium is the paywall on the edit — not the scans.</p>
-      <div id="studio-fields">
-        <p class="lab">Your mark on the edit</p>
-        <input class="tiny" id="studio-mark" maxlength="28" placeholder="yourname.com — blank = clean file" autocomplete="off" />
-        <p class="lab">Blue</p>
-        <div class="row" id="studio-swatches">
-          <button type="button" class="swatch on" data-hex="#7EB6FF" style="background:#7EB6FF" aria-label="Blue"></button>
-          <button type="button" class="swatch" data-hex="#A8C5D4" style="background:#A8C5D4" aria-label="Ice"></button>
-          <button type="button" class="swatch" data-hex="#E8EAED" style="background:#E8EAED" aria-label="Ink"></button>
-        </div>
-      </div>
+      <p class="note" id="seat-note">Catch'Em stays on the picture.</p>
       <p class="lab">Who</p>
       <div class="form-row">
         <input class="tiny" id="desk-handle-2" placeholder="@you" autocomplete="username" />
@@ -1105,7 +1089,7 @@
       } catch (e) { return ""; }
     }
     function seatIsStudio() {
-      try { return localStorage.getItem("ce-seat") === "studio"; } catch (e) { return false; }
+      return false;
     }
     function seatMark() {
       if (!seatIsStudio()) return FREE_MARK;
@@ -1137,12 +1121,12 @@
       if ($("seat-note")) {
         $("seat-note").textContent = studio
           ? ("Premium. Mark: " + (plateMark() || "clean file") + ". Facts never sit on the scan. Official art is still TPC — caption and camera are what X pays.")
-          : "Free is for fun. The fact writes the picture, CatchEmTCG.com sits in the margin. Premium ($9/mo) takes Catch'Em off if you monetize the file.";
+          : "Catch'Em stays on the picture. The fact writes the picture.";
       }
       if ($("edit-seat")) {
         $("edit-seat").textContent = studio
           ? "Premium edit. Catch'Em is off. Blank mark = clean file."
-          : "Free edit. Catch'Em stays on the picture. Premium ($9/mo) if you monetize.";
+          : "Free edit. Catch'Em stays on the picture.";
       }
       if ($("seat-fun")) $("seat-fun").className = studio ? "ghost" : "go";
       if ($("seat-pay")) $("seat-pay").className = studio ? "go" : "ghost";
@@ -1162,25 +1146,61 @@
       if (p.charAt(0) === "/") p = p.slice(1);
       try { return new URL(p, document.baseURI).toString(); } catch (e) { return "/" + p; }
     }
-    function tcgImg(path, hi) {
-      var m = String(path || "").match(/^\/(?:img|thumb)\/([^/]+)\/([^/?#]+)/);
-      if (!m) return path;
-      return "https://images.pokemontcg.io/" + m[1] + "/" + m[2] + (hi ? "_hires.png" : ".png");
+    var CAT_IMAGES = {};
+    function loadCatalogueImages() {
+      return fetch("/data/catalogue-images.json").then(function (r) {
+        if (!r.ok) return {};
+        return r.json();
+      }).then(function (doc) {
+        CAT_IMAGES = (doc && doc.images) || {};
+      }).catch(function () { CAT_IMAGES = {}; });
+    }
+    function tcgImg() {
+      return "";
+    }
+    function editorTileSrc(name) {
+      var label = String(name || "Catch'em").replace(/[<>&"]/g, "").slice(0, 28);
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="336" viewBox="0 0 240 336">' +
+        '<rect width="240" height="336" rx="16" fill="#1a1815"/>' +
+        '<text x="120" y="148" text-anchor="middle" fill="#d9b779" font-family="Georgia, serif" font-size="22">Catch\'em</text>' +
+        '<text x="120" y="186" text-anchor="middle" fill="#efe9de" font-family="Georgia, serif" font-size="15">' + label + '</text></svg>';
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+    function missTile(img) {
+      if (!img || img.getAttribute("data-tile") === "1") return;
+      img.setAttribute("data-tile", "1");
+      img.src = editorTileSrc(img.getAttribute("alt") || "");
+    }
+    function cataloguePathFor(id) {
+      var src = CAT_IMAGES && CAT_IMAGES[id];
+      if (typeof src !== "string") return "";
+      if (src.indexOf("..") !== -1 || src.indexOf("//") !== -1) return "";
+      if (src.indexOf("/img/") !== 0 && src.indexOf("/thumb/") !== 0 && src.indexOf("/cards/") !== 0) return "";
+      return src;
+    }
+    function catalogueShot(c) {
+      if (!c || typeof c !== "object") return "";
+      var src = cataloguePathFor(c.id);
+      if (!src) return "";
+      var m = src.match(/^\/(?:img|thumb)\/([^/]+)\/([^/?#]+)/);
+      if (m) {
+        var file = m[2];
+        if (!/\.(png|jpe?g|webp)$/i.test(file)) file = file + "_hires.png";
+        return "/data/editor/tcg/" + m[1] + "/" + file;
+      }
+      if (src.indexOf("/cards/") === 0) return assetUrl(src.slice(1));
+      return "";
     }
     function scanUrls(c) {
+      var tile = editorTileSrc(c && c.name);
+      var shot = catalogueShot(c);
+      if (shot) return [shot, tile];
       var s = srcOf(c) || "";
-      var out = [];
-      function add(u) { if (u && out.indexOf(u) === -1) out.push(u); }
-      if (!s) return out;
-      if (/^https?:\/\//i.test(s)) { add(s); return out; }
-      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) {
-        add(tcgImg(s, true));
-        add(tcgImg(s, false));
-      }
-      add(hiresOf(c));
-      if (s.charAt(0) === "/") add(s);
-      add(assetUrl(s));
-      return out;
+      var kind = c && c.kind;
+      var own = kind === "pocket" || kind === "poster" || kind === "game" || kind === "manga" || kind === "cutout";
+      if (own && s && s.charAt(0) === "/") return [assetUrl(s), tile];
+      if (own && /^https:\/\/assets\.tcgdex\.net\//i.test(s)) return [s, tile];
+      return [tile];
     }
     function srcOf(c) {
       if (!c) return "";
@@ -1212,16 +1232,17 @@
       return srcOf(c.id);
     }
     function hiresOf(c) {
-      var s = srcOf(c);
-      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) return tcgImg(s, true);
-      if (s.indexOf("/cards/") === 0 || s.indexOf("/jp-img/") === 0 || s.indexOf("/pocket-img/") === 0) return assetUrl(s);
-      return s;
+      return catalogueShot(c) || "";
     }
     function thumbOf(c) {
-      var s = srcOf(c);
-      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) return tcgImg(s, true);
-      if (s.indexOf("/cards/") === 0) return assetUrl(s);
-      return s;
+      var shot = catalogueShot(c);
+      if (shot) return shot;
+      var s = srcOf(c) || "";
+      var kind = c && c.kind;
+      var own = kind === "pocket" || kind === "poster" || kind === "game" || kind === "manga" || kind === "cutout";
+      if (own && s && s.charAt(0) === "/") return assetUrl(s);
+      if (own && /^https:\/\/assets\.tcgdex\.net\//i.test(s)) return s;
+      return editorTileSrc(c && c.name);
     }
     function isPrintedBack(im) {
       try {
@@ -3424,9 +3445,9 @@
         var print = (c.kind === "poster" || c.kind === "manga" || isGameBox(c)) ? " print" : "";
         var still = (c.kind === "cutout" || (c.kind === "game" && !print)) ? " still" : "";
         var pixel = /\/visual\/(rb|crystal|emerald|gold|silver|frlg|rs)\//.test(c.src || "") || (c.tags || "").indexOf("sprite") !== -1 ? " pixel" : "";
-        var missingPic = !c.src;
+        var missingPic = !c.src && !catalogueShot(c);
         return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" + flag +
-          (missingPic ? "" : "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />") +
+          "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"missTile(this)\" />" +
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
           "<div class=\"fact\">" + esc(missingPic ? "The picture is missing." : factOf(c)) + "</div></div></button>";
       }).join("");
@@ -3469,7 +3490,7 @@
           var on = pins.indexOf(c.id) !== -1 ? " pin" : "";
           return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" +
             "<span class=\"flag\">REAL DUMP</span>" +
-            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
+            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"missTile(this)\" />" +
             "<div class=\"meta\"><strong>" + c.name + "</strong>" + c.set + " · " + c.lock + " · known real from the English dump<br>Art: " + (c.artist || "UNKNOWN") + "</div></button>";
         }).join("");
       paintTray();
@@ -3497,7 +3518,7 @@
         var posLab = pairFocus === i ? ("Swap " + (c.species || speciesOf(c.name) || "")) : pos;
         html += "<div class=\"slot" + on + "\" data-focus=\"" + i + "\">" +
           "<button type=\"button\" class=\"drop\" data-drop=\"" + id + "\" aria-label=\"Remove " + (c.name || "") + "\">×</button>" +
-          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
+          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"missTile(this)\" />" +
           "<span class=\"pos\">" + posLab + "</span></div>";
         if (i < n - 1) {
           html += "<button type=\"button\" class=\"swap\" data-move=\"" + i + "\" data-dir=\"1\" aria-label=\"Swap with next\">‹ ›</button>";
@@ -3619,8 +3640,8 @@
       if (/\b(like if|bookmark this|rt this|retweet|follow me|drop a like|comment below|smash like)\b/i.test(text)) {
         return { ok: false, reject: "Refuse. Asking for likes, bookmarks, or follows is ineligible under Original Content Rewards." };
       }
-      if (/how to (get paid|monetize|farm impressions)|payout|revenue share/i.test(text)) {
-        return { ok: false, reject: "Refuse. Monetization-coaching posts are ineligible." };
+      if (/how to (get paid|farm impressions)|payout|revenue share/i.test(text)) {
+        return { ok: false, reject: "Refuse. That coaching post is ineligible." };
       }
       if (platFam() === "video") {
         return { ok: true, reject: "Check PASS. Shoot the card. Don’t upload the stills as the video." };
@@ -4167,7 +4188,6 @@
     function graphStatus(g) {
       var back = g.yes || 0, no = g.no || 0, never = g.never || 0, n = (g.n || 0);
       if (never >= 1 || (n >= 3 && back === 0)) return "stay away";
-      if (g.cluster === "nft" && back === 0) return "careful";
       if (back >= 1) return "safe";
       if (n >= 2 && back === 0) return "careful";
       return "mild";
@@ -4271,7 +4291,7 @@
         "<p><strong>Stay away</strong> — " + (stay.length ? stay.map(function (h) { return "@" + h; }).join(" · ") : "empty") + ". They do not write back. Farming them trains you as noise.</p>" +
         "<p><strong>Week shape</strong> — 1 swing at 8:30pm. Optional PC photo afternoon after a clearing swing (Thu/Sat). 15–25 outbound before 8:00. After you post: answer humans on the parent, credits at T+20, no outbound until T+90. Sunday: one keep, one kill, one Monday change on saves/1k (Catch'em quality, not a Phoenix weight).</p>" +
         (ghost ? "<p class=\"hold\"><strong>Deboost watch</strong> — last 7 days of outbound average " + avgOut + " views. If those sat on busy TCG posts, you are in the collapsed replies. Slow down. Longer lines. Fewer, not more.</p>" : "") +
-        "<p class=\"note\">Mild = one named reply on a big public thread. Careful = NFT-forward or they never reply. Pokémon fans do not follow you into NFT. NFT people will follow you into Pokémon.</p>";
+        "<p class=\"note\">Mild = one named reply on a big public thread. Careful = they never reply.</p>";
       }
 
       if ($("out-law")) {
@@ -5248,7 +5268,19 @@
         if (cur) lines.push(cur);
         return lines.slice(0, maxLines || 4);
       }
-      function paintBoard() {
+    function shareImageLine(text) {
+      var s = String(text || "").trim();
+      if (!s) return "";
+      if (/\$\s?\d/.test(s)) return "";
+      if (/\bodds\b/i.test(s)) return "";
+      if (/\b1\s+in\s+\d/i.test(s)) return "";
+      if (/\bpull rate\b/i.test(s)) return "";
+      if (/\bcountdown\b/i.test(s)) return "";
+      if (/\b\d+\s+(?:day|days|hour|hours|minute|minutes)\s+(?:left|to go)\b/i.test(s)) return "";
+      if (/\bcounting down\b/i.test(s)) return "";
+      return s;
+    }
+    function paintBoard() {
           var cropMissing = false;
           var mats = sel.map(function (card, k) {
             var scan = imgs[k];
@@ -5292,7 +5324,7 @@
           ctx.lineTo(W - margin, ruleY);
           ctx.stroke();
           ctx.globalAlpha = 1;
-          var kicker = boardKicker(sel);
+          var kicker = shareImageLine(boardKicker(sel));
           ctx.save();
           ctx.fillStyle = "rgba(230,215,184,0.58)";
           ctx.font = "600 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -5301,7 +5333,7 @@
           ctx.textBaseline = "middle";
           ctx.fillText(kicker, margin, kickerY);
           ctx.restore();
-          var headline = boardFact(sel);
+          var headline = shareImageLine(boardFact(sel));
           var factSize = n === 1 ? 34 : 28;
           var fontSpec = "600 " + factSize + "px Georgia, 'Times New Roman', serif";
           var lines = wrapLines(headline, fontSpec, artW, 3);
@@ -5330,6 +5362,7 @@
           if (ctx.measureText(credits).width > artW) {
             credits = (sel[0].name || "") + " · " + (sel[0].artist || "UNKNOWN");
           }
+          credits = shareImageLine(credits);
           ctx.fillText(credits, margin, Math.min(creditY, H - 36));
           if (mark && n < 2) {
             ctx.font = "600 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -5357,7 +5390,7 @@
             ? "The crop is missing."
             : (seatIsStudio()
             ? "That's an edit, not a scan. Fact sits under the card. Premium file. Long-press."
-            : "That's an edit, not a scan. Fact sits under the card. Catch'Em stays — fun is free. Premium takes the mark off to monetize. Long-press.");
+            : "That's an edit, not a scan. Fact sits under the card. Catch'Em stays on the picture. Long-press.");
           seedCaption(false);
       }
       sel.forEach(function (c, i) {
@@ -5498,7 +5531,7 @@
       rebuildPicture();
     };
     if ($("seat-studio")) $("seat-studio").onclick = function () {
-      try { localStorage.setItem("ce-seat", "studio"); } catch (e) {}
+      try { localStorage.setItem("ce-seat", "free"); } catch (e) {}
       applyTheme();
       rebuildPicture();
     };
@@ -5519,7 +5552,7 @@
       rebuildPicture();
     };
     if ($("seat-pay")) $("seat-pay").onclick = function () {
-      try { localStorage.setItem("ce-seat", "studio"); } catch (e) {}
+      try { localStorage.setItem("ce-seat", "free"); } catch (e) {}
       applyTheme();
       rebuildPicture();
     };
@@ -5839,7 +5872,7 @@
       paintDiscord();
       paintPlat();
     }
-    fetchJson(assetUrl("cards/seed/index.json?v=19sep-share"))
+    loadCatalogueImages().then(function () { return fetchJson(assetUrl("cards/seed/index.json?v=19sep-share")); })
       .then(function (d) {
         merge(d || [], "");
         bootPaint("Seed");

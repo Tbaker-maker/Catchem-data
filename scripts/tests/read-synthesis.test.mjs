@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { hasBannedWord } from "../lib/copy-rules.mjs";
+import { compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
 let fail = 0;

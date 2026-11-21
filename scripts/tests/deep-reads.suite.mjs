@@ -2,8 +2,9 @@ import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { valueOn, rarityTierReports, diveCoversNamed } from "../lib/deep-reads.mjs";
-import { realLabel } from "../lib/deep-reads-2.mjs";
+import { valueOn, rarityTierReports, diveCoversNamed, deepReadId, setDeepDives, anniversaryReads } from "../lib/deep-reads.mjs";
+import { realLabel, chaseLists } from "../lib/deep-reads-2.mjs";
+import { rotationSetReads } from "../lib/board-mix.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const BANNED = { test: (x) => hasBannedWord(x) };
@@ -38,6 +39,36 @@ export async function run() {
   t("artist spotlights link to a real artist page", deep.filter((r) => r.deep === "artist").every((r) => slugs.has(String(r.href).replace("/artists/", ""))));
   const keys = rows.map((r) => r.href || r.id);
   t("no two reads share a link, so the Feed keeps every one", new Set(keys).size === keys.length);
+  const ids = rows.map((r) => r.id);
+  t("no duplicate ids", new Set(ids).size === ids.length);
+  const longA = "a".repeat(100);
+  const longB = "a".repeat(90) + "b".repeat(10);
+  t("a short deep id is the full slug", deepReadId("tiers", "mega-evolution") === "deep-tiers-mega-evolution");
+  t("two long deep ids stay unique", deepReadId("card", longA) !== deepReadId("card", longB) && deepReadId("card", longA).length <= 90 && deepReadId("card", longB).length <= 90);
+  const asOf = "2026-11-18";
+  const fakeCards = [];
+  for (let i = 0; i < 12; i += 1) {
+    fakeCards.push({
+      id: `tcgcsv-${800 + i}`,
+      name: `Samplemon ${i}`,
+      set: "Sample Set",
+      setSlug: "sample-set",
+      rarity: "Holo Rare",
+      printing: "Holofoil",
+      number: `${i + 1}/12`,
+      release: "2020-11-18",
+      pts: [["2025-11-18", 20 + i], [asOf, 24 + i]],
+    });
+  }
+  const dive = setDeepDives(fakeCards, { asOf, sets: { sets: [{ slug: "sample-set", name: "Sample Set", release: "2020-11-18" }] }, rotation: { sets: [] } })[0];
+  const chase = chaseLists(fakeCards, () => [], { asOf, max: 3 })[0];
+  const birthday = anniversaryReads(fakeCards, { asOf, sets: { sets: [{ slug: "sample-set", name: "Sample Set", release: "2020-11-18" }] } })[0];
+  const rotation = rotationSetReads({ asOf, sets: [{ name: "Sample Set", slug: "sample-set", status: "Standard", mark: "Z" }] }, asOf)[0];
+  const made = [dive, chase, birthday, rotation];
+  const madeIds = made.map((r) => r && r.id);
+  const madeLinks = made.map((r) => r && r.href);
+  t("a set dive, chase list, birthday, and rotation each get their own id", made.every(Boolean) && new Set(madeIds).size === madeIds.length);
+  t("those four reads do not share a link, and the set dive keeps the set page", made.every((r) => r && r.href) && new Set(madeLinks).size === madeLinks.length && dive.href === "/sets/sample-set" && chase.href !== dive.href && rotation.href !== dive.href && birthday.href !== dive.href);
   const cardKinds = new Set(["card", "recovery", "slump", "printings", "samelabel", "chase", "artist", "pokemon", "steady", "bigyear"]);
   t("card reads never mention sealed data", deep.filter((r) => cardKinds.has(r.deep)).every((r) => ![r.headline, ...r.lines, r.source].some((s) => /\b(sealed|booster|elite trainer box|etb)\b/i.test(String(s)) && !/singles only/.test(String(s)))));
   t("a down year does not call the smallest drop the best", (() => {
@@ -82,8 +113,6 @@ export async function run() {
   t("public read text does not say printing or printings", rows.every((r) => publicBits(r).every((s) => !/\bprintings?\b/i.test(s))));
   t("the renamed headline counts every card we price", deep.filter((r) => r.deep === "printings").every((r) => /^Every .+ card we price: \d+ cards, from \$[\d,.]+(?: NM)? to \$[\d,.]+(?: NM)? tonight\.$/.test(r.headline)));
   t("year-range, year-ago, and season reads are on the board", ["year-range", "year-ago", "season"].every((k) => rows.some((r) => r.readKind === k)));
-  const ids = rows.map((r) => r.id);
-  t("no duplicate ids", new Set(ids).size === ids.length);
   const stuck = rows.map((r, i) => (i > 0 && (r.family || r.readKind) === (rows[i - 1].family || rows[i - 1].readKind) ? `${rows[i - 1].id} + ${r.id} (${r.family || r.readKind})` : null)).filter(Boolean);
   if (stuck.length) console.log(`  side by side: ${stuck.slice(0, 5).join("; ")}`);
   t("no same family side by side", stuck.length === 0);

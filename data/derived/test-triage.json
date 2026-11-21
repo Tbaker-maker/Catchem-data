@@ -4,6 +4,24 @@
   "blocked": [],
   "withheld": [
     {
+      "key": "set-value",
+      "label": "set value pages",
+      "paths": [
+        "research/assets/public/feed/set-value.json",
+        "research/assets/public/set-value"
+      ],
+      "tests": [
+        {
+          "name": "feature-data.suite.mjs",
+          "detail": "1 failed",
+          "section": "feature suites",
+          "inner": [
+            "JP Special Deck Set stays verified only with that product page"
+          ]
+        }
+      ]
+    },
+    {
       "key": "cutouts",
       "label": "sealed cutouts",
       "paths": [
@@ -16,7 +34,7 @@
           "detail": "1 failed",
           "section": "feature suites",
           "inner": [
-            "every showable sealed id passed or is blocked tcgcsv-192230, me2pt5-tin-mega-emboar-ex"
+            "every showable sealed id passed or is blocked me2pt5-tin-mega-emboar-ex, tcgcsv-226128"
           ]
         }
       ]
@@ -25,9 +43,11 @@
   "monitor": [],
   "warning": [],
   "paths": [
+    "research/assets/public/feed/set-value.json",
+    "research/assets/public/set-value",
     "research/assets/public/cutouts",
     "research/assets/public/sealed-cutouts.json"
   ],
-  "summary": "Prices fetch, commit and publish tonight.\nWithheld: sealed cutouts. The site keeps the last good copy of research/assets/public/cutouts, research/assets/public/sealed-cutouts.json. Failing tests:\n- sealed-cutout-qa.suite.mjs (every showable sealed id passed or is blocked tcgcsv-192230, me2pt5-tin-mega-emboar-ex)",
-  "at": "2026-11-18T14:17:10.212Z"
+  "summary": "Prices fetch, commit and publish tonight.\nWithheld: set value pages. The site keeps the last good copy of research/assets/public/feed/set-value.json, research/assets/public/set-value. Failing tests:\n- feature-data.suite.mjs (JP Special Deck Set stays verified only with that product page)\nWithheld: sealed cutouts. The site keeps the last good copy of research/assets/public/cutouts, research/assets/public/sealed-cutouts.json. Failing tests:\n- sealed-cutout-qa.suite.mjs (every showable sealed id passed or is blocked me2pt5-tin-mega-emboar-ex, tcgcsv-226128)",
+  "at": "2026-11-21T13:46:17.636Z"
 }
