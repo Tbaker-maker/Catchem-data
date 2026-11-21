@@ -19,6 +19,11 @@ export async function run() {
   t("a rarity band names the set, the count, and both dates", bands.length === 1 && /Illustration Rare cards in Journey Together: 8 of 8 rose/.test(bands[0].headline) && /Sep 15 to Oct 13/.test(bands[0].headline) && copyOk(bands[0].headline));
   const artists = artistBandReads(cards, { asOf });
   t("an artist band uses the catalogue artist", artists.length === 1 && /illustrated by Ken Sugimori/.test(artists[0].headline) && copyOk(artists[0].why));
+  const dashes = cards.map((c, i) => ({ ...c, id: `dash-${i}`, artist: "\u2014" }));
+  t("a dash does not form an artist band", artistBandReads(dashes, { asOf }).length === 0);
+  const spaced = cards.map((c) => ({ ...c, artist: "Ken Sugimori\n" }));
+  const spacedBands = artistBandReads(spaced, { asOf });
+  t("a sourced artist with a line break still forms a band", spacedBands.length === 1 && /illustrated by Ken Sugimori/.test(spacedBands[0].headline));
   const yearCard = {
     id: "tcgcsv-90", name: "Pikachu", artist: "Ken Sugimori", rarity: "Illustration Rare", set: "SV09: Journey Together", setSlug: "sv09-journey-together",
     pts: [["2025-10-13", 8], ["2026-10-06", 10], ["2026-10-13", 12]],

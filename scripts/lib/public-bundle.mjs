@@ -2,9 +2,11 @@
 // Never PPT keys (tcgMarket, unopenedPrice, pptMarket, priceRatio).
 import { banGuard } from "./copy-rules.mjs";
 import { nameWithTags } from "./card-face.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 // Shared advice-phrase rules (rules/advice-phrases.json). FILLER_BAN below is a style rule.
 export const BANNED = banGuard("public bundle");
+export { illustratorCredit };
 
 export function pretty(name) {
   return String(name ?? "")
@@ -12,13 +14,6 @@ export function pretty(name) {
     .replace(/Pokémon 151 Pokémon Center/g, "151 Pokémon Center")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-// A credit that is only a dash is a missing illustrator, not a name.
-export function illustratorCredit(s) {
-  const t = String(s || "").trim();
-  if (!t || !/\p{L}|\p{N}/u.test(t)) return "";
-  return t;
 }
 
 // Read names: "Pikachu - 088" reads as "Pikachu #088", and any other spaced

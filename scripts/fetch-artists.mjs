@@ -12,8 +12,9 @@
 // Otherwise it says "three in the sets we track", which is true and still
 // interesting — and does not blow up the first time somebody finds a fourth.
 import { readFile, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { catalogueArtist } from "./lib/illustrator-credit.mjs";
 
 // Node's fetch has NO default timeout — a host that accepts and never
 // answers hangs the run until the runner kills the job, which reports
@@ -74,9 +75,10 @@ for (const id of ids) {
   if (store.byCard[id]?.artist) { resolved++; continue; }
   const { data: d, error } = await getCard(id);
   if (error != null) { failed.push({ id, status: error }); }
-  else if (!d?.artist) { failed.push({ id, status: "no artist field" }); }
+  else if (!catalogueArtist(d?.artist)) { failed.push({ id, status: "no artist field" }); }
   else {
-    store.byCard[id] = { artist: d.artist, name: d.name, setId: d.set?.id, setName: d.set?.name,
+    const credit = catalogueArtist(d.artist);
+    store.byCard[id] = { artist: credit, name: d.name, setId: d.set?.id, setName: d.set?.name,
       number: d.number, rarity: d.rarity, releaseDate: d.set?.releaseDate };
     resolved++;
   }

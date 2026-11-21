@@ -17,6 +17,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { catalogueArtist } from "./lib/illustrator-credit.mjs";
 
 // Node's fetch has NO default timeout — a host that accepts and never
 // answers hangs the run until the runner kills the job, which reports
@@ -118,7 +119,7 @@ for (const setId of wanted) {
           .map(([finish, v]) => ({ finish, market: v?.market ?? null, low: v?.low ?? null, high: v?.high ?? null }))
           .filter(v => v.market != null);
         const head = variants.slice().sort((a, b) => b.market - a.market)[0] ?? null;
-        store.cards[c.id] = { name: c.name, artist: c.artist ?? null, setId: c.set?.id,
+        store.cards[c.id] = { name: c.name, artist: catalogueArtist(c.artist), setId: c.set?.id,
           setName: c.set?.name, number: c.number, rarity: c.rarity ?? null,
           releaseDate: c.set?.releaseDate ?? null, supertype: c.supertype ?? null,
           price: head?.market ?? null, priceFinish: head?.finish ?? null,

@@ -9,6 +9,7 @@ import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { nearestPoint, addDays, dateLabel, dayNum, oneNightMove } from "./history-reads.mjs";
 import { speakDates } from "./read-quality.mjs";
 import { scopedHref } from "./deep-reads.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 const BAN = banGuard("rich reads");
 const LOW = new Set(["Common", "Uncommon", "Rare", "Code Card", "Promo", "None", ""]);
@@ -118,7 +119,7 @@ export function rarityBandReads(cards, { asOf, days = 28, max = 6 } = {}) {
 export function artistBandReads(cards, { asOf, days = 28, max = 6 } = {}) {
   const by = new Map();
   for (const c of cards || []) {
-    const artist = String(c?.artist || "").trim();
+    const artist = illustratorCredit(c?.artist);
     if (!artist || LOW.has(c.rarity)) continue;
     if (!by.has(artist)) by.set(artist, []);
     by.get(artist).push(c);

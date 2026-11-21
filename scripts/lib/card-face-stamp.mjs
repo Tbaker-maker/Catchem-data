@@ -17,6 +17,7 @@ import {
 } from "./card-face.mjs";
 import { boardImage, loadBoardImageInputs, BRAND_TILE, pictureForRead } from "./read-library.mjs";
 import { speciesToken } from "./fact-reads.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 const BANNED = banGuard("card face stamp");
 const EM = /[\u2014\u2013]/;
@@ -78,7 +79,7 @@ export async function loadFaceIndex(root) {
         number: fullNumber(r.num || ""),
         set: String(r.set || ""),
         setShort: shortSet(r.set || ""),
-        artist: String(r.artist || ""),
+        artist: illustratorCredit(r.artist),
         rarity: String(r.rarity || ""),
       };
       card.clean = cleanCardName(card.name);

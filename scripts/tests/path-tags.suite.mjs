@@ -42,6 +42,7 @@ export async function run() {
   t("reason: numbered set has no reason", unnumberedReason("Base Set") === "");
 
   t("artist: blank and unknown drop", cleanArtist("  ") === "" && cleanArtist("Unknown") === "");
+  t("artist: a dash is not a credit", cleanArtist("\u2014") === "" && cleanArtist("\u2013") === "");
   t("artist: spaces collapse", cleanArtist("  Miki   Kudo ") === "Miki Kudo");
 
   const tagged = tagSingle({ id: "tcgcsv-42386", kind: "single", setName: "Base Set", artist: "Mitsuhiro Arita" });
@@ -53,6 +54,7 @@ export async function run() {
     return row?.artist === "aky CG Works" && row.generation === "ME";
   })());
   t("tag: no credit and no generation is omitted", tagSingle({ id: "tcgcsv-8", kind: "single", setName: "Southern Islands", artist: "" }) === null);
+  t("tag: a dash credit and no generation is omitted", tagSingle({ id: "tcgcsv-8", kind: "single", setName: "Southern Islands", artist: "\u2014" }) === null);
   t("pct: one decimal", pct(18879, 28633) === 65.9);
 
   const file = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "data/path-tags.json");

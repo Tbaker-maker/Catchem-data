@@ -18,6 +18,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { catalogueArtist } from "./lib/illustrator-credit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://api.tcgdex.net/v2/en";
@@ -79,9 +80,10 @@ export async function backfill({ apply = false } = {}) {
     for (const [id, c] of ours) {
       const their = byNumber.get(key(c.number));
       if (their === undefined) { setNoMatch++; unmatched++; continue; }
-      if (!their) { setMissing++; continue; }
-      if (c.artist && c.artist !== their) { conflicts++; continue; }   // never overwrite
-      if (!c.artist) { if (apply) cat.cards[id].artist = their; setFilled++; filled++; }
+      const credit = catalogueArtist(their);
+      if (!credit) { setMissing++; continue; }
+      if (catalogueArtist(c.artist) && catalogueArtist(c.artist) !== credit) { conflicts++; continue; }
+      if (!catalogueArtist(c.artist)) { if (apply) cat.cards[id].artist = credit; setFilled++; filled++; }
     }
     report.push({ set: ourName, theirId, ours: ours.length, theirs: details.filter(Boolean).length,
       filled: setFilled, theyLackToo: setMissing, noNumberMatch: setNoMatch });

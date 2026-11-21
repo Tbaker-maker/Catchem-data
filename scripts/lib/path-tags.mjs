@@ -4,6 +4,7 @@
 // that series is one game generation. Mega Evolution is not numbered.
 // A promo set with no series name is not numbered. Sealed is never tagged.
 import { eraOf, slug } from "./public-bundle.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 const NUMBERED_ERA = {
   "Scarlet & Violet": "9",
@@ -18,7 +19,7 @@ const NUMBERED_ERA = {
 };
 
 export function cleanArtist(value) {
-  const text = String(value ?? "").replace(/\s+/g, " ").trim();
+  const text = illustratorCredit(value);
   if (!text || text.length > 80) return "";
   if (/^unknown$/i.test(text)) return "";
   return text;
