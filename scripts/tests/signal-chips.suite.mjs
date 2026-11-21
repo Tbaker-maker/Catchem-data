@@ -1,8 +1,11 @@
 import { readFileSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { isClean } from "../lib/copy-rules.mjs";
 import { depthBars, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
 import { isVintageSet } from "../lib/extra-reads.mjs";
-import { FEED_PARTS, stampSkipped } from "../stamp-signal-chips.mjs";
+import { FEED_PARTS, loadRules, stampSkipped } from "../stamp-signal-chips.mjs";
 
 // Fixture cutoffs only. The live numbers stay in catchem-data-private.
 const RULES = {
@@ -260,6 +263,30 @@ export async function run() {
   const slackWeek = [["2026-10-09", 10], ["2026-10-17", 12]];
   const slackMove = qualifyChips({ id: "slack-7", name: "Card", kind: "single", asOf: "2026-10-17", windowDays: 7, price: 12, changePct: 20 }, { asOf: "2026-10-17", points: slackWeek }, RULES);
   t("a 7 day chip is not an 8 day span", !slackMove.some((chip) => chip.kind === "move" && /7 day|7D/.test(`${chip.text} ${chip.label}`)));
+  const gapWeek = [
+    ["2026-10-09", 10],
+    ["2026-10-11", 10.4],
+    ["2026-10-12", 10.6],
+    ["2026-10-13", 10.8],
+    ["2026-10-14", 11],
+    ["2026-10-15", 11.2],
+    ["2026-10-16", 11.4],
+    ["2026-10-17", 12],
+  ];
+  const gapTile = readSignals(
+    { id: "move-gap-7", sku: "tcgcsv-gap", name: "Card", kind: "single", asOf: "2026-10-17", price: 12, changePct: 20, windowDays: 7, source: "TCGplayer market" },
+    { asOf: "2026-10-17", points: gapWeek, daily: gapWeek },
+    RULES,
+  ).tiles?.price;
+  t("a missing exact day uses the day 1 earlier and names the real span", gapTile && gapTile.days === 8 && gapTile.fromDate === "2026-10-09" && gapTile.from === 10 && gapTile.asOf === "2026-10-17");
+  const tooEarly = [["2026-10-07", 10], ["2026-10-17", 12]];
+  const earlyTile = readSignals(
+    { id: "move-early-7", sku: "tcgcsv-early", name: "Card", kind: "single", asOf: "2026-10-17", price: 12, changePct: 20, windowDays: 7 },
+    { asOf: "2026-10-17", points: tooEarly, daily: tooEarly, counts: { prices: 2, recent: 2, since: "2026-10-07" } },
+    {},
+  ).tiles || {};
+  t("a start 3 days early gets no price tile", !earlyTile.price);
+  t("public price counts still make a data tile when private cuts are not loaded", earlyTile.data && earlyTile.data.prices === 2 && earlyTile.data.since === "2026-10-07" && earlyTile.data.through === "2026-10-17" && earlyTile.data.bars == null && !/flatAbs|cuts/.test(JSON.stringify(earlyTile.data)));
   const fiveUp = [
     ["2026-10-01", 10.1],
     ["2026-10-08", 10.2],
@@ -283,5 +310,27 @@ export async function run() {
     RULES,
   ).find((chip) => chip.kind === "gone");
   t("the listings chip counts listings and never says gone or sold", counted && counted.label === "Listings counted down, 100 to 40" && !/gone|\bsold\b/i.test(counted.label));
+
+  const rulesDir = await mkdtemp(join(tmpdir(), "signal-rules-missing-"));
+  const quietStore = { dir: rulesDir, remote: false, close: async () => ({}) };
+  const savedLog = console.log;
+  const capture = async (env) => {
+    const lines = [];
+    console.log = (...args) => { lines.push(args.map(String).join(" ")); };
+    try {
+      const value = await loadRules({ env, store: quietStore });
+      return { value, lines };
+    } finally {
+      console.log = savedLog;
+    }
+  };
+  const baseEnv = { ...process.env, SIGNAL_RULES: "", SIGNAL_STRENGTH: "", PRIVATE_DATA_TOKEN: "" };
+  delete baseEnv.DRESS_REHEARSAL;
+  const closed = await capture(baseEnv);
+  t("missing rules with dress rehearsal unset returns null", closed.value === null);
+  t("missing rules with dress rehearsal unset logs that the rules file is missing", closed.lines.some((line) => line.includes("rules file is missing") && line.includes("chips are not stamped")));
+  const opened = await capture({ ...baseEnv, DRESS_REHEARSAL: "1" });
+  t("missing rules during dress rehearsal returns empty rules", opened.value && typeof opened.value === "object" && !Array.isArray(opened.value) && Object.keys(opened.value).length === 0);
+  await rm(rulesDir, { recursive: true, force: true });
   return fail;
 }
