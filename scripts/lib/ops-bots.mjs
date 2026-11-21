@@ -47,13 +47,75 @@ export function freshnessReport({ today, priceDay, countsDay, readsDay, scannerD
   };
 }
 
-// failLog: text of the failed steps. When given, only files the failure names
-// (full path or file name) are restored, so an unrelated rewrite is left alone.
-export function healPlan(files, failLog = null) {
+// A freshness inventory line names every promised path, including the ones
+// that just moved. That list is not the failing check. The failing check is
+// the line that starts with a cross or FAIL, plus the detail under it.
+const INVENTORY_LINE = /\d+(?:\.\d+)?d ago\s*·\s*~\d+\s*run/;
+
+function isInventoryLine(line) {
+  return INVENTORY_LINE.test(String(line || ""));
+}
+
+function isFailureLine(line) {
+  return /✗|\bFAIL\b/.test(String(line || ""));
+}
+
+function failureKey(line) {
+  return String(line || "")
+    .replace(/^[^\n]*?\d{4}-\d{2}-\d{2}T[0-9:.]+Z\s*/, "")
+    .replace(/\d{4}-\d{2}-\d{2}T[0-9:.]+Z/g, "TIME")
+    .replace(/\d{4}-\d{2}-\d{2}/g, "DATE")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function failureKeys(log) {
+  const keys = new Set();
+  for (const line of String(log || "").split("\n")) {
+    if (isFailureLine(line)) keys.add(failureKey(line));
+  }
+  return keys;
+}
+
+// Text a rewritten file can be blamed from. Inventory lines are dropped.
+// When priorKeys is set, a failure already in that set is dropped too,
+// along with the detail that follows it.
+export function blameText(log, priorKeys = null) {
+  const lines = String(log || "").split("\n");
+  const hasFailure = lines.some(isFailureLine);
+  if (!hasFailure) return lines.filter((line) => !isInventoryLine(line)).join("\n");
+  const kept = [];
+  let keep = false;
+  for (const line of lines) {
+    if (isInventoryLine(line)) {
+      keep = false;
+      continue;
+    }
+    if (isFailureLine(line)) {
+      keep = !priorKeys || !priorKeys.has(failureKey(line));
+      if (keep) kept.push(line);
+      continue;
+    }
+    if (keep && line.trim()) kept.push(line);
+    else if (!line.trim()) keep = false;
+  }
+  return kept.join("\n");
+}
+
+// failLog: text of the failed steps. When given, only files the failure
+// names (full path or file name) are restored, so an unrelated rewrite is
+// left alone. priorLog: the failed log already on main before this commit.
+// The same failure, dates aside, opens nothing.
+export function healPlan(files, failLog = null, priorLog = null) {
   let data = [...new Set((files || []).filter((f) => /^(data|research\/assets\/public)\//.test(String(f))))];
   if (!data.length) return { action: "none", files: [], reason: "the red commit did not rewrite a data file" };
   if (failLog != null) {
-    const log = String(failLog);
+    const currentKeys = failureKeys(failLog);
+    const priorKeys = priorLog != null ? failureKeys(priorLog) : null;
+    if (priorKeys && currentKeys.size && [...currentKeys].every((key) => priorKeys.has(key))) {
+      return { action: "none", files: [], reason: "the same failure was already on main before this commit" };
+    }
+    const log = blameText(failLog, priorKeys);
     data = data.filter((f) => log.includes(f) || log.includes(f.split("/").pop()));
     if (!data.length) return { action: "none", files: [], reason: "the failing steps do not name any file this commit rewrote" };
   }
