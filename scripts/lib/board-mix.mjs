@@ -12,20 +12,9 @@ import { nameWithTags } from "./card-face.mjs";
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
+import { rotationPhrase } from "./rotation-phrase.mjs";
+export { rotationPhrase };
 
-const MONTH_WORDS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-
-// "Rotated april 10, 2026" and "Rotated April 10, 2026" both print with the month capitalized.
-export function rotationPhrase(status) {
-  const raw = String(status || "").trim();
-  if (!raw) return "";
-  if (raw === "Standard") return "still Standard legal";
-  let phrase = raw.replace(/^rotated\b/i, "rotated");
-  for (const name of MONTH_WORDS) {
-    phrase = phrase.replace(new RegExp(`\\b${name}\\b`, "i"), name.charAt(0).toUpperCase() + name.slice(1));
-  }
-  return phrase;
-}
 const LONG_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // A mark checked card by card later than the card file cites its own check date.
 export function markCited(set, doc) {

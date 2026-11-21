@@ -14,7 +14,7 @@ import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange, dayLabel } from "./signal-chips.mjs";
 import { sourceNamesDay, speakDates } from "./read-quality.mjs";
-import { rotationPhrase } from "./board-mix.mjs";
+import { rotationPhrase } from "./rotation-phrase.mjs";
 
 export const HEADLINE_MAX = 300;
 
