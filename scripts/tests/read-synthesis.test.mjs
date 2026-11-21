@@ -163,7 +163,7 @@ await rm(root, { recursive: true, force: true });
   const noDrop = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
   delete noDrop.weights.drop;
   t("a missing drop weight does not load", validSynth(noDrop) === null);
-  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1 });
+  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1.5 });
   const asOf = "2026-11-12";
   const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
   const itemOf = (pts) => ({ pts, title: "Sample Card", asOf });
