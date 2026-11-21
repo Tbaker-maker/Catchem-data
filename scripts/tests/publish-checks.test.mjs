@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { checkBuild, checkLive, validChecks } from "../lib/publish-checks.mjs";
+import { checkBuild, checkLive, judgeTip, validChecks } from "../lib/publish-checks.mjs";
 import { BACKUP_REF, guardedPublish } from "../publish-public-data.mjs";
 
 let fail = 0;
@@ -64,6 +64,23 @@ const fake = (tipSha, asOf, status = 200) => async (url) => {
 t("live check passes on a good site", (await checkLive({ sha: "a", asOf: DAY, fetchImpl: fake("a", DAY) })).length === 0);
 t("live check fails on a wrong tip", (await checkLive({ sha: "a", asOf: DAY, fetchImpl: fake("b", DAY) })).length > 0);
 t("live check fails on a down site", (await checkLive({ sha: "a", asOf: DAY, fetchImpl: fake("a", DAY, 500) })).length > 0);
+
+// Run 43710618279: the branch API disagreed, then the restore push still
+// named the pushed sha as the remote tip. git is that read. A bad API
+// response must not be reported as a different tip when git matches.
+const PUSHED = "3b5a34c85744e1eb1880c1788a6428a13a1d1169";
+const STALE = "d6f9f32e8f2535726f2aa5f3918313eaae6c1272";
+const apiDown = (tipSha, asOf, apiStatus) => async (url) => {
+  if (url.includes("api.github.com")) return { ok: apiStatus === 200, status: apiStatus, json: async () => ({ commit: { sha: tipSha } }) };
+  if (url.includes("raw.githubusercontent")) return { ok: true, json: async () => ({ asOf }) };
+  return { status: 200, text: async () => "x".repeat(3000) };
+};
+t("judgeTip trusts git when the branch API is not ok", judgeTip({ pushed: PUSHED, httpOk: false, httpSha: "", gitSha: PUSHED }) === "");
+t("judgeTip trusts git when the branch API is stale", judgeTip({ pushed: PUSHED, httpOk: true, httpSha: STALE, gitSha: PUSHED }) === "");
+t("judgeTip fails when git and the API both show a different tip", judgeTip({ pushed: PUSHED, httpOk: true, httpSha: STALE, gitSha: STALE }) === "public-data tip is not the commit just pushed");
+t("judgeTip does not pass an empty read", judgeTip({ pushed: PUSHED, httpOk: false, httpSha: "", gitSha: "" }) === "public-data tip could not be read");
+t("live check does not call a stale API a wrong tip when git sees the push", (await checkLive({ sha: PUSHED, asOf: DAY, fetchImpl: apiDown(STALE, DAY, 200), remoteTip: async () => PUSHED })).every((p) => p !== "public-data tip is not the commit just pushed"));
+t("live check still fails when git also sees a different tip", (await checkLive({ sha: PUSHED, asOf: DAY, fetchImpl: apiDown(STALE, DAY, 200), remoteTip: async () => STALE })).includes("public-data tip is not the commit just pushed"));
 
 // Real git: a bare remote, an old public-data tip, then a guarded publish.
 function repo(reads, day) {
