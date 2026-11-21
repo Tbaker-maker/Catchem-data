@@ -399,6 +399,31 @@ export async function writeReadFlags(root, asOf, flags) {
   return doc;
 }
 
+export async function loadReadFlags(root, asOf) {
+  const day = String(asOf || "").slice(0, 10);
+  if (!DAY.test(day)) return [];
+  try {
+    const doc = JSON.parse(await readFile(join(root, "data/derived/read-flags", `${day}.json`), "utf8"));
+    return Array.isArray(doc?.flags) ? doc.flags : [];
+  } catch {
+    return [];
+  }
+}
+
+// Ids already flagged stay out. A missing flag list drops nothing.
+// This pass does not rewrite the read.
+export function withoutFlaggedReads(reads, flags) {
+  const list = Array.isArray(reads) ? reads : [];
+  const rows = Array.isArray(flags) ? flags : (Array.isArray(flags?.flags) ? flags.flags : []);
+  const ids = new Set();
+  for (const row of rows) {
+    const id = String(row?.id || row?.read?.id || "").trim();
+    if (id) ids.add(id);
+  }
+  if (!ids.size) return list.slice();
+  return list.filter((read) => !ids.has(String(read?.id || "")));
+}
+
 export async function loadListingIndex(root) {
   try {
     const doc = JSON.parse(await readFile(join(root, "data/derived/listing-counts/latest.json"), "utf8"));

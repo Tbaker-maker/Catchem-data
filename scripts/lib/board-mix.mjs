@@ -35,7 +35,7 @@ import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
 import { spaceFamilies } from "./reads-guard.mjs";
-import { dropThinReads, listingAnnotate, loadListingIndex, releaseEra } from "./read-thin-data.mjs";
+import { dropThinReads, listingAnnotate, loadListingIndex, loadReadFlags, releaseEra, withoutFlaggedReads } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
@@ -785,9 +785,9 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const kept = unstickFamilies(dropHeldReads(base, heldIds));
     const listingIndex = await loadListingIndex(root);
     const gated = await dropThinReads(kept, root, end, listingAnnotate(listingIndex));
-    const published = withoutBareReleases(gated);
-    await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: published, count: published.length }, null, 1) + "\n");
-    return { on, price: published.length, fresh: 0 };
+    const open = withoutFlaggedReads(withoutBareReleases(gated), await loadReadFlags(root, end));
+    await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: open, count: open.length }, null, 1) + "\n");
+    return { on, price: open.length, fresh: 0 };
   }
   const releases = await readJson(join(pub, "releases.json"));
   const news = await readJson(join(root, "research/digests/news.json"));
@@ -1015,7 +1015,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const mixed = unstickFamilies(dropHeldReads(mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 }), heldIds));
   for (const r of mixed) if (!String(r.image || "").trim()) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   const listingIndex = await loadListingIndex(root);
-  const gated = finishBoard(await dropThinReads(mixed, root, end, listingAnnotate(listingIndex)));
+  const thinKept = await dropThinReads(mixed, root, end, listingAnnotate(listingIndex));
+  const gated = finishBoard(withoutFlaggedReads(thinKept, await loadReadFlags(root, end)));
   for (const r of gated) {
     if (r.headline) r.headline = speakDates(r.headline, r.asOf);
     if (r.path) r.path = speakDates(r.path, r.asOf);

@@ -3,7 +3,9 @@ import { readFileSync } from "node:fs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples } from "../lib/read-synthesis.mjs";
+
+import { findings, validSynth, loadContext, synthesizeReads, openingKey, isItemRead, capHeadline, HEADLINE_MAX, splitReceipts, SYNTH_FILE, compose, findingDir, retargetMarketSpan, weekSamples, itemOf, sameHomeSet, isFoldedSection, isAttachedSealed, setFacts } from "../lib/read-synthesis.mjs";
+
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { dayNum, addDays } from "../lib/history-reads.mjs";
 
@@ -273,6 +275,61 @@ await rm(root, { recursive: true, force: true });
   t("gap of 8 days is accepted", weekSamples(pts([8]), asOf).length >= 2);
   t("gap of 10 days is rejected", weekSamples(pts([10]), asOf).length < 2);
   t("weeks[0] is the latest point", weekSamples(pts([7]), asOf)[0][0] === asOf);
+}
+
+{
+  const asOf = "2026-10-23";
+  const pts = [["2026-10-16", 20], ["2026-10-23", 22]];
+  const setCtx = {
+    peers: new Map(),
+    rotation: new Map([["parent-set", { status: "Standard" }]]),
+    setValue: new Map([["parent-set", { total: 800, priced: 40 }]]),
+    listings: new Map(),
+    asks: new Map(),
+  };
+  const folded = {
+    pts, title: "Greninja BREAK (30th Celebration Classic Collection) 41/122", asOf,
+    set: "ME: 30th Celebration", ownSet: "ME: 30th Celebration Classic Collection",
+    setSlug: "parent-set", groupId: 222, homeGroupId: 111, release: "2020-01-02",
+  };
+  const foldedLine = findings(folded, setCtx, CFG).find((f) => f.tag === "set");
+  const foldedText = `${foldedLine?.short || ""} ${foldedLine?.text || ""}`;
+  t("a different set id does not use the parent set figures", !sameHomeSet(folded) && !/800|40 priced|came out|Standard/.test(foldedText));
+  const own = { ...folded, set: "ME: 30th Celebration", ownSet: "ME: 30th Celebration", groupId: 111, homeGroupId: 111 };
+  const ownLine = findings(own, setCtx, CFG).find((f) => f.tag === "set");
+  t("the same set id keeps that set's figures", sameHomeSet(own) && /40 priced cards add up to \$800\.00/.test(ownLine?.short || "") && /came out/.test(ownLine?.short || ""));
+  const series = new Map([["tcgcsv-22", pts]]);
+  const rows = new Map([["tcgcsv-22", { id: "tcgcsv-22", name: "Greninja BREAK", num: "41/122", kind: "single", set: "ME: 30th Celebration", ownSet: "ME: 30th Celebration Classic Collection", setSlug: "parent-set", groupId: 222, homeGroupId: 111, release: "2020-01-02" }]]);
+  const built = itemOf({ sku: "tcgcsv-22", readKind: "year", asOf, headline: "One year on." }, { series, rows, setRel: new Map([["parent-set", "2020-01-02"]]) });
+
+  t("the title uses the card's own set, not the parent", built && built.title.includes("Classic Collection") && built.setSlug === "" && built.release === "2020-01-02");
+}
+
+
+{
+  const asOf = "2026-10-23";
+  const pts = [["2026-09-01", 30], ["2026-10-23", 12]];
+  const folded = { id: "tcgcsv-22", pts, title: "Folded Card", asOf, set: "Parent Set", ownSet: "Parent Set Section", setSlug: "parent-set", groupId: 24837, homeGroupId: 24722, release: "2020-01-02" };
+  const L = { ...CFG, launchSkipDays: 42 };
+  t("a fake folded card keeps the launch-peak skip", isFoldedSection(folded) && folded.release && !findings(folded, {}, L).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text || "")));
+  const attached = { id: "tcgcsv-719650", pts, title: "Attached Tin", asOf, set: "Parent Set", ownSet: "Parent Set", setSlug: "parent-set", groupId: 24541, homeGroupId: 24541, release: "2020-01-02", sealed: true };
+  const attachedCtx = { rotation: new Map([["parent-set", { status: "Standard" }]]), setValue: new Map([["parent-set", { total: 800, priced: 40 }]]) };
+  const attachedLine = findings(attached, attachedCtx, CFG).find((f) => f.tag === "set");
+  t("a fake attached sealed item keeps its parent set line", isAttachedSealed(attached) && /40 priced cards add up to \$800\.00/.test(attachedLine?.short || "") && /Standard/.test(attachedLine?.short || ""));
+}
+
+{
+  const asOf = "2026-11-18";
+  const yearAgo = "2025-11-18";
+  const pts = [[yearAgo, 74.66], [asOf, 85.17]];
+  const series = new Map([["tcgcsv-9", pts]]);
+  const rows = new Map([["tcgcsv-9", { id: "tcgcsv-9", name: "Sample Card", kind: "single", set: "Sample Set", setSlug: "sample", release: "2020-01-02" }]]);
+  const ctx = { series, rows, setRel: new Map(), peers: new Map(), rotation: new Map(), setValue: new Map(), listings: new Map(), asks: new Map() };
+  const old = { id: "span-sample", sku: "tcgcsv-9", readKind: "season", kind: "season", asOf, headline: "Old line.", price: 74.66, startDate: yearAgo, endDate: yearAgo, source: `TCGplayer market, ${yearAgo} to ${yearAgo}` };
+  const { reads } = synthesizeReads([old], ctx, CFG);
+  const out = reads[0];
+  t("a year-old price is never used as the current price", out.price === 85.17 && out.price !== 74.66 && !String(out.source || "").includes(yearAgo) && String(out.headline || "").includes("$85.17"));
+
 }
 
 if (fail) { console.error(`read synthesis: ${fail} failed`); process.exitCode = 1; }

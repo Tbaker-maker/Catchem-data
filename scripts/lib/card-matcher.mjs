@@ -122,6 +122,7 @@ export function buildCardIndex(items = []) {
       base,
       spoken: spokenNameOf(base),
       setNorm: setNameOf(it.set),
+      groupId: Number(it.groupId),
       codes: setCodesOf(it.set),
       num: normNumber(it.number),
       tags: finishOf(it),
@@ -224,9 +225,15 @@ function textNumbers(raw, index) {
 
 function inSets(card, sets) {
   if (!sets.length) return true;
-  // "Crown Zenith" also names the Galarian Gallery. A shorter set phrase that
-  // prefixes another set stays ambiguous until the text names the longer set.
-  return sets.some((phrase) => card.setNorm === phrase || card.setNorm.startsWith(`${phrase} `));
+  // Exact set name only. "30th Celebration" is not "30th Celebration Classic Collection".
+  return sets.some((phrase) => card.setNorm === phrase);
+}
+
+// A shorter set name that also prefixes a longer set is not an exact set id
+// when that longer set has the same card name. Leave it unmatched.
+function setNameIsPrefix(card, sets) {
+  if (!sets.length) return false;
+  return sets.some((phrase) => card.setNorm.startsWith(`${phrase} `));
 }
 
 function rowOf(card, confidence, reason) {
@@ -236,6 +243,7 @@ function rowOf(card, confidence, reason) {
     name: card.name,
     set: card.set,
     number: card.number,
+    groupId: Number.isInteger(card.groupId) ? card.groupId : null,
     confidence,
     reason,
   };
@@ -295,8 +303,20 @@ function matchOne(raw, index) {
       unmatched.push({ text: phrase, reason: "name_alone" });
       continue;
     }
-    let pool = index.byPhrase?.get(phrase) || index.cards.filter((card) => card.base === phrase || card.spoken === phrase);
-    pool = pool.filter((card) => inSets(card, sets));
+    let named = index.byPhrase?.get(phrase) || index.cards.filter((card) => card.base === phrase || card.spoken === phrase);
+    const finishOk = (card) => !finish.size || [...finish].every((tag) => card.tags.has(tag));
+    const numberOk = (card) => !numbers.length || numbers.includes(card.num);
+    named = named.filter((card) => finishOk(card) && numberOk(card));
+    if (sets.length) {
+      const exact = named.filter((card) => inSets(card, sets));
+      const wider = named.filter((card) => inSets(card, sets) || setNameIsPrefix(card, sets));
+      if (wider.length > exact.length) {
+        unmatched.push({ text: phrase, reason: "set_prefix", count: wider.length });
+        continue;
+      }
+      named = exact;
+    }
+    let pool = named;
     if (finish.size) pool = pool.filter((card) => [...finish].every((tag) => card.tags.has(tag)));
     if (numbers.length) pool = pool.filter((card) => numbers.includes(card.num));
     let reason = "name_set";
