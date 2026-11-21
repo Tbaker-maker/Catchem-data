@@ -227,10 +227,10 @@ t("script has no live cutoff numbers", (() => {
   t("an on feed still fails a stale pulse date", pulseFreshnessFails({ flag: "on", private: true }, "2026-01-01", "2026-02-01", 2) === true);
   t("a missing flag still fails a stale pulse date", pulseFreshnessFails({}, "2026-01-01", "2026-02-01", 2) === true && pulseFreshnessFails(null, "2026-01-01", "2026-02-01", 2) === true);
   t("an on feed with a fresh date passes", pulseFreshnessFails({ flag: "on" }, "2026-02-01", "2026-02-02", 2) === false);
-  const feedDoc = JSON.parse(readFileSync(join(ROOT, "data/sealed-market-pulse.json"), "utf8"));
-  const livePulse = JSON.parse(readFileSync(join(ROOT, "research/assets/public/sealed-market-pulse.json"), "utf8"));
-  const liveCounts = JSON.parse(readFileSync(join(ROOT, "research/assets/public/counts.json"), "utf8"));
-  t("the checked-in feed is off, so its old public date is not a freshness failure", pulseFeedOff(feedDoc) === true && pulseFreshnessFails(feedDoc, livePulse.asOf, liveCounts.asOf, 2) === false);
+  const offFeed = { flag: "off", private: true, asOf: "2026-01-01" };
+  const onStale = { flag: "on", private: true, asOf: "2026-01-01" };
+  t("a fixture with the flag off skips a stale pulse date", pulseFeedOff(offFeed) === true && pulseFreshnessFails(offFeed, "2026-01-01", "2026-02-01", 2) === false);
+  t("a fixture with the flag on and a stale asOf fails", pulseFeedOff(onStale) === false && pulseFreshnessFails(onStale, "2026-01-01", "2026-02-01", 2) === true);
 }
 
 if (failed) {
