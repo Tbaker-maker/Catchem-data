@@ -13,7 +13,8 @@ let fail = 0;
 const t = (name, ok) => { if (ok) console.log("  ok  " + name); else { fail += 1; console.error("  FAIL " + name); } };
 const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8")));
 console.log("read synthesis");
-t("fixture limits load", CFG != null);
+t("fixture limits load", CFG != null && JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8")).fake === true);
+t("the signal floor is a count", Number.isInteger(CFG.minSignals) && CFG.minSignals >= 1);
 t("missing limits do not load", validSynth({}) === null && validSynth({ ...CFG, weights: {} }) === null);
 
 // A 12 week streak and a 90 day line that does not use those dates. The 90 day line drops.
@@ -46,8 +47,13 @@ t("missing limits do not load", validSynth({}) === null && validSynth({ ...CFG, 
     text: "Still 75% under its peak of $80 on Mar 27, 2025: Sample Card is at $20 on Nov 13.",
     short: "It is still 75% under its peak of $80 on Mar 27, 2025.",
   };
+  const peers = {
+    tag: "peers", type: "peersAhead", score: 6,
+    text: "Ahead of its set on the same dates: Sample Card from Aug 20 to Nov 13 against a +1.0% median.",
+    short: "That beats its set on the same dates, Aug 20 to Nov 13.",
+  };
   const item = { title: "Sample Card", kind: "backto" };
-  const dropped = compose(item, [lead, otherWindow, peak], CFG);
+  const dropped = compose(item, [lead, otherWindow, peak, peers], CFG);
   t("a 90 day line drops when the dates differ", span !== 90 && pct === 50 && dropped && dropped.text.includes("$40") && dropped.text.includes("$20") && dropped.text.includes("Aug 20") && !/90 days/.test(dropped.text) && !/60%/.test(dropped.text) && !dropped.pick.some((f) => f.tag === "trend" && f.window === 90));
   const kept = compose(item, [lead, sameWindow, peak], CFG);
   t("a supporting line with the same window and dates stays", kept && kept.text.includes(`Down ${pct}% over ${span} days`) && kept.pick.some((f) => f.tag === "trend"));
@@ -79,11 +85,12 @@ await mkdir(join(pub, "set-value"), { recursive: true });
 await mkdir(join(root, "data"), { recursive: true });
 // Twelve singles in one set with different shapes, plus one sealed product.
 const T = dayNum("2026-10-23") - dayNum("2024-02-08");
+const stair = (t, base) => base + (t > T - 84 ? (t - (T - 84)) * 0.5 : 0);
 const shapes = [
-  (t) => 10 * (1 + t / 300),                                   // long climb to a new high
-  (t) => 80 * Math.exp(-t / 600),                              // long slide to a new low
-  (t) => (t < 400 ? 20 + t * 0.1 : Math.max(8, 60 - (t - 400) * 0.06)), // peak, then a long fall
-  (t) => (t < T - 45 ? 30 : 30 + (t - (T - 45)) * 0.4),        // flat, then a fresh jump
+  (t) => stair(t, 10 * (1 + t / 300)),
+  (t) => stair(t, 80 * Math.exp(-t / 600)),
+  (t) => stair(t, (t < 400 ? 20 + t * 0.1 : Math.max(8, 60 - (t - 400) * 0.06))),
+  (t) => stair(t, (t < T - 45 ? 30 : 30 + (t - (T - 45)) * 0.4)),
 ];
 const long = {}; const bucket = []; const reads = [];
 const start = dayNum("2024-02-08");
@@ -91,11 +98,14 @@ const end = dayNum(asOf);
 for (let k = 0; k < 12; k += 1) {
   const id = `tcgcsv-${1000 + k}`;
   const f = shapes[k % shapes.length];
+  const priceAt = (d) => Math.round(f(d - start) * (1 + k / 10) * 100) / 100;
   const pts = [];
-  for (let d = start; d <= end; d += 3) pts.push([d, Math.round(f(d - start) * (1 + k / 10) * 100) / 100]);
-  const lp = pts.filter((p) => p[0] <= dayNum("2026-09-15"));
+  for (let d = start; d <= end; d += 1) pts.push([d, priceAt(d)]);
+  const cut = dayNum("2026-09-15");
+  const lp = pts.filter((p) => p[0] <= cut);
   long[id] = lp.map((p) => `${p[0]}:${p[1]}`).join(",");
-  const night = []; for (let d = dayNum("2026-09-26"); d <= end; d += 1) { const near = pts.reduce((m, p) => (Math.abs(p[0] - d) < Math.abs(m[0] - d) ? p : m)); night.push([new Date(d * 864e5).toISOString().slice(0, 10), near[1]]); }
+  const night = [];
+  for (let d = cut + 1; d <= end; d += 1) night.push([new Date(d * 864e5).toISOString().slice(0, 10), priceAt(d)]);
   bucket.push({ id, name: `Card ${k}`, num: `${k + 1}/100`, kind: "single", set: "Test Set", setSlug: "test-set", release: "2023-03-31", rarity: "Illustration Rare", printing: "Holofoil", hist: night });
   reads.push({ id: `year-${id}`, sku: id, readKind: "year", kind: "year", board: "hist", family: "price", name: `Card ${k}`, set: "Test Set", asOf, headline: `One year on: Card ${k}, up.`, receipt: { startDate: addDays(asOf, -365) } });
 }
@@ -108,8 +118,14 @@ await writeFile(join(pub, "buckets/00.json"), JSON.stringify(bucket));
 await writeFile(join(pub, "sets.json"), JSON.stringify({ sets: [{ slug: "test-set", name: "Test Set", release: "2023-03-31" }] }));
 await writeFile(join(pub, "set-value/test-set.json"), JSON.stringify({ master: { total: 512.5, priced: 12 } }));
 await writeFile(join(pub, "rotation-status.json"), JSON.stringify({ sets: [{ slug: "test-set", status: "Standard" }] }));
-await writeFile(join(pub, "listings-counted.json"), JSON.stringify({ products: [{ id: "test-etb", listingsCounted: { n: 30, date: asOf, prev: { n: 50, date: "2026-10-19" } } }] }));
-await writeFile(join(root, "data/sealed-prices.json"), JSON.stringify({ updatedAt: `${asOf}T10:00:00Z`, products: [{ id: "test-etb", tcgPlayerId: "9000", ebayMedianAsk: 260, ebayMedianCount: 40 }] }));
+await writeFile(join(pub, "listings-counted.json"), JSON.stringify({ products: [
+  { id: "test-etb", listingsCounted: { n: 30, date: asOf, prev: { n: 50, date: "2026-10-19" } } },
+  ...Array.from({ length: 12 }, (_, k) => ({ id: `card-${k}`, listingsCounted: { n: 48, date: asOf, prev: { n: 30, date: "2026-10-16" } } })),
+] }));
+await writeFile(join(root, "data/sealed-prices.json"), JSON.stringify({ updatedAt: `${asOf}T10:00:00Z`, products: [
+  { id: "test-etb", tcgPlayerId: "9000", ebayMedianAsk: 260, ebayMedianCount: 40 },
+  ...Array.from({ length: 12 }, (_, k) => ({ id: `card-${k}`, tcgPlayerId: String(1000 + k) })),
+] }));
 
 const ctx = await loadContext(root, asOf, CFG);
 const { reads: out, report } = synthesizeReads(reads, ctx, CFG);
@@ -123,7 +139,7 @@ for (const r of done) { const k = openingKey(r.headline, [r.receipt.synth.title]
 const capN = Math.max(1, Math.floor(CFG.maxOpeningShare * items.length));
 t("no single opening goes over the share cap", [...open.values()].every((n) => n <= capN));
 t("the old one year opening is gone", done.every((r) => !r.headline.startsWith("One year on")));
-t("each read cites at least 2 distinct signals", done.every((r) => new Set(r.receipt.synth.signals).size >= 2));
+t("a rewritten read meets the signal minimum", done.every((r) => new Set(r.receipt.synth.signals).size >= CFG.minSignals));
 t("2 to 3 sentences, or one when two would pass 300 characters", done.every((r) => { const n = r.headline.split(/(?<=[.])\s(?=[A-Z])/).length; return r.headline.length <= 300 && n >= 1 && n <= 3; }));
 t("no advice, dashes, sold or sales", done.every((r) => !hasBannedWord(r.headline) && !/[\u2014\u2013]/.test(r.headline) && !/\b(sold|sales)\b/i.test(r.headline)));
 const etb = done.find((r) => r.sku === "tcgcsv-9000");
@@ -170,16 +186,20 @@ await rm(root, { recursive: true, force: true });
 
 // Wording: "in line" only for a small set gap, and a one day spike is not a peak.
 {
-  const W = { ...CFG, peerInlineMaxPts: 2, spikeRatio: 1.6 };
+  const W = CFG;
   const day = (n) => addDays("2026-10-23", -n);
-  const series = (fn) => { const pts = []; for (let n = 400; n >= 0; n -= 1) pts.push([day(n), fn(n)]); return pts; };
+  const series = (fn) => { const pts = []; for (let n = 600; n >= 0; n -= 1) pts.push([day(n), fn(n)]); return pts; };
   const item = (pts) => ({ id: "x", pts, title: "Test Card", asOf: "2026-10-23", set: "Test Set", setSlug: "ts" });
   const ctx = { peers: new Map([["ts", { n: 40, median: -1.6 }]]), market: { n: 9000, median: 0.4 } };
   const shorts = (pts) => findings(item(pts), ctx, W).map((f) => f.short || "").join(" ");
-  const down4 = series((n) => (n > 20 ? 15.27 : 14.66));
-  t("a 2.4 point set gap is not called in line", !/in line/.test(shorts(down4)) && /trailing a -1\.6% median/.test(shorts(down4)));
-  const down2 = series((n) => (n > 20 ? 10 : 9.8));
-  t("a small set gap is still in line", /in line with a -1\.6% median/.test(shorts(down2)));
+  // 30 day move from 100 to 83.4 is about 16.6 percent. Against a -1.6 median that is a 15 point gap.
+  const wide = series((n) => (n >= 30 ? 100 : 83.4));
+  const wideShort = shorts(wide);
+  t("a 15 point set gap is not called in line", !/in line/.test(wideShort) && /trailing a -1\.6% median/.test(wideShort));
+  const down4 = wide;
+  // 100 to 94.4 is about 5.6 percent, a 4 point gap, inside the inline max.
+  const small = series((n) => (n >= 30 ? 100 : 94.4));
+  t("a small set gap is still in line", /in line with a -1\.6% median/.test(shorts(small)));
   const spiky = series((n) => (n === 200 ? 80 : n > 30 ? 6 : 5.5));
   const fs = findings(item(spiky), ctx, W);
   t("a one day spike is not used as the peak", !fs.some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
@@ -188,16 +208,16 @@ await rm(root, { recursive: true, force: true });
   const launch = series((n) => (n === 400 ? 80 : n > 30 ? 6 : 5.5));
   t("a launch day price far above the next point is not the peak", !findings(item(launch), ctx, W).some((f) => /\$80\.00/.test((f.text || "") + (f.short || ""))));
   // Launch weeks: prices in the first weeks after release are not the peak.
-  const L = { ...W, launchSkipDays: 42 };
+  const L = { ...W, launchSkipDays: 60 };
   const rel = day(390);
-  const hype = series((n) => (n > 380 ? 30 : n > 200 ? 12 : 5.5));
+  const hype = series((n) => (n > 580 ? 30 : n > 200 ? 12 : 1));
   const relItem = { ...item(hype), release: rel };
   t("a launch week price is not used as the peak", !findings(relItem, ctx, L).some((f) => /\$30\.00/.test((f.text || "") + (f.short || ""))));
   t("the peak comes from after the launch weeks", findings(relItem, ctx, L).some((f) => f.type === "drawdown" && /\$12\.00/.test(f.text)));
   t("pre release prices are not the peak either", !findings({ ...relItem, release: day(385) }, ctx, L).some((f) => /\$30\.00/.test((f.text || "") + (f.short || ""))));
   t("without a release date the launch limit changes nothing", findings(item(hype), ctx, L).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text)));
   t("without the launch limit nothing changes", findings(relItem, ctx, W).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text)));
-  const young = series((n) => (n > 380 ? 30 : n > 30 ? 6 : 5.5));
+  const young = series((n) => (n > 580 ? 30 : n > 30 ? 6 : 1));
   t("no peak is claimed when every earlier point is in the launch weeks", !findings({ ...item(young), release: day(395) }, ctx, { ...L, launchSkipDays: 500 }).some((f) => ["high", "nearHigh", "drawdown"].includes(f.type)));
   t("without the private limits nothing changes", /in line/.test(findings(item(down4), ctx, { ...CFG, peerInlineMaxPts: undefined, spikeRatio: undefined }).map((f) => f.short || "").join(" ")));
 }
@@ -209,7 +229,7 @@ await rm(root, { recursive: true, force: true });
   const noDrop = JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8"));
   delete noDrop.weights.drop;
   t("a missing drop weight does not load", validSynth(noDrop) === null);
-  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1.5 });
+  const weekCfg = validSynth({ ...raw, streakWeekUsd: 1.5, streakMinWeeks: 8 });
   const asOf = "2026-11-12";
   const weekly = (newestFirst) => newestFirst.map((price, i) => [addDays(asOf, -7 * i), price]).reverse();
   const itemOf = (pts) => ({ pts, title: "Sample Card", asOf });
@@ -217,10 +237,10 @@ await rm(root, { recursive: true, force: true });
   t("flat then one drop is not a streak", !flatFs.some((f) => f.tag === "streak" || /weeks running/.test(`${f.text || ""} ${f.short || ""}`)));
   t("a move that is not the latest week is not one week", !flatFs.some((f) => f.tag === "drop" || /in one week/.test(`${f.text || ""} ${f.short || ""}`)));
   const stepAsOf = "2026-11-05";
-  const stepPts = [8, 10, 10, 10, 10, 10, 10, 10].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
+  const stepPts = [40, 50, 50, 50, 50, 50, 50, 50].map((price, i) => [addDays(stepAsOf, -7 * i), price]).reverse();
   const stepFs = findings({ pts: stepPts, title: "Sample Card", asOf: stepAsOf }, {}, weekCfg);
   const drop = stepFs.find((f) => f.type === "dropdown");
-  t("flat then one drop names the size and the date", drop?.text === "Down 20% in one week: Sample Card went from $10.00 on Oct 29 to $8.00 on Nov 5.", drop?.text || "");
+  t("flat then one drop names the size and the date", drop?.text === "Down 20% in one week: Sample Card went from $50.00 on Oct 29 to $40.00 on Nov 5.", drop?.text || "");
   t("the one drop sentence has no banned word", !!drop && !hasBannedWord(drop.text) && !/[\u2014\u2013]/.test(drop.text));
   t("the one week score is the drop weight", drop?.score === weekCfg.weights.drop);
   const eight = findings(itemOf(weekly([20, 22, 24, 26, 28, 30, 32, 34, 36])), {}, weekCfg);
@@ -310,7 +330,7 @@ await rm(root, { recursive: true, force: true });
   const asOf = "2026-10-23";
   const pts = [["2026-09-01", 30], ["2026-10-23", 12]];
   const folded = { id: "tcgcsv-22", pts, title: "Folded Card", asOf, set: "Parent Set", ownSet: "Parent Set Section", setSlug: "parent-set", groupId: 24837, homeGroupId: 24722, release: "2020-01-02" };
-  const L = { ...CFG, launchSkipDays: 42 };
+  const L = { ...CFG, launchSkipDays: 60 };
   t("a fake folded card keeps the launch-peak skip", isFoldedSection(folded) && folded.release && !findings(folded, {}, L).some((f) => f.type === "drawdown" && /\$30\.00/.test(f.text || "")));
   const attached = { id: "tcgcsv-719650", pts, title: "Attached Tin", asOf, set: "Parent Set", ownSet: "Parent Set", setSlug: "parent-set", groupId: 24541, homeGroupId: 24541, release: "2020-01-02", sealed: true };
   const attachedCtx = { rotation: new Map([["parent-set", { status: "Standard" }]]), setValue: new Map([["parent-set", { total: 800, priced: 40 }]]) };
@@ -321,10 +341,15 @@ await rm(root, { recursive: true, force: true });
 {
   const asOf = "2026-11-18";
   const yearAgo = "2025-11-18";
-  const pts = [[yearAgo, 74.66], [asOf, 85.17]];
+  const weekBefore = "2026-11-11";
+  // The year-ago point stays on file. A later week clears the fixture floors, so the rewrite has to use the current point.
+  const pts = [[yearAgo, 74.66], [weekBefore, 70], [asOf, 85.17]];
   const series = new Map([["tcgcsv-9", pts]]);
   const rows = new Map([["tcgcsv-9", { id: "tcgcsv-9", name: "Sample Card", kind: "single", set: "Sample Set", setSlug: "sample", release: "2020-01-02" }]]);
-  const ctx = { series, rows, setRel: new Map(), peers: new Map(), rotation: new Map(), setValue: new Map(), listings: new Map(), asks: new Map() };
+  const ctx = {
+    series, rows, setRel: new Map(), peers: new Map(), rotation: new Map(), setValue: new Map(), asks: new Map(),
+    listings: new Map([["tcgcsv-9", { n: 48, date: asOf, prev: { n: 30, date: weekBefore } }]]),
+  };
   const old = { id: "span-sample", sku: "tcgcsv-9", readKind: "season", kind: "season", asOf, headline: "Old line.", price: 74.66, startDate: yearAgo, endDate: yearAgo, source: `TCGplayer market, ${yearAgo} to ${yearAgo}` };
   const { reads } = synthesizeReads([old], ctx, CFG);
   const out = reads[0];

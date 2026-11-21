@@ -11,7 +11,7 @@ import { hasBannedWord } from "../lib/copy-rules.mjs";
 
 const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8")));
 // Obvious fixture. Not a market cutoff.
-const JUMPY = { windowDays: 30, swingPct: 80, minSwings: 2 };
+const JUMPY = { windowDays: 45, swingPct: 80, minSwings: 4 };
 const AS_OF = "2026-10-25";
 const CHIP_RULES = {
   max: 4,
@@ -52,12 +52,12 @@ export async function run() {
   ).signals.find((row) => row.kind === "range");
   t("chip names the same high and the same day count", chip && chip.high === shared.high && chip.days === shared.days && chip.label.includes(`${shared.days} day range`) && chip.label.includes("$80.00") && clean(chip.label));
 
-  const start = "2026-01-01";
+  const startMs = Date.parse(`${AS_OF}T00:00:00Z`) - 600 * 86400000;
   const climb = [];
-  for (let d = 0; d <= 297; d += 7) {
-    const iso = new Date(Date.parse(`${start}T00:00:00Z`) + d * 86400000).toISOString().slice(0, 10);
+  for (let d = 0; d <= 600; d += 7) {
+    const iso = new Date(startMs + d * 86400000).toISOString().slice(0, 10);
     if (iso > AS_OF) break;
-    climb.push([iso, iso === AS_OF ? 80 : 20 + d / 10]);
+    climb.push([iso, iso === AS_OF ? 80 : 40 + d / 20]);
   }
   if (climb.at(-1)?.[0] !== AS_OF) climb.push([AS_OF, 80]);
   const item = { pts: climb, title: "Alakazam (Mysterious Treasures) 1/123", asOf: AS_OF, set: "Mysterious Treasures", setSlug: "mysterious-treasures", release: "2007-08-22", sealed: false, kind: "high" };
