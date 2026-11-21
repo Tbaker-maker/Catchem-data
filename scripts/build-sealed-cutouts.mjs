@@ -25,7 +25,7 @@ async function loadJson(path) {
 async function sourceTooSmall(url) {
   if (!url) return false;
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
     if (!res.ok) return false;
     const buf = Buffer.from(await res.arrayBuffer());
     if (buf.length >= 24 && buf[0] === 0x89 && buf[1] === 0x50) {
