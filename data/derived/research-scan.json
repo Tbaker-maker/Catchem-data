@@ -1,12 +1,27 @@
 {
- "asOf": "2026-11-18",
- "generatedAt": "2026-11-18T15:57:02.096Z",
+ "asOf": "2026-11-21",
+ "generatedAt": "2026-11-21T15:26:11.211Z",
  "method": "Script. Reads news.json (fetched nightly from free feeds), release-radar.json, TCGCSV groups. Leads only; never edits the radar.",
- "newsLeads": [],
+ "newsLeads": [
+  {
+   "type": "NEW_SET",
+   "date": "2026-11-19",
+   "title": "MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon",
+   "source": "Pokémon press",
+   "url": "https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C"
+  }
+ ],
  "radar": [
   {
    "date": "2026-11-27",
    "name": "JP: Aura Seeker (Mega Lucario Z ex)",
+   "confidence": "verified",
+   "status": "no second source in tonight's files",
+   "urls": []
+  },
+  {
+   "date": "2026-11-27",
+   "name": "JP: Card Illustration Figure Collection 30th CELEBRATION (Pikachu figure + card)",
    "confidence": "verified",
    "status": "no second source in tonight's files",
    "urls": []

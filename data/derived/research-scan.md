@@ -1,12 +1,13 @@
-# Script research scan — 2026-11-18
+# Script research scan — 2026-11-21
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
 ## Flags
-No flags.
+- NEW_SET: MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon — Pokémon press https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C
 
 ## Radar check
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
+- 2026-11-27 JP: Card Illustration Figure Collection 30th CELEBRATION (Pikachu figure + card) — no second source in tonight's files
 - 2026-12-04 30th Celebration — Sylveon ex & Greninja ex Tins — no second source in tonight's files
 - 2026-12-04 30th Celebration — Binder Collection — no second source in tonight's files
 

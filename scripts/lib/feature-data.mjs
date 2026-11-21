@@ -375,6 +375,10 @@ export function buildListings(products, parents) {
   return { skipped: [...skip].sort(), products: rows };
 }
 
+export function publicReleaseName(name) {
+  return String(name || "").replace(/\s*[\u2014\u2013]\s*/g, ": ").replace(/ {2,}/g, " ").trim();
+}
+
 export function buildReleases(radar, items, days) {
   const checked = String(radar?.updated || "");
   const releases = [];
@@ -382,7 +386,7 @@ export function buildReleases(radar, items, days) {
     if (row?.confidence !== "verified") continue;
     const source = officialSource(row.note);
     const entry = {
-      name: row.name,
+      name: publicReleaseName(row.name),
       date: row.date,
       type: row.type,
       source,
