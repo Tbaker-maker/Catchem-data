@@ -1,5 +1,5 @@
 import { hasBannedWord } from "../lib/copy-rules.mjs";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pickLadder, rowsFromDistilled } from "../lib/condition-prices.mjs";
@@ -81,6 +81,19 @@ export async function run() {
   t("self-heal keeps a file the failing log names", healPlan(["data/release-radar.json", "data/sealed-prices.json"], "bad row in data/sealed-prices.json").files.join() === "data/sealed-prices.json");
   t("self-heal matches a file by its name", healPlan(["research/assets/public/reads.json"], "  ✗ reads.json is unchanged").files.length === 1);
   t("self-heal ignores a code-only red commit", healPlan(["scripts/x.mjs"]).action === "none");
+  const pulseInventory = [
+    "  research/assets/public/releases.json  0.0d ago · ~0 run(s) since it last moved",
+    "✗ pulse asOf 2026-10-27 is more than 2 days older than counts.json 2026-11-19",
+  ].join("\n");
+  const pulsePrior = "tests\tArtifact freshness\t2026-11-19T14:00:36.0000000Z ✗ pulse asOf 2026-10-27 is more than 2 days older than counts.json 2026-11-18";
+  t("self-heal does not blame a file that only appears in the freshness inventory", healPlan(["research/assets/public/releases.json", "data/release-radar.json"], pulseInventory).action === "none");
+  t("self-heal opens nothing when the same failure was already on main", healPlan(["research/assets/public/counts.json", "research/assets/public/releases.json"], pulseInventory, pulsePrior).action === "none");
+  const mixed = healPlan(
+    ["research/assets/public/reads.json", "research/assets/public/releases.json"],
+    `${pulseInventory}\n✗ reads.json is unchanged`,
+    pulsePrior,
+  );
+  t("self-heal restores only the file a new failure names", mixed.action === "restore" && mixed.files.join() === "research/assets/public/reads.json");
   const old = janitorRows([{ number: 9, title: "Old", url: "https://example.com/9", createdAt: "2026-10-01T00:00:00Z", checks: [] }, { number: 10, title: "Red", url: "https://example.com/10", createdAt: "2026-10-13T00:00:00Z", checks: [{ name: "tests", conclusion: "failure" }] }], new Date("2026-10-13T00:00:00Z"));
   t("janitor lists old PRs and the failing test name", old.length === 2 && old[1].failing.join() === "tests" && old[0].old === true);
   t("coverage flags a drop in priced cards", flagCoverageDrops({ priced: 10, yearHistory: 4, listingsCounted: 3, imageGaps: 2 }, { priced: 9, yearHistory: 4, listingsCounted: 3, imageGaps: 2 }).some((row) => row.key === "priced"));
@@ -107,6 +120,24 @@ export async function run() {
     const text = [row.headline, ...(row.lines || [])].join(" ");
     if (/[\u2014\u2013]/.test(text) || hasBannedWord(text) || /(^|[^.])\bsupply\b/i.test(text)) console.log(`    read ${row.id} (${row.readKind || row.kind}): ${text.slice(0, 200)}`);
   }
+
+  const pubRoot = join(ROOT, "research/assets/public");
+  const dashFiles = [];
+  const walkPublic = async (dir) => {
+    for (const ent of await readdir(dir, { withFileTypes: true })) {
+      const path = join(dir, ent.name);
+      if (ent.isDirectory()) {
+        await walkPublic(path);
+        continue;
+      }
+      if (!/\.(json|md|txt|html|svg)$/i.test(ent.name)) continue;
+      const text = await readFile(path, "utf8");
+      if (/[\u2014\u2013]/.test(text)) dashFiles.push(path.slice(pubRoot.length + 1));
+    }
+  };
+  await walkPublic(pubRoot);
+  t("public research assets have no em or en dash", dashFiles.length === 0);
+  if (dashFiles.length) console.log(`    ${dashFiles.slice(0, 20).join("\n    ")}`);
 
   return fail;
 }

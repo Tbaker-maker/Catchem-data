@@ -13,6 +13,26 @@ function run(cmd, args) {
   });
 }
 
+async function priorFailLog(sha) {
+  const parent = (await run("git", ["rev-parse", "--verify", `${sha}^`])).out.trim();
+  if (!parent) return null;
+  const listed = await run("gh", [
+    "run", "list",
+    "--commit", parent,
+    "--workflow", "pr-tests.yml",
+    "--json", "databaseId,conclusion",
+    "--limit", "10",
+  ]);
+  if (listed.code !== 0 || !listed.out.trim()) return null;
+  let runs = [];
+  try { runs = JSON.parse(listed.out); } catch { return null; }
+  const failed = (Array.isArray(runs) ? runs : []).find((row) => row && row.conclusion === "failure" && row.databaseId);
+  if (!failed) return null;
+  const log = await run("gh", ["run", "view", String(failed.databaseId), "--log-failed"]);
+  if (log.code !== 0 || !log.out.trim()) return null;
+  return log.out;
+}
+
 const sha = process.env.HEAL_SHA || process.argv[2] || "HEAD";
 if (!process.argv.includes("--live") && !process.env.HEAL_SHA && process.argv.length <= 2) {
   console.log(JSON.stringify({ selfHeal: { action: "skipped", reason: "pass a commit sha or --live" } }));
@@ -24,7 +44,10 @@ const files = diff.out.split("\n").map((s) => s.trim()).filter(Boolean);
 // guessing would undo good data (see #288).
 let failLog = "";
 if (process.env.HEAL_RUN_ID) failLog = (await run("gh", ["run", "view", process.env.HEAL_RUN_ID, "--log-failed"])).out;
-const plan = healPlan(files, failLog);
+// The parent commit's failed pr-tests log, when one exists. A failure that
+// was already red on main is not this commit's fault.
+const priorLog = process.env.HEAL_RUN_ID ? await priorFailLog(sha) : null;
+const plan = healPlan(files, failLog, priorLog);
 console.log(JSON.stringify({ selfHeal: plan }));
 if (plan.action !== "restore" || !process.argv.includes("--live")) process.exit(0);
 // A merged PR (subject ends "(#123)") is a reviewed change, not a bad nightly data

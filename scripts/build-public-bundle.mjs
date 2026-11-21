@@ -6,7 +6,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/p
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, moverRow, pretty, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, illustratorCredit, money, moverRow, pretty, slug,
   MOVERS_NOTE,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
@@ -151,7 +151,7 @@ for (const item of items) {
 }
 
 function personName(s) {
-  const t = String(s || "").trim();
+  const t = illustratorCredit(s);
   if (!t) return "";
   if (t === t.toUpperCase()) return t.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
   return t;

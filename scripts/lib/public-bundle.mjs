@@ -14,6 +14,13 @@ export function pretty(name) {
     .trim();
 }
 
+// A credit that is only a dash is a missing illustrator, not a name.
+export function illustratorCredit(s) {
+  const t = String(s || "").trim();
+  if (!t || !/\p{L}|\p{N}/u.test(t)) return "";
+  return t;
+}
+
 // Read names: "Pikachu - 088" reads as "Pikachu #088", and any other spaced
 // hyphen becomes a comma, so copy has no spaced hyphen. pretty() keeps the raw
 // suffix because many builders strip it by pattern.
