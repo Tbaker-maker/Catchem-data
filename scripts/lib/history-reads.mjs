@@ -13,6 +13,7 @@ import { join } from "node:path";
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 import { loadHeldIds } from "./price-hold-skip.mjs";
 
 export const HIST_TAG = "hist";
@@ -113,7 +114,7 @@ export async function loadHistoryCards(root) {
       const map = new Map(lp);
       for (const p of night) map.set(p[0], p[1]);
       const pts = [...map.entries()].sort((x, y) => (x[0] < y[0] ? -1 : 1));
-      cards.push({ id: r.id, name: r.name, artist: r.artist || "", number: r.num || "", set: r.set || "", setSlug: r.setSlug || "", release: r.release || "", rarity: r.rarity || "", printing: r.printing || "", pts });
+      cards.push({ id: r.id, name: r.name, artist: illustratorCredit(r.artist), number: r.num || "", set: r.set || "", setSlug: r.setSlug || "", release: r.release || "", rarity: r.rarity || "", printing: r.printing || "", pts });
     }
   }
   return { cards, longLast };

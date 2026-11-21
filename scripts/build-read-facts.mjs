@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { buildBreakdown } from "./lib/what-we-see.mjs";
 import { unpackLong, mergeHistory, changeOver, highLow, band, indexChange, listingsFact, matchPattern, itemKeys, similar, gapFact } from "./lib/read-facts.mjs";
 import { priceRange } from "./lib/signal-chips.mjs";
+import { illustratorCredit } from "./lib/illustrator-credit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -86,7 +87,8 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
     push(bySetKind, `${r.setSlug}|${r.kind}`, r);
     if (r.kind === "single" && r.price > 0) {
       if (r.rarity) push(bySetRarity, `${r.setSlug}|${r.rarity}`, r.id);
-      if (r.artist) push(byArtist, r.artist, r.id);
+      const artistCredit = illustratorCredit(r.artist);
+      if (artistCredit) push(byArtist, artistCredit, r.id);
     }
   }
   const bandMemo = new Map();
@@ -111,7 +113,7 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
 
   const factsFor = async (f, row, sealed, slug, lite = false) => {
     if (row) {
-      f.item = { id: row.id, kind: row.kind, name: row.name, number: row.num || "", set: row.set || "", setSlug: slug, rarity: row.rarity || "", artist: row.artist || "", price: row.price, priceAsOf: row.asOf || asOf };
+      f.item = { id: row.id, kind: row.kind, name: row.name, number: row.num || "", set: row.set || "", setSlug: slug, rarity: row.rarity || "", artist: illustratorCredit(row.artist), price: row.price, priceAsOf: row.asOf || asOf };
       const hist = histOf(row.id);
       const ch = {};
       for (const [k, n] of [["d7", 7], ["d30", 30], ["d90", 90], ["y1", 365]]) { const c = changeOver(hist, n, asOf); if (c) ch[k] = c; }
@@ -146,9 +148,12 @@ export async function buildReadFacts(root = ROOT, opts = {}) {
         const b = bandOf(`r|${slug}|${row.rarity}`, bySetRarity.get(`${slug}|${row.rarity}`) || []);
         if (b) f.rarityBand = { ...b, set: row.set, rarity: row.rarity };
       }
-      if (!lite && row.kind === "single" && row.artist) {
-        const b = bandOf(`a|${row.artist}`, byArtist.get(row.artist) || []);
-        if (b) f.artistBand = { ...b, artist: row.artist };
+      if (!lite && row.kind === "single") {
+        const credit = illustratorCredit(row.artist);
+        if (credit) {
+          const b = bandOf(`a|${credit}`, byArtist.get(credit) || []);
+          if (b) f.artistBand = { ...b, artist: credit };
+        }
       }
       const r = ripById.get(row.id);
       if (r && r.contentsEV > 0 && r.price > 0) f.rip = { price: r.price, contentsEV: r.contentsEV, roiPct: r.roiPct, beatChance: r.beatChance, median: r.median, asOf: rip.asOf };

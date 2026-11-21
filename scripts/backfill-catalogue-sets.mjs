@@ -19,6 +19,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { catalogueArtist } from "./lib/illustrator-credit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = "https://raw.githubusercontent.com/PokemonTCG/pokemon-tcg-data/master";
@@ -66,7 +67,7 @@ for (const set of todo) {
   let setAdded = 0;
   for (const c of cards) {
     if (cat.cards[c.id]) continue;
-    const row = { name: c.name, artist: c.artist ?? null, setId: set.id, setName: set.name, number: c.number,
+    const row = { name: c.name, artist: catalogueArtist(c.artist), setId: set.id, setName: set.name, number: c.number,
       rarity: c.rarity ?? null, releaseDate: set.releaseDate ?? null, supertype: c.supertype ?? null };
     if (byNumber) {
       const cand = byNumber.get(String(c.number).replace(/^0+(?=\d)/, "")) || [];

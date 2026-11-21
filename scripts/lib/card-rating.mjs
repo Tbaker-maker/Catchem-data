@@ -8,6 +8,7 @@ import { banGuard } from "./copy-rules.mjs";
 import { series, priceAt, trend, range, rangePos, stageValue, setListings, days } from "./ir-cycle.mjs";
 import { popularity, monName, popShare, popBand } from "./popular-pokemon.mjs";
 import { tcgAmount } from "./card-face.mjs";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
 // rescaled, so a missing fact never counts as good or bad. The weights and the
@@ -221,7 +222,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const now = priceAt(pts, today, 3);
     if (!now) continue;
     const tags = new Set(variants[r.id]?.tags || []);
-    const c = { printing: r.printing || "", id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, rarity: r.rarity || "", artist: r.artist || "", release: r.release, tags, pts, price: now[1], date: now[0], printings: r.printings || [], mon: monName(r.name) };
+    const c = { printing: r.printing || "", id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, rarity: r.rarity || "", artist: illustratorCredit(r.artist), release: r.release, tags, pts, price: now[1], date: now[0], printings: r.printings || [], mon: monName(r.name) };
     c.group = (GROUPS.find((g) => g.test(c)) || {}).key || "";
     cards.push(c);
   }

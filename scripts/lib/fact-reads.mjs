@@ -2,6 +2,7 @@
 // only when the rate and the pack price are both already in the cited files.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { illustratorCredit } from "./illustrator-credit.mjs";
 
 const FORM = /^(Galarian|Alolan|Hisuian|Paldean|Dark|Light|Shining|Radiant|Team Aqua's|Team Magma's|Team Rocket's|Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's|Crystal|Shadow|Mega)\s+/i;
 const MECH = /\s+(ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV\.X|-EX|-GX)$/;
@@ -71,7 +72,7 @@ export function buildPokemonIndex(cards, attrs) {
     if (!byDex.has(dex)) byDex.set(dex, []);
     byDex.get(dex).push({
       token,
-      artist: String(card?.artist || "").trim(),
+      artist: illustratorCredit(card?.artist),
       id: String(id),
       price: Number(card?.price) > 0 ? Number(card.price) : 0,
     });

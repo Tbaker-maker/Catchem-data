@@ -748,7 +748,7 @@ for (const [item, set] of flat) {
     number: item.num || "",
     rarity: item.rarity || "",
     ...(item.tags?.length ? { tags: item.tags } : {}),
-    artist: item.artist || "",
+    artist: illustratorCredit(item.artist),
     release: set.release || "",
     score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
   };
