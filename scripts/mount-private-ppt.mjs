@@ -6,8 +6,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
-import { redact, restorePrivate } from "./lib/private-ppt.mjs";
+import { redact, restorePrivate, restoreRecentSealed } from "./lib/private-ppt.mjs";
 import { clonePrivate } from "./lib/private-clone.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -21,6 +22,9 @@ function run(cmd, args, env) {
 }
 
 export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
+  if (pptOff()) {
+    return { mounted: false, reason: "PPT_OFF: private PPT was not mounted. No PPT file was read." };
+  }
   if (!token) {
     return { mounted: false, reason: "PRIVATE_DATA_TOKEN is not set. PPT history stays unmounted. No public raw is written." };
   }
@@ -29,11 +33,19 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
     await rm(clone, { recursive: true, force: true });
-    const cloned = await clonePrivate(runGit, "https://github.com/Tbaker-maker/catchem-data-private.git", clone, { ...process.env, GIT_TERMINAL_PROMPT: "0" });
+    const today = new Date().toISOString().slice(0, 10);
+    const sealedPatterns = [];
+    for (let i = 0; i < 7; i += 1) {
+      const day = new Date(Date.parse(`${today}T00:00:00Z`) - i * 86400000).toISOString().slice(0, 10);
+      sealedPatterns.push(`/raw/${day}/${day}/sealed-*.json`);
+      sealedPatterns.push(`/raw/${day}/sealed-*.json`);
+    }
+    const cloned = await clonePrivate(runGit, "https://github.com/Tbaker-maker/catchem-data-private.git", clone, { ...process.env, GIT_TERMINAL_PROMPT: "0" }, { include: sealedPatterns });
     if (cloned.code !== 0) {
       return { mounted: false, reason: `Private repo was not cloned (${redact(cloned.err, [token]) || "clone failed"}). Readers will skip PPT history.` };
     }
     const actions = await restorePrivate({ clone, root });
+    actions.push(...await restoreRecentSealed({ clone, root, today }));
     if (!actions.length) {
       return { mounted: false, reason: "Nothing from the private repo was mounted." };
     }
@@ -46,6 +58,10 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/mount-private-ppt.mjs"));
+    process.exit(0);
+  }
   const result = await mountPrivate({ token: process.env.PRIVATE_DATA_TOKEN || "" });
   let files = 0;
   const sealedDir = join(ROOT, "data/history/ppt-sealed-private");

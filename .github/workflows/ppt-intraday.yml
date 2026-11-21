@@ -25,4 +25,5 @@ jobs:
         continue-on-error: true
         env:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+          PPT_OFF: ${{ vars.PPT_OFF }}
         run: node scripts/ppt-intraday.mjs

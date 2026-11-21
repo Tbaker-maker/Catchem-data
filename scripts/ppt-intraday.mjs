@@ -4,10 +4,15 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { intradayResult, selectSample } from "./lib/ppt-intraday.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 export async function writeIntraday(root = ROOT) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/ppt-intraday.mjs"));
+    return { status: "skipped", creditsUsed: 0, sampleSize: 0, workflow: "off" };
+  }
   const heat = JSON.parse(await readFile(join(root, "data/heat-check.json"), "utf8"));
   const sample = selectSample(heat.products || []);
   const keySet = Boolean(process.env.POKEMONPRICETRACKER_API_KEY);

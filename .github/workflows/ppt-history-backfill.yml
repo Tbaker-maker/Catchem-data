@@ -30,6 +30,7 @@ jobs:
       - name: Pull PPT sealed history
         env:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+          PPT_OFF: ${{ vars.PPT_OFF }}
           PPT_DAYS: ${{ inputs.days }}
           PPT_MAX_PRODUCTS: ${{ inputs.max_products }}
           PPT_CREDIT_CEILING: ${{ inputs.credit_ceiling }}

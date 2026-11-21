@@ -3,6 +3,7 @@ import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { buildRunReport, reportLine } from "./lib/run-report.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -11,10 +12,14 @@ async function readJson(path) {
 }
 
 export async function writeRunReport(root = ROOT, finishedAt = new Date().toISOString()) {
-  const started = await readJson(join(root, "data/ppt/run-started.json"));
-  const usage = await readJson(join(root, "data/meta/ppt-usage.json"));
-  const mount = await readJson(join(root, "data/ppt/mount-status.json"));
-  const push = await readJson(join(root, "data/ppt/push-status.json"));
+  const started = pptOff() ? null : await readJson(join(root, "data/ppt/run-started.json"));
+  const usage = pptOff()
+    ? { status: "skipped", reason: "PPT_OFF", credits: { used: { total: 0 } }, items: {} }
+    : await readJson(join(root, "data/meta/ppt-usage.json"));
+  const mount = pptOff() ? { restored: false, files: 0 } : await readJson(join(root, "data/ppt/mount-status.json"));
+  const push = pptOff()
+    ? { expected: false, pushed: false, reason: "PPT_OFF" }
+    : await readJson(join(root, "data/ppt/push-status.json"));
   const report = buildRunReport({
     startedAt: started?.startedAt || null,
     finishedAt,

@@ -4,6 +4,7 @@
 
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { pptOff } from "./ppt-off.mjs";
 import { SHAPE_STATE_FILE } from "./shape-facts.mjs";
 import { monthDay, money } from "./outlier-dive-reads.mjs";
 import { seededShuffle } from "./extra-reads.mjs";
@@ -679,8 +680,8 @@ async function readJson(path, fallback = null) {
 /** Candidates from private facts, the private volume table, and sealed files. Missing files add nothing. */
 export async function loadShapeCandidates(root, asOf) {
   const catalog = (await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] })).items || [];
-  const facts = (await readJson(join(root, SHAPE_STATE_FILE), { cards: {} })).cards || {};
-  const volume = await readJson(join(root, "ppt-raw-private/tcgplayer-volume.json"), null);
+  const facts = pptOff() ? {} : ((await readJson(join(root, SHAPE_STATE_FILE), { cards: {} })).cards || {});
+  const volume = pptOff() ? null : await readJson(join(root, "ppt-raw-private/tcgplayer-volume.json"), null);
   const out = singleCandidates(facts, catalog, asOf);
   if (volume) out.push(...setShareReads(volume, catalog));
   const products = Object.values((await readJson(join(root, "data/sealed-prices.json"), { products: {} })).products || {});

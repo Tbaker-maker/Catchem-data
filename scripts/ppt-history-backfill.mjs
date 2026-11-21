@@ -9,6 +9,12 @@
 // A hard CREDIT_CEILING stops the run long before the pool is at risk.
 // The API key is read from env and is never printed.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+
+if (pptOff()) {
+  console.log(pptOffBanner("scripts/ppt-history-backfill.mjs"));
+  process.exit(0);
+}
 
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
 const KEY = process.env.POKEMONPRICETRACKER_API_KEY;

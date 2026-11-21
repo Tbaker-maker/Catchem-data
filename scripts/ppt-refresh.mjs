@@ -18,6 +18,12 @@ import {
 import { nextEmptySealed, nextFailedIds, orderRefreshCalls, sanitizeDates, sanitizeEmpty, sanitizeFailed, setBand, skipRecentEmpty, skipRecentFailed } from "./lib/ppt-refresh-order.mjs";
 import { updateVolumeFile } from "./compute-tcgplayer-volume.mjs";
 import { updateShapeFile } from "./compute-shape-reads.mjs";
+import { assertPptCallAllowed, pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+
+if (pptOff() && process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  console.log(pptOffBanner("scripts/ppt-refresh.mjs"));
+  process.exit(0);
+}
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -111,7 +117,7 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
     callsNotSent += 1;
     skipped += call.items || 1;
   };
-  if (!key) return { used, items, errors, raw: "not fetched", skipped, budgetSkipped, httpFailed, callsSent, callsFailed, callsNotSent, rateLimits, retries, done, empty, failedIds };
+  if (!key || pptOff()) return { used, items, errors, raw: "not fetched", skipped, budgetSkipped, httpFailed, callsSent, callsFailed, callsNotSent, rateLimits, retries, done, empty, failedIds };
   if (rawDir) await mkdir(rawDir, { recursive: true });
   const queue = (calls || []).filter((call) => call?.id && call.estimated > 0 && !finished.has(call.id));
   for (let i = 0; i < queue.length; i += 1) {
@@ -229,6 +235,7 @@ function publicUsage(plan, extra) {
 }
 
 async function defaultFetch(url, key, stats) {
+  assertPptCallAllowed();
   const { body, rateLimits } = await fetchWithBackoff(url, key, {
     request: async (oneUrl, oneKey) => {
       const res = await fetch(oneUrl, {
@@ -246,6 +253,10 @@ async function defaultFetch(url, key, stats) {
 }
 
 export async function main() {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/ppt-refresh.mjs"));
+    return { status: "skipped", reason: "PPT_OFF is set. No request was sent. No PPT file was read.", raw: "not fetched" };
+  }
   const today = new Date().toISOString().slice(0, 10);
   const key = process.env.POKEMONPRICETRACKER_API_KEY || "";
   const token = process.env.PRIVATE_DATA_TOKEN || "";

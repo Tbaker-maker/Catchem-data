@@ -36,6 +36,8 @@ import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
 import { runNoPppRawPublicTests } from "./no-ppp-raw-public.test.mjs";
 import { runPppRefreshTests } from "./ppp-refresh.test.mjs";
 import { runPppCompareTests } from "./ppp-compare.test.mjs";
+import { runPppReplaceTests } from "./ppp-replace.test.mjs";
+import { runPptOffTests } from "./ppt-off.test.mjs";
 import { runPrivatePppTests } from "./private-ppp.test.mjs";
 import { runPppEnrichTests } from "./ppp-enrich.test.mjs";
 import { runPppSealedHistoryTests } from "./ppp-sealed-history.test.mjs";
@@ -362,6 +364,14 @@ console.log("── ppp dual-run ──");
 {
   const n = await runPppCompareTests();
   t("ppp compare suite", n === 0, `${n} failed`);
+}
+{
+  const n = await runPppReplaceTests();
+  t("ppp replace suite", n === 0, `${n} failed`);
+}
+{
+  const n = await runPptOffTests();
+  t("ppt off suite", n === 0, `${n} failed`);
 }
 {
   const n = await runPrivatePppTests();

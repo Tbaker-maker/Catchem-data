@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { redact, stagePrivate } from "./lib/private-ppt.mjs";
 import { clonePrivate } from "./lib/private-clone.mjs";
+import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -24,6 +25,7 @@ function run(cmd, args, env) {
 }
 
 export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = process.env, runGit = run } = {}) {
+  if (pptOff()) return { pushed: false, reason: "PPT_OFF: raw PPT was not pushed. No PPT file was read." };
   if (!token) {
     return { pushed: false, reason: "PRIVATE_DATA_TOKEN is not set. Raw PPT was not pushed." };
   }
@@ -82,6 +84,10 @@ export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = 
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  if (pptOff()) {
+    console.log(pptOffBanner("scripts/push-private-ppt.mjs"));
+    process.exit(0);
+  }
   const token = process.env.PRIVATE_DATA_TOKEN || "";
   const date = new Date().toISOString().slice(0, 10);
   const result = await pushPrivate({ token, date });

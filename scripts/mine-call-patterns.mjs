@@ -5,6 +5,7 @@
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pptOff } from "./lib/ppt-off.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
 import { loadLongHistoryPriceBook } from "./lib/tcgci-score.mjs";
 import { isBanned } from "./lib/youtube.mjs";
@@ -143,7 +144,7 @@ async function seriesFromBook(root) {
       for (const r of doc.prices || []) put(Number(r.id), day, Number(r.market));
     }
   } catch {}
-  for (const dir of ["data/history/tcgplayer-market", "data/history/ppt-sealed-private", "data/history/ppt-sealed"]) {
+  for (const dir of pptOff() ? ["data/history/tcgplayer-market"] : ["data/history/tcgplayer-market", "data/history/ppt-sealed-private", "data/history/ppt-sealed"]) {
     let names = [];
     try { names = await readdir(join(root, dir)); } catch { continue; }
     for (const f of names) {

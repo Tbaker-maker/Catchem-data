@@ -3,6 +3,7 @@
 import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { pptOff } from "./ppt-off.mjs";
 
 export const CROSSCHECK_FILES = ["sealed-crosscheck.json", "crosscheck-history.json"];
 // Full per-card TCGplayer sold counts derived from PPT. Bulk derived data stays
@@ -54,6 +55,7 @@ async function overlayJson(src, dest) {
 // keep landing in data/history/ppt-sealed after the public copy is removed.
 // Also copies the two crosscheck files and that day's raw pulls.
 export async function stagePrivate({ checkout, rawDir, dest, date }) {
+  if (pptOff()) return [];
   const actions = [];
   const sealedDest = join(dest, "data/history/ppt-sealed");
   if (await overlayJson(join(checkout, "data/history/ppt-sealed"), sealedDest)) {
@@ -106,7 +108,39 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
 // What the daily job mounts back into the public checkout. The sealed history
 // goes to a gitignored folder. The two crosscheck files go to the gitignored
 // raw path the readers already check. Nothing here is committed.
+function daysEnding(today, n) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(today || ""))) return [];
+  const start = Date.parse(`${today}T00:00:00Z`);
+  const out = [];
+  for (let i = 0; i < n; i += 1) out.push(new Date(start - i * 86400000).toISOString().slice(0, 10));
+  return out;
+}
+
+// The compare reads sealed-*.json from the last week. Set raws stay out: they are
+// the bulk of raw/. Only the sealed product files are copied back.
+export async function restoreRecentSealed({ clone, root, today, days = 7 }) {
+  if (pptOff()) return [];
+  const actions = [];
+  for (const day of daysEnding(today, days)) {
+    const candidates = [join(clone, "raw", day, day), join(clone, "raw", day)];
+    for (const src of candidates) {
+      if (!existsSync(src)) continue;
+      let names = [];
+      try { names = await readdir(src); } catch { continue; }
+      const sealed = names.filter((name) => /^sealed-\d+\.json$/.test(name));
+      if (!sealed.length) continue;
+      const dest = join(root, "ppt-raw-private", day);
+      await mkdir(dest, { recursive: true });
+      for (const name of sealed) await cp(join(src, name), join(dest, name));
+      actions.push(`sealed:${day}`);
+      break;
+    }
+  }
+  return actions;
+}
+
 export async function restorePrivate({ clone, root }) {
+  if (pptOff()) return [];
   const actions = [];
   if (await overlayJson(join(clone, "data/history/ppt-sealed"), join(root, "data/history/ppt-sealed-private"))) {
     actions.push("ppt-sealed");

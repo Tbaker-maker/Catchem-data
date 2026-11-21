@@ -6,6 +6,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildLimits, mergeAlerts, YOUTUBE_DAILY_QUOTA } from "./lib/limits-watch.mjs";
+import { pptOff } from "./lib/ppt-off.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = "data/derived/limits/latest.json";
@@ -17,7 +18,7 @@ async function readJson(path) {
 
 const now = new Date();
 const listing = await readJson(join(ROOT, "data/derived/listing-counts/state.json"));
-const ppt = await readJson(join(ROOT, "data/ppt/run-report.json"));
+const ppt = pptOff() ? null : await readJson(join(ROOT, "data/ppt/run-report.json"));
 const budgets = await readJson(join(ROOT, "config/api-budgets.json"));
 const youtubeLimit = Number(budgets?.youtube?.dailyQuota) || YOUTUBE_DAILY_QUOTA;
 const localYt = await readJson(join(ROOT, "data/private/youtube/state.json"));
