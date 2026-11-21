@@ -87,7 +87,7 @@ export async function run() {
   t("one swing far from the steady print falls back to that print", far.jumpy === true && far.price === 100 && far.date === "2026-10-12" && far.price !== 300);
   t("a small move is unchanged", still.jumpy === false && still.price === 110);
   t("no limit changes nothing", openQuote.jumpy === false && openQuote.price === 300);
-  const heldPts = [day("2026-09-26", 100), day("2026-10-05", 250), day("2026-10-12", 100), day("2026-10-18", 250), day(AS_OF, 100)];
+  const heldPts = [day("2026-09-26", 100), day("2026-09-30", 250), day("2026-10-05", 40), day("2026-10-10", 220), day("2026-10-15", 40), day(AS_OF, 100)];
   t("a jumpy price with no different steady print is held", jumpyQuote(heldPts, AS_OF, JUMPY).held === true);
 
   const tags = () => ["Ultra Rare"];
