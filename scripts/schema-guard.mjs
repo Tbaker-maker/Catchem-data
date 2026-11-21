@@ -11,14 +11,19 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { loadReadsDayAlerts } from "./lib/reads-day-alert.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-let schemas;
+let schemas = { files: {} };
+let missingRegistry = false;
 try { schemas = JSON.parse(await readFile(join(ROOT, "data/schemas.json"), "utf-8")); }
 catch {
   // A missing registry used to exit 0, so Morning Pulse treated "no schemas" as a pass.
+  // It still fails closed. The exit stays on the problem list, below the reads
+  // day alert, so that alert can print without becoming the exit that stops
+  // the price commit.
   console.error("schema guard: no schemas.json");
-  process.exit(1);
+  missingRegistry = true;
 }
 
 export function unreadableFileProblem(path, spec, error) {
@@ -27,6 +32,7 @@ export function unreadableFileProblem(path, spec, error) {
 }
 
 const problems = [];
+if (missingRegistry) problems.push("schema guard: no schemas.json");
 for (const [path, spec] of Object.entries(schemas.files || {})) {
   let d;
   try { d = JSON.parse(await readFile(join(ROOT, path), "utf-8")); }
@@ -162,10 +168,26 @@ try {
   if (line) problems.push(line);
 }
 
+// A stale reads board is loud here, inside the Morning Pulse schema guard.
+// It does not join `problems` and it does not exit. Generate Morning Pulse
+// sits above "Commit updated prices", and an exit from this file used to
+// stop that commit. ::error:: is the visible alert. The workflow step
+// reads-day-alert.mjs prints the same lines and also exits 0.
+const readsAlerts = await loadReadsDayAlerts(ROOT);
+if (readsAlerts.length) {
+  console.error(`\n✗ READS DAY: ${readsAlerts.length} alert(s). Price publish is not stopped.`);
+  for (const line of readsAlerts) {
+    console.error(`   ${line}`);
+    console.error(`::error::${line}`);
+  }
+  console.error("");
+}
+
 if (problems.length) {
   console.error(`\n✗ SCHEMA GUARD — ${problems.length} problem(s):`);
   for (const p of problems) console.error(`   ${p}`);
   console.error("");
+  // Fail closed, including when the registry is missing: no schemas.json
   process.exit(1);
 }
 console.log(`✓ schema guard: ${Object.keys(schemas.files || {}).length} data files match their shape`);

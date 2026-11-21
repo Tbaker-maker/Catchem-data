@@ -165,6 +165,26 @@ const rise = {
 };
 t("a rise is not a dip", thinReadBlock(rise, FIX) == null);
 t("a quiet read stays when limits are loaded", thinReadBlock(quiet, FIX) == null);
+const bareList = {
+  id: "listcount-pgo-etb",
+  sku: "pgo-etb",
+  readKind: "listings",
+  kind: "listings",
+  name: "Pokémon GO Elite Trainer Box",
+  headline: "Pokémon GO Elite Trainer Box: 70 eBay listings counted on Nov 13. A listing is not a sale.",
+  lines: [],
+  receipt: { n: 70, prev: null, date: "2026-11-13", prevDate: "" },
+};
+t("a listings count with no detail line and no trend chip is blocked", thinReadBlock(bareList, FIX)?.rule === "thin-level");
+const detailed = {
+  ...bareList,
+  id: "listcount-detail",
+  lines: ["Listings counted 80 on Nov 6 to 70 on Nov 13. A listing is not a sale."],
+  receipt: { n: 70, prev: 80, date: "2026-11-13", prevDate: "2026-11-06" },
+};
+t("a listings count with a detail line stays", thinReadBlock(detailed, FIX) == null);
+const chipped = { ...bareList, id: "listcount-chip", signals: [{ kind: "trend", chip: "Down" }] };
+t("a listings count with a trend chip stays", thinReadBlock(chipped, FIX) == null);
 
 const partial = { ...FIX };
 delete partial.minDipUsd;

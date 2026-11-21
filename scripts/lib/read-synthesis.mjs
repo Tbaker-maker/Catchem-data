@@ -14,6 +14,7 @@ import { monthDay } from "./takes.mjs";
 import { dayNum, addDays, dateLabel, nearestPoint, loadHistoryCards, oneNightMove } from "./history-reads.mjs";
 import { eraTagOf, priceRange, dayLabel } from "./signal-chips.mjs";
 import { sourceNamesDay, speakDates } from "./read-quality.mjs";
+import { rotationPhrase } from "./rotation-phrase.mjs";
 
 export const HEADLINE_MAX = 300;
 
@@ -265,7 +266,8 @@ export function findings(item, ctx, cfg) {
   // Weekly streak and how often it moved
   const st = weeklyStreak(pts, asOf, cfg.streakWeekUsd);
   if (st && st.n >= cfg.streakMinWeeks && Math.abs(st.to[1] - st.from[1]) >= cfg.minTrendUsd) {
-    out.push({ tag: "streak", type: `streak${st.dir > 0 ? "up" : "down"}`, score: cfg.weights.streak * st.n, nums: { st },
+    const spanDays = dayNum(st.to[0]) - dayNum(st.from[0]);
+    out.push({ tag: "streak", type: `streak${st.dir > 0 ? "up" : "down"}`, window: spanDays > 0 ? spanDays : undefined, score: cfg.weights.streak * st.n, nums: { st },
       text: `${st.dir > 0 ? "Higher" : "Lower"} for ${st.n} weeks running: ${title} moved from ${at(st.from, asOf)} to ${usd(st.to[1])} on ${monthDay(asOf)}.`, short: `It has closed ${st.dir > 0 ? "higher" : "lower"} ${st.n} weeks running, from ${at(st.from, asOf)}.` });
   } else {
     const step = oneStep(pts, asOf, cfg.streakWeekUsd);
@@ -324,7 +326,7 @@ export function findings(item, ctx, cfg) {
   if (item.set && item.release) bits.push(`${item.set} came out ${dateLabel(item.release, asOf)}`);
   if (era) bits.push(`${era} era`);
   const rot = ctx.rotation?.get(item.setSlug);
-  if (rot?.status) bits.push(`${rot.status === "Standard" ? "still Standard legal" : String(rot.status).toLowerCase()}`);
+  if (rot?.status) bits.push(rotationPhrase(rot.status));
   const sv = ctx.setValue?.get(item.setSlug);
   if (sv?.total > 0 && sv.priced > 1) bits.push(`its ${sv.priced} priced cards add up to ${usd(sv.total)}`);
   if (bits.length) out.push({ tag: "set", type: "set", score: 0, nums: { era, rot, sv, release: item.release }, short: `${bits[0]}${bits.length > 1 ? `, ${bits.slice(1).join(", ")}` : ""}.` });
@@ -389,6 +391,15 @@ export function leadDirection(item, fs) {
   return recent ? findingDir(recent) : 0;
 }
 
+function pairEnds(pair) {
+  if (Array.isArray(pair?.from) && Array.isArray(pair?.to) && pair.from[0] && pair.to[0]) return { from: String(pair.from[0]), to: String(pair.to[0]) };
+  return null;
+}
+
+function moveEnds(f) {
+  return pairEnds(f?.nums?.st) || pairEnds(f?.nums?.lead);
+}
+
 export function compose(item, fs, cfg, used) {
   const ranked = fs.filter((f) => f.score > 0 && f.text).sort((a, b) => b.score - a.score);
   const kindF = item.kindLine ? { tag: "kind", type: `kind:${item.kind}`, score: cfg.weights.kind, text: item.kindLine } : null;
@@ -406,7 +417,12 @@ export function compose(item, fs, cfg, used) {
   const leadPool = agree.length ? agree : ranked;
   const lead = leadPool.find((f) => count(f) < cap) || leadPool.slice().sort((a, b) => count(a) - count(b))[0];
   const leadWindow = Number.isFinite(Number(lead.window)) ? Number(lead.window) : null;
+  const leadEnds = moveEnds(lead);
   const sameWindow = (f) => {
+    const ends = moveEnds(f);
+    // A second price move has to use the lead's own dates. A 90 day line
+    // under a 12 week streak is a different window, so that line drops.
+    if (leadEnds && ends && (leadEnds.from !== ends.from || leadEnds.to !== ends.to)) return false;
     if (!leadWindow || !Number.isFinite(Number(f.window))) return true;
     return Number(f.window) === leadWindow;
   };
