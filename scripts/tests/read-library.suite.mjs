@@ -47,10 +47,10 @@ export async function run() {
     cards: {
       a: card({ id: "move-tcgcsv-1-7", sku: "tcgcsv-1", headline: "Pikachu is up 17.2% over 7 days, from $6.00 to $7.03.", price: 7.03, changePct: 17.2, windowDays: 7 }),
       b: card({ id: "move-tcgcsv-2-7", sku: "tcgcsv-2", name: "Dragonair", headline: "Dragonair is down 7.5% over 7 days, from $18.88 to $17.46.", price: 17.46, changePct: -7.5, windowDays: 7 }),
-      c: card({ id: "move-tcgcsv-3-30", sku: "tcgcsv-3", name: "Pidgey", headline: "Pidgey hit a 6-month high: $2.66, up 72.7% in 30 days.", price: 2.66, changePct: 72.7, windowDays: 30 }),
+      c: card({ id: "move-tcgcsv-3-30", sku: "tcgcsv-3", name: "Pidgey", headline: "Pidgey hit a 6-month high: $2.66, up 72.7% in 30 days.", price: 2.66, changePct: 72.7, windowDays: 90 }),
       d: card({ id: "move-tcgcsv-3-90", sku: "tcgcsv-3", name: "Pidgey", headline: "Pidgey hit a 6-month high: $2.66, up 9.9% in 90 days.", price: 2.66, changePct: 9.9, windowDays: 90 }),
       e: card({ id: "move-tcgcsv-4-7", sku: "tcgcsv-4", name: "Oddish", headline: "Oddish is up 1% over 7 days, from $1.00 to $1.01.", price: 1.01, changePct: 1, windowDays: 7 }),
-      f: card({ id: "move-tcgcsv-5-30", sku: "tcgcsv-5", name: "Abra", headline: "Abra hit a 6-month low: $1.10, down 9.1% in 30 days.", price: 1.1, changePct: -9.1, windowDays: 30 }),
+      f: card({ id: "move-tcgcsv-5-30", sku: "tcgcsv-5", name: "Abra", headline: "Abra hit a 6-month low: $1.10, down 9.1% in 30 days.", price: 1.1, changePct: -9.1, windowDays: 90 }),
       h: card({ id: "move-tcgcsv-11-7", sku: "tcgcsv-11", name: "Gastly", headline: "Gastly is up 40% over 7 days, from $1.00 to $1.40.", path: "Gastly latest price rose from $1.00 on Sep 27 to $1.40 on Oct 8, up 40%.", price: 1.4, changePct: 40, windowDays: 7 }),
       i: card({ id: "move-tcgcsv-12-90", sku: "tcgcsv-12", name: "Koffing", headline: "Koffing hit a 6-month high: $2.00, up 10% in 90 days.", path: "Koffing latest price rose from $1.80 on Jul 9 to $2.00 on Oct 8, up 10%.", price: 2, changePct: 10, windowDays: 90 }),
     },
@@ -60,7 +60,7 @@ export async function run() {
     [2, new Map([["2026-10-01", 18.88], ["2026-10-08", 17.46]])],
     [3, new Map([["2026-04-01", 1], ["2026-07-10", 2.42], ["2026-09-08", 1.54], ["2026-10-08", 2.66]])],
     [4, new Map([["2026-10-01", 1], ["2026-10-08", 1.01]])],
-    [5, new Map([["2026-04-01", 3], ["2026-09-08", 1.21], ["2026-10-08", 1.1]])],
+    [5, new Map([["2026-04-01", 3], ["2026-07-10", 1.21], ["2026-10-08", 1.1]])],
     [9, new Map([["2026-10-01", 4.95], ["2026-10-04", 1], ["2026-10-05", 2], ["2026-10-06", 3], ["2026-10-07", 4], ["2026-10-08", 5]])],
     [11, new Map([["2026-09-27", 1], ["2026-10-08", 1.4]])],
     [12, new Map([["2026-04-01", 1], ["2026-07-09", 1.82], ["2026-10-08", 2]])],
@@ -108,16 +108,16 @@ export async function run() {
     headline: "Base loose packs moved and the booster box did not.",
     why: "Both series are on the row.",
     asOf: "2026-10-08",
-    windowDays: 30,
-    pack: { fromDate: "2026-09-08", toDate: "2026-10-08" },
-    box: { fromDate: "2026-09-08", toDate: "2026-10-08" },
+    windowDays: 90,
+    pack: { fromDate: "2026-07-10", toDate: "2026-10-08" },
+    box: { fromDate: "2026-07-10", toDate: "2026-10-08" },
   };
   const lag = buildReadLibrary({
     catalogue,
     extra: { lag: { reads: [lagRead], omitted: [], missingPrice: [] }, group: { reads: [] } },
     series,
   });
-  t("a lag read already on the file can board", lag.counts.set.qualified === 1 && lag.board.some((row) => row.signal === "set" && row.id === "lag-base" && row.startDate === "2026-09-08" && row.endDate === "2026-10-08"));
+  t("a lag read already on the file can board", lag.counts.set.qualified === 1 && lag.board.some((row) => row.signal === "set" && row.id === "lag-base" && row.startDate === "2026-07-10" && row.endDate === "2026-10-08"));
   const reached = buildReadLibrary({
     catalogue,
     extra: { lag: { reads: [{ ...lagRead, id: "lag-back", pack: { fromDate: "2026-09-06", toDate: "2026-10-08" }, box: { fromDate: "2026-09-06", toDate: "2026-10-08" } }], omitted: [], missingPrice: [] }, group: { reads: [] } },

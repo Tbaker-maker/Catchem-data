@@ -8,7 +8,7 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // A test band, not the live one. The live band stays in catchem-data-private.
-const cfg = { minListings: 3, minRatio: 0.5, maxRatio: 2 };
+const cfg = { minListings: 4, minRatio: 0.5, maxRatio: 2 };
 
 export async function runPriceTrustTests() {
   let fail = 0;
@@ -48,7 +48,7 @@ export async function runPriceTrustTests() {
   const odd = decidePrice({ id: "odd", kind: "single", release: "2024-01-01", price: 400, printing: "Holofoil", printings: [{ name: "Holofoil", price: 400 }], unverified: true, ebayAsks: [400, 410, 390] }, cfg);
   t("an unverified price is not a headline", odd.status === "checking" && odd.reason === "unverified" && odd.showNm === false);
 
-  const vintageOk = decidePrice({ id: "v", kind: "single", release: "1999-01-09", price: 100, printing: "Holofoil", printings: [{ name: "Holofoil", price: 100 }], condition: "NM", ebayAsks: [95, 100, 110] }, cfg);
+  const vintageOk = decidePrice({ id: "v", kind: "single", release: "1999-01-09", price: 100, printing: "Holofoil", printings: [{ name: "Holofoil", price: 100 }], condition: "NM", ebayAsks: [95, 100, 105, 110] }, cfg);
   t("vintage publishes when the same printing and condition agree", vintageOk.status === "publish" && vintageOk.showNm === true);
   const vintageFar = decidePrice({ id: "v2", kind: "single", release: "1999-01-09", price: 20, printing: "Holofoil", printings: [{ name: "Holofoil", price: 20 }], ebayAsks: [90, 100, 110] }, cfg);
   t("vintage stays checked when listings disagree", vintageFar.status === "checking" && vintageFar.reason === "vintage");

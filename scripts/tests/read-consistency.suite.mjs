@@ -37,7 +37,12 @@ export async function run() {
     const price = iso < "2026-10-23" ? 10 : iso < asOf ? 11 : 12;
     pts.push([iso, price]);
   }
-  const item = { id: "x", pts, title: "Rayquaza (Test) 14/146", asOf, set: "Test", setSlug: "ts", release: "2024-01-01", sealed: false };
+  const synthPts = pts.map(([iso]) => {
+    if (iso >= "2026-10-23") return [iso, 56];
+    if (iso > "2026-09-30") return [iso, 48];
+    return [iso, 40];
+  });
+  const item = { id: "x", pts: synthPts, title: "Rayquaza (Test) 14/146", asOf, set: "Test", setSlug: "ts", release: "2024-01-01", sealed: false };
   const found = findings(item, { peers: new Map(), listings: new Map(), asks: new Map(), rotation: new Map(), setValue: new Map() }, CFG);
   const got = compose(item, found, CFG, null);
   const head = got?.text || "";
