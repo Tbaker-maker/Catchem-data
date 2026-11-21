@@ -293,6 +293,14 @@ try {
   console.error(`stale flag skipped: ${err.message}`);
   throw err;
 }
+try {
+  const { ensureShowableCutouts } = await import("./lib/sealed-cutout-cover.mjs");
+  const cutouts = await ensureShowableCutouts(ROOT);
+  console.log(JSON.stringify({ cutouts }));
+} catch (err) {
+  console.error(`sealed cutouts failed: ${err.message}`);
+  throw err;
+}
 const health = await writeHealth(ROOT);
 // YouTube learning loop (official API, private store). Before the flagger so
 // tonight's leads become flags. A missing key or any failure never stops the nightly.
