@@ -4,6 +4,7 @@
 // 1. No PPT history folder or file is tracked in this repo.
 // 2. Every price point in the public buckets, sparks and quick-sheet inputs is a
 //    TCGCSV day we publish (data/history/tcgcsv-daily or data/history/tcgplayer-market).
+//    On a TCGCSV day the headline market and each printing price are published values.
 //    A point on a day those files do not hold for that product is treated as PPT-derived.
 import { readFile, readdir } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -66,37 +67,52 @@ export function unexplainedPoints(cards, allowed) {
   const bad = [];
   for (const card of cards) {
     if (!card || !Array.isArray(card.hist) || !card.pid) continue;
-    const days = allowed.get(Number(card.pid));
     for (const [day, value] of card.hist) {
-      const seen = days?.get(day);
-      if (seen == null || Math.abs(seen - Number(value)) > 0.011) bad.push(`${card.pid} ${day} ${value}`);
+      if (!allowsVariant(allowed, card.pid, day, value)) bad.push(`${card.pid} ${day} ${value}`);
     }
   }
   return bad;
 }
 
+// A day can hold a headline market and other TCGCSV printings. Keep each value.
+export function addPublishedPrice(allowed, pid, day, v) {
+  const id = Number(pid);
+  const n = Number(v);
+  if (!id || !(n > 0)) return;
+  if (!allowed.has(id)) allowed.set(id, new Map());
+  const m = allowed.get(id);
+  const key = day;
+  if (!m.has(key)) m.set(key, Math.round(n * 100) / 100);
+  else if (Math.abs(m.get(key) - n) > 0.011) m.set(`${key}#${n}`, n);
+}
+
+export function addTcgcsvPrices(allowed, pid, day, row) {
+  addPublishedPrice(allowed, pid, day, row?.market);
+  for (const printing of row?.printings || []) addPublishedPrice(allowed, pid, day, printing?.price);
+}
+
+export function allowsVariant(allowed, pid, day, v) {
+  const m = allowed.get(Number(pid));
+  if (!m) return false;
+  const n = Number(v);
+  for (const [k, x] of m) {
+    if ((k === day || String(k).startsWith(`${day}#`)) && Math.abs(x - n) <= 0.011) return true;
+  }
+  return false;
+}
+
 async function publicDays() {
   const allowed = new Map();
-  const add = (pid, day, v) => {
-    const id = Number(pid); const n = Number(v);
-    if (!id || !(n > 0)) return;
-    if (!allowed.has(id)) allowed.set(id, new Map());
-    const m = allowed.get(id);
-    // a product can have several printings on one day; keep each value
-    const key = day;
-    if (!m.has(key)) m.set(key, Math.round(n * 100) / 100);
-    else if (Math.abs(m.get(key) - n) > 0.011) m.set(`${key}#${n}`, n);
-  };
   for (const f of await readdir(join(ROOT, "data/history/tcgcsv-daily"))) {
     if (!f.endsWith(".json")) continue;
     const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", f), "utf8"));
-    for (const p of doc.prices || []) add(p.id, doc.date, p.market);
+    for (const p of doc.prices || []) addTcgcsvPrices(allowed, p.id, doc.date, p);
   }
   try {
     for (const f of await readdir(join(ROOT, "data/history/tcgplayer-market"))) {
       if (!f.endsWith(".json")) continue;
       const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgplayer-market", f), "utf8"));
-      for (const p of doc.points || []) add(doc.tcgplayerProductId, p.date, p.market);
+      for (const p of doc.points || []) addPublishedPrice(allowed, doc.tcgplayerProductId, p.date, p.market);
     }
   } catch {}
   return allowed;
@@ -111,6 +127,16 @@ export async function runNoPptPublicTests() {
     t("a point on a public day passes", unexplainedPoints([{ pid: 1, hist: [["2026-10-10", 2]] }], allowed).length === 0);
     t("a point on a day no public file holds fails", unexplainedPoints([{ pid: 1, hist: [["2026-04-01", 2]] }], allowed).length === 1);
     t("a different value on a public day fails", unexplainedPoints([{ pid: 1, hist: [["2026-10-10", 3]] }], allowed).length === 1);
+  }
+  {
+    const allowed = new Map();
+    addTcgcsvPrices(allowed, 88903, "2026-10-09", {
+      market: 160,
+      printing: "Normal",
+      printings: [{ name: "Normal", price: 160 }, { name: "Holofoil", price: 190.16 }],
+    });
+    t("a Holofoil point that matches printings passes", allowsVariant(allowed, 88903, "2026-10-09", 190.16) && unexplainedPoints([{ pid: 88903, hist: [["2026-10-09", 190.16]] }], allowed).length === 0);
+    t("a value that matches neither market nor printings fails", !allowsVariant(allowed, 88903, "2026-10-09", 999) && unexplainedPoints([{ pid: 88903, hist: [["2026-10-09", 999]] }], allowed).length === 1);
   }
   t("a rarebox singles file is a banned path", pptPathsIn(["data/history/singles-rarebox/swsh2-200.json"]).length === 1);
   t("a raw PPP folder is a banned path", pptPathsIn(["ppp-raw-private/2026-11-12/sealed-1.json", "data/history/tcgcsv-daily/2026-11-12.json"]).length === 1);
@@ -158,14 +184,13 @@ export async function runNoPptPublicTests() {
   const { loadFillMap } = await import("../lib/fill-history.mjs");
   const fillMap = loadFillMap(ROOT);
   const fillHas = (pid, day, v) => (fillMap.get(pid)?.points || []).some((p) => p[0] === day && Math.abs(Number(p[1]) - v) <= 0.011);
-  const allowsVariant = (pid, day, v) => { const m = allowed.get(pid); if (!m) return false; for (const [k, x] of m) if ((k === day || k.startsWith(day + "#")) && Math.abs(x - v) <= 0.011) return true; return false; };
   const bucketDir = join(ROOT, "research/assets/public/buckets");
   const bad = [];
   for (const f of (await readdir(bucketDir)).filter((n) => n.endsWith(".json"))) {
     const doc = JSON.parse(await readFile(join(bucketDir, f), "utf8"));
     for (const card of Array.isArray(doc) ? doc : Object.values(doc)) {
       if (!card?.pid || !Array.isArray(card.hist)) continue;
-      for (const [day, v] of card.hist) if (!allowsVariant(Number(card.pid), day, Number(v))) bad.push(`${card.pid} ${day} ${v}`);
+      for (const [day, v] of card.hist) if (!allowsVariant(allowed, Number(card.pid), day, Number(v))) bad.push(`${card.pid} ${day} ${v}`);
       // Approved chart fill lives apart in fillHist. Each point must be before fillTo, from an
       // enabled source in config/fill-sources.json, and match its raw file exactly.
       for (const [day, v] of card.fillHist || []) if (!(card.fillTo && day < card.fillTo && fillHas(Number(card.pid), day, Number(v)))) bad.push(`fill ${card.pid} ${day} ${v}`);
