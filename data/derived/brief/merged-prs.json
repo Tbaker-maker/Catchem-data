@@ -1,233 +1,71 @@
 {
- "asOf": "2026-11-15",
+ "asOf": "2026-11-22",
  "repo": "Catchem-data",
  "prs": [
   {
-   "number": 546,
-   "title": "Keep a shiny legend on its own card",
-   "mergedAt": "2026-11-14T09:37:41-07:00",
+   "number": 572,
+   "title": "Allow TCGCSV printing prices in the public day guard",
+   "mergedAt": "2026-11-22T11:51:06-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 552,
-   "title": "Compare supply shifts only on whole eBay counts above a private floor",
-   "mergedAt": "2026-11-13T19:37:24-07:00",
+   "number": 554,
+   "title": "Fix the PPP versus PPT compare and retarget page clocks",
+   "mergedAt": "2026-11-21T14:13:32-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 550,
-   "title": "Cap the PkmnPrices refresh at 45 minutes so the price run fits GitHub's 6-hour limit",
-   "mergedAt": "2026-11-13T17:58:43-07:00",
+   "number": 567,
+   "title": "Store no illustrator credit when the source has none",
+   "mergedAt": "2026-11-21T14:11:51-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 547,
-   "title": "Write sealed history once daily prices overlap.",
-   "mergedAt": "2026-11-13T11:55:49-07:00",
+   "number": 555,
+   "title": "Stamp the reads board on the catalogue day",
+   "mergedAt": "2026-11-21T13:27:24-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 545,
-   "title": "Keep a new pathway id off the public board",
-   "mergedAt": "2026-11-13T11:55:46-07:00",
+   "number": 569,
+   "title": "Read the public-data tip with git after the push",
+   "mergedAt": "2026-11-21T13:00:10-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 542,
-   "title": "Keep the feed when a start day is missing",
-   "mergedAt": "2026-11-12T23:53:14-07:00",
+   "number": 548,
+   "title": "Count a streak week only past the private floor",
+   "mergedAt": "2026-11-21T12:13:01-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 539,
-   "title": "Feed: never quote a price older than the item's newest day; Feed images from the catalogue",
-   "mergedAt": "2026-11-12T11:51:56-07:00",
+   "number": 171,
+   "title": "Drop the $9 editor seat and use catalogue pictures.",
+   "mergedAt": "2026-11-21T11:49:12-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 540,
-   "title": "Keep a cheaper price tail instead of calling it a second copy.",
-   "mergedAt": "2026-11-12T11:29:57-07:00",
+   "number": 562,
+   "title": "Fix the three checks that keep main pr-tests red",
+   "mergedAt": "2026-11-21T11:21:48-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 541,
-   "title": "Sealed history backfill stays inside the 500 credit history lane.",
-   "mergedAt": "2026-11-12T09:24:22-07:00",
+   "number": 566,
+   "title": "Stop heal from reverting a file the failing check did not read",
+   "mergedAt": "2026-11-21T10:04:04-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 523,
-   "title": "data: sourced US MSRP for 196/227 sealed ids (new file)",
-   "mergedAt": "2026-11-12T09:12:07-07:00",
+   "number": 561,
+   "title": "Excuse catalogue set logos from artifact freshness.",
+   "mergedAt": "2026-11-17T23:55:43-07:00",
    "repo": "Catchem-data"
   },
   {
-   "number": 518,
-   "title": "Publish age is dated against the run start when the job slips one UTC day",
-   "mergedAt": "2026-11-12T09:12:03-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 538,
-   "title": "fix: a missing sealed cutout no longer stops tonight's prices",
-   "mergedAt": "2026-11-12T07:35:23-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 514,
-   "title": "Reads: real history span, dated prices instead of 'tonight', one sealed-vs-chase direction",
-   "mergedAt": "2026-11-12T04:53:58-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 520,
-   "title": "Smoke does not fail a good price publish when the pulse feed was not refreshed",
-   "mergedAt": "2026-11-12T04:15:03-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 512,
-   "title": "Movers name their own window: the change is 7 or 30 days, not one day",
-   "mergedAt": "2026-11-12T04:04:32-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 533,
-   "title": "Reads: 12 PkmnPrices read pathways (facts through the public guards, scored privately through the scanner gate)",
-   "mergedAt": "2026-11-12T03:38:07-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 524,
-   "title": "Weekly movers use a 7-day window ending near asOf",
-   "mergedAt": "2026-11-12T03:19:22-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 517,
-   "title": "Titles: a card in TCGplayer's Miscellaneous group keeps its own tag (Pokémon Day 2026, Metal Card, GameStop Exclusive)",
-   "mergedAt": "2026-11-12T03:18:51-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 516,
-   "title": "Set reads carry no art chip: the SIR badge on the Ascended Heroes set read was its lead card's",
-   "mergedAt": "2026-11-12T03:18:21-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 513,
-   "title": "Feed moves end near the catalogue day: no stale 'this week' rows",
-   "mergedAt": "2026-11-12T03:17:52-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 515,
-   "title": "Smoke test reads the pulse feed at the pushed commit, not the 5-minute cached branch URL",
-   "mergedAt": "2026-11-12T03:16:48-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 536,
-   "title": "fix(ppp-enrich): cap each lane on charged credits; stop a lane for the UTC day when a call charges more than expected",
-   "mergedAt": "2026-11-12T02:42:16-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 532,
-   "title": "Add the four SVP promo images the API published.",
-   "mergedAt": "2026-11-12T02:09:10-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 528,
-   "title": "Catalogue: add the missing Mega Evolution promos and their TCGplayer photos",
-   "mergedAt": "2026-11-12T02:03:09-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 519,
-   "title": "Pulse does not abort later steps when the catalogue is stale after publish",
-   "mergedAt": "2026-11-12T01:53:56-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 526,
-   "title": "Post Office index: 30th Celebration picture paths + Delta Reign rows",
-   "mergedAt": "2026-11-12T01:10:18-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 529,
-   "title": "Add a private PkmnPrices dual-run beside the PPT refresh",
-   "mergedAt": "2026-11-12T01:01:21-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 534,
-   "title": "Index sealed-step listings counted on the catalog id",
-   "mergedAt": "2026-11-12T00:34:14-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 531,
-   "title": "PkmnPrices: eBay sold comps, sold per day, graded pop, Cardmarket EUR (derived public, raw private)",
-   "mergedAt": "2026-11-12T00:20:22-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 525,
-   "title": "Catalogue: add the 35 sets the API ingest missed (3,133 cards)",
-   "mergedAt": "2026-11-12T00:12:05-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 530,
-   "title": "Nightly: stop the lost-runner failure in Dated reads (sparse raw push, step cap, early watch-log commit)",
-   "mergedAt": "2026-11-11T23:51:53-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 511,
-   "title": "Card links follow the written number: Shiny Legends, staff promos, tag teams",
-   "mergedAt": "2026-11-11T23:29:25-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 501,
-   "title": "pr-tests: block only on failures the base commit does not have",
-   "mergedAt": "2026-11-11T21:12:39-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 510,
-   "title": "Read synthesis keeps the shape the test gate passed; history sources may speak their start date",
-   "mergedAt": "2026-11-11T19:00:43-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 508,
-   "title": "Reads check Nov 11: chip windows follow the lead, slump reads never lead with a gain, chase lines keep their own printing",
-   "mergedAt": "2026-11-11T17:53:40-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 509,
-   "title": "Private clones skip raw/: shallow, blob-less, sparse checkout of catchem-data-private",
-   "mergedAt": "2026-11-11T17:52:07-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 506,
-   "title": "Track record test: allow the thin no-rows public page since receipts went private (#494)",
-   "mergedAt": "2026-11-11T17:34:56-07:00",
-   "repo": "Catchem-data"
-  },
-  {
-   "number": 504,
-   "title": "Receipts: a stale watch log warns instead of failing the job; cut the new Gallade blister",
-   "mergedAt": "2026-11-11T15:27:12-07:00",
+   "number": 559,
+   "title": "Scrub held cards from reads again after the rating build",
+   "mergedAt": "2026-11-17T05:56:19-07:00",
    "repo": "Catchem-data"
   }
  ]
