@@ -1,15 +1,18 @@
-# Script research scan — 2026-11-21
+# Script research scan — 2026-11-22
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
 ## Flags
-- NEW_SET: MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon — Pokémon press https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C
+- DATE_CHANGE: 30th Celebration: Sylveon ex & Greninja ex Tins (radar 2026-12-04, seen 2026-09-16) — Serebii https://www.serebii.net/card/30thcelebration
+- DATE_CHANGE: 30th Celebration: Sylveon ex & Greninja ex Tins (radar 2026-12-04, seen 2026-09-16) — TCGCSV group https://tcgcsv.com/tcgplayer/3/groups
+- DATE_CHANGE: 30th Celebration: Binder Collection (radar 2026-12-04, seen 2026-09-16) — Serebii https://www.serebii.net/card/30thcelebration
+- DATE_CHANGE: 30th Celebration: Binder Collection (radar 2026-12-04, seen 2026-09-16) — TCGCSV group https://tcgcsv.com/tcgplayer/3/groups
 
 ## Radar check
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
 - 2026-11-27 JP: Card Illustration Figure Collection 30th CELEBRATION (Pikachu figure + card) — no second source in tonight's files
-- 2026-12-04 30th Celebration — Sylveon ex & Greninja ex Tins — no second source in tonight's files
-- 2026-12-04 30th Celebration — Binder Collection — no second source in tonight's files
+- 2026-12-04 30th Celebration: Sylveon ex & Greninja ex Tins — possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group) (https://www.serebii.net/card/30thcelebration ; https://tcgcsv.com/tcgplayer/3/groups)
+- 2026-12-04 30th Celebration: Binder Collection — possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group) (https://www.serebii.net/card/30thcelebration ; https://tcgcsv.com/tcgplayer/3/groups)
 
 ## Left for the weekly AI review
 - Japanese product pages with no feed (pokemon-card.com product posts beyond the news list).

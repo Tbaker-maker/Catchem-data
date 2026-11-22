@@ -1,6 +1,6 @@
 {
- "asOf": "2026-11-21",
- "generatedAt": "2026-11-21T15:26:11.211Z",
+ "asOf": "2026-11-22",
+ "generatedAt": "2026-11-22T19:44:06.834Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,68 +21,114 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 3,
+   "RELEASE_DATE_CHANGE": 4,
+   "PRICE_MOVE": 2,
    "NEWS_SOURCE_FAILING": 5,
-   "NEWS_LEAD": 1,
    "DATA_GAP": 1,
    "ODD_PRICE": 89,
-   "READ_TYPE_EMPTY": 5,
-   "YOUTUBE_LEAD": 13,
-   "HYPE_EFFECT": 4,
-   "CROWDED_CALL": 2
+   "READ_TYPE_EMPTY": 9,
+   "YOUTUBE_LEAD": 12
   },
   "bySeverity": {
-   "high": 0,
-   "medium": 22,
-   "low": 101
+   "high": 2,
+   "medium": 18,
+   "low": 102
   }
  },
- "newTonight": 12,
+ "newTonight": 0,
  "flags": [
   {
-   "type": "PRICE_MOVE",
+   "type": "RELEASE_DATE_CHANGE",
    "severity": "medium",
-   "key": "move:84465:2026-11-21",
-   "line": "Crawdaunt ex (EX Holon Phantoms): $58.08 (2026-11-20) to $103.79 (2026-11-21) on TCGplayer market, up 79%.",
+   "key": "scan:DATE_CHANGE:30th Celebration: Sylveon ex & Greninja ex Tins:2026-09-16",
+   "line": "Serebii lists 30th Celebration: Sylveon ex & Greninja ex Tins on 2026-09-16; the radar says 2026-12-04 (single source).",
    "data": {
-    "id": "tcgcsv-84465",
-    "from": 58.08,
-    "to": 103.79,
-    "fromDay": "2026-11-20",
-    "toDay": "2026-11-21",
-    "pct": 78.7,
-    "kind": "single"
+    "type": "DATE_CHANGE",
+    "name": "30th Celebration: Sylveon ex & Greninja ex Tins",
+    "radarDate": "2026-12-04",
+    "seenDate": "2026-09-16",
+    "source": "Serebii",
+    "url": "https://www.serebii.net/card/30thcelebration",
+    "confidence": "single-source"
+   },
+   "new": false
+  },
+  {
+   "type": "RELEASE_DATE_CHANGE",
+   "severity": "medium",
+   "key": "scan:DATE_CHANGE:30th Celebration: Sylveon ex & Greninja ex Tins:2026-09-16",
+   "line": "TCGCSV group lists 30th Celebration: Sylveon ex & Greninja ex Tins on 2026-09-16; the radar says 2026-12-04 (single source).",
+   "data": {
+    "type": "DATE_CHANGE",
+    "name": "30th Celebration: Sylveon ex & Greninja ex Tins",
+    "radarDate": "2026-12-04",
+    "seenDate": "2026-09-16",
+    "source": "TCGCSV group",
+    "url": "https://tcgcsv.com/tcgplayer/3/groups",
+    "confidence": "single-source"
+   },
+   "new": false
+  },
+  {
+   "type": "RELEASE_DATE_CHANGE",
+   "severity": "medium",
+   "key": "scan:DATE_CHANGE:30th Celebration: Binder Collection:2026-09-16",
+   "line": "Serebii lists 30th Celebration: Binder Collection on 2026-09-16; the radar says 2026-12-04 (single source).",
+   "data": {
+    "type": "DATE_CHANGE",
+    "name": "30th Celebration: Binder Collection",
+    "radarDate": "2026-12-04",
+    "seenDate": "2026-09-16",
+    "source": "Serebii",
+    "url": "https://www.serebii.net/card/30thcelebration",
+    "confidence": "single-source"
+   },
+   "new": false
+  },
+  {
+   "type": "RELEASE_DATE_CHANGE",
+   "severity": "medium",
+   "key": "scan:DATE_CHANGE:30th Celebration: Binder Collection:2026-09-16",
+   "line": "TCGCSV group lists 30th Celebration: Binder Collection on 2026-09-16; the radar says 2026-12-04 (single source).",
+   "data": {
+    "type": "DATE_CHANGE",
+    "name": "30th Celebration: Binder Collection",
+    "radarDate": "2026-12-04",
+    "seenDate": "2026-09-16",
+    "source": "TCGCSV group",
+    "url": "https://tcgcsv.com/tcgplayer/3/groups",
+    "confidence": "single-source"
    },
    "new": false
   },
   {
    "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:86018:2026-11-21",
-   "line": "Hariyama ex (EX Deoxys): $29.00 (2026-11-20) to $69.98 (2026-11-21) on TCGplayer market, up 141%.",
+   "severity": "high",
+   "key": "move:115598:2026-11-22",
+   "line": "Red & Blue Collection [Charizard EX] (Generations): $1002.71 (2026-11-21) to $1800.88 (2026-11-22) on TCGplayer market, up 80%.",
    "data": {
-    "id": "tcgcsv-86018",
-    "from": 29,
-    "to": 69.98,
-    "fromDay": "2026-11-20",
-    "toDay": "2026-11-21",
-    "pct": 141.3,
-    "kind": "single"
+    "id": "tcgcsv-115598",
+    "from": 1002.71,
+    "to": 1800.88,
+    "fromDay": "2026-11-21",
+    "toDay": "2026-11-22",
+    "pct": 79.6,
+    "kind": "sealed"
    },
    "new": false
   },
   {
    "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:722818:2026-11-21",
-   "line": "Professor's Research [Professor Elm] - 123/131 (Professor Program Promos): $30.18 (2026-11-20) to $59.99 (2026-11-21) on TCGplayer market, up 99%.",
+   "severity": "high",
+   "key": "move:164231:2026-11-22",
+   "line": "Rayquaza C - 8/147 (Cracked Ice) (Miscellaneous Cards & Products): $128.48 (2026-11-21) to $400.00 (2026-11-22) on TCGplayer market, up 211%.",
    "data": {
-    "id": "tcgcsv-722818",
-    "from": 30.18,
-    "to": 59.99,
-    "fromDay": "2026-11-20",
-    "toDay": "2026-11-21",
-    "pct": 98.8,
+    "id": "tcgcsv-164231",
+    "from": 128.48,
+    "to": 400,
+    "fromDay": "2026-11-21",
+    "toDay": "2026-11-22",
+    "pct": 211.3,
     "kind": "single"
    },
    "new": false
@@ -147,20 +193,6 @@
     "url": "https://icv2.com/rss",
     "items": 0,
     "skipped": "page had no titled items"
-   },
-   "new": true
-  },
-  {
-   "type": "NEWS_LEAD",
-   "severity": "low",
-   "key": "news:NEW_SET:https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C",
-   "line": "NEW_SET: MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon (Pokémon press, 2026-11-19).",
-   "data": {
-    "type": "NEW_SET",
-    "date": "2026-11-19",
-    "title": "MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon",
-    "source": "Pokémon press",
-    "url": "https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C"
    },
    "new": false
   },
@@ -286,7 +318,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -298,7 +330,7 @@
     "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -394,7 +426,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -646,7 +678,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1249,7 +1281,7 @@
     "ratio": 13.2,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1274,6 +1306,17 @@
     "group": "wotc-holo",
     "ratio": 14.24,
     "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:low",
+   "line": "Read type \"low\" produced nothing tonight.",
+   "data": {
+    "kind": "low",
+    "lastNight": 0
    },
    "new": false
   },
@@ -1313,6 +1356,17 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
+   "data": {
+    "kind": "mktmove",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
    "key": "empty:climb",
    "line": "Read type \"climb\" produced nothing tonight.",
    "data": {
@@ -1333,112 +1387,117 @@
    "new": false
   },
   {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23651:2026-11-21",
-   "line": "SV08: Surging Sparks: 4 creator videos on 4 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:listings",
+   "line": "Read type \"listings\" produced nothing tonight.",
    "data": {
-    "kind": "set_attention",
-    "ref": 23651,
-    "label": "SV08: Surging Sparks",
-    "channels": 4,
-    "videos": 4,
-    "weighted": 4,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "kind": "listings",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:sealedchase",
+   "line": "Read type \"sealedchase\" produced nothing tonight.",
+   "data": {
+    "kind": "sealedchase",
+    "lastNight": 0
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24831:2026-11-21",
-   "line": "ME06: Delta Reign: 8 creator videos on 3 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-11-22",
+   "line": "ME06: Delta Reign: 7 creator videos on 5 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
     "label": "ME06: Delta Reign",
-    "channels": 3,
-    "videos": 8,
-    "weighted": 3,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "channels": 5,
+    "videos": 7,
+    "weighted": 5,
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-11-21",
-   "line": "Print runs: 5 creator videos on 3 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-11-22",
+   "line": "Print runs: 6 creator videos on 3 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "print_run",
     "ref": null,
     "label": "Print runs",
     "channels": 3,
-    "videos": 5,
-    "weighted": 5,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "videos": 6,
+    "weighted": 6,
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24380:2026-11-21",
-   "line": "ME01: Mega Evolution: 4 creator videos on 3 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:sealed_attention:712102:2026-11-22",
+   "line": "Delta Reign Elite Trainer Box: 3 creator videos on 3 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
-    "kind": "set_attention",
-    "ref": 24380,
-    "label": "ME01: Mega Evolution",
-    "channels": 3,
-    "videos": 4,
-    "weighted": 3,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24448:2026-11-21",
-   "line": "ME02: Phantasmal Flames: 3 creator videos on 3 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24448,
-    "label": "ME02: Phantasmal Flames",
+    "kind": "sealed_attention",
+    "ref": 712102,
+    "label": "Delta Reign Elite Trainer Box",
     "channels": 3,
     "videos": 3,
     "weighted": 3,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24541:2026-11-21",
-   "line": "ME: Ascended Heroes: 4 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:23651:2026-11-22",
+   "line": "SV08: Surging Sparks: 3 creator videos on 3 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23651,
+    "label": "SV08: Surging Sparks",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
+    "from": "2026-11-16",
+    "to": "2026-11-22"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24541:2026-11-22",
+   "line": "ME: Ascended Heroes: 3 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
     "label": "ME: Ascended Heroes",
     "channels": 2,
-    "videos": 4,
+    "videos": 3,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24325:2026-11-21",
-   "line": "SV: Black Bolt: 3 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:24325:2026-11-22",
+   "line": "SV: Black Bolt: 3 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24325,
@@ -1446,33 +1505,16 @@
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2867:2026-11-21",
-   "line": "Celebrations: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 2867,
-    "label": "Celebrations",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:sealed_attention:735050:2026-11-21",
-   "line": "Flowing Fists Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:sealed_attention:735050:2026-11-22",
+   "line": "Flowing Fists Elite Trainer Box: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
     "ref": 735050,
@@ -1480,16 +1522,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24955:2026-11-21",
-   "line": "ME07: Flowing Fists: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:24448:2026-11-22",
+   "line": "ME02: Phantasmal Flames: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24448,
+    "label": "ME02: Phantasmal Flames",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-11-16",
+    "to": "2026-11-22"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24955:2026-11-22",
+   "line": "ME07: Flowing Fists: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24955,
@@ -1497,16 +1556,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-11-21",
-   "line": "ME: 30th Celebration: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-11-22",
+   "line": "ME: 30th Celebration: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
@@ -1514,16 +1573,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23353:2026-11-21",
-   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:23353:2026-11-22",
+   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23353,
@@ -1531,16 +1590,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2848:2026-11-21",
-   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-11-15 to 2026-11-21 (unverified lead).",
+   "key": "yt:set_attention:2848:2026-11-22",
+   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-11-16 to 2026-11-22 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 2848,
@@ -1548,124 +1607,10 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-11-15",
-    "to": "2026-11-21"
+    "from": "2026-11-16",
+    "to": "2026-11-22"
    },
    "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24722:2026-11-21",
-   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.8% over 30 days (n=27, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "label": "30th Celebration",
-    "n": 27,
-    "medianPct": -4.8,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24831:2026-11-21",
-   "line": "Heavy creator attention on Delta Reign this week. Past sets with this much attention moved -4.8% over 30 days (n=27, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "label": "Delta Reign",
-    "n": 27,
-    "medianPct": -4.8,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:sealed:sealed:704190:2026-11-21",
-   "line": "Heavy creator attention on 30th Celebration Ultra-Premium Collection [Day] this week. Past sealed products with this much attention moved -6.1% over 30 days (n=20, 2026-05-09 to 2026-10-10).",
-   "data": {
-    "level": "sealed",
-    "label": "30th Celebration Ultra-Premium Collection [Day]",
-    "n": 20,
-    "medianPct": -6.1,
-    "from": "2026-05-09",
-    "to": "2026-10-10",
-    "surface": "sealed",
-    "source": "data/derived/hype-effect-sealed.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:sealed:sealed:712094:2026-11-21",
-   "line": "Heavy creator attention on Delta Reign Booster Box this week. Past sealed products with this much attention moved -6.1% over 30 days (n=20, 2026-05-09 to 2026-10-10).",
-   "data": {
-    "level": "sealed",
-    "label": "Delta Reign Booster Box",
-    "n": 20,
-    "medianPct": -6.1,
-    "from": "2026-05-09",
-    "to": "2026-10-10",
-    "surface": "sealed",
-    "source": "data/derived/hype-effect-sealed.json"
-   },
-   "new": true
-  },
-  {
-   "type": "CROWDED_CALL",
-   "severity": "low",
-   "key": "crowded:set:group:24722:down:2026-11-14",
-   "line": "Crowded down-direction attention on set 30th Celebration: 3 creators, 3 calls, 2026-11-14 to 2026-11-14. Past crowded calls moved -5.5% over 30 days (n=23, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "subjectKey": "group:24722",
-    "label": "30th Celebration",
-    "n": 23,
-    "medianPct": -5.5,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "creators": 3,
-    "calls": 3,
-    "direction": "down",
-    "windowFrom": "2026-11-14",
-    "windowTo": "2026-11-14",
-    "surface": "set",
-    "source": "data/derived/crowded-calls-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "CROWDED_CALL",
-   "severity": "low",
-   "key": "crowded:set:group:24831:down:2026-11-14",
-   "line": "Crowded down-direction attention on set Delta Reign: 4 creators, 5 calls, 2026-11-14 to 2026-11-14. Past crowded calls moved -5.5% over 30 days (n=23, 2026-04-27 to 2026-10-17).",
-   "data": {
-    "level": "set",
-    "subjectKey": "group:24831",
-    "label": "Delta Reign",
-    "n": 23,
-    "medianPct": -5.5,
-    "from": "2026-04-27",
-    "to": "2026-10-17",
-    "creators": 4,
-    "calls": 5,
-    "direction": "down",
-    "windowFrom": "2026-11-14",
-    "windowTo": "2026-11-14",
-    "surface": "set",
-    "source": "data/derived/crowded-calls-set.json"
-   },
-   "new": true
   }
  ]
 }

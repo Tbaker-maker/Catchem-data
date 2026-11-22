@@ -1,16 +1,8 @@
 {
- "asOf": "2026-11-21",
- "generatedAt": "2026-11-21T15:26:11.211Z",
+ "asOf": "2026-11-22",
+ "generatedAt": "2026-11-22T19:44:06.834Z",
  "method": "Script. Reads news.json (fetched nightly from free feeds), release-radar.json, TCGCSV groups. Leads only; never edits the radar.",
- "newsLeads": [
-  {
-   "type": "NEW_SET",
-   "date": "2026-11-19",
-   "title": "MEDIA ALERT: Z Mega Evolution Pokémon to Debut in New Pokémon Trading Card Game: Mega Evolution: Flowing Fists Expansion Coming Soon",
-   "source": "Pokémon press",
-   "url": "https://press.pokemon.com/en/releases/MEDIA-ALERT-Z-Mega-Evolution-Pokemon-to-Debut-in-New-Pokemon-Trading-C"
-  }
- ],
+ "newsLeads": [],
  "radar": [
   {
    "date": "2026-11-27",
@@ -28,20 +20,63 @@
   },
   {
    "date": "2026-12-04",
-   "name": "30th Celebration — Sylveon ex & Greninja ex Tins",
+   "name": "30th Celebration: Sylveon ex & Greninja ex Tins",
    "confidence": "single-source",
-   "status": "no second source in tonight's files",
-   "urls": []
+   "status": "possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group)",
+   "urls": [
+    "https://www.serebii.net/card/30thcelebration",
+    "https://tcgcsv.com/tcgplayer/3/groups"
+   ]
   },
   {
    "date": "2026-12-04",
-   "name": "30th Celebration — Binder Collection",
+   "name": "30th Celebration: Binder Collection",
    "confidence": "verified",
-   "status": "no second source in tonight's files",
-   "urls": []
+   "status": "possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group)",
+   "urls": [
+    "https://www.serebii.net/card/30thcelebration",
+    "https://tcgcsv.com/tcgplayer/3/groups"
+   ]
   }
  ],
- "radarLeads": [],
+ "radarLeads": [
+  {
+   "type": "DATE_CHANGE",
+   "name": "30th Celebration: Sylveon ex & Greninja ex Tins",
+   "radarDate": "2026-12-04",
+   "seenDate": "2026-09-16",
+   "source": "Serebii",
+   "url": "https://www.serebii.net/card/30thcelebration",
+   "confidence": "single-source"
+  },
+  {
+   "type": "DATE_CHANGE",
+   "name": "30th Celebration: Sylveon ex & Greninja ex Tins",
+   "radarDate": "2026-12-04",
+   "seenDate": "2026-09-16",
+   "source": "TCGCSV group",
+   "url": "https://tcgcsv.com/tcgplayer/3/groups",
+   "confidence": "single-source"
+  },
+  {
+   "type": "DATE_CHANGE",
+   "name": "30th Celebration: Binder Collection",
+   "radarDate": "2026-12-04",
+   "seenDate": "2026-09-16",
+   "source": "Serebii",
+   "url": "https://www.serebii.net/card/30thcelebration",
+   "confidence": "single-source"
+  },
+  {
+   "type": "DATE_CHANGE",
+   "name": "30th Celebration: Binder Collection",
+   "radarDate": "2026-12-04",
+   "seenDate": "2026-09-16",
+   "source": "TCGCSV group",
+   "url": "https://tcgcsv.com/tcgplayer/3/groups",
+   "confidence": "single-source"
+  }
+ ],
  "leftForAi": [
   "Japanese product pages with no feed (pokemon-card.com product posts beyond the news list).",
   "Second-source confirmation for single-source dates.",
