@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-11-21T15:58:00.501Z",
- "date": "2026-11-21",
- "mood": "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
+ "generatedAt": "2026-11-22T22:34:08.825Z",
+ "date": "2026-11-22",
+ "mood": "A lot of honest shrugs on this run. The tape is young; the tests are patient.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
  "coverage": {
   "thesesInDoctrine": 10,
@@ -50,7 +50,7 @@
    "name": "Venue Boundary",
    "falsifier": "TCGplayer vintage-sealed volume becomes material — listing depth comparable to modern",
    "verdict": "SURVIVED",
-   "detail": "vintage depth 11 vs modern 56 — still a thinner, separate market"
+   "detail": "vintage depth 11 vs modern 58 — still a thinner, separate market"
   },
   {
    "id": "RT-5",
@@ -73,7 +73,7 @@
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
    "verdict": "INSUFFICIENT",
-   "detail": "0 shifts with both listing and price deltas",
+   "detail": "1 shifts with both listing and price deltas",
    "needs": "5+ shift events"
   },
   {
@@ -89,15 +89,15 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "no late-print set showed a shelf move over 10% today",
-   "needs": "a late-print set with a real shelf move"
+   "detail": "1 crossings today (1 arriving, 0 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {
    "id": "IDX",
    "name": "Index moves only on the market",
    "falsifier": "the index level changes on a day when composition or pricing basis changed",
    "verdict": "SURVIVED",
-   "detail": "157 products carried the day's move; 18 entered or lacked a prior price and correctly contributed nothing"
+   "detail": "158 products carried the day's move; 17 entered or lacked a prior price and correctly contributed nothing"
   }
  ],
  "amendmentsDrafted": []

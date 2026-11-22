@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-22",
- "generatedAt": "2026-11-22T13:51:40.018Z",
+ "generatedAt": "2026-11-22T22:44:00.669Z",
  "checks": [
   {
    "id": "price-day",
@@ -19,9 +19,9 @@
   {
    "id": "reads",
    "path": "research/assets/public/reads.json",
-   "date": "2026-11-21",
-   "ok": false,
-   "detail": "dated 2026-11-21"
+   "date": "2026-11-22",
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "scanner",
@@ -32,10 +32,11 @@
   }
  ],
  "failures": [
-  "reads",
   "scanner"
  ],
- "alerts": [],
+ "alerts": [
+  "eBay Browse is at 115% of the 4,277 daily listing calls as of 2026-11-22."
+ ],
  "reran": [],
- "note": "Reads rebuild is not rerun here. It belongs to the nightly feed, which has to fit the 20 minute test job."
+ "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }
