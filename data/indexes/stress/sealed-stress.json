@@ -1,7 +1,7 @@
 {
   "kind": "sealed",
-  "asOf": "2026-11-22",
-  "today": "2026-11-22",
+  "asOf": "2026-11-23",
+  "today": "2026-11-23",
   "source": "TCGplayer market",
   "sourceFile": "data/heat-history.json",
   "seriesStale": false,
@@ -27,15 +27,15 @@
   "universe": {
     "items": 150,
     "basket": 116,
-    "observedDays": 40,
+    "observedDays": 41,
     "withTwoPrices": 150,
     "extra": 4
   },
   "lines": {
-    "equal": 97.5,
-    "capped": 100.3,
+    "equal": 97.4,
+    "capped": 100.2,
     "median": 100,
-    "capAppliedDays": 39,
+    "capAppliedDays": 40,
     "capInfeasibleDays": 0
   },
   "points": [
@@ -435,6 +435,16 @@
       "matched": 112,
       "capApplied": true,
       "capInfeasible": false
+    },
+    {
+      "date": "2026-11-23",
+      "from": "2026-11-22",
+      "equal": 97.4,
+      "capped": 100.2,
+      "median": 100,
+      "matched": 112,
+      "capApplied": true,
+      "capInfeasible": false
     }
   ],
   "disagree": {
@@ -446,7 +456,7 @@
   "trustBand": {
     "method": "median line",
     "latest": {
-      "date": "2026-11-22",
+      "date": "2026-11-23",
       "p05": 99.4,
       "p95": 100.5,
       "draws": 1000
@@ -691,6 +701,12 @@
         "p05": 99.4,
         "p95": 100.5,
         "draws": 1000
+      },
+      {
+        "date": "2026-11-23",
+        "p05": 99.4,
+        "p95": 100.5,
+        "draws": 1000
       }
     ]
   },
@@ -763,8 +779,8 @@
       "n": 37,
       "start": "2026-09-25",
       "levels": {
-        "equal": 99.3,
-        "capped": 100.7,
+        "equal": 99.2,
+        "capped": 100.6,
         "median": 100
       },
       "matchedLast": 33,
@@ -775,9 +791,9 @@
       "n": 23,
       "start": "2026-09-25",
       "levels": {
-        "equal": 95.2,
-        "capped": 96.4,
-        "median": 97.3
+        "equal": 94.7,
+        "capped": 95.6,
+        "median": 97.2
       },
       "matchedLast": 18,
       "outsideHeadline": false
@@ -787,7 +803,7 @@
       "n": 4,
       "start": "2026-09-25",
       "levels": {
-        "equal": 93.8,
+        "equal": 93.4,
         "capped": 95.4,
         "median": 93.1
       },
@@ -799,7 +815,7 @@
       "n": 32,
       "start": "2026-09-25",
       "levels": {
-        "equal": 96.9,
+        "equal": 96.8,
         "capped": 97.7,
         "median": 99.5
       },
@@ -811,8 +827,8 @@
       "n": 34,
       "start": "2026-09-25",
       "levels": {
-        "equal": 97.9,
-        "capped": 96.7,
+        "equal": 98.2,
+        "capped": 96.9,
         "median": 98.6
       },
       "matchedLast": 30,
@@ -823,9 +839,9 @@
       "n": 24,
       "start": "2026-09-25",
       "levels": {
-        "equal": 82.4,
-        "capped": 82.4,
-        "median": 82.4
+        "equal": 80.8,
+        "capped": 80.8,
+        "median": 80.8
       },
       "matchedLast": 1,
       "outsideHeadline": false
@@ -833,7 +849,7 @@
   ],
   "byRarity": [],
   "flagCounts": {
-    "stale": 4,
+    "stale": 6,
     "gappy": 99,
     "spiky": 0,
     "late": 34
@@ -846,9 +862,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0533
     },
     {
@@ -858,9 +874,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.014
     },
     {
@@ -868,9 +884,9 @@
       "name": "Mega Evolution Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0221
     },
     {
@@ -880,9 +896,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.011
     },
     {
@@ -892,9 +908,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0266
     },
     {
@@ -904,9 +920,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 33,
+      "observations": 34,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0333
     },
     {
@@ -916,9 +932,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0672
     },
     {
@@ -928,9 +944,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0165
     },
     {
@@ -940,9 +956,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0577
     },
     {
@@ -950,9 +966,9 @@
       "name": "Phantasmal Flames Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.041
     },
     {
@@ -963,9 +979,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0344
     },
     {
@@ -975,10 +991,10 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
-      "maxAbsReturn": 0.1076
+      "last": "2026-11-23",
+      "maxAbsReturn": 0.1505
     },
     {
       "id": "me2pt5-etb",
@@ -987,9 +1003,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.081
     },
     {
@@ -997,9 +1013,9 @@
       "name": "Ascended Heroes Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.1447
     },
     {
@@ -1010,9 +1026,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0331
     },
     {
@@ -1022,9 +1038,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0894
     },
     {
@@ -1034,9 +1050,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0261
     },
     {
@@ -1046,9 +1062,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0631
     },
     {
@@ -1056,9 +1072,9 @@
       "name": "Perfect Order Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0724
     },
     {
@@ -1069,9 +1085,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0491
     },
     {
@@ -1081,9 +1097,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.085
     },
     {
@@ -1093,9 +1109,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0229
     },
     {
@@ -1105,9 +1121,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0727
     },
     {
@@ -1117,9 +1133,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0622
     },
     {
@@ -1130,9 +1146,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0323
     },
     {
@@ -1142,9 +1158,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0893
     },
     {
@@ -1154,9 +1170,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0368
     },
     {
@@ -1166,9 +1182,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.1445
     },
     {
@@ -1178,9 +1194,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0795
     },
     {
@@ -1191,9 +1207,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0318
     },
     {
@@ -1201,9 +1217,9 @@
       "name": "White Flare Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0431
     },
     {
@@ -1211,9 +1227,9 @@
       "name": "White Flare Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.024
     },
     {
@@ -1224,9 +1240,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.013
     },
     {
@@ -1249,9 +1265,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 37,
+      "observations": 38,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0833
     },
     {
@@ -1259,9 +1275,9 @@
       "name": "Cosmic Eclipse Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0372
     },
     {
@@ -1271,9 +1287,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0216
     },
     {
@@ -1283,9 +1299,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 20,
+      "observations": 21,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0
     },
     {
@@ -1293,9 +1309,9 @@
       "name": "Guardians Rising Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0197
     },
     {
@@ -1305,9 +1321,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 34,
+      "observations": 35,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0126
     },
     {
@@ -1315,16 +1331,18 @@
       "name": "Burning Shadows Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0301
     },
     {
       "id": "sm35-etb",
       "name": "Shining Legends Elite Trainer Box",
       "type": "etb",
-      "flags": [],
+      "flags": [
+        "stale"
+      ],
       "observations": 38,
       "first": "2026-09-25",
       "last": "2026-11-20",
@@ -1335,6 +1353,7 @@
       "name": "Crimson Invasion Booster Box",
       "type": "booster-box",
       "flags": [
+        "stale",
         "gappy"
       ],
       "observations": 26,
@@ -1347,9 +1366,9 @@
       "name": "Crimson Invasion Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0079
     },
     {
@@ -1357,9 +1376,9 @@
       "name": "Ultra Prism Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0331
     },
     {
@@ -1367,9 +1386,9 @@
       "name": "Forbidden Light Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.011
     },
     {
@@ -1404,9 +1423,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0082
     },
     {
@@ -1426,9 +1445,9 @@
       "name": "Destined Rivals Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.1207
     },
     {
@@ -1438,9 +1457,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0401
     },
     {
@@ -1450,19 +1469,19 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
-      "maxAbsReturn": 0.0391
+      "last": "2026-11-23",
+      "maxAbsReturn": 0.045
     },
     {
       "id": "sv10-pack",
       "name": "Destined Rivals Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0582
     },
     {
@@ -1473,9 +1492,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0161
     },
     {
@@ -1485,9 +1504,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0212
     },
     {
@@ -1498,9 +1517,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0197
     },
     {
@@ -1510,9 +1529,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0218
     },
     {
@@ -1522,9 +1541,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0112
     },
     {
@@ -1534,9 +1553,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0198
     },
     {
@@ -1547,9 +1566,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0046
     },
     {
@@ -1559,9 +1578,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.042
     },
     {
@@ -1571,9 +1590,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0293
     },
     {
@@ -1583,9 +1602,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0561
     },
     {
@@ -1595,9 +1614,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.042
     },
     {
@@ -1605,9 +1624,9 @@
       "name": "151 Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0338
     },
     {
@@ -1631,9 +1650,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0877
     },
     {
@@ -1643,9 +1662,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0089
     },
     {
@@ -1656,9 +1675,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0327
     },
     {
@@ -1666,9 +1685,9 @@
       "name": "Paradox Rift Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0819
     },
     {
@@ -1678,9 +1697,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0363
     },
     {
@@ -1690,9 +1709,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0571
     },
     {
@@ -1703,9 +1722,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0495
     },
     {
@@ -1716,9 +1735,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0093
     },
     {
@@ -1726,9 +1745,9 @@
       "name": "Temporal Forces Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0055
     },
     {
@@ -1738,9 +1757,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0271
     },
     {
@@ -1750,9 +1769,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0224
     },
     {
@@ -1760,9 +1779,9 @@
       "name": "Twilight Masquerade Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0136
     },
     {
@@ -1772,9 +1791,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0182
     },
     {
@@ -1784,9 +1803,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0292
     },
     {
@@ -1796,9 +1815,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0282
     },
     {
@@ -1809,9 +1828,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.005
     },
     {
@@ -1821,9 +1840,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0568
     },
     {
@@ -1833,9 +1852,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0169
     },
     {
@@ -1845,9 +1864,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0319
     },
     {
@@ -1858,9 +1877,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0294
     },
     {
@@ -1868,9 +1887,9 @@
       "name": "Stellar Crown Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0179
     },
     {
@@ -1880,9 +1899,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.019
     },
     {
@@ -1892,9 +1911,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0058
     },
     {
@@ -1904,9 +1923,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0187
     },
     {
@@ -1917,9 +1936,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0244
     },
     {
@@ -1929,9 +1948,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0313
     },
     {
@@ -1941,9 +1960,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0421
     },
     {
@@ -1951,9 +1970,9 @@
       "name": "Surging Sparks Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0419
     },
     {
@@ -1964,9 +1983,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0234
     },
     {
@@ -1976,9 +1995,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0831
     },
     {
@@ -1988,9 +2007,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.2005
     },
     {
@@ -1998,9 +2017,9 @@
       "name": "Prismatic Evolutions Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0442
     },
     {
@@ -2010,9 +2029,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0291
     },
     {
@@ -2022,9 +2041,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0336
     },
     {
@@ -2032,9 +2051,9 @@
       "name": "Journey Together Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0869
     },
     {
@@ -2044,9 +2063,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0473
     },
     {
@@ -2056,9 +2075,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0262
     },
     {
@@ -2066,9 +2085,9 @@
       "name": "Journey Together Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.11
     },
     {
@@ -2079,9 +2098,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0163
     },
     {
@@ -2091,9 +2110,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0064
     },
     {
@@ -2103,9 +2122,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0519
     },
     {
@@ -2115,9 +2134,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0112
     },
     {
@@ -2127,9 +2146,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0062
     },
     {
@@ -2140,9 +2159,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.012
     },
     {
@@ -2152,9 +2171,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0112
     },
     {
@@ -2162,9 +2181,9 @@
       "name": "Lost Origin Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0827
     },
     {
@@ -2174,10 +2193,10 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
-      "maxAbsReturn": 0.005
+      "last": "2026-11-23",
+      "maxAbsReturn": 0.0156
     },
     {
       "id": "swsh12-booster-box",
@@ -2186,9 +2205,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0174
     },
     {
@@ -2199,9 +2218,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0166
     },
     {
@@ -2211,9 +2230,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0938
     },
     {
@@ -2223,9 +2242,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0281
     },
     {
@@ -2235,9 +2254,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0109
     },
     {
@@ -2245,9 +2264,9 @@
       "name": "Crown Zenith Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0118
     },
     {
@@ -2257,9 +2276,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0543
     },
     {
@@ -2270,9 +2289,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0279
     },
     {
@@ -2282,9 +2301,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0181
     },
     {
@@ -2295,9 +2314,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.1304
     },
     {
@@ -2305,9 +2324,9 @@
       "name": "Rebel Clash Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0022
     },
     {
@@ -2315,9 +2334,9 @@
       "name": "Rebel Clash Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0078
     },
     {
@@ -2327,9 +2346,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.047
     },
     {
@@ -2337,9 +2356,9 @@
       "name": "Darkness Ablaze Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0174
     },
     {
@@ -2347,9 +2366,9 @@
       "name": "Darkness Ablaze Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0166
     },
     {
@@ -2359,9 +2378,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0289
     },
     {
@@ -2369,9 +2388,9 @@
       "name": "Champion's Path Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0081
     },
     {
@@ -2381,9 +2400,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.013
     },
     {
@@ -2391,9 +2410,9 @@
       "name": "Vivid Voltage Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0066
     },
     {
@@ -2401,9 +2420,9 @@
       "name": "Vivid Voltage Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0136
     },
     {
@@ -2413,9 +2432,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0409
     },
     {
@@ -2423,9 +2442,9 @@
       "name": "Shining Fates Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0461
     },
     {
@@ -2436,9 +2455,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0174
     },
     {
@@ -2446,9 +2465,9 @@
       "name": "Battle Styles Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0174
     },
     {
@@ -2456,9 +2475,9 @@
       "name": "Battle Styles Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0603
     },
     {
@@ -2466,9 +2485,9 @@
       "name": "Chilling Reign Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0192
     },
     {
@@ -2476,9 +2495,9 @@
       "name": "Chilling Reign Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.051
     },
     {
@@ -2488,9 +2507,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0269
     },
     {
@@ -2498,9 +2517,9 @@
       "name": "Evolving Skies Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0198
     },
     {
@@ -2508,9 +2527,9 @@
       "name": "Fusion Strike Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0324
     },
     {
@@ -2520,9 +2539,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0121
     },
     {
@@ -2530,9 +2549,9 @@
       "name": "Fusion Strike Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0765
     },
     {
@@ -2542,9 +2561,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0042
     },
     {
@@ -2554,9 +2573,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.041
     },
     {
@@ -2566,9 +2585,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 39,
+      "observations": 40,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0428
     },
     {
@@ -2578,9 +2597,9 @@
       "flags": [
         "late"
       ],
-      "observations": 31,
+      "observations": 32,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.012
     },
     {
@@ -2588,9 +2607,9 @@
       "name": "Evolutions Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0399
     },
     {
@@ -2601,9 +2620,9 @@
         "late",
         "gappy"
       ],
-      "observations": 30,
+      "observations": 31,
       "first": "2026-10-10",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0047
     },
     {
@@ -2611,9 +2630,9 @@
       "name": "Black Bolt Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.0296
     },
     {
@@ -2621,9 +2640,9 @@
       "name": "Black Bolt Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 40,
+      "observations": 41,
       "first": "2026-09-25",
-      "last": "2026-11-22",
+      "last": "2026-11-23",
       "maxAbsReturn": 0.032
     }
   ],
@@ -2639,7 +2658,7 @@
         "gappy"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-11-22. Last observation 2026-10-23.",
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-10-23.",
         "Missing at least one observed day between its first and last price.",
         "First price is more than 3 days after the series starts.",
         "Not in the current quarter basket, so it does not move this line."
@@ -2649,6 +2668,23 @@
     },
     {
       "rank": 2,
+      "id": "sm4-booster-box",
+      "name": "Crimson Invasion Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "stale",
+        "gappy"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-11-20.",
+        "Missing at least one observed day between its first and last price.",
+        "Leaving it out moves the median index by 0.1 points."
+      ],
+      "influence": 0.1,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 3,
       "id": "sm10-booster-box",
       "name": "Unbroken Bonds Booster Box",
       "type": "booster-box",
@@ -2657,7 +2693,7 @@
         "late"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-11-22. Last observation 2026-10-13.",
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-10-13.",
         "First price is more than 3 days after the series starts.",
         "Not in the current quarter basket, so it does not move this line."
       ],
@@ -2665,7 +2701,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 3,
+      "rank": 4,
       "id": "sm75-etb",
       "name": "Dragon Majesty Elite Trainer Box",
       "type": "etb",
@@ -2673,14 +2709,14 @@
         "stale"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-11-22. Last observation 2026-10-03.",
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-10-03.",
         "Leaving it out moves the median index by 0.1 points."
       ],
       "influence": 0.1,
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "me2-pc-etb",
       "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2697,7 +2733,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "me2pt5-pc-etb",
       "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2714,7 +2750,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "me3-pc-etb",
       "name": "Perfect Order Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2731,7 +2767,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "me4-pc-etb",
       "name": "Chaos Rising Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2748,7 +2784,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "me5-pc-etb",
       "name": "Pitch Black Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2765,7 +2801,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "rsv10pt5-wf-pc-etb",
       "name": "White Flare Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2782,7 +2818,21 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 10,
+      "rank": 11,
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "type": "etb",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-11-20."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 12,
       "id": "sm7-booster-box",
       "name": "Celestial Storm Booster Box",
       "type": "booster-box",
@@ -2790,13 +2840,13 @@
         "stale"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-11-22. Last observation 2026-10-30."
+        "No fresh price within 2 days of 2026-11-23. Last observation 2026-10-30."
       ],
       "influence": 0,
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 11,
+      "rank": 13,
       "id": "sv1-booster-box",
       "name": "Scarlet & Violet Base Booster Box",
       "type": "booster-box",
@@ -2813,7 +2863,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 12,
+      "rank": 14,
       "id": "sv10-pc-etb",
       "name": "Destined Rivals Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2830,7 +2880,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 13,
+      "rank": 15,
       "id": "sv2-bundle",
       "name": "Paldea Evolved Booster Bundle",
       "type": "bundle",
@@ -2847,7 +2897,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 14,
+      "rank": 16,
       "id": "sv3-bundle",
       "name": "Obsidian Flames Booster Bundle",
       "type": "bundle",
@@ -2864,7 +2914,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 15,
+      "rank": 17,
       "id": "sv4-bundle",
       "name": "Paradox Rift Booster Bundle",
       "type": "bundle",
@@ -2881,7 +2931,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 16,
+      "rank": 18,
       "id": "sv4pt5-pack",
       "name": "Paldean Fates Booster Pack",
       "type": "pack",
@@ -2898,7 +2948,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 17,
+      "rank": 19,
       "id": "sv4pt5-pc-etb",
       "name": "Paldean Fates Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2915,7 +2965,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 18,
+      "rank": 20,
       "id": "sv6-pc-etb",
       "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2932,7 +2982,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 19,
+      "rank": 21,
       "id": "sv6pt5-pc-etb",
       "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2949,7 +2999,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 20,
+      "rank": 22,
       "id": "sv7-pc-etb",
       "name": "Stellar Crown Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2966,7 +3016,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 21,
+      "rank": 23,
       "id": "sv8-pc-etb",
       "name": "Surging Sparks Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2983,7 +3033,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 22,
+      "rank": 24,
       "id": "sv9-pc-etb",
       "name": "Journey Together Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -3000,7 +3050,7 @@
       "recommendation": "Review only. This product was not removed."
     },
     {
-      "rank": 23,
+      "rank": 25,
       "id": "swsh11-bundle",
       "name": "Lost Origin Booster Bundle",
       "type": "bundle",
@@ -3015,43 +3065,9 @@
       ],
       "influence": null,
       "recommendation": "Review only. This product was not removed."
-    },
-    {
-      "rank": 24,
-      "id": "swsh12-bundle",
-      "name": "Silver Tempest Booster Bundle",
-      "type": "bundle",
-      "flags": [
-        "late",
-        "gappy"
-      ],
-      "reasons": [
-        "Missing at least one observed day between its first and last price.",
-        "First price is more than 3 days after the series starts.",
-        "Not in the current quarter basket, so it does not move this line."
-      ],
-      "influence": null,
-      "recommendation": "Review only. This product was not removed."
-    },
-    {
-      "rank": 25,
-      "id": "swsh12pt5-pack",
-      "name": "Crown Zenith Booster Pack",
-      "type": "pack",
-      "flags": [
-        "late",
-        "gappy"
-      ],
-      "reasons": [
-        "Missing at least one observed day between its first and last price.",
-        "First price is more than 3 days after the series starts.",
-        "Not in the current quarter basket, so it does not move this line."
-      ],
-      "influence": null,
-      "recommendation": "Review only. This product was not removed."
     }
   ],
-  "weedOutCount": 110,
+  "weedOutCount": 111,
   "gaps": [
     {
       "from": "2026-09-27",
@@ -3084,5 +3100,5 @@
       "note": "No price was invented for the days in between."
     }
   ],
-  "note": "25 of 110 flagged products are listed, ranked. None were removed."
+  "note": "25 of 111 flagged products are listed, ranked. None were removed."
 }
