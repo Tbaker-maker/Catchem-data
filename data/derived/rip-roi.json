@@ -2399,10 +2399,10 @@
    "name": "Mega Evolution Elite Trainer Box",
    "set": "Mega Evolution",
    "subtype": "etb",
-   "price": 110.04,
+   "price": 110.24,
    "packs": 9,
    "contentsEV": 25.2,
-   "ev": -84.84,
+   "ev": -85.04,
    "roiPct": -77.1,
    "beatChance": 0.9,
    "median": 14.49
@@ -3263,20 +3263,6 @@
   },
   {
    "rank": 169,
-   "id": "me1-pc-etb",
-   "name": "Mega Evolution Pokemon Center Elite Trainer Box",
-   "set": "Mega Evolution",
-   "subtype": "pc-etb",
-   "price": 178.89,
-   "packs": 9,
-   "contentsEV": 25.2,
-   "ev": -153.69,
-   "roiPct": -85.9,
-   "beatChance": 1.1,
-   "median": 14.49
-  },
-  {
-   "rank": 170,
    "id": "tcgcsv-191883",
    "name": "Unified Minds Booster Pack",
    "set": "SM - Unified Minds",
@@ -3288,6 +3274,20 @@
    "roiPct": -85.9,
    "beatChance": 0.7,
    "median": 3.16
+  },
+  {
+   "rank": 170,
+   "id": "me1-pc-etb",
+   "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+   "set": "Mega Evolution",
+   "subtype": "pc-etb",
+   "price": 179.54,
+   "packs": 9,
+   "contentsEV": 25.2,
+   "ev": -154.34,
+   "roiPct": -86,
+   "beatChance": 1.1,
+   "median": 14.49
   },
   {
    "rank": 171,
@@ -11412,7 +11412,7 @@
    "setId": "me1",
    "setSlug": "me01-mega-evolution",
    "subtype": "etb",
-   "price": 110.04,
+   "price": 110.24,
    "packs": 9,
    "promo": 0,
    "packEV": {
@@ -11422,7 +11422,7 @@
     "total": 2.8
    },
    "contentsEV": 25.2,
-   "ev": -84.84,
+   "ev": -85.04,
    "roiPct": -77.1,
    "beatChance": 0.9,
    "median": 14.49,
@@ -16078,67 +16078,6 @@
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },
   {
-   "id": "me1-pc-etb",
-   "name": "Mega Evolution Pokemon Center Elite Trainer Box",
-   "set": "Mega Evolution",
-   "setId": "me1",
-   "setSlug": "me01-mega-evolution",
-   "subtype": "pc-etb",
-   "price": 178.89,
-   "packs": 9,
-   "promo": 0,
-   "packEV": {
-    "hits": 1.19,
-    "bulk": 1.35,
-    "rare": 0.26,
-    "total": 2.8
-   },
-   "contentsEV": 25.2,
-   "ev": -153.69,
-   "roiPct": -85.9,
-   "beatChance": 1.1,
-   "median": 14.49,
-   "sims": 10000,
-   "bulk": {
-    "perCard": 0.15,
-    "median": 0.15,
-    "n": 110,
-    "cardsPerPack": 9,
-    "raised": false,
-    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
-   },
-   "rareSlot": {
-    "avg": 0.26,
-    "n": 22
-   },
-   "slots": [
-    {
-     "rarity": "Illustration Rare",
-     "tag": null,
-     "rate": 0.1089,
-     "avgPrice": 5.09,
-     "nCards": 22,
-     "ev": 0.5545,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
-     "published": "2025-09-30"
-    },
-    {
-     "rarity": "Special Illustration Rare",
-     "tag": null,
-     "rate": 0.0099,
-     "avgPrice": 63.95,
-     "nCards": 10,
-     "ev": 0.6331,
-     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
-     "published": "2025-09-30"
-    }
-   ],
-   "priceAsOf": "2026-11-23",
-   "priceSource": "sealed-prices median",
-   "label": "Rip value",
-   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
-  },
-  {
    "id": "tcgcsv-191883",
    "name": "Unified Minds Booster Pack",
    "set": "SM - Unified Minds",
@@ -16206,6 +16145,67 @@
    ],
    "priceAsOf": "2026-11-23",
    "priceSource": "TCGplayer market",
+   "label": "Rip value",
+   "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
+  },
+  {
+   "id": "me1-pc-etb",
+   "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+   "set": "Mega Evolution",
+   "setId": "me1",
+   "setSlug": "me01-mega-evolution",
+   "subtype": "pc-etb",
+   "price": 179.54,
+   "packs": 9,
+   "promo": 0,
+   "packEV": {
+    "hits": 1.19,
+    "bulk": 1.35,
+    "rare": 0.26,
+    "total": 2.8
+   },
+   "contentsEV": 25.2,
+   "ev": -154.34,
+   "roiPct": -86,
+   "beatChance": 1.1,
+   "median": 14.49,
+   "sims": 10000,
+   "bulk": {
+    "perCard": 0.15,
+    "median": 0.15,
+    "n": 110,
+    "cardsPerPack": 9,
+    "raised": false,
+    "basis": "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
+   },
+   "rareSlot": {
+    "avg": 0.26,
+    "n": 22
+   },
+   "slots": [
+    {
+     "rarity": "Illustration Rare",
+     "tag": null,
+     "rate": 0.1089,
+     "avgPrice": 5.09,
+     "nCards": 22,
+     "ev": 0.5545,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+     "published": "2025-09-30"
+    },
+    {
+     "rarity": "Special Illustration Rare",
+     "tag": null,
+     "rate": 0.0099,
+     "avgPrice": 63.95,
+     "nCards": 10,
+     "ev": 0.6331,
+     "sourceUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+     "published": "2025-09-30"
+    }
+   ],
+   "priceAsOf": "2026-11-23",
+   "priceSource": "sealed-prices median",
    "label": "Rip value",
    "note": "History-based estimate from dated pull rates and TCGplayer market singles. Not a forecast."
   },

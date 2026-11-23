@@ -1,4 +1,4 @@
-# The review — 2026-11-16
+# The review — 2026-11-23
 
 **5.1 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
@@ -22,7 +22,7 @@ Every agent meets every obligation.
 Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 
 **Working**
-- 176 of 196 sealed products priced today, 20,950 cards catalogued
+- 175 of 196 sealed products priced today, 20,950 cards catalogued
 - Graded prices are WITHHELD because the source carries no time window — the right call, made after nearly publishing one
 **Needs looking at**
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
@@ -82,7 +82,7 @@ The habits are in place. Nothing has come due yet, so none of them have been tes
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 80 of 99 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 87 of 106 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 12 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---

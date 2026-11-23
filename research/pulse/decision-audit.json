@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-22T22:34:05.728Z",
+ "generatedAt": "2026-11-23T18:29:42.758Z",
  "purpose": "Grades reasoning by its predictions, because reasoning cannot be inspected after the fact without being rewritten.",
  "total": 17,
- "dueForGrading": 4,
+ "dueForGrading": 8,
  "record": {
   "graded": 0,
   "note": "nothing has come due yet. The first grades land from October."
@@ -22,6 +22,18 @@
    "decidedBy": "Tyler, correcting chat"
   },
   {
+   "id": "2026-08-23-graded-withdrawn",
+   "decision": "Withdraw every graded price until the provider exposes a date range on sold aggregates.",
+   "predicted": "No graded claim will be publishable until a windowed source exists. If we find a defensible way to publish one WITHOUT a window, the withdrawal was over-cautious.",
+   "decidedBy": "chat, after Tyler caught the error"
+  },
+  {
+   "id": "2026-08-23-agents-advise",
+   "decision": "Agents advise and never block; only guards block, plus security as the single exception.",
+   "predicted": "No agent false-positive will ever cost us a publication day. If a run is lost to an agent's mistake, the exception list is wrong.",
+   "decidedBy": "chat"
+  },
+  {
    "id": "2026-08-23-art-post-spec",
    "decision": "Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
    "predicted": "The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong.",
@@ -32,6 +44,18 @@
    "decision": "The creator portal offers angles and editable seeds, never finished tweets.",
    "predicted": "Creators using the portal will post visibly different wording from each other. If we see two accounts publish the same sentence, the seeds are too finished and need to be shortened to fragments.",
    "decidedBy": "chat, correcting its own earlier over-rigid stance"
+  },
+  {
+   "id": "2026-08-23-watermark-is-the-free-tier",
+   "decision": "The watermark IS the free tier. Everything is free and watermarked; removing it becomes a gated feature later.",
+   "predicted": "Creators will use the watermarked version freely and without complaint. If we see people cropping the mark out rather than asking to remove it, the mark is either too prominent or the value is not there yet.",
+   "decidedBy": "Tyler"
+  },
+  {
+   "id": "2026-08-23-tools-free-forever",
+   "decision": "The tools are free permanently. Monetisation is physical product — guards — sold into the community the tools build. The landing page says CLOSED BETA and FREE FOREVER, in public.",
+   "predicted": "Nobody asks what it will cost. If waitlist replies contain pricing questions, the FREE FOREVER line is not landing and the page needs to say it louder rather than differently.",
+   "decidedBy": "Tyler"
   }
  ]
 }

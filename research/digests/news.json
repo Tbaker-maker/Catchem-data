@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23T15:05:12.810Z",
+  "updated": "2026-11-23T18:25:02.885Z",
   "timezone": "America/Vancouver",
   "asOf": "2026-11-23",
   "defaultWindowDays": 14,
@@ -2263,6 +2263,27 @@
       "region": "International Sets",
       "note": "PokeGuardian says some sets on this page might not be confirmed or officially revealed yet, and that the dates can change.",
       "listUrl": "https://www.pokeguardian.com/sets/upcoming-sets"
+    },
+    {
+      "title": "2027 Mérida Pokémon Regional Championships",
+      "url": "https://rk9.gg/event/pokemon-merida-2027",
+      "source": "RK9",
+      "date": "2027-01-23",
+      "dateEnd": "2027-01-24",
+      "statedDate": "January 23-24, 2027",
+      "kind": "tournament",
+      "tags": [
+        "cards",
+        "video-games",
+        "tournaments",
+        "release"
+      ],
+      "fileTags": [
+        "TCG",
+        "video game"
+      ],
+      "setDate": "January 23",
+      "listUrl": "https://rk9.gg/events/pokemon"
     },
     {
       "title": "2027 Sydney Pokémon Regional Championships",
@@ -17909,6 +17930,27 @@
   "releaseCalendarOmitted": [],
   "videoGames": [
     {
+      "title": "2027 Mérida Pokémon Regional Championships",
+      "url": "https://rk9.gg/event/pokemon-merida-2027",
+      "source": "RK9",
+      "date": "2027-01-23",
+      "dateEnd": "2027-01-24",
+      "statedDate": "January 23-24, 2027",
+      "kind": "tournament",
+      "tags": [
+        "cards",
+        "video-games",
+        "tournaments",
+        "release"
+      ],
+      "fileTags": [
+        "TCG",
+        "video game"
+      ],
+      "setDate": "January 23",
+      "listUrl": "https://rk9.gg/events/pokemon"
+    },
+    {
       "title": "2027 Sydney Pokémon Regional Championships",
       "url": "https://rk9.gg/event/pokemon-sydney-2027",
       "source": "RK9",
@@ -22900,12 +22942,6 @@
       "items": 2
     },
     {
-      "source": "Bulbagarden",
-      "url": "https://bulbagarden.net/home/index.rss",
-      "items": 0,
-      "skipped": "HTTP 403: page blocked the fetch"
-    },
-    {
       "source": "Siliconera",
       "url": "https://www.siliconera.com/tag/pokemon/feed/",
       "items": 15
@@ -22916,9 +22952,10 @@
       "items": 424
     },
     {
-      "source": "Play! Pokémon",
-      "url": "https://play.pokemon.com/en-us/news/",
-      "items": 57
+      "source": "Bulbagarden",
+      "url": "https://bulbagarden.net/home/index.rss",
+      "items": 0,
+      "skipped": "HTTP 403: page blocked the fetch"
     },
     {
       "source": "Limitless",
@@ -22926,15 +22963,9 @@
       "items": 25
     },
     {
-      "source": "Victory Road",
-      "url": "https://victoryroad.pro/feed/",
-      "items": 5
-    },
-    {
-      "source": "ICv2",
-      "url": "https://icv2.com/rss",
-      "items": 0,
-      "skipped": "page had no titled items"
+      "source": "Play! Pokémon",
+      "url": "https://play.pokemon.com/en-us/news/",
+      "items": 57
     },
     {
       "source": "Pokémon Center Support",
@@ -22942,14 +22973,19 @@
       "items": 13
     },
     {
+      "source": "Victory Road",
+      "url": "https://victoryroad.pro/feed/",
+      "items": 5
+    },
+    {
       "source": "Serebii",
       "url": "https://www.serebii.net/card/english.shtml",
       "items": 129
     },
     {
-      "source": "Gematsu",
-      "url": "https://www.gematsu.com/companies/the-pokemon-company",
-      "items": 29
+      "source": "PokeGuardian",
+      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
+      "items": 2
     },
     {
       "source": "Pokémon Card (Asia)",
@@ -22958,14 +22994,20 @@
       "note": "The list stated titles and links. It did not state a publication date."
     },
     {
-      "source": "PokeGuardian",
-      "url": "https://www.pokeguardian.com/articles/news-archive",
-      "items": 48
+      "source": "Gematsu",
+      "url": "https://www.gematsu.com/companies/the-pokemon-company",
+      "items": 29
+    },
+    {
+      "source": "ICv2",
+      "url": "https://icv2.com/rss",
+      "items": 0,
+      "skipped": "page had no titled items"
     },
     {
       "source": "PokeGuardian",
-      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
-      "items": 2
+      "url": "https://www.pokeguardian.com/articles/news-archive",
+      "items": 48
     },
     {
       "source": "Pokémon Asia press",
@@ -22975,7 +23017,7 @@
     {
       "source": "RK9",
       "url": "https://rk9.gg/events/pokemon",
-      "items": 47
+      "items": 48
     },
     {
       "source": "Serebii",
@@ -23003,8 +23045,8 @@
   "runs": [
     {
       "day": "2026-11-23",
-      "slot": "nightly",
-      "at": "2026-11-23T15:05:12.810Z",
+      "slot": "midday",
+      "at": "2026-11-23T18:25:02.885Z",
       "path": "research/digests/news.json"
     }
   ]
