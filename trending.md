@@ -1,68 +1,39 @@
-# Catch'Em Trending — 2026-11-22
+# Catch'Em Trending — sealed floor board
 
-Product: Catch'Em Trending — sealed floor board
-asOf: 2026-11-22T16:30:00Z
+**asOf:** 2026-11-23T16:40:00Z
 
-**First play:** none. No Fill. Destined Rivals still in play. Prismatic still in play. Perfect Order still flowing. Evolving Skies ~12% above low. Prismatic PC-ETB market under prior low.
+**source:** Markets from public TCGPlayer product pages and mirrors (thelabtcg, riftcompare) 2026-11-23. Unopened English. Infinite-api product sold endpoints not accessible. No solds invented. Junk ignored. Carried prior solds from 2026-11-22.
+
+## First play
+
+**No Fill** — Wait
+
+No SKU cleared left-play + higher-low + exhaust + within 8% + low aged 8 days. Destined Rivals still in play. Prismatic still in play. Perfect Order still flowing. Evolving Skies ~12% above low. Prismatic PC-ETB market under prior low.
 
 ## Rules
 
-- Still cutting (new low in the last 3 days) = Wait
-- Climax-only = never Fill
-- Set still in play = Watch the floor at most
-- Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
-- No FORCE in this run. No Fill locked.
+- still cutting (new low in last 3 days) = Wait
+- climax-only = never Fill
+- set still in play = Watch the floor at most
+- Fill only if near-clock (set left play) + higher-low/forming + exhaust + within 8% of the low + low is ≥8 days old
+- Watch must name what turns it into Fill
+- Tyler does not lock a play unless the prompt starts with FORCE:
 
-Markets from public TCGPlayer product pages 2026-11-22. Unopened English. All product page 3m snapshots showed Total Sold 0. Infinite-api product sold endpoints not accessible. No solds invented. Junk ignored. Carried prior solds from 2026-11-21.
+## Plays
 
-## Board
+| SKU | Name | Market | sold3m | Low3m | Call | Why |
+|-----|------|--------|--------|-------|------|-----|
+| destined-rivals-booster-box | Destined Rivals Booster Box | 381.13 | 909 | 244.99 | Wait | Still in play, ~56% above low |
+| destined-rivals-etb | Destined Rivals Elite Trainer Box | 106.42 | 3650 | 91.00 | Wait | Still in play, ~17% above low |
+| destined-rivals-bundle | Destined Rivals Booster Bundle | 64.88 | 1169 | 44.00 | Wait | Still in play, recent cut, ~47% above |
+| sv151-bundle | 151 Booster Bundle | 161.29 | 1121 | 145.00 | Wait | Far above low, copies not dried |
+| sv151-etb | 151 Elite Trainer Box | 484.74 | 174 | 452.00 | Watch | Within 8% but no confirmed higher-low 8+ days or exhaust |
+| prismatic-etb | Prismatic Evolutions Elite Trainer Box | 115.75 | 3877 | 3.01 | Wait | Junk low, still in play |
+| prismatic-bundle | Prismatic Evolutions Booster Bundle | 70.52 | 2521 | 54.99 | Wait | Still in play, ~28% above |
+| prismatic-pc-etb | Prismatic Evolutions Pokemon Center ETB | 332.18 | 119 | 350.00 | Wait | Market under prior low, still cutting |
+| surging-sparks-box | Surging Sparks Booster Box | 298.18 | 356 | 279.0 | Wait | Still in play, ~7% above low |
+| perfect-order-box | Perfect Order Booster Box | 170.88 | 1410 | 152.99 | Wait | Set still in play, flowing |
+| perfect-order-etb | Perfect Order Elite Trainer Box | 58.11 | 1155 | 49.97 | Wait | Still in play, ~16% above |
+| evolving-skies-box | Evolving Skies Booster Box | 2179.44 | 53 | 1950.0 | Watch | Left play, ~12% above low, outside 8% |
 
-**Destined Rivals Booster Box** — Wait
-Market $380.93. Quarter sold carried 909, 10/day, low $244.99. Not a new cut. About 55% above the low. Still in play.
-Turns into Fill if: set leaves play, the $244.99 low stops cutting and holds, solds exhaust, market within 8%.
-
-**Destined Rivals ETB** — Wait
-Market $106.18. Quarter sold carried 3650, 40/day, low $91.00. About 17% above. Still in play.
-Turns into Fill if: left-play + higher-low 8+ days + solds exhaust + within 8%.
-
-**Destined Rivals Bundle** — Wait
-Market $65.31. Quarter sold carried 1169, 13/day, low $44.00. Recent cut. About 48% above. Still in play.
-Turns into Fill if: the $44.00 low stops cutting and holds 8+ days, set leaves play, solds exhaust, market within 8%.
-
-**151 Booster Bundle** — Wait
-Market $160.14. Quarter sold carried 1121, 12/day, low $145 (prior junk ignored). Far above. Copies not dried. Outside 8%.
-Turns into Fill if: copies dry after a held higher-low. Fill only after left-play, 8+ days on clean low, within 8%.
-
-**151 ETB** — Watch
-Market $484.74. Quarter sold carried 174, ~2/day, low $452 (reported). About 7% above. Within band but no held confirmation. Not a Fill.
-Turns into Fill if: 151 stays off clock, clean low holds and is not cutting for 8+ days, solds exhaust, market stays within 8%.
-
-**Prismatic ETB** — Wait
-Market $115.11. Quarter sold carried 3877, 42/day. Printed low $3.01 is junk, not a floor. Still in play.
-Turns into Fill if: a clean low ages 8+ days, left-play, solds thin, 8% band.
-
-**Prismatic Bundle** — Wait
-Market $70.52. Quarter sold carried 2521, 27/day, low $54.99. About 28% above. Still in play.
-Turns into Fill if: left-play + clean higher-low 8+ days + exhaust + within 8%.
-
-**Prismatic PC-ETB** — Wait
-Not the retail ETB. Market $332.18. Quarter sold carried 119, 1/day, low $350 (prior). Under. Still cutting. Still in play, so Wait.
-Turns into Fill if: left-play, new low holds 8+ days and is not cut, solds exhaust, market stays within 8%.
-
-**Surging Sparks Box** — Wait
-Market $297.34. Quarter sold carried 356, 4/day. Low $279 not a new cut. About 7% above. Case is the wrong SKU.
-Turns into Fill if: set leaves play, the $279 low holds 8+ days, solds thin, market within 8%.
-
-**Perfect Order Booster Box** — Wait
-Market $169.32. Quarter sold carried 1410, 15/day, low $152.99. About 11% above. Still in play. Flow.
-Turns into Fill if: set leaves play, daily solds dry up, higher-low 8+ days, within 8% of that low.
-
-**Perfect Order ETB** — Wait
-Market $61.89. Quarter sold carried 1155, 13/day, low $49.97. Still in play. About 24% above the low.
-Turns into Fill if: left-play + higher-low 8+ days + solds dry + within 8%.
-
-**Evolving Skies Box** — Watch
-Left play. Market $2179.44. Quarter sold carried 53, average daily ~1, low $1950. About 12% above. Outside strict 8%. Higher-low not confirmed held.
-Turns into Fill if: higher-low holds 8+ days without cutting, solds exhaust, market stays within 8% of $1950.
-
-No Fill. No invented solds. Editor untouched.
+No Fill. Watch only where named conditions met.
