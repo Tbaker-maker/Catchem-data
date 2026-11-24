@@ -157,7 +157,15 @@ export async function run() {
   }));
   t("release checked dates match the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated));
   t("a pokemon-card.com product page is an official release source", officialSource("Sources: pokemon-card.com/products/mega/mg.html, pokebeach.com/2026/10/example.") === "pokemon-card.com/products/mega/mg.html");
-  t("JP Special Deck Set stays verified only with that product page", verified.some((row) => /Special Deck Set/.test(row.name) && row.confidence === "verified" && officialSource(row.note) === "pokemon-card.com/products/mega/mg.html"));
+  // Fixture, not live radar: the daily research drops rows once their date passes.
+  const jpDeck = buildReleases({
+    updated: "2026-11-01",
+    upcoming: [
+      { name: "JP Special Deck Set", date: "2026-11-13", type: "product", confidence: "verified", note: "Sources: pokemon-card.com/products/mega/mg.html, pokebeach.com/2026/10/example." },
+      { name: "JP Special Deck Set (rumor)", date: "2026-11-13", type: "product", confidence: "single-source", note: "Sources: pokebeach.com/2026/10/example." },
+    ],
+  }, [], []);
+  t("JP Special Deck Set stays verified only with that product page", jpDeck.releases.length === 1 && jpDeck.releases[0].name === "JP Special Deck Set" && jpDeck.releases[0].source === "pokemon-card.com/products/mega/mg.html");
   t("releases carry no msrp", !/msrp/i.test(blob) && !blob.includes("$"));
   const priceDocs = [];
   for (const name of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((name) => name.endsWith(".json")).sort()) {
