@@ -1,4 +1,4 @@
-# Script research scan — 2026-11-23
+# Script research scan — 2026-11-24
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
