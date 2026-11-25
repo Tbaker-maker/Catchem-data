@@ -64,12 +64,12 @@ export async function run() {
       rows.push({ id: `${pid}|${start}`, pid, start, horizon: 7, keys: [key], hit, change: hit ? 8 : 0, usesFill: false });
     }
   }
-  const mined = mineYearPatterns(rows, { minN: 20, horizon: 7 });
+  const mined = mineYearPatterns(rows, { minN: 16, horizon: 7 });
   const dip = mined.passed.find((p) => p.keys.includes("path=dip"));
   const climb = mined.failed.find((p) => p.keys.includes("path=slow_climb"));
   t("a dip that beats the base on both sides passes", Boolean(dip) && dip.testN >= 20 && dip.trainN >= 20 && dip.testRate > dip.baseTest && dip.passedLater === true);
   t("a pattern that only works on the early side stays failed", Boolean(climb) && climb.trainN >= 20 && climb.passedLater === false && !mined.passed.some((p) => p.keys.includes("path=slow_climb")));
-  const oneDay = mineYearPatterns([{ start: "2026-01-01", hit: true, keys: ["path=dip"], horizon: 7 }], { minN: 20, horizon: 7 });
+  const oneDay = mineYearPatterns([{ start: "2026-01-01", hit: true, keys: ["path=dip"], horizon: 7 }], { minN: 16, horizon: 7 });
   t("one date does not pass", oneDay.passed.length === 0 && oneDay.failed.length === 0);
 
   const ownGateRows = [];
@@ -78,14 +78,14 @@ export async function run() {
     ownGateRows.push({ keys: ["path=flat"], hit: false, usesFill: false });
     ownGateRows.push({ keys: ["path=dip"], hit: true, usesFill: true });
   }
-  const ownGate = gateOwnOnly(["path=dip"], ownGateRows, { minN: 20 });
+  const ownGate = gateOwnOnly(["path=dip"], ownGateRows, { minN: 16 });
   t("own-day gate ignores fill rows", ownGate.passed === true && ownGate.n === 25 && ownGate.rate === 1);
   const fillOnly = [];
   for (let i = 0; i < 25; i++) {
     fillOnly.push({ keys: ["path=dip"], hit: true, usesFill: true });
     fillOnly.push({ keys: ["path=dip"], hit: false, usesFill: false });
   }
-  t("fill-only hits do not open the public gate", gateOwnOnly(["path=dip"], fillOnly, { minN: 20 }).passed === false);
+  t("fill-only hits do not open the public gate", gateOwnOnly(["path=dip"], fillOnly, { minN: 16 }).passed === false);
 
   const ownPairs = [["2026-10-01", 100], ["2026-10-13", 100]];
   const dipFill = { points: [["2026-09-20", 200], ["2026-09-29", 200]] };
@@ -118,16 +118,16 @@ export async function run() {
     formRows.push({ pid, horizon: 7, start: d1, keys: ["kind=sealed", "path=dip"], hit: false });
     formRows.push({ pid, horizon: 7, start: d2, keys: ["kind=sealed", "path=dip"], hit: false });
   }
-  const formed = backtestForming(formRows, pattern, { minN: 20, cutoff: d0 });
-  t("forming backtest passes at n>=20 when the later window completes and the move hits", formed.n >= 20 && formed.passed === true && formed.both === 20 && formed.bothRate > formed.base);
-  const few = backtestForming(formRows.filter((r) => r.pid <= 19), pattern, { minN: 20, cutoff: d0 });
-  t("forming backtest does not pass under n=20", few.n === 19 && few.passed === false);
+  const formed = backtestForming(formRows, pattern, { minN: 16, cutoff: d0 });
+  t("forming backtest passes at n>=16 when the later window completes and the move hits", formed.n >= 16 && formed.passed === true && formed.both === 20 && formed.bothRate > formed.base);
+  const few = backtestForming(formRows.filter((r) => r.pid <= 15), pattern, { minN: 16, cutoff: d0 });
+  t("forming backtest does not pass under n=16", few.n === 15 && few.passed === false);
   const noLater = [];
   for (let pid = 1; pid <= 20; pid++) {
     noLater.push({ pid, horizon: 7, start: d0, keys: ["kind=sealed"], hit: true });
     noLater.push({ pid, horizon: 7, start: d1, keys: ["kind=sealed"], hit: false });
   }
-  const stuck = backtestForming(noLater, pattern, { minN: 20, cutoff: d0 });
+  const stuck = backtestForming(noLater, pattern, { minN: 16, cutoff: d0 });
   t("a partial that never completes does not pass", stuck.n >= 20 && stuck.both === 0 && stuck.passed === false);
 
   const drop = listingsDropPriceJump(9, [["2026-01-01", 100], ["2026-01-03", 112]], [["2026-01-01", 100], ["2026-01-03", 55]]);

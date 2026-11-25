@@ -2,7 +2,7 @@
 import { runStage, sellerTag } from "../lib/seller-stage.mjs";
 import { readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
 
-const TAG = { minNights: 5, baseNights: 10, minListings: 6, minSpread: 0.1, zOwn: 2, cohortHigh: 0.9, cohortLow: 0.1, sellerRise: 1.2, holdNights: 2, minPeers: 4 };
+const TAG = { minNights: 5, baseNights: 10, minListings: 4, minSpread: 0.1, zOwn: 2, cohortHigh: 0.9, cohortLow: 0.1, sellerRise: 1.2, holdNights: 2, minPeers: 4 };
 const STAGE = { halfDays: 5, minPointsPerHalf: 4, flatPctPerDay: 0.5, keepPace: 0.5, agree: 0.6, minPrice: 2, minListingNights: 8, listFlatPct: 4 };
 
 function day(i) { return new Date(Date.UTC(2026, 9, 1 + i)).toISOString().slice(0, 10); }

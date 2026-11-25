@@ -11,7 +11,7 @@ import { hasBannedWord } from "../lib/copy-rules.mjs";
 
 const CFG = validSynth(JSON.parse(readFileSync(new URL("./fixtures/read-synthesis-limits.json", import.meta.url), "utf8")));
 // Obvious fixture. Not a market cutoff.
-const JUMPY = { windowDays: 30, swingPct: 80, minSwings: 2 };
+const JUMPY = { windowDays: 45, swingPct: 80, minSwings: 4 };
 const AS_OF = "2026-10-25";
 const CHIP_RULES = {
   max: 4,
@@ -52,12 +52,12 @@ export async function run() {
   ).signals.find((row) => row.kind === "range");
   t("chip names the same high and the same day count", chip && chip.high === shared.high && chip.days === shared.days && chip.label.includes(`${shared.days} day range`) && chip.label.includes("$80.00") && clean(chip.label));
 
-  const start = "2026-01-01";
+  const startMs = Date.parse(`${AS_OF}T00:00:00Z`) - 600 * 86400000;
   const climb = [];
-  for (let d = 0; d <= 297; d += 7) {
-    const iso = new Date(Date.parse(`${start}T00:00:00Z`) + d * 86400000).toISOString().slice(0, 10);
+  for (let d = 0; d <= 600; d += 7) {
+    const iso = new Date(startMs + d * 86400000).toISOString().slice(0, 10);
     if (iso > AS_OF) break;
-    climb.push([iso, iso === AS_OF ? 80 : 20 + d / 10]);
+    climb.push([iso, iso === AS_OF ? 80 : 40 + d / 20]);
   }
   if (climb.at(-1)?.[0] !== AS_OF) climb.push([AS_OF, 80]);
   const item = { pts: climb, title: "Alakazam (Mysterious Treasures) 1/123", asOf: AS_OF, set: "Mysterious Treasures", setSlug: "mysterious-treasures", release: "2007-08-22", sealed: false, kind: "high" };
@@ -87,7 +87,7 @@ export async function run() {
   t("one swing far from the steady print falls back to that print", far.jumpy === true && far.price === 100 && far.date === "2026-10-12" && far.price !== 300);
   t("a small move is unchanged", still.jumpy === false && still.price === 110);
   t("no limit changes nothing", openQuote.jumpy === false && openQuote.price === 300);
-  const heldPts = [day("2026-09-26", 100), day("2026-10-05", 250), day("2026-10-12", 100), day("2026-10-18", 250), day(AS_OF, 100)];
+  const heldPts = [day("2026-09-26", 100), day("2026-09-30", 250), day("2026-10-05", 40), day("2026-10-10", 220), day("2026-10-15", 40), day(AS_OF, 100)];
   t("a jumpy price with no different steady print is held", jumpyQuote(heldPts, AS_OF, JUMPY).held === true);
 
   const tags = () => ["Ultra Rare"];

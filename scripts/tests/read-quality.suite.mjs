@@ -196,7 +196,7 @@ export async function run() {
     headline: "Pidgey hit a 6-month high: $2.66, up 72.7% in 30 days.",
     price: 2.66,
     changePct: 72.7,
-    windowDays: 30,
+    windowDays: 90,
   });
   const highSeries = new Map([[7, new Map([["2026-04-01", 1], ["2026-07-10", 2.42], ["2026-09-08", 1.54], ["2026-10-08", 2.66]])]]);
   const unproven = libOf({ cards: { high }, series: highSeries, dailyFiles: new Set(["2026-10-08", "2026-10-03"]) });
@@ -209,7 +209,7 @@ export async function run() {
     path: "Rattata latest price on Sep 8.",
     price: 2.66,
     changePct: 72.7,
-    windowDays: 30,
+    windowDays: 90,
   });
   const monthLib = libOf({
     cards: { month },
@@ -354,7 +354,7 @@ export async function run() {
 
   const banned = libOf({
     cards: {
-      a: card({ id: "move-tcgcsv-71-30", sku: "tcgcsv-71", name: "Abra", headline: "Abra is a buy and a 6-month high: $2.66.", path: "Abra hit a 6-month high: $2.66, up 72.7% in 30 days.", price: 2.66, changePct: 72.7, windowDays: 30 }),
+      a: card({ id: "move-tcgcsv-71-30", sku: "tcgcsv-71", name: "Abra", headline: "Abra is a buy and a 6-month high: $2.66.", path: "Abra hit a 6-month high: $2.66, up 72.7% in 30 days.", price: 2.66, changePct: 72.7, windowDays: 90 }),
     },
     series: highSeries.get(7) ? new Map([[71, highSeries.get(7)]]) : new Map(),
   });

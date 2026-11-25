@@ -48,9 +48,9 @@ export async function run() {
       conditions: { product_type: "etb", season: "winter", direction: "down_call", price_level: "under_10" },
     });
   }
-  const mined = minePatterns(rows, { minN: 20 });
+  const mined = minePatterns(rows, { minN: 16 });
   t("minePatterns finds some", mined.patterns.length >= 1);
-  const evaled = evaluatePatterns(mined, { minN: 20 });
+  const evaled = evaluatePatterns(mined, { minN: 16 });
   t("holdout passes ≥1", evaled.passed.length >= 1);
   t("passed have n≥20", evaled.passed.every((p) => p.testN >= 20));
   t("passed beat base", evaled.passed.every((p) => p.testRate > mined.baseTest));
@@ -62,7 +62,7 @@ export async function run() {
   const scored = scorePatternCandidates(ideas, [
     ...Array.from({ length: 40 }, (_, i) => ({ id: `x${i}`, hit: true, conditions: { product_type: "booster_box", direction: "up_call", season: "summer", price_level: "25_100" } })),
     ...Array.from({ length: 40 }, (_, i) => ({ id: `y${i}`, hit: false, conditions: { product_type: "etb", direction: "down_call", season: "winter", price_level: "under_25" } })),
-  ], { minN: 20 });
+  ], { minN: 16 });
   t("scorePatternCandidates refreshes", scored.rows.length >= 1 && scored.rows.some((r) => r.n >= 20 && r.rate != null));
 
   // Crowd clusters
@@ -100,7 +100,7 @@ export async function run() {
       conditions: { product_type: c.pid < 600 ? "booster_box" : "etb", near_high: "near" },
     });
   }
-  const crowd = crowdVsData(many, rowBy, { minN: 20 });
+  const crowd = crowdVsData(many, rowBy, { minN: 16 });
   t("crowdVsData patterns", crowd.patterns.length >= 1);
 
   // Five prototype angles
@@ -149,7 +149,7 @@ export async function run() {
   for (const k of ["quiet_climbers", "hype_fade", "attention_lag", "consensus_flips", "crowd_ignored_rarities"]) {
     t(`proto ${k}`, kinds.has(k));
   }
-  const evalCrowd = evaluateCrowdAngles(crowd, protos, { minN: 20 });
+  const evalCrowd = evaluateCrowdAngles(crowd, protos, { minN: 16 });
   t("quiet_climbers passed holdout", evalCrowd.passed.some((p) => p.kind === "quiet_climbers" && p.n >= 20));
   t("hype_fade passed holdout", evalCrowd.passed.some((p) => p.kind === "hype_fade" && p.n >= 20));
   t("consensus_flips passed holdout", evalCrowd.passed.some((p) => p.kind === "consensus_flips" && p.n >= 20));

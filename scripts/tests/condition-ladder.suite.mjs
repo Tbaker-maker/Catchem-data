@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { nmForIndex, publishConditionCards, readLinePrice, splitPrintingPrices } from "../lib/condition-prices.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-const cfg = { minListings: 3, minRatio: 0.8, maxRatio: 1.2 };
+const cfg = { minListings: 4, minRatio: 0.8, maxRatio: 1.2 };
 
 export async function run() {
   let fail = 0;
@@ -36,7 +36,7 @@ export async function run() {
     { id: "sealed", kind: "sealed", printing: "Holofoil", release: "2024-01-01", conditions: { "Holofoil / Near Mint": 100 } },
     { id: "flagged", kind: "single", printing: "Normal", release: "2024-01-01", unverified: true, conditions: { "Normal / Near Mint": 4 } },
   ], {
-    asks: { "played|Holofoil|LP": [11, 12, 13], "played|Holofoil|MP": [6, 7, 8] },
+    asks: { "played|Holofoil|LP": [11, 12, 12, 13], "played|Holofoil|MP": [6, 7, 7, 8] },
     cfg,
     asOf: "2026-10-17",
   });
