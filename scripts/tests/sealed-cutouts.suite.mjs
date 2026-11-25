@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   hostAllowed, isSetLogo, productTypeOf, nameAgrees, sourceFor, targetHeight, judgeCut, cutoutRow,
+  blocksForUncovered, cutoutCovered,
 } from "../lib/sealed-cutouts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -41,6 +42,14 @@ export async function run() {
   t("a failed row keeps no file", bad.pass === false && bad.file == null && bad.png == null);
   const good = cutoutRow(etb, { pass: true, productType: "etb", file: "cutouts/swsh11-etb.webp", png: "cutouts/swsh11-etb.png", width: 10, height: 20 });
   t("a pass row records the file and the site id", good.pass === true && good.file.endsWith(".webp") && good.siteId === "tcgcsv-277335" && good.width === 10);
+
+  const fresh = { id: "tcgcsv-1", name: "Example Elite Trainer Box", subtype: "etb", tcgPlayerId: "1" };
+  const added = blocksForUncovered([fresh], [], []);
+  t("a new showable id with no review row is blocked by the feed step", added.length === 1 && added[0].review.id === "tcgcsv-1" && added[0].review.reason === "no traced cutout build" && added[0].review.kept === "not shipped" && added[0].row.pass === false && !added[0].row.file);
+  const cuts = [added[0].row];
+  const review = [added[0].review];
+  t("the feed step does not block an id that already has a reason", blocksForUncovered([fresh], cuts, review).length === 0 && cutoutCovered("tcgcsv-1", cuts, review));
+  t("a value with no row is still uncovered", !cutoutCovered("tcgcsv-1", [], []));
 
   const lib = await readFile(join(HERE, "../lib/sealed-cutouts.mjs"), "utf8");
   t("the public lib has no scale table", !/booster-box"\s*:\s*0\./.test(lib) && !lib.includes("cutout-scale.json"));
