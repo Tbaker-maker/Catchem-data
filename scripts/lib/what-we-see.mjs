@@ -204,7 +204,7 @@ function collectSignals(f) {
       const phrases = [
         `This item ${ahead ? "outran" : "trailed"} its set over 30 days: ${signed(ch.d30.pct)} vs the ${m.kind || "singles"} index at ${signed(m.pct)} (${shortDay(m.from)} to ${shortDay(m.to)}).`,
         `30-day item move ${signed(ch.d30.pct)} against ${m.set || "its set"} ${m.kind || "singles"} index ${signed(m.pct)}.`,
-        `${m.set || "Set"} ${m.kind || "singles"} index ${signed(m.pct)} while this product printed ${signed(ch.d30.pct)} over the same window.`,
+        `${m.set || "Set"} ${m.kind || "singles"} index ${signed(m.pct)} while this product's market price moved ${signed(ch.d30.pct)} over the same window.`,
       ];
       out.push({
         kind: "vs_set",

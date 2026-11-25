@@ -295,15 +295,22 @@ function supplyChip(ctx, rules) {
   const series = listingSeries(row);
   const windowDays = num(spec?.windowDays) > 0 ? num(spec.windowDays) : 0;
   const slack = Number.isFinite(num(spec?.slackDays)) ? num(spec.slackDays) : 0;
+  let fromPair = false;
   let hit = windowDays > 0 ? countWindow(series, asOf, windowDays, slack) : null;
+  const n = num(row.n);
+  const prev = num(row.prev);
+  const pair = prev > 0 && n >= 0 ? ((n - prev) / prev) * 100 : null;
+  // The read line names prev and n. A window that rounds to a different
+  // percent is not that line, so the chip cannot use it.
+  if (hit && pair != null && roundPct(hit.pct) !== roundPct(pair)) hit = null;
   if (!hit) {
-    const n = num(row.n);
-    const prev = num(row.prev);
-    if (!(prev > 0) || !(n >= 0)) return null;
-    hit = { pct: ((n - prev) / prev) * 100, days: 0 };
+    if (pair == null) return null;
+    const span = dayNum(String(row.date || "").slice(0, 10)) - dayNum(String(row.prevDate || "").slice(0, 10));
+    hit = { pct: pair, days: span > 0 ? span : 0 };
+    fromPair = true;
   }
   if (!Number.isFinite(hit.pct) || Math.abs(hit.pct) < min) return null;
-  const pace = paceWord(series, hit, spec, asOf);
+  const pace = fromPair ? "" : paceWord(series, hit, spec, asOf);
   if (pace === "quiet") return null;
   // Seller and stage words stay off until their measurement is approved.
   const extras = spec?.publicExtras === true;
@@ -319,7 +326,7 @@ function supplyChip(ctx, rules) {
   const text = parts.join(" · ");
   const dir = hit.pct < 0 ? "down" : "up";
   const way = dir === "down" ? "down" : "up";
-  const over = hit.days > 0 ? ` over ${hit.days} days` : "";
+  const over = hit.days > 0 ? ` over ${hit.days} day${hit.days === 1 ? "" : "s"}` : "";
   let label = `Listings counted ${way} ${shown} percent${over}`;
   if (pace === "Draining" || pace === "Stacking") label += `. ${pace}`;
   if (sellers) label += `. ${sellers}`;
@@ -441,6 +448,17 @@ export function trailingFlat(points, asOf, nights, slack) {
   return samples.every((p) => Math.round(p[1] * 100) === cents);
 }
 
+function nightRun(points, asOf) {
+  const pts = cleanPoints(points).filter((p) => !asOf || p[0] <= asOf);
+  if (pts.length < 3) return "";
+  const a = Math.round(pts[pts.length - 3][1] * 100);
+  const b = Math.round(pts[pts.length - 2][1] * 100);
+  const c = Math.round(pts[pts.length - 1][1] * 100);
+  if (c > b && b > a) return "up";
+  if (c < b && b < a) return "down";
+  return "";
+}
+
 function momentumChip(points, asOf, rules) {
   const m = rules?.momentum;
   if (!m || !Number.isFinite(num(m.risingMin)) || !Number.isFinite(num(m.coolingMax))) return null;
@@ -451,7 +469,11 @@ function momentumChip(points, asOf, rules) {
   const then = nearest(points, addDays(asOf, -days), soft);
   if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
   const pct = ((now[1] - then[1]) / then[1]) * 100;
+  const nights = nightRun(points, asOf);
   const run = straightWeeks(points, asOf, 5);
+  // A straight weekly run must not name Cooling or Rising when the last two
+  // closes went the other way. The week chip can still say the week.
+  if ((run === "down" && nights === "up") || (run === "up" && nights === "down")) return null;
   if (run === "up" || run === "down") {
     const word = run === "up" ? "Rising" : "Cooling";
     return { kind: "momentum", word, mag: Math.abs(pct), label: `Momentum ${word}` };
@@ -460,7 +482,8 @@ function momentumChip(points, asOf, rules) {
   if (flatN >= 2 && trailingFlat(points, asOf, flatN, 0)) {
     return { kind: "momentum", word: "Flat", mag: 0, label: "Momentum Flat", settled: true };
   }
-  const word = pct >= num(m.risingMin) ? "Rising" : pct <= num(m.coolingMax) ? "Cooling" : "Flat";
+  let word = pct >= num(m.risingMin) ? "Rising" : pct <= num(m.coolingMax) ? "Cooling" : "Flat";
+  if ((word === "Cooling" && nights === "up") || (word === "Rising" && nights === "down")) return null;
   return { kind: "momentum", word, mag: Math.abs(pct), label: `Momentum ${word}` };
 }
 
