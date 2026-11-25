@@ -289,6 +289,9 @@ try {
   }
   await writeFile(readsPath, JSON.stringify(readsDoc, null, 1) + "\n");
   console.log(JSON.stringify({ stale }));
+  const { writeUncoveredCutoutBlocks } = await import("./lib/cutout-coverage.mjs");
+  const cutouts = await writeUncoveredCutoutBlocks(ROOT);
+  console.log(JSON.stringify({ cutoutBlocks: cutouts.added }));
 } catch (err) {
   console.error(`stale flag skipped: ${err.message}`);
   throw err;

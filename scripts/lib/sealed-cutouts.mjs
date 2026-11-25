@@ -162,6 +162,41 @@ export function cutoutRow(product, result) {
   return row;
 }
 
+// A read with a /p/ link, a priced sealed row, or a feed hole makes the id
+// showable. The step that publishes that read must record a row here. A pass
+// needs a file. A block needs a reason. Neither means the id is uncovered.
+export function cutoutCovered(id, cuts, review) {
+  const key = String(id || "");
+  const row = (cuts || []).find((item) => item && item.id === key);
+  if (!row) return false;
+  if (row.pass === true && row.file && row.png) return true;
+  const note = (review || []).find((item) => item && item.id === key);
+  return Boolean(note && note.reason);
+}
+
+// Reason for an id the feed just made showable and nobody has traced.
+// This does not invent a photo or a size. A later cutter may replace it.
+export function untracedReason(product) {
+  const type = productTypeOf(product);
+  if (!type || !nameAgrees(product && product.name, type)) return { productType: type || "", reason: "name does not match the product type" };
+  const src = sourceFor(product);
+  if (!src.url) return { productType: type, reason: src.reason || "no allowed photo" };
+  return { productType: type, reason: "no traced cutout build" };
+}
+
+export function blocksForUncovered(showable, cuts, review) {
+  const blocks = [];
+  for (const product of showable || []) {
+    if (!product || !product.id || cutoutCovered(product.id, cuts, review)) continue;
+    const why = untracedReason(product);
+    blocks.push({
+      row: cutoutRow(product, { pass: false, productType: why.productType }),
+      review: { id: product.id, productType: why.productType, reason: why.reason, kept: "not shipped" },
+    });
+  }
+  return blocks;
+}
+
 // Named holes from the public feed that are not in the priced file.
 export const FEED_MUST = ["tcgcsv-712112", "tcgcsv-712108", "tcgcsv-704188", "tcgcsv-133812"];
 
