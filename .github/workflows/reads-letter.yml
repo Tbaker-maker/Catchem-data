@@ -1,0 +1,58 @@
+name: Reads letter
+
+on:
+  schedule:
+    # 15:00 UTC every day. This clock does not follow the price run.
+    # dueOn still decides daily, weekly Sunday, monthly and quarterly.
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "Render a masked letter artifact and send nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  letter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build the reads letter
+        env:
+          CUSTOM_READS_TOKEN: ${{ secrets.CUSTOM_READS_TOKEN }}
+          READS_LETTER_DRY: ${{ inputs.dry && '1' || '' }}
+          READS_LETTER_SUMMARY: letter-summary.md
+          READS_LETTER_ARTIFACT: reads-letter-dry.json
+        run: node scripts/build-custom-reads-members.mjs
+
+      - name: Nightly summary
+        if: always()
+        run: |
+          if [ -f letter-summary.md ]; then
+            cat letter-summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Reads letter did not write a summary." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Save the dry run artifact
+        if: always() && hashFiles('reads-letter-dry.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: reads-letter-dry
+          path: reads-letter-dry.json
+
+      - name: Comment on issue 573
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          READS_LETTER_POST: "1"
+        run: node scripts/post-reads-letter.mjs letter-summary.md
