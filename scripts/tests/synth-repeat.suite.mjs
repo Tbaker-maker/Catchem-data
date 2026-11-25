@@ -3,7 +3,7 @@
 import { compose } from "../lib/read-synthesis.mjs";
 import { whyPlain } from "../lib/read-quality.mjs";
 
-const cfg = { minSignals: 2, maxOpeningShare: 1, weights: { kind: 1 } };
+const cfg = { minSignals: 1, maxOpeningShare: 1, weights: { kind: 1 } };
 
 function count(hay, needle) {
   let n = 0;

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import {
   buildSetMaps, resolveSetSlug, buildSlots, bulkFloorForSet, rareSlotAvg,
-  packsFor, productPacksOk, scoreProduct, bannedCopy, historyFileDay, priceSingles, SIMS, BULK_CARDS_PER_PACK,
+  packsFor, productPacksOk, scoreProduct, bannedCopy, historyFileDay, ripLagsCatalog, priceSingles, SIMS, BULK_CARDS_PER_PACK,
 } from "./lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -153,6 +153,11 @@ rows.push(...merged);
 const asOf = bucketAsOf || pull.updated || pull.sourceDate || new Date().toISOString().slice(0, 10);
 // A later sealed price date gets its own file. The singles date is left as it was.
 const historyDay = historyFileDay(rows, asOf);
+const catalogDay = String(catalog.asOf || "").slice(0, 10);
+if (ripLagsCatalog(catalogDay, historyDay)) {
+  console.error(`rip-roi: catalog day ${catalogDay || "missing"} is ahead of rip day ${historyDay || "missing"}. Not written.`);
+  process.exit(1);
+}
 const doc = {
   asOf,
   label: "Rip value",
