@@ -33,36 +33,36 @@ export async function run() {
   t("one step that stays put is not three days", bestMove(stuck, "single") === null);
   const jumped = down.map((p, i) => [p[0], i < 59 ? 20 + i * 0.05 : 200]);
   t("one day cannot be most of the move", bestMove(jumped, "single") === null);
-  const old = headlineFor({ name: "Charizard", set: "Base Set", year: 1999, release: "1999-01-09", number: "004/102", price: 3914, fromPrice: 4500, changePct: -13, windowDays: 30, toDate: "2026-09-27" });
-  t("an old card names the set and the year", old === "Charizard (Base Set, 1999) 004/102 is down 13% this month, from $4,500 to $3,914.");
-  const gengar = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27" });
-  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes) 284/217 is down 12% this month, from $984.26 to $866.33.");
+  const old = headlineFor({ name: "Charizard", set: "Base Set", year: 1999, release: "1999-01-09", number: "004/102", price: 3914, fromPrice: 4500, changePct: -13, windowDays: 90, toDate: "2026-09-27" });
+  t("an old card names the set and the year", old === "Charizard (Base Set, 1999) 004/102 is down 13% over 90 days, from $4,500 to $3,914.");
+  const gengar = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 90, toDate: "2026-09-27" });
+  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes) 284/217 is down 12% over 90 days, from $984.26 to $866.33.");
   const accent = headlineFor({ name: "Pokemon Catcher", set: "Test Set", price: 12.5, fromPrice: 10, changePct: 25, windowDays: 7, toDate: "2026-09-27" });
   t("Pokémon stays accented", accent.startsWith("Pokémon Catcher (Test Set) is up 25% this week"));
   const why = whyFor(down);
   t("why uses the whole series and skips the old 30-day line", why.length > 0 && !/last 30 days ran|low of the last 30|high of the last 30|we store|at least/i.test(why));
-  const led = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down.at(-1)[1], fromPrice: down[30][1], changePct: -17.6, windowDays: 30, toDate: down.at(-1)[0], fromDate: down[30][0], hist: down });
-  t("a low on under 90 days of history is not claimed as a since-month low", led.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) is down 17.6% this month") && !/lowest price since/i.test(led));
+  const led = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down.at(-1)[1], fromPrice: down[30][1], changePct: -17.6, windowDays: 90, toDate: down.at(-1)[0], fromDate: down[30][0], hist: down });
+  t("a low on under 90 days of history is not claimed as a since-month low", led.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) is down 17.6% over 90 days") && !/lowest price since/i.test(led));
   const down100 = [];
   for (let i = 0; i < 100; i++) {
     const d = new Date(Date.parse("2026-04-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
     down100.push([d, Math.round((100 - i * 0.3) * 100) / 100]);
   }
-  const led100 = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down100.at(-1)[1], fromPrice: down100.at(-31)[1], changePct: -10.7, windowDays: 30, toDate: down100.at(-1)[0], hist: down100 });
-  t("a series low leads when it is the stronger fact", led100.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) hit its lowest price since April") && led100.includes("down 10.7% in 30 days") && !/at least|we store/i.test(led100));
+  const led100 = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down100.at(-1)[1], fromPrice: down100.at(-31)[1], changePct: -10.7, windowDays: 90, toDate: down100.at(-1)[0], hist: down100 });
+  t("a series low leads when it is the stronger fact", led100.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) hit its lowest price since April") && led100.includes("down 10.7% in 90 days") && !/at least|we store/i.test(led100));
   const long = [];
   for (let i = 0; i < 170; i++) {
     const d = new Date(Date.parse("2026-04-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
     long.push([d, Math.round((80 - i * 0.2) * 100) / 100]);
   }
-  const six = headlineFor({ name: "Lost Thunder Booster Box", set: "SM - Lost Thunder", release: "2018-11-02", price: long.at(-1)[1], fromPrice: long.at(-30)[1], changePct: -8, windowDays: 30, toDate: long.at(-1)[0], hist: long });
+  const six = headlineFor({ name: "Lost Thunder Booster Box", set: "SM - Lost Thunder", release: "2018-11-02", price: long.at(-1)[1], fromPrice: long.at(-30)[1], changePct: -8, windowDays: 90, toDate: long.at(-1)[0], hist: long });
   t("a long series says a 6-month low", six.includes("hit a 6-month low") && !/we store|at least/i.test(six));
   const thinPts = [];
   for (let i = 0; i < 40; i++) {
     const d = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
     thinPts.push([d, i < 25 ? 50 : Math.round((50 - (i - 24) * 1.5) * 100) / 100]);
   }
-  const thinCopy = headlineFor({ name: "Arceus LV.X", set: "Diamond and Pearl Promos", number: "DP53", release: "2007-05-01", price: thinPts.at(-1)[1], fromPrice: thinPts[10][1], changePct: -20, windowDays: 30, toDate: thinPts.at(-1)[0], hist: thinPts });
+  const thinCopy = headlineFor({ name: "Arceus LV.X", set: "Diamond and Pearl Promos", number: "DP53", release: "2007-05-01", price: thinPts.at(-1)[1], fromPrice: thinPts[10][1], changePct: -20, windowDays: 90, toDate: thinPts.at(-1)[0], hist: thinPts });
   t("a thin series is not a record and says on few price days", isThinSeries(thinPts) && thinCopy.includes("on few price days") && !/on few sales|6-month|highest price|lowest price/i.test(thinCopy));
   const tiled = [];
   const seed = [10, 10, 9];
@@ -72,7 +72,7 @@ export async function run() {
   t("a 3-day tiled cycle keeps only the first three days", cleaned.length === 5 && cleaned[2][1] === 9 && cleaned[3][0] === "2026-04-15");
   const spiked = down.map((p, i) => i === 40 ? [p[0], p[1] * 0.4] : p);
   const drawn = chartSeries(spiked);
-  t("a one-day spike is left off the chart", drawn.length === spiked.length - 1 && !drawn.some((p) => p[0] === spiked[40][0]) && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 30, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
+  t("a one-day spike is left off the chart", drawn.length === spiked.length - 1 && !drawn.some((p) => p[0] === spiked[40][0]) && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 90, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
   {
     const climb = [["2026-09-26", 500], ["2026-09-27", 500], ["2026-10-03", 600], ["2026-10-05", 700], ["2026-10-06", 700], ["2026-10-07", 850], ["2026-10-08", 850], ["2026-10-09", 999.99], ["2026-10-10", 999.99]];
     const drawnClimb = chartSeries(climb);
@@ -89,10 +89,10 @@ export async function run() {
   ];
   const gengarSpikes = spikeDates(gengarApril);
   const gengarChart = chartSeries(gengarApril);
-  const gengarCopy = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27", hist: gengarApril }) + whyFor(gengarApril, { name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27" });
+  const gengarCopy = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 90, toDate: "2026-09-27", hist: gengarApril }) + whyFor(gengarApril, { name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 90, toDate: "2026-09-27" });
   t("Gengar April 24 to 28 drops the bad cluster and does not draw it", gengarSpikes.has("2026-04-24") && gengarSpikes.has("2026-04-25") && gengarSpikes.has("2026-04-27") && !gengarChart.some((p) => ["2026-04-24", "2026-04-25", "2026-04-27"].includes(p[0])) && !gengarChart.some((p) => p[1] > 800 && p[1] < 860) && !/792\.62|727\.76|924\.79|831\.70|834\.74/.test(gengarCopy));
-  const sameSet = [1, 2, 3].map((n) => ({ type: "mover", price: 20, fromPrice: 10, changePct: -10, windowDays: 30, set: "ME: Ascended Heroes", name: "Card " + n, score: 100 - n, hist: down, toDate: down.at(-1)[0], release: "2026-01-30" }));
-  const other = { type: "mover", price: 20, fromPrice: 10, changePct: 12, windowDays: 30, set: "Base Set", name: "Other", score: 50, hist: down.map((p, i) => [p[0], 40 + i]), toDate: down.at(-1)[0], release: "1999-01-09" };
+  const sameSet = [1, 2, 3].map((n) => ({ type: "mover", price: 20, fromPrice: 10, changePct: -10, windowDays: 90, set: "ME: Ascended Heroes", name: "Card " + n, score: 100 - n, hist: down, toDate: down.at(-1)[0], release: "2026-01-30" }));
+  const other = { type: "mover", price: 20, fromPrice: 10, changePct: 12, windowDays: 90, set: "Base Set", name: "Other", score: 50, hist: down.map((p, i) => [p[0], 40 + i]), toDate: down.at(-1)[0], release: "1999-01-09" };
   const capped = selectFeedReads([...sameSet, other], 12);
   t("at most two reads from one set", capped.filter((row) => row.set === "ME: Ascended Heroes").length <= 2 && new Set(capped.map((row) => whyPattern(row.why))).size === capped.length);
   const dropped = rankReads([

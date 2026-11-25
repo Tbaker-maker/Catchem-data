@@ -86,7 +86,7 @@ export async function run() {
   // Level that fails holdout stays private
   const tiny = buildHypeEffect({
     windows: wins.filter((w) => w.level === "set").slice(0, 5),
-    priceOn, today, minN: 20,
+    priceOn, today, minN: 16,
   });
   t("tiny set stays private", tiny.gates.set.passedHoldout === false && tiny.public.set.length === 0);
 

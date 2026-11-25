@@ -382,6 +382,13 @@ jobs:
       # guards have passed. Everything downstream still runs, still reports, and
       # still fails the job loudly if it should — it simply can no longer take
       # the prices with it.
+      - name: Rebuild rip value on the catalog day
+        # The pre-test rebuild scores rip before the full catalog fetch. The
+        # price commit below would then publish that older file next to the
+        # newer catalog. Score again here. The builder exits if the catalog
+        # day is still ahead, so the lag cannot be committed.
+        run: node scripts/build-rip-roi.mjs
+
       - name: Commit price data (before anything reports on it)
         run: |
           git config user.name "catchem-bot"
