@@ -17,6 +17,7 @@ export const READERS = [
   { file: "research/assets/public/today.json", readers: ["site"], writer: "scripts/write-morning-card.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/feed/supply-lead.json", readers: ["site"], writer: "scripts/write-supply-lead.mjs", flag: "supply.leadReads", live: true, dateRequired: true },
   { file: "research/assets/public/feed/set-value.json", readers: ["site"], writer: "scripts/write-set-value.mjs", flag: "set.valueReads", live: true, dateRequired: true },
+  { file: "research/assets/public/feed/mood-gap.json", readers: ["site", "newsletter"], writer: "scripts/build-mood-gap.mjs", flag: "reads.moodGap", live: true, dateRequired: true, note: "One market breadth read. Absent while reads.moodGap is false." },
   { file: "research/assets/public/search-lite.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: false, note: "The file is an array and has no date. The search page loads feed/search shards. This file stays for the editor and the bot." },
   { file: "research/assets/public/feed/facts.json", readers: ["site"], writer: "scripts/build-feed.mjs", live: true, dateRequired: false, note: "Keyed by product id. No top-level date." },
   { file: "research/assets/public/catalogue-images.json", readers: ["site"], writer: "scripts/build-card-images.mjs", live: false, dateRequired: false, note: "Catalogue paths. Not a nightly price file." },

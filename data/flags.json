@@ -97,6 +97,13 @@
       "trigger": "Tyler decides the TCGplayer photo comes off.",
       "env": "CATCHEM_IMAGES_TCGPLAYER"
     },
+    "reads.moodGap": {
+      "value": false,
+      "owner": "scripts/build-mood-gap.mjs",
+      "why": "Market breadth can show as one read and one letter section. The mood gap number stays off until the private backtest passes and this key is turned on. Off writes no public read.",
+      "trigger": "Private backtest passes and Tyler turns this on.",
+      "env": "CATCHEM_MOOD_GAP"
+    },
     "reads.library": {
       "value": true,
       "owner": "scripts/lib/second-library.mjs",
