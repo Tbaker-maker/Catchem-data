@@ -25,7 +25,7 @@ const head = process.env.READS_GUARD_NO_NET === "1" ? null : async (url) => {
   return res.status;
 };
 const before = (bundle.reads || []).length;
-const { keep, flags, fixes } = await guardReads(bundle.reads || [], { cfg, daily, heatRows, head });
+const { keep, flags, fixes } = await guardReads(bundle.reads || [], { cfg, daily, heatRows, head, boardDay: bundle.asOf });
 if (flags.length) {
   const wrote = await writeReadFlags(ROOT, bundle.asOf, flags).catch(() => null);
   if (!wrote) {
