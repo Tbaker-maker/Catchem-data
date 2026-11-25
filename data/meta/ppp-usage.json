@@ -7,13 +7,13 @@
     "main": 10000,
     "reserve": 1000,
     "used": {
-      "sealed": 1,
-      "singles": 2475,
-      "total": 2476
+      "sealed": 0,
+      "singles": 2393,
+      "total": 2393
     },
-    "remaining": 9297,
-    "usedToday": 10703,
-    "usedThisRun": 2476,
+    "remaining": 6904,
+    "usedToday": 13096,
+    "usedThisRun": 2393,
     "labels": {
       "used": "this run only, from x-credits-charged",
       "usedThisRun": "this run only, from x-credits-charged",
@@ -26,15 +26,15 @@
       "volume": 1313,
       "pop": 1000,
       "history": 500,
-      "current": 2476
+      "current": 4869
     }
   },
   "items": {
-    "sealed": 1,
-    "singles": 2475
+    "sealed": 0,
+    "singles": 2260
   },
   "errors": [
-    "time cap reached; 2677 calls left for the next run"
+    "time cap reached; 86 calls left for the next run"
   ],
   "estimate": {
     "budget": 10000,
@@ -57,22 +57,22 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 2476,
-    "itemsDone": 2476,
+    "creditsUsed": 2393,
+    "itemsDone": 2260,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 2727,
-    "itemsSkipped": 2727,
+    "itemsBudgetSkipped": 251,
+    "itemsSkipped": 251,
     "callsSent": 2476,
     "callsFailed": 0,
-    "callsNotSent": 2727,
+    "callsNotSent": 251,
     "rateLimitCount": 0,
     "retries": 0
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppp-raw-private and pushed to the private repo. It is not committed here.",
   "emptyIds": {
     "skippedToday": 82,
-    "foundEmptyToday": 0,
-    "marked": 114,
+    "foundEmptyToday": 83,
+    "marked": 175,
     "recheckDays": 7,
     "note": "Lookups PPP answered with no unique product. Skipped until a week has passed, then asked once more."
   },
@@ -88,12 +88,12 @@
     "note": "Counts and percent agreement only. Dollar prices stay in the private report.",
     "windowDays": 7,
     "counts": {
-      "pppSealed": 1,
-      "pppCards": 2475,
+      "pppSealed": 0,
+      "pppCards": 2260,
       "pptSealed": 389,
-      "pptCards": 2177,
+      "pptCards": 0,
       "pptSealedOnly": 389,
-      "pptCardsOnly": 1979
+      "pptCardsOnly": 0
     },
     "sealed": {
       "vsTcgcsv": {
@@ -121,26 +121,26 @@
     },
     "singles": {
       "vsTcgcsv": {
-        "nCompared": 4467,
-        "nExact": 3693,
-        "exactShare": 0.8267293485560779,
+        "nCompared": 3952,
+        "nExact": 3296,
+        "exactShare": 0.8340080971659919,
         "medianAbsPct": 0,
-        "within5": 3938,
-        "within5Share": 0.8815760017909111,
-        "within10": 4360,
-        "within10Share": 0.9760465636892769,
-        "nOutliersOver10": 107
+        "within5": 3445,
+        "within5Share": 0.8717105263157895,
+        "within10": 3781,
+        "within10Share": 0.9567307692307693,
+        "nOutliersOver10": 171
       },
       "vsPpt": {
-        "nCompared": 396,
-        "nExact": 333,
-        "exactShare": 0.8409090909090909,
-        "medianAbsPct": 0,
-        "within5": 358,
-        "within5Share": 0.9040404040404041,
-        "within10": 393,
-        "within10Share": 0.9924242424242424,
-        "nOutliersOver10": 3
+        "nCompared": 0,
+        "nExact": 0,
+        "exactShare": null,
+        "medianAbsPct": null,
+        "within5": 0,
+        "within5Share": null,
+        "within10": 0,
+        "within10Share": null,
+        "nOutliersOver10": 0
       }
     }
   }

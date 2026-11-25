@@ -1,24 +1,24 @@
-# Weekly Read, 2026-11-24
+# Weekly Read, 2026-11-25
 
 Video outline. Same parts every week. Do not say a name is a move to make.
 
 ## Heat
-- Paradox Rift Pokemon Center Elite Trainer Box: Hot
-- Fusion Strike Elite Trainer Box: Hot
-- Mega Evolution Pokemon Center Elite Trainer Box: Hot
-- Perfect Order Booster Bundle: Hot
-- Pitch Black Booster Pack: Hot
-- Astral Radiance Pokemon Center Elite Trainer Box: Hot
+- Sun & Moon Elite Trainer Box: Hot
+- Lost Origin Booster Bundle: Warm
+- Temporal Forces Pokemon Center Elite Trainer Box: Warm
+- Mega Evolution Elite Trainer Box: Warm
+- Stellar Crown Booster Bundle: Warm
+- Stellar Crown Elite Trainer Box: Warm
 
 ## Keeps showing up
 Status: building history
 
 Sealed
-- Ascended Heroes Booster Bundle: 6 in 7 days, 12 in 30, streak 4
+- Ascended Heroes Booster Bundle: 5 in 7 days, 11 in 30, streak 4
 - Prismatic Evolutions Booster Bundle: 5 in 7 days, 9 in 30, streak 3
-- Prismatic Evolutions Elite Trainer Box: 2 in 7 days, 9 in 30, streak 0
-- Chaos Rising Booster Bundle: 5 in 7 days, 7 in 30, streak 4
-- Pitch Black Elite Trainer Box: 4 in 7 days, 7 in 30, streak 0
+- Prismatic Evolutions Elite Trainer Box: 2 in 7 days, 8 in 30, streak 0
+- Chaos Rising Booster Bundle: 4 in 7 days, 7 in 30, streak 4
+- Pitch Black Elite Trainer Box: 4 in 7 days, 6 in 30, streak 0
 
 ## Sealed line and chase line
 These are two lines. They are not one number.
