@@ -16,6 +16,7 @@ export const REASON = {
   "price-flip": "The price jumped to a fixed level and straight back. That is not a steady move.",
   "flat-step": "The move is one step to or from a price that sat exactly still for many days.",
   "no-change": "The listings counted did not change, so there is nothing to read.",
+  "before-board": "The read is dated before the board day, so it is not shown as current.",
 };
 
 const cents = (v) => Math.round(Number(v) * 100);
@@ -150,6 +151,29 @@ export function priceHits(read, cfg, daily) {
   return [...new Set(hits)];
 }
 
+function chipShownPct(chip) {
+  const m = String(chip?.text || "").match(/(-?\d+(?:\.\d+)?)%/);
+  if (!m) return null;
+  const n = Math.round(Math.abs(Number(m[1])));
+  if (!Number.isFinite(n)) return null;
+  if (chip?.dir === "down") return -n;
+  if (chip?.dir === "up") return n;
+  return n;
+}
+
+const FACT_KINDS = new Set(["pokemon", "newsline", "news", "season", "lag", "supply", "year", "year-ago", "year-range", "anniversary", "prerelease"]);
+
+// A price or listings read dated before the board day is not current.
+export function beforeBoard(read, boardDay) {
+  const day = String(boardDay || "").slice(0, 10);
+  if (!DAY.test(day) || !read) return false;
+  const kind = String(read.readKind || read.kind || "");
+  const deep = String(read.deep || "");
+  if (FACT_KINDS.has(kind) || FACT_KINDS.has(deep)) return false;
+  const end = String(read.endDate || read.asOf || "").slice(0, 10);
+  return DAY.test(end) && end < day;
+}
+
 function chipPct(chip) {
   const m = String(chip?.text || "").match(/(-?\d+(?:\.\d+)?)%\s*(\d+)D/i);
   return m ? { pct: Number(m[1]), days: Number(m[2]) } : null;
@@ -191,11 +215,24 @@ export function fixChips(read, cfg = null) {
       changed.push("listings");
       continue;
     }
+    if (chip?.kind === "listings" && way != null && rp > 0) {
+      const want = Math.round(((rn - rp) / rp) * 100);
+      const got = chipShownPct(chip);
+      if (got != null && got !== want) { changed.push("listings"); continue; }
+    }
+    if (chip?.kind === "momentum") {
+      const blob = `${textOf(read)} ${read?.why || ""} ${read?.whyItMatters || ""}`;
+      const turnedUp = /turned up|up two nights/i.test(blob);
+      const turnedDown = /turned down|down two nights/i.test(blob);
+      if ((chip.word === "Cooling" && turnedUp) || (chip.word === "Rising" && turnedDown)) { changed.push("momentum"); continue; }
+    }
     keep.push(chip);
   }
   if (!changed.length) return { read, changed };
   const out = { ...read, signals: keep };
   if (read.tiles && changed.includes("listings")) { out.tiles = { ...read.tiles }; delete out.tiles.listings; }
+  if (changed.includes("listings") && typeof out.blurb === "string" && /listings counted/i.test(out.blurb) && !keep.some((chip) => chip.kind === "listings")) out.blurb = "";
+  if (changed.includes("momentum") && typeof out.blurb === "string" && /momentum/i.test(out.blurb) && !keep.some((chip) => chip.kind === "momentum")) out.blurb = "";
   return { read: out, changed };
 }
 
@@ -309,7 +346,7 @@ export async function fixImage(read, head) {
   return { read: { ...read, image: next }, changed: true };
 }
 
-export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf }) {
+export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf, boardDay } = {}) {
   const keep = [];
   const flags = [];
   const fixes = [];
@@ -320,6 +357,7 @@ export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf 
       if (rel) read = { ...read, release: rel };
     }
     if (noChangeListings(read)) { flags.push(flagRow(read, "no-change")); continue; }
+    if (beforeBoard(read, boardDay)) { flags.push(flagRow(read, "before-board")); continue; }
     const hits = priceHits(read, cfg, daily);
     if (hits.length) { flags.push(flagRow(read, hits[0])); continue; }
     const a = fixAskDate(read, heatRows); read = a.read; if (a.changed) fixes.push({ id: read.id, fix: "ask-date" });
