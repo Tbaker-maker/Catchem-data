@@ -87,6 +87,7 @@ export async function run() {
   t("withheld files are put back before the feed commit", at("scripts/withhold-artifacts.mjs") > 0 && at("scripts/withhold-artifacts.mjs") < at("- name: Commit the rebuilt feed"));
   t("withheld files are put back before the publish", at("scripts/withhold-artifacts.mjs") < at("publish-public-data.mjs --push"));
   t("a failed or degraded nightly updates one issue", at("scripts/nightly-issue.mjs") > 0);
+  t("a later failure names the step on that issue", at("--failed-step") > at("- name: Failure summary"));
   t("stale prices open one issue and do not dispatch a second run", at("scripts/prices-stale-issue.mjs") > at("- name: Failure summary") && !wf.includes("createWorkflowDispatch"));
   t("a red price run opens one fix branch", /open-price-fix\.mjs/.test(wf) && /pull-requests: write/.test(wf));
   const dog = await readFile(new URL("../../.github/workflows/watchdog.yml", import.meta.url), "utf8");
