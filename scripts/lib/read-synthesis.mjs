@@ -791,6 +791,9 @@ export function synthesizeReads(reads, ctx, cfg) {
   const report = { item: items.length, rewritten: 0, kept: 0, keptForShape: 0 };
   const out = reads.map((r) => {
     if (!isItemRead(r)) return r;
+    // A turned read already names the week and the nights that went the other
+    // way. Replacing it with the week lead hides that turn.
+    if (String(r.readKind || r.kind || "") === "turned") { report.kept += 1; return r; }
     const item = itemOf(r, ctx);
     if (!item) { report.kept += 1; return r; }
     const fs = findings(item, ctx, cfg);
