@@ -21,6 +21,15 @@ export function historyFileDay(rows, singlesAsOf = "") {
   return newest;
 }
 
+// The price commit used to publish a rip file scored before the catalog fetch.
+// A catalog day ahead of the rip day is that lag. Fail closed. Do not guess a day.
+export function ripLagsCatalog(catalogAsOf, ripDay) {
+  const cat = String(catalogAsOf || "").slice(0, 10);
+  const rip = String(ripDay || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(cat) || !/^\d{4}-\d{2}-\d{2}$/.test(rip)) return true;
+  return cat > rip;
+}
+
 export function productPacksOk(product) {
   if (/\bhalf\b|\bdisplay\b|\bset of \d|\(set of|enhanced booster box/i.test(product.name || "")) return false;
   return true;
