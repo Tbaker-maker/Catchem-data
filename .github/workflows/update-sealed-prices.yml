@@ -951,6 +951,9 @@ jobs:
               --jq '.jobs[].steps[] | select(.conclusion=="failure") | "- " + .name' || echo "- (could not read step results)"
             echo "Price data commits happen in their own step, so check main for today's data: commit before assuming the day is lost."
           } | tee -a "$GITHUB_STEP_SUMMARY"
+          STEP=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
+            --jq '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(", ")' || true)
+          NIGHTLY_FAILED_STEP="${STEP:-unknown step}" node scripts/nightly-issue.mjs --failed-step
 
       - name: Open or update the prices stale issue
         # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
