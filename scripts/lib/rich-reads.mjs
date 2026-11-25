@@ -290,6 +290,7 @@ export function ripReads(doc, { max = 6 } = {}) {
   const seen = new Set();
   for (const r of rows) {
     if (seen.has(r.setId)) continue;
+    if (String(r.priceAsOf).slice(0, 10) < String(asOf).slice(0, 10)) continue;
     const pctOfPrice = round1((r.contentsEV / r.price) * 100);
     const pubs = (r.slots || []).map((s) => s.published).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(String(d || ""))).sort();
     const pull = pubs.length ? (pubs[0] === pubs.at(-1) ? `Pull rates dated ${dateLabel(pubs[0], asOf)}.` : `Pull rates dated ${dateLabel(pubs[0], asOf)} to ${dateLabel(pubs.at(-1), asOf)}.`) : "";

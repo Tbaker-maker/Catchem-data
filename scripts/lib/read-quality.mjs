@@ -315,7 +315,18 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
     if (!named?.name) continue;
     const weekDir = weekCents > 0 ? "up" : "down";
     const dayDir = dayCents > 0 ? "up" : "down";
-    const headline = `${pretty(named.name)}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(asOf, asOf)}), from ${tcgAmount(from, money)} (${speakDay(start, asOf)}). Last night it went from ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`;
+    const earlier = shiftDay(asOf, -2);
+    const back = Number(days.get?.(earlier));
+    const twoNights = back > 0
+      && Math.sign(centsOf(mid) - centsOf(back)) === Math.sign(dayCents)
+      && Math.sign(centsOf(to) - centsOf(mid)) === Math.sign(dayCents);
+    const nightBit = twoNights
+      ? `The last two nights it went from ${tcgAmount(back, money)} to ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`
+      : `Last night it went from ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`;
+    const nightWhy = twoNights
+      ? `The last two nights turned ${dayDir} ${money(Math.abs(centsOf(to) - centsOf(back)) / 100)}.`
+      : `The last day turned ${dayDir} ${money(Math.abs(dayCents) / 100)}.`;
+    const headline = `${pretty(named.name)}. TCGplayer market: ${tcgAmount(to, money)} (${speakDay(asOf, asOf)}), from ${tcgAmount(from, money)} (${speakDay(start, asOf)}). ${nightBit}`;
     hits.push({
       id: `turned-${sku}`,
       sku,
@@ -335,8 +346,8 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
       source: "TCGplayer market",
       sourceLine: sku,
       href: named.href || `/c/${sku}`,
-      whyItMatters: `The week is ${weekDir} ${money(Math.abs(weekCents) / 100)}. The last day turned ${dayDir} ${money(Math.abs(dayCents) / 100)}.`,
-      why: `The week is ${weekDir} ${money(Math.abs(weekCents) / 100)}. The last day turned ${dayDir} ${money(Math.abs(dayCents) / 100)}.`,
+      whyItMatters: `The week is ${weekDir} ${money(Math.abs(weekCents) / 100)}. ${nightWhy}`,
+      why: `The week is ${weekDir} ${money(Math.abs(weekCents) / 100)}. ${nightWhy}`,
       whatWouldMakeThisWrong: "Wrong if one of those three dates has a different market price.",
       _abs: Math.abs(weekPct),
     });
