@@ -45,9 +45,9 @@ export async function run() {
     const day = new Date(Date.parse("2026-09-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
     down.push([day, Math.round((10 - i * 0.2) * 100) / 100]);
   }
-  const dug = pathSentence(down, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  const dug = pathSentence(down, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 45 });
   const flat = down.map((p, i) => [p[0], i < 21 ? 8 : p[1]]);
-  const first = pathSentence(flat, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 8, windowDays: 30 });
+  const first = pathSentence(flat, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 8, windowDays: 45 });
   const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
   const repeats = (text) => {
     const prices = text.match(/\$[0-9,.]+/g) || [];
@@ -56,7 +56,7 @@ export async function run() {
   };
   t("a falling series is one sentence and does not restate a percent", !/not the first/.test(dug) && (dug.match(/%/g) || []).length === 1 && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && !/check on /.test(dug) && !/\bstored\b|last print|\bprinted\b/i.test(dug) && /latest price/.test(dug) && !repeats(dug) && !BANNED.test(dug));
   const moved = down.map((p, i) => i === down.length - 1 ? [p[0], Math.round((p[1] - 1) * 100) / 100] : p);
-  const again = pathSentence(moved, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  const again = pathSentence(moved, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 45 });
   t("a real point change changes the sentence", again !== dug && /latest price/.test(again));
   t("a new drop does not use the old week line", !/not the first down week/.test(first) && !/first down week/.test(first) && !/week of lower lows/.test(first) && first.endsWith(".") && !repeats(first));
   t("two paths do not share a sentence shape", shape(dug) !== shape(first));
@@ -64,8 +64,8 @@ export async function run() {
   const leadCards = [
     { id: "s7", sku: "tcgcsv-1", kind: "single", name: "Small", set: "A", thin: false, score: 3, windowDays: 7, changePct: 3, path: "The latest price is $3 on Sep 27, and this 7-day window opened at $2 on Sep 20." },
     { id: "b90", sku: "tcgcsv-1", kind: "single", name: "Big", set: "A", thin: false, score: 40, windowDays: 90, changePct: -40, path: "Lower lows are still printing, and the latest price is $4 on Sep 27." },
-    { id: "seal", sku: "tcgcsv-2", kind: "sealed", name: "Box", set: "B", thin: false, score: 12, windowDays: 30, changePct: 12, path: "Box lane started, and the latest price is $90 on Sep 27." },
-    { id: "same", sku: "tcgcsv-3", kind: "single", name: "Twin", set: "C", thin: false, score: 11, windowDays: 30, changePct: 11, path: "An up week started, and the latest price is $10 on Sep 20.", _raw: [["2026-09-26", 9], ["2026-09-27", 10]], _pathOpts: { fromPrice: 8, fromDate: "2026-08-28", toDate: "2026-09-27", windowDays: 30 } },
+    { id: "seal", sku: "tcgcsv-2", kind: "sealed", name: "Box", set: "B", thin: false, score: 12, windowDays: 45, changePct: 12, path: "Box lane started, and the latest price is $90 on Sep 27." },
+    { id: "same", sku: "tcgcsv-3", kind: "single", name: "Twin", set: "C", thin: false, score: 11, windowDays: 45, changePct: 11, path: "An up week started, and the latest price is $10 on Sep 20.", _raw: [["2026-09-26", 9], ["2026-09-27", 10]], _pathOpts: { fromPrice: 8, fromDate: "2026-08-28", toDate: "2026-09-27", windowDays: 45 } },
   ];
   const picked = selectLead(leadCards, 24);
   t("the lead keeps the larger window for a product", picked.lead.some((row) => row.id === "b90") && !picked.lead.some((row) => row.id === "s7"));
@@ -73,10 +73,10 @@ export async function run() {
   t("a shared shape is rewritten or left out", new Set(picked.lead.map((row) => sentenceShape(row.path))).size === picked.lead.length);
   t("a failed shape is logged with the new line", picked.rewrites.some((row) => row.failed && Object.prototype.hasOwnProperty.call(row, "next")));
 
-  const named = pathSentence(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  const named = pathSentence(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 45 });
   t("the product name is on the line", named.includes("Trubbish") && /latest price/.test(named) && !/stored|last print/i.test(named));
   t("a full series does not mention a missing day", !/missing|no print|gap on/i.test(dug) && !/missing|no print/i.test(named));
-  const soldLine = pathSentence(down, { name: "Perfect Order Booster Box", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30, sold: { count: 2717, asOf: "2026-10-02" } });
+  const soldLine = pathSentence(down, { name: "Perfect Order Booster Box", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 45, sold: { count: 2717, asOf: "2026-10-02" } });
   t("a count line is a 3-month TCGplayer product-page count", /3 months/.test(soldLine) && /TCGplayer/.test(soldLine) && /not eBay/.test(soldLine) && /2717/.test(soldLine) && /listings counted/.test(soldLine) && !/\b(sold|sales)\b/i.test(soldLine));
   const closer = (text) => String(text).split(",").at(-1).replace(/\$[0-9,.]+/g, "$").replace(/\b\d+(?:\.\d+)?\b/g, "n").trim();
   t("two paths do not share a closer", closer(dug) !== closer(first));
@@ -162,7 +162,7 @@ export async function run() {
   t("above cannot claim a lower latest price", directionAgrees("Noibat (Master Ball Pattern) rose by a smaller up step, latest price $1.74 dated Sep 29 above $1.83 on Sep 27.") === false);
   t("fell cannot claim a higher latest price", directionAgrees("Destined Rivals Elite Trainer Box fell by a larger down step, latest price $118.37 on Sep 29 off $116.85 from Sep 27.") === false);
   t("a generated line agrees with its two prices", [dug, first, again, named, soldLine].every((line) => directionAgrees(line)));
-  const pool = leadFrameLines(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  const pool = leadFrameLines(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 45 });
   t("the frame pool stays under the phrase cap", pool.length >= 1 && pool.length < 24 && phrasePeak(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).peak <= 2);
   t("the frame pool does not reuse a stripped shape", new Set(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).size === pool.length);
   t("a filler closer is banned", ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "on paper", "as shown", "as listed", "in short", "beside", "beyond", "posted", "stamped", "as of", "following", "within", "during"].every((phrase) => FILLER_BAN.test(`The latest price is $1 on Sep 1 ${phrase}.`)));

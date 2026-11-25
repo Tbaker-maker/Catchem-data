@@ -7,7 +7,7 @@ import {
 } from "../lib/listing-sample.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const cfg = { minListings: 3, minRatio: 0.5, maxRatio: 2 };
+const cfg = { minListings: 4, minRatio: 0.5, maxRatio: 2 };
 
 export async function runListingSampleTests() {
   let fail = 0;
@@ -23,7 +23,7 @@ export async function runListingSampleTests() {
   t("a listing with no printing is dropped", parseListing({ title: "Espeon NM pokemon", price: { value: 20 } }) === null);
   t("a graded title is dropped", parseListing({ title: "Espeon 1st Edition Holo PSA 9", price: { value: 500 } }) === null);
 
-  const asks = [380, 400, 420].map((n) => ({ title: "Espeon 1st Edition Holo NM", price: { value: n } }));
+  const asks = [380, 400, 410, 420].map((n) => ({ title: "Espeon 1st Edition Holo NM", price: { value: n } }));
   const card = {
     id: "tcgcsv-1",
     kind: "single",

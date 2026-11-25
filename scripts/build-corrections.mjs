@@ -30,6 +30,9 @@ const held = (q.entries || []).map(e => `
 const dates = (log.entries || []).map((entry) => String(entry?.date || "").slice(0, 10)).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day)).sort();
 const fresh = freshnessFromDay(dates.at(-1) || "");
 const when = fresh.label;
+const catalog = await J("data/catalog/tcgcsv-latest.json");
+const checkedDay = String(catalog?.asOf || "").slice(0, 10);
+const checked = /^\d{4}-\d{2}-\d{2}$/.test(checkedDay) ? `Checked ${checkedDay}.` : "";
 
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="${FONTS}" rel="stylesheet">
@@ -58,6 +61,7 @@ ${headerHtml("")}
 <h1>Corrections</h1>
 <p class="lede">Every number we publish is measured, and every measurement can be wrong. When one is, it gets fixed and it gets recorded here — dated, permanent, and findable. We don't do quiet edits.</p>
 <p class="lede">${when}</p>
+${checked ? `<p class="lede">${checked}</p>` : ""}
 
 <h2>Currently held back</h2>
 <p class="lede" style="margin-bottom:10px">Products our checks are holding out of published reads until they re-verify. They stay listed. They just don't headline.</p>

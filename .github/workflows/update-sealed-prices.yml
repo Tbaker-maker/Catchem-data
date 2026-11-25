@@ -382,6 +382,13 @@ jobs:
       # guards have passed. Everything downstream still runs, still reports, and
       # still fails the job loudly if it should — it simply can no longer take
       # the prices with it.
+      - name: Rebuild rip value on the catalog day
+        # The pre-test rebuild scores rip before the full catalog fetch. The
+        # price commit below would then publish that older file next to the
+        # newer catalog. Score again here. The builder exits if the catalog
+        # day is still ahead, so the lag cannot be committed.
+        run: node scripts/build-rip-roi.mjs
+
       - name: Commit price data (before anything reports on it)
         run: |
           git config user.name "catchem-bot"
@@ -742,13 +749,8 @@ jobs:
           node scripts/build-release-scout.mjs || true
           node scripts/build-canada-gap.mjs || true
 
-      - name: Member Custom Reads (site worker outbox)
-        # Saved follows come from the site worker and the night's DMs go back
-        # to it for the bot. Nothing about a member is committed here (public
-        # repo). Skips cleanly until CUSTOM_READS_TOKEN is set. Never fails the run.
-        env:
-          CUSTOM_READS_TOKEN: ${{ secrets.CUSTOM_READS_TOKEN }}
-        run: node scripts/build-custom-reads-members.mjs || echo "member reads not sent tonight"
+      # Member letters run in reads-letter.yml at 15:00 UTC. They are not part
+      # of this price run, so a cutout or Pulse failure cannot skip them.
 
       - name: Commit updated prices
         run: |
@@ -949,6 +951,9 @@ jobs:
               --jq '.jobs[].steps[] | select(.conclusion=="failure") | "- " + .name' || echo "- (could not read step results)"
             echo "Price data commits happen in their own step, so check main for today's data: commit before assuming the day is lost."
           } | tee -a "$GITHUB_STEP_SUMMARY"
+          STEP=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
+            --jq '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(", ")' || true)
+          NIGHTLY_FAILED_STEP="${STEP:-unknown step}" node scripts/nightly-issue.mjs --failed-step
 
       - name: Open or update the prices stale issue
         # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.

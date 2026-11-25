@@ -42,7 +42,7 @@ const signaled = pickMorning({
 t("a mover signal beats a bigger year read", signaled.lines.find((line) => line.slot === "mover").id === "odd");
 
 const fallback = pickMorning({
-  reads: [year, { id: "pid", price: 2, changePct: 12, windowDays: 30, headline: "Pidgey is up 12% this month: $1.79 to $2.", href: "/c/pid", readKind: "price" }],
+  reads: [year, { id: "pid", price: 2, changePct: 12, windowDays: 45, headline: "Pidgey is up 12% this month: $1.79 to $2.", href: "/c/pid", readKind: "price" }],
   news: [],
   asOf: "2026-10-30",
 });

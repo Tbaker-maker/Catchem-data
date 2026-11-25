@@ -1,5 +1,7 @@
-import { readFileSync } from "node:fs";
-import { buildOutbox, dueOn, fetchFollows, memberMatch, poolFromData, previewLines, putOutbox } from "../lib/custom-reads-pipe.mjs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { buildOutbox, dueOn, fetchFollows, LETTER_HOUR_UTC, letterSummary, lettersSafe, memberMatch, poolFromData, previewLines, putOutbox, renderDryLetters, writeLetterFile } from "../lib/custom-reads-pipe.mjs";
 import { isClean } from "../lib/copy-rules.mjs";
 
 export async function run() {
@@ -38,7 +40,28 @@ export async function run() {
   const script = readFileSync(new URL("../build-custom-reads-members.mjs", import.meta.url), "utf8");
   t("the member script never logs the token or writes member files", !/console\.log\([^)]*token/.test(script) && !script.includes("writeFile"));
   const wf = readFileSync(new URL("../../.github/workflows/update-sealed-prices.yml", import.meta.url), "utf8");
-  t("the nightly runs the member step with the secret", wf.includes("node scripts/build-custom-reads-members.mjs") && wf.includes("secrets.CUSTOM_READS_TOKEN"));
+  const letterWf = readFileSync(new URL("../../.github/workflows/reads-letter.yml", import.meta.url), "utf8");
+  t("the price run no longer swallows the letter step", !wf.includes("build-custom-reads-members.mjs") && !wf.includes("member reads not sent tonight"));
+  t("the letter workflow is 15:00 UTC every day and names the secret", LETTER_HOUR_UTC === 15 && letterWf.includes('cron: "0 15 * * *"') && letterWf.includes("CUSTOM_READS_TOKEN") && letterWf.includes("issue 573") && letterWf.includes("reads-letter-dry.json"));
+  const fixture = {
+    day: "2026-11-25",
+    members: [{ discordId: "123456789012345678", email: "member@example.com", lead: "Your weekly Catch'em read, Nov 25.", reads: [{ line: "Pikachu is $1.00, as of Nov 25." }] }],
+  };
+  const dry = renderDryLetters(fixture);
+  const dir = mkdtempSync(join(tmpdir(), "reads-dry-"));
+  const artifact = join(dir, "reads-letter-dry.json");
+  await writeLetterFile(artifact, dry);
+  const raw = readFileSync(artifact, "utf8");
+  t("a dry run artifact from a fixture outbox masks the address and sends nothing", dry.sent === 0 && dry.armed === false && dry.letters.length === 1 && dry.letters[0].to === "m***@example.com" && dry.letters[0].text.includes("Pikachu") && !raw.includes("member@example.com") && !raw.includes("123456789012345678") && lettersSafe(dry) && !lettersSafe({ letters: [{ to: "member@example.com" }] }));
+  rmSync(dir, { recursive: true, force: true });
+  const summary = letterSummary({
+    day: "2026-11-25",
+    counts: { members: 2, notDue: 1, quiet: 1 },
+    posted: true,
+    email: { armed: false, sent: 0, skipped: 2, reasons: { "email key unset": 1, "not confirmed": 1 } },
+  });
+  t("the summary names built, posted, armed, sent and skipped reasons", summary.includes("built: 2") && summary.includes("posted: yes") && summary.includes("armed: no") && summary.includes("sent: 0") && summary.includes("email key unset: 1") && summary.includes("not confirmed: 1") && !summary.includes("@"));
+  t("a catalog day is not the letter clock", dueOn({ frequency: "daily" }, "2026-11-25", Date.parse("2026-11-25T15:00:00Z")) === true);
 
   const named = poolFromData({
     catalogue: {

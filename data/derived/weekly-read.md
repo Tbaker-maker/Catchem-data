@@ -3,12 +3,12 @@
 Video outline. Same parts every week. Do not say a name is a move to make.
 
 ## Heat
-- Sun & Moon Elite Trainer Box: Hot
-- Perfect Order Pokemon Center Elite Trainer Box: Hot
-- Crown Zenith Booster Pack: Hot
-- Temporal Forces Pokemon Center Elite Trainer Box: Hot
+- Surging Sparks Pokemon Center Elite Trainer Box: Hot
+- Paldea Evolved Booster Pack: Hot
+- Brilliant Stars Pokemon Center Elite Trainer Box: Hot
 - Lost Origin Pokemon Center Elite Trainer Box: Hot
-- Evolving Skies Pokemon Center Elite Trainer Box: Hot
+- Stellar Crown Booster Bundle: Hot
+- White Flare Elite Trainer Box: Hot
 
 ## Keeps showing up
 Status: building history
@@ -24,5 +24,5 @@ Sealed
 These are two lines. They are not one number.
 - 151: sealed 96.6; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
 - Ascended Heroes: sealed 83.4; chase building history (Mega Dragonite ex, Mega Gengar ex)
-- Astral Radiance: sealed 99.6; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
+- Astral Radiance: sealed 99.8; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history

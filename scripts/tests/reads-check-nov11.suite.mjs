@@ -47,7 +47,7 @@ export async function run() {
   const step = addDays(asOf, -21);
   const garchomp = { ...flat("tcgcsv-85626", "Garchomp (120 Secret Rare)", "120/116", 468), pts: days.map((d) => [d, d >= step ? 900 : 468]) };
   const cards = [flat("tcgcsv-90135", "Ultra Ball", "122/116", 1199.51), flat("tcgcsv-84777", "Deoxys EX (Team Plasma) (Full Art)", "111/116", 836.52), garchomp, flat("tcgcsv-86676", "Latios EX (113 Full Art)", "113/116", 327.5), flat("tcgcsv-1", "Garbodor (119 Secret Rare)", "119/116", 278.79)];
-  const jumpy = { windowDays: 30, swingPct: 80, minSwings: 2 };
+  const jumpy = { windowDays: 45, swingPct: 80, minSwings: 4 };
   const [chase] = chaseLists(cards, () => [], { asOf, jumpy });
   t("chase list quotes the jumpy card at its dated steady print", chase && chase.lines.some((l) => l.startsWith("Garchomp") && l.includes("$468.00 on Oct 20")));
   t("a chase total with a dated price does not say tonight", chase && !/tonight/.test(chase.headline) && /one card at an earlier steady price/.test(chase.headline));
@@ -55,7 +55,7 @@ export async function run() {
   t("a chase total with every price from tonight still says tonight", calm && /together tonight\.$/.test(calm.headline));
 
   // 2) Meganium ex 106/115: headline window and chip window come from the lead.
-  const meg = [["2026-10-05", 275.26], ["2026-10-12", 275.26], ["2026-10-14", 200.52], ["2026-10-21", 200.52], ["2026-10-31", 200.52], ["2026-11-06", 200.52], ["2026-11-07", 200.52], ["2026-11-10", 117.26], ["2026-11-11", 124.77]];
+  const meg = [["2026-10-05", 275.26], ["2026-10-12", 275.26], ["2026-10-14", 220], ["2026-10-21", 210], ["2026-10-31", 200], ["2026-11-06", 185], ["2026-11-07", 184], ["2026-11-10", 182], ["2026-11-11", 180]];
   const megPts = [["2024-02-08", 120], ["2025-06-29", 180], ...meg];
   const megItem = { id: "tcgcsv-87298", pts: megPts, title: "Meganium ex (EX Unseen Forces) 106/115", asOf, set: "EX Unseen Forces", setSlug: "", release: "2005-08-22", sealed: false, kind: "backto", kindLine: "" };
   const megF = findings(megItem, { peers: new Map() }, CFG);
@@ -70,7 +70,7 @@ export async function run() {
   t("other chips stay", aligned.signals.some((c) => c.kind === "era"));
 
   // 3) Charizard 103/100 (Stormfront): a slump read never leads with a year gain.
-  const zard = [["2025-11-13", 257.77], ["2025-12-04", 257.77], ["2026-01-08", 257.26], ["2026-02-12", 257.26], ["2026-02-19", 700], ["2026-03-12", 600], ["2026-04-22", 658.33], ["2026-08-01", 668.75], ["2026-08-13", 664.17], ["2026-09-04", 737.5], ["2026-09-26", 737.5], ["2026-10-12", 737.5], ["2026-10-19", 737.5], ["2026-10-21", 699.99], ["2026-10-30", 699.99], ["2026-10-31", 552.78], ["2026-11-06", 552.78], ["2026-11-10", 552.78], ["2026-11-11", 537.33]];
+  const zard = [["2025-11-13", 257.77], ["2025-12-04", 257.77], ["2026-01-08", 257.26], ["2026-02-12", 257.26], ["2026-02-19", 700], ["2026-03-12", 600], ["2026-04-22", 658.33], ["2026-08-01", 668.75], ["2026-08-13", 664.17], ["2026-09-04", 737.5], ["2026-09-26", 737.5], ["2026-10-12", 737.5], ["2026-10-19", 737.5], ["2026-10-21", 699.99], ["2026-10-30", 699.99], ["2026-10-31", 552.78], ["2026-11-06", 552.78], ["2026-11-10", 552.78], ["2026-11-11", 510]];
   const zardItem = { id: "tcgcsv-84190", pts: [["2024-02-08", 250], ...zard], title: "Charizard (Stormfront) 103/100", asOf, set: "Stormfront", setSlug: "", release: "2008-11-05", sealed: false, kind: "deep:slump", kindLine: "Slump watch: Charizard (Stormfront) 103/100, Rare Holo, is 27% under its Sep 4 high." };
   const zardF = findings(zardItem, { peers: new Map() }, CFG);
   t("the year gain is a real finding", zardF.some((f) => f.type === "trend365up"));

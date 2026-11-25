@@ -151,6 +151,8 @@ export function memberMatch(follow, read) {
 }
 
 const QUARTER_MONTHS = new Set(["01", "04", "07", "10"]);
+// 15:00 UTC every day. The workflow cron must use this same hour.
+export const LETTER_HOUR_UTC = 15;
 export function dueOn(follow, day, now = Date.now()) {
   const saved = Date.parse(follow?.savedAt || "");
   if (Number.isFinite(saved) && now - saved >= 0 && now - saved < 36 * 3600 * 1000) return true;
@@ -282,4 +284,63 @@ export async function putOutbox({ base, token, outbox, fetchImpl = fetch }) {
   });
   if (!res.ok) throw new Error(`outbox store answered ${res.status}`);
   return res.json();
+}
+
+export function maskAddress(value) {
+  const email = String(value || "").trim().toLowerCase();
+  const at = email.indexOf("@");
+  if (at < 1 || email.includes("..")) return "";
+  if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) return "";
+  return `${email.slice(0, 1)}***${email.slice(at)}`;
+}
+
+export function renderDryLetters(outbox) {
+  const letters = [];
+  for (const member of outbox?.members || []) {
+    const raw = String(member?.email || "");
+    const reads = (member?.reads || []).map((row) => String(row?.line || row?.headline || "")).filter(Boolean);
+    const text = [member?.lead, ...reads].filter(Boolean).join("\n\n");
+    const id = String(member?.discordId || "");
+    letters.push({
+      to: raw ? maskAddress(raw) : "",
+      subject: "Your Catch'em reads",
+      text: /^\d{5,25}$/.test(id) ? text.split(id).join("***") : text,
+      sent: false,
+    });
+  }
+  return { dry: true, armed: false, sent: 0, letters };
+}
+
+export function letterSummary({ day = "", counts = {}, posted = false, email = {}, note = "" } = {}) {
+  const reasons = email?.reasons && typeof email.reasons === "object" ? email.reasons : {};
+  const lines = [
+    `Reads letter ${day}`.trim(),
+    `hour UTC: ${LETTER_HOUR_UTC}`,
+    `built: ${Number(counts?.members) || 0}`,
+    `not due: ${Number(counts?.notDue) || 0}`,
+    `quiet: ${Number(counts?.quiet) || 0}`,
+    `posted: ${posted ? "yes" : "no"}`,
+    `armed: ${email?.armed === true ? "yes" : "no"}`,
+    `sent: ${Number(email?.sent) || 0}`,
+    `skipped: ${Number(email?.skipped) || 0}`,
+  ];
+  if (note) lines.push(`note: ${note}`);
+  const named = Object.entries(reasons).filter(([, n]) => Number(n) > 0);
+  if (named.length) {
+    lines.push("skipped by reason:");
+    for (const [reason, n] of named) lines.push(`${reason}: ${Number(n) || 0}`);
+  }
+  return lines.join("\n");
+}
+
+export function lettersSafe(doc) {
+  return !/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(JSON.stringify(doc));
+}
+
+export async function writeLetterFile(path, value) {
+  const { mkdir, writeFile } = await import("node:fs/promises");
+  const { dirname } = await import("node:path");
+  await mkdir(dirname(path), { recursive: true });
+  const text = typeof value === "string" ? value : JSON.stringify(value);
+  await writeFile(path, text.endsWith("\n") ? text : `${text}\n`);
 }

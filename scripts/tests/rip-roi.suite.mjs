@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { cardInPool } from "../lib/pull-rate-pools.mjs";
 import {
   packsFor, productPacksOk, packEV, scoreProduct, bulkFloorForSet, rareSlotAvg, buildSlots, bannedCopy, SIMS, median, poolMean,
-  historyFileDay, resolvedMarket, priceSingles,
+  historyFileDay, ripLagsCatalog, resolvedMarket, priceSingles,
 } from "../lib/rip-roi.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -188,6 +188,9 @@ export async function run() {
   t("published Evolving Skies box uses the catalog mean", ripBox && ripSecret && sealed && ripSecret.avgPrice === catalogMean && ripSecret.nCards === pricedSecret.length && ripBox.price === sealed.price && ripBox.priceAsOf === String(sealed.asOf).slice(0, 10) && ripBox.contentsEV === expectedBox.contentsEV && ripBox.contentsEV > 200);
   t("a later sealed price date does not reuse the singles day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "2026-11-06" }], "2026-10-30") === "2026-11-06");
   t("the singles day is the history day when prices are from that day", historyFileDay([{ priceAsOf: "2026-10-30" }, { priceAsOf: "" }], "2026-10-30") === "2026-10-30");
+  t("a catalog day newer than the rip day is a lag", ripLagsCatalog("2026-11-25", "2026-11-24") === true);
+  t("the same catalog day is not a lag", ripLagsCatalog("2026-11-25", "2026-11-25") === false);
+  t("a missing rip day is a lag", ripLagsCatalog("2026-11-25", "") === true);
   const oldSnap = JSON.parse(await readFile(join(ROOT, "data/derived/rip-history/2026-10-30.json"), "utf8"));
   // Today's snapshot is named for the newest sealed price day in the build. A fixed
   // day went stale the night the sealed price day moved past it.
