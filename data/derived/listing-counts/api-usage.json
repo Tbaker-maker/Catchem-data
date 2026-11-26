@@ -6,34 +6,6 @@
     "limit": 5000,
     "safe": 4900,
     "sealedStepMax": 622,
-    "role": "full",
-    "slice": 1142,
-    "listingCountCalls": 1142,
-    "failures": 0,
-    "rateLimited": false,
-    "counted": 1141,
-    "pool": 31409,
-    "perNightNeed": 3777,
-    "cycleNights": 56,
-    "used24hAfter": 3978,
-    "topMissingToday": 743,
-    "ptDate": "2026-10-25",
-    "dailyTier": {
-     "sealedTop": 1800,
-     "sealedTail": 973,
-     "singlesTop": 1977,
-     "singlesTail": 26659
-    },
-    "singleCutoff": 60
-   },
-   "at": "2026-10-25T18:21:01.746Z"
-  },
-  {
-   "date": "2026-10-25",
-   "ebayBrowse": {
-    "limit": 5000,
-    "safe": 4900,
-    "sealedStepMax": 622,
     "role": "top",
     "slice": 0,
     "listingCountCalls": 1,
@@ -3359,6 +3331,34 @@
     "singleCutoff": 58.7
    },
    "at": "2026-11-26T15:33:55.346Z"
+  },
+  {
+   "date": "2026-11-26",
+   "ebayBrowse": {
+    "limit": 5000,
+    "safe": 4900,
+    "sealedStepMax": 580,
+    "role": "full",
+    "slice": 1245,
+    "listingCountCalls": 4,
+    "failures": 3,
+    "rateLimited": true,
+    "counted": 0,
+    "pool": 31640,
+    "perNightNeed": 3819,
+    "cycleNights": 56,
+    "used24hAfter": 3079,
+    "topMissingToday": 766,
+    "ptDate": "2026-11-26",
+    "dailyTier": {
+     "sealedTop": 1762,
+     "sealedTail": 1030,
+     "singlesTop": 2057,
+     "singlesTail": 26791
+    },
+    "singleCutoff": 58.7
+   },
+   "at": "2026-11-26T22:10:04.587Z"
   }
  ]
 }
