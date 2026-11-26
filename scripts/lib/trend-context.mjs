@@ -118,15 +118,28 @@ export function straightWeeks(points, asOf, need = 5) {
   return "";
 }
 
-export function direction7(points, asOf) {
+export function flatAbsFromRules(rules) {
+  if (rules?.move?.flatAbs == null || rules?.move?.flatAbs === "") return null;
+  const n = Number(rules.move.flatAbs);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+// Same private flat band the chips use (move.flatAbs). A missing band omits
+// the 7-day sentence. The public line never prints the band.
+export function direction7(points, asOf, flatAbs) {
+  if (flatAbs == null || flatAbs === "") return null;
+  if (!(Number(flatAbs) >= 0)) return null;
   const end = nearest(points, asOf, WEEK_SLACK_DAYS);
   if (!end) return null;
   const startDate = addDays(end.date, -7);
   const start = points.find((p) => p.date === startDate);
   if (!start || daysBetween(start.date, end.date) !== 7) return null;
-  const a = Math.round(start.price * 100);
-  const b = Math.round(end.price * 100);
-  const dir = b > a ? "up" : b < a ? "down" : "flat";
+  const then = Number(start.price);
+  const now = Number(end.price);
+  if (!(then > 0) || !Number.isFinite(now)) return null;
+  const pct = ((now - then) / then) * 100;
+  if (!Number.isFinite(pct)) return null;
+  const dir = Math.abs(pct) < Number(flatAbs) ? "flat" : (pct > 0 ? "up" : "down");
   return { dir, from: start.date, to: end.date };
 }
 
@@ -166,7 +179,7 @@ export function publicTrendOk(text) {
   return true;
 }
 
-export function trendFacts(points, asOf) {
+export function trendFacts(points, asOf, { flatAbs = null } = {}) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return null;
   const own = ownSeries(points).filter((p) => p.date <= asOf);
   if (own.length < 2) return null;
@@ -175,7 +188,7 @@ export function trendFacts(points, asOf) {
   const span = daysBetween(from, to);
   const change = ((own[own.length - 1].price - own[0].price) / own[0].price) * 100;
   const weeks = weekStats(own, asOf);
-  const dir = direction7(own, asOf);
+  const dir = direction7(own, asOf, flatAbs);
   const fresh = daysBetween(to, asOf) <= WEEK_SLACK_DAYS;
   let line = "";
   if (fresh && span >= MIN_SPAN_DAYS && Number.isFinite(change) && Math.abs(change) >= MIN_MOVE_PCT) {
@@ -254,7 +267,7 @@ function withLine(read, line) {
 
 // One public line per read, from the lead item only. Other items are scored
 // so a slow_climb path can be labeled privately without changing the line.
-export function applyTrend(reads, series, asOf) {
+export function applyTrend(reads, series, asOf, { flatAbs = null } = {}) {
   const labeled = [];
   let lined = 0;
   let shortSpan = 0;
@@ -264,7 +277,7 @@ export function applyTrend(reads, series, asOf) {
     const ids = itemIds(read);
     const facts = [];
     for (const id of ids) {
-      const fact = trendFacts(seriesOf(series, id), day);
+      const fact = trendFacts(seriesOf(series, id), day, { flatAbs });
       if (!fact) continue;
       facts.push({ id, ...fact });
       if (fact.slowClimb) labeled.push({ readId: read?.id || "", itemId: id, asOf: day, path: "slow_climb" });
@@ -305,6 +318,32 @@ async function loadOwnDaily(root) {
   return { series, asOf };
 }
 
+async function readJsonFile(path) {
+  try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
+}
+
+// Same source as stamp-signal-chips: SIGNAL_RULES or the private thresholds file.
+// A missing file or a missing flatAbs leaves the 7-day sentence off.
+export async function loadSignalFlatAbs({
+  root,
+  token = process.env.PRIVATE_DATA_TOKEN || "",
+} = {}) {
+  const direct = process.env.SIGNAL_RULES || "";
+  if (direct) return flatAbsFromRules(await readJsonFile(direct));
+  try {
+    let store;
+    try { store = await openPrivate({ root, token }); }
+    catch { store = await openPrivate({ root, token: "" }); }
+    try {
+      return flatAbsFromRules(await readJsonFile(join(store.dir, "signal-chips/thresholds.json")));
+    } finally {
+      if (store.remote) await store.close(["signal-chips/thresholds.json"], "trend context flat band");
+    }
+  } catch {
+    return null;
+  }
+}
+
 export async function stampTrendContext({
   root,
   token = process.env.PRIVATE_DATA_TOKEN || "",
@@ -314,7 +353,8 @@ export async function stampTrendContext({
   const { series, asOf: lastDay } = await loadOwnDaily(root);
   const asOf = /^\d{4}-\d{2}-\d{2}$/.test(String(doc?.asOf || "")) ? doc.asOf : lastDay;
   if (!asOf) throw new Error("no dated own day");
-  const applied = applyTrend(doc.reads || [], series, asOf);
+  const flatAbs = await loadSignalFlatAbs({ root, token });
+  const applied = applyTrend(doc.reads || [], series, asOf, { flatAbs });
   doc.reads = applied.reads;
   doc.count = applied.reads.length;
   await writeFile(readsPath, JSON.stringify(doc, null, 1) + "\n");
