@@ -496,7 +496,7 @@ export function setBreadthReads(pool, { start, end, minPriced = 15, max = 40 } =
     const up = rows.filter((p) => p.to - p.from >= 1 && pct(p.from, p.to) >= 8).length;
     const down = rows.filter((p) => p.from - p.to >= 1 && pct(p.from, p.to) <= -8).length;
     const flat = rows.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
-    const headline = `${shortSet(set)} this week: ${up} chase cards up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).`;
+    const headline = `${shortSet(set)} this week: ${up} chase ${up === 1 ? "card" : "cards"} up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).`;
     if (!cleanCopy(headline)) continue;
     out.push({ id: `breadth-set-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: set, set, headline, path: headline, asOf: end, startDate: start, endDate: end, href: `/feed?f=set&set=${encodeURIComponent(set)}`, source: `TCGplayer market, ${start} and ${end}`, receipt: { set, start, end, priced: rows.length, up, down, flat }, moved: up + down });
   }
