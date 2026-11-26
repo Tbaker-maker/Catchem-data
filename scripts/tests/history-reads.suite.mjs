@@ -34,6 +34,11 @@ export async function run() {
   const cards = Array.from({ length: 12 }, (_, i) => card([["2026-09-12", 20], [asOf, i < 6 ? 25 : 20]], { id: `tcgcsv-${i + 10}` }));
   const sr = setReads(cards, asOf);
   t("set read counts exactly", sr.length === 1 && sr[0].headline.includes("6 of 12 priced cards up 10% or more, 0 down"));
+  // Live sweep Nov 25: the Temporal Forces set read linked to Gastly 177/162, not the set page.
+  const slugged = cards.map((c) => ({ ...c, setSlug: "sv05-temporal-forces" }));
+  const srSet = setReads(slugged, asOf);
+  t("a set read links to its set page", srSet.length === 1 && srSet[0].href === "/sets/sv05-temporal-forces" && srSet[0].sku === srSet[0].receipt.lead.id);
+  t("a set read with no set slug keeps the lead card link", /^\/c\/tcgcsv-\d+$/.test(sr[0].href));
   const all = historyReads(cards, asOf);
   t("history reads carry a real start date and the hist tag", Object.values(all.picked).flat().every((r) => r.board === "hist" && /^\d{4}-\d{2}-\d{2}$/.test(r.startDate)));
   t("no banned words or em dashes", Object.values(all.picked).flat().every((r) => !/[\u2014\u2013]/.test(r.headline) && !hasBannedWord(r.headline)));
