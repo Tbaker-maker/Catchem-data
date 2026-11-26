@@ -16,6 +16,7 @@ import { rotate } from "./rotate.mjs";
 import { publishChartIndexes } from "./compute-indexes.mjs";
 import { comparableCounts, readFloor, shiftPct } from "./lib/supply-shifts.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
+import { etbPacks } from "./lib/rip-roi.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -42,12 +43,11 @@ const LEGAL_MARKS = ["I","J"]; // per rotation state Aug 2026; review at next Ap
 
 // ── (a) Pack Math ────────────────────────────────────────────────────────────
 function packsFor(p) {
-  const era = /^me/.test(p.setId||"") ? "me" : /^sv/.test(p.setId||"") ? "sv" : /^swsh/.test(p.setId||"") ? "swsh" : null;
   if ((p.setId||"") === "cel25") return null;            // Celebrations: 4-card mini packs, not comparable (KB #5 adjacency)
   if (p.subtype === "booster-pack") return 1;
   if (p.subtype === "booster-box") return 36;
   if (p.subtype === "booster-bundle") return 6;
-  if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
+  if (p.subtype === "etb" || p.subtype === "pc-etb") return etbPacks(p.subtype, p.setId);
   return null;                                            // upc/premium/tins: counts vary — excluded honestly
 }
 const packRows = sp.products
