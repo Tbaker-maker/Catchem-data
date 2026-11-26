@@ -2,6 +2,9 @@
 
 export const WRONG_MATCH_IDS = new Set(["xy12-etb", "sm9-booster-box", "sm1-booster-box"]);
 
+export const GOOGLE_TRENDS_SKIPPED = "No official Google Trends API. Automated explore is disallowed, checked 2026-11-25.";
+export const YOUTUBE_TRAIL_SKIPPED = "Not scored. There is no 90-day trail of uniquely matched videos, so this input is empty.";
+
 export function mean(xs) {
   return xs.reduce((a, b) => a + b, 0) / xs.length;
 }

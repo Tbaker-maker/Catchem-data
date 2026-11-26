@@ -2,7 +2,7 @@
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { rateAccounts, parseRestock, dedupeRestocks, restockStudy, rateRestockAccounts, spamShare, MIN_RATED } from "../lib/x-accounts.mjs";
+import { rateAccounts, parseRestock, dedupeRestocks, restockStudy, rateRestockAccounts, spamShare, MIN_RATED, pairAlertGaps, publicRestockLine, ALERT_GAP_NOTE } from "../lib/x-accounts.mjs";
 import { runXLearn, postsFromResponse, makeXClient } from "../x-learn.mjs";
 
 export async function run() {
@@ -51,6 +51,22 @@ export async function run() {
   const r2 = await runXLearn({ root, importDir: imp });
   const pub2 = await readFile(join(root, "data/derived/x-status.json"), "utf8");
   t("config read from the private store; import works", r2.posts === 1 && !pub2.includes("SecretHandle"));
+
+  const idx = { byPid: new Map([[321, { kind: "sealed", pid: 321 }]]), setList: [], byNum: new Map(), sealedBySet: new Map() };
+  const verified = parseRestock({ id: "11", created_at: "2030-01-02T00:00:00Z", text: "ETB live at Target https://www.tcgplayer.com/product/321" }, "A", idx);
+  t("a product link stores one sealed id", verified.product === 321 && verified.kind === "in_stock");
+  const loose = parseRestock({ id: "12", created_at: "2030-01-02T01:00:00Z", text: "Mystery tin live at Walmart" }, "A", idx);
+  t("unmatched text keeps product null", loose.product === null && loose.productText.includes("mystery tin"));
+  const stock = parseRestock({ id: "13", created_at: "2030-01-02T00:00:00Z", text: "ETB live at Target" }, "A", null);
+  const gone = parseRestock({ id: "14", created_at: "2030-01-02T02:00:00Z", text: "ETB sold out at Target" }, "A", null);
+  const paired = pairAlertGaps(dedupeRestocks([stock, gone]));
+  const gap = paired.find((e) => e.kind === "sold_out");
+  t("sold out pairs an alert gap", gap.alertGapMinutes === 120 && gap.alertGapNote === ALERT_GAP_NOTE);
+  const late = parseRestock({ id: "15", created_at: "2030-01-12T00:00:00Z", text: "ETB out of stock at Target" }, "A", null);
+  t("a gap outside the window is not stored", pairAlertGaps(dedupeRestocks([stock, late])).every((e) => e.alertGapMinutes == null));
+  const priced = restockStudy([{ product: "tcgcsv-5", timestamp: "2030-04-01T00:00:00Z", retailer: "target", region: "US", productText: "etb", postId: "p", kind: "in_stock" }], (id, day) => (id === "tcgcsv-5" && day === "2030-03-31" ? 10 : id === "tcgcsv-5" && day === "2030-04-08" ? 12 : null));
+  t("priceAfter reads the fake series", priced.priceAfter.n === 1 && priced.priceAfter.rows[0].source === "TCGplayer market" && priced.priceAfter.rows[0].chg7 === 0.2);
+  t("public restock line stays off", publicRestockLine({ postsRead: 4 }, false) === null);
   return fail;
 }
 

@@ -3,8 +3,9 @@
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRONG_MATCH_IDS, labelFor, listingHeat, momentum, scoreFrom } from "./lib/heat-check.mjs";
+import { GOOGLE_TRENDS_SKIPPED, WRONG_MATCH_IDS, YOUTUBE_TRAIL_SKIPPED, labelFor, listingHeat, momentum, scoreFrom } from "./lib/heat-check.mjs";
 import { loadMarketHistory } from "./lib/market-history.mjs";
+import { zForProduct } from "./lib/youtube-mention-trail.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
@@ -27,9 +28,15 @@ const hist = await loadMarketHistory(ROOT);
 const tcg = new Map([...hist.merged].map(([id, pts]) => [id, pts]));
 
 const skipped = {
-  trends: "Google Trends was not called. The pytrends package is not installed, so this input is empty.",
-  youtube: "Not scored. There is no 90-day trail of new-video counts, so one lookup would not be a z-score. No YouTube API key is set either.",
+  trends: GOOGLE_TRENDS_SKIPPED,
+  youtube: YOUTUBE_TRAIL_SKIPPED,
 };
+let youtubeTrail = null;
+try {
+  youtubeTrail = JSON.parse(await readFile(join(ROOT, "data/derived/youtube-mention-trail.json"), "utf8"));
+} catch {
+  youtubeTrail = null;
+}
 
 const out = [];
 // A product is scored when at least one input has its 30 days: 30 one-day
@@ -46,11 +53,12 @@ for (const id of ids) {
   // market, not today's. It is left out rather than scored as current.
   const fresh = series.length && Date.parse(today) - Date.parse(series.at(-1).date) <= 3 * 86400000;
   const mom = fresh ? momentum(series) : { z: null, latest: null, days: series.length, stale: series.length ? series.at(-1).date : null };
+  const yt = youtubeTrail ? zForProduct(youtubeTrail, id) : null;
   const parts = [
     { key: "listings", weight: 0.40, z: listings.z },
     { key: "tcgplayerMomentum", weight: 0.30, z: mom.z },
     { key: "googleTrends", weight: 0.20, z: null },
-    { key: "youtube", weight: 0.10, z: null },
+    { key: "youtube", weight: 0.10, z: yt },
   ];
   const scored = scoreFrom(parts);
   if (!scored) continue;
@@ -73,7 +81,7 @@ for (const id of ids) {
       tcgplayerFrom: (tcg.get(id) || [])[0]?.date || null,
       tcgplayerSources: [...new Set((tcg.get(id) || []).map((p) => p.source))],
       googleTrends: null,
-      youtube: null,
+      youtube: yt,
     },
   });
 }

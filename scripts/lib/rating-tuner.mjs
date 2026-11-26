@@ -29,12 +29,18 @@ const pearson = (xs, ys) => {
 const round = (x, d = 3) => (x == null ? null : Math.round(x * 10 ** d) / 10 ** d);
 const daysBetween = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000);
 
+const decides = (s) => {
+  if (!s || s.excess == null) return false;
+  if (s.heldStrict === false && s.bandHeld === false) return false;
+  return true;
+};
+
 export function factorEvidence(ledger, horizon = TUNER.horizon) {
   const per = {};
   for (const e of ledger) {
     if (e.t !== "rating") continue;
     const s = e[`h${horizon}`];
-    if (!s || s.excess == null) continue;
+    if (!decides(s)) continue;
     for (const [k, v] of Object.entries(e.f || {})) {
       (per[k] ||= { x: [], y: [] });
       per[k].x.push(v); per[k].y.push(s.excess);
@@ -50,7 +56,7 @@ export function versionEvidence(ledger, horizon = TUNER.horizon) {
   for (const e of ledger) {
     if (e.t !== "rating" || e.score == null) continue;
     const s = e[`h${horizon}`];
-    if (!s || s.excess == null) continue;
+    if (!decides(s)) continue;
     (per[e.wv || "base"] ||= { x: [], y: [] });
     per[e.wv || "base"].x.push(e.score); per[e.wv || "base"].y.push(s.excess);
   }

@@ -1,5 +1,5 @@
 // Self-check, tuner limits, flags and the script research scan.
-import { claimOf, snapshotNight, scoreLedger, summarize, addDays } from "../lib/self-check.mjs";
+import { claimOf, snapshotNight, scoreLedger, summarize, addDays, onePerWeek } from "../lib/self-check.mjs";
 import { tuneNight, initialState, revertTo, validWeights, TUNER } from "../lib/rating-tuner.mjs";
 import { sameWeights } from "../lib/rating-weights.mjs";
 import { priceMoveFlags, dataGapFlags, staleFlags, readTypeFlags, newSetFlags, releaseFlags } from "../lib/flags.mjs";
@@ -50,6 +50,27 @@ export async function run() {
   t("one pair or two per night, 1 point each", moved <= 2 * TUNER.maxPairsPerNight && Object.keys(base).every((k) => Math.abs(a.state.weights[k] - base[k]) <= TUNER.stepPoints));
   t("weights still sum to 100", Object.values(a.state.weights).reduce((x, y) => x + y, 0) === 100);
   t("demand up, artist down", a.state.weights.demand === 16 && a.state.weights.artist === 9);
+  const poison = ledger.map((e) => ({ ...e, pid: e.pid + 10000, f: { demand: 1 - e.f.demand, artist: e.f.artist, peer: e.f.peer }, h30: { excess: -e.h30.excess, heldStrict: false, bandHeld: false } }));
+  const unchanged = tuneNight(initialState(base), ledger.concat(poison), "2026-10-12");
+  t("rows that fail heldStrict and bandHeld do not change the move", unchanged.state.weights.demand === 16 && unchanged.state.weights.artist === 9);
+  const flatPrices = {};
+  for (let i = 1; i <= 40; i++) {
+    flatPrices[`${i}|2030-01-01`] = 10;
+    flatPrices[`${i}|2030-01-08`] = i <= 20 ? 12 : 10;
+  }
+  const flatOn = (pid, d) => flatPrices[`${pid}|${d}`] ?? null;
+  const flatReads = Array.from({ length: 40 }, (_, i) => ({ readKind: "high", sku: `tcgcsv-${i + 1}` }));
+  const flatNight = snapshotNight({ asOf: "2030-01-01", reads: flatReads, priceOn: flatOn });
+  scoreLedger(flatNight, flatOn, "2030-01-20", () => 0);
+  const flatRow = flatNight.find((e) => e.pid === 21);
+  t("a flat price stays in held and drops out of heldStrict", flatRow.h7.held === true && flatRow.h7.heldStrict === false);
+  const summed = summarize(flatNight).find((r) => r.kind === "high");
+  t("held rate drops once flats are out of heldStrict", summed.heldPct7 === 100 && summed.heldStrictPct7 === 50);
+  t("one call per product kind and direction inside 7 days", onePerWeek([
+    { t: "read", kind: "high", pid: 9, dir: 1, date: "2030-03-01" },
+    { t: "read", kind: "high", pid: 9, dir: 1, date: "2030-03-04" },
+    { t: "read", kind: "high", pid: 9, dir: 1, date: "2030-03-10" },
+  ]).length === 2);
   t("cooldown holds the next night", tuneNight(a.state, ledger, "2026-10-13").state.weights.demand === 16);
   let s = a.state;
   for (let d = 0; d < 200; d += 7) s = tuneNight(s, ledger, addDays("2026-10-20", d)).state;
