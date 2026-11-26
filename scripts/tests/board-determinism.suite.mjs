@@ -10,7 +10,7 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { cooledSet, rememberShown, pickNight } from "../lib/night-reads.mjs";
+import { cooledSet, rememberShown, pickNight, mixRead, MIX_CLAUSE } from "../lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -55,6 +55,12 @@ export async function run() {
   const p2 = pickNight(cand, rememberShown(once, cand, asOf), asOf).reads.map((r) => r.id).join();
   t("pickNight is the same after its picks are remembered", p1 === p2, `${p1} vs ${p2}`);
 
+  {
+    // Fake card and counts. Every phrasing of the condition mix names its unit.
+    const fact = { printing: "Normal", mix: { from: "2026-01-01", to: "2026-01-07", conditions: [{ condition: "Near Mint", sold: 24 }, { condition: "Lightly Played", sold: 14 }, { condition: "Moderately Played", sold: 1 }] } };
+    const lines = ["2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12"].map((day) => mixRead(fact, { id: "tcgcsv-1", name: "Fake Card", set: "Fake Set" }, day)).filter(Boolean);
+    t("a condition mix headline says listings counted in every phrasing", lines.length === 6 && lines.every((r) => /listings counted/.test(r.headline) && !/\bsold\b/i.test(r.headline) && r.why.endsWith(MIX_CLAUSE)));
+  }
   // ── integration: run the nightly board build twice on a copy, compare ──
   if (process.env.SKIP_BOARD_REBUILD === "1") return fail;
   const dir = await mkdtemp(join(tmpdir(), "board-det-"));

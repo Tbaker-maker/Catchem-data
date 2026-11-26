@@ -134,7 +134,9 @@ export function mixRead(fact, item, asOf) {
   if (bits.some((bit) => !/^\d+ /.test(bit))) return null;
   const sold = mix.conditions.reduce((sum, row) => sum + Number(row.sold), 0);
   if (!Number.isInteger(sold) || sold < 10) return null;
-  const list = bits.join(", ");
+  // The counts are listings counted. A bare "24 Near Mint" had no unit; the
+  // public line names it, the same as the quiet, flat and fell reads.
+  const list = `${bits.join(", ")} ${sold === 1 ? "listing counted" : "listings counted"}`;
   const phrases = [
     `${name}, ${when}: ${list}.`,
     `${list} for ${name} over ${when}.`,
