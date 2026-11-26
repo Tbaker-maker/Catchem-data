@@ -1,8 +1,8 @@
 // A TCGplayer market field that sits unchanged for N days while the
 // lowest listing moves is stale. Reads must not call that price "tonight".
 // N lives in catchem-data-private (config/read-stale-market.json).
-// With no N, or no moving lows, nothing changes. This file does not call
-// any network API.
+// With no N, or no moving lows, nothing changes. The only network call
+// is a fallback read of that private config file, same as jumpy.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -78,10 +78,20 @@ export function staleMarket(markets, lows, asOf, cfg) {
 
 export async function loadStaleMarket(root) {
   if (!root) return null;
-  const path = join(root, "..", "catchem-data-private", "config", "read-stale-market.json");
-  try {
-    return validStaleMarket(JSON.parse(await readFile(path, "utf8")));
-  } catch {
-    return null;
+  const paths = [join(root, "..", "catchem-data-private", "config", "read-stale-market.json")];
+  for (const p of paths) {
+    try {
+      const got = validStaleMarket(JSON.parse(await readFile(p, "utf8")));
+      if (got) return got;
+    } catch { /* next */ }
   }
+  const token = process.env.PRIVATE_DATA_TOKEN || "";
+  if (!token) return null;
+  try {
+    const res = await fetch("https://api.github.com/repos/Tbaker-maker/catchem-data-private/contents/config/read-stale-market.json", {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github.raw", "User-Agent": "catchem-stale-market" },
+      signal: AbortSignal.timeout(20000),
+    });
+    return res.ok ? validStaleMarket(await res.json()) : null;
+  } catch { return null; }
 }

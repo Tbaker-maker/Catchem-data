@@ -45,11 +45,17 @@ export async function run() {
   const freshPts = [["2024-02-01", 200], ["2025-05-12", 300], ["2026-01-15", 400], ["2026-11-18", 700], ["2026-11-25", 817.16]];
   const moving = cardStories([{ ...card, pts: freshPts }], { asOf: "2026-11-25", staleMarketRule: cfg, lowsOf: () => lows });
   t("a market that moved recently still publishes tonight", moving.length === 1 && /tonight/.test(moving[0].headline));
+  // Fake N longer than a 30-day nightly window, shorter than the Oct 9 freeze.
+  const longRule = { unchangedDays: 40 };
+  const windowPts = [["2026-10-27", 817.16], ["2026-11-01", 817.16], ["2026-11-17", 817.16], ["2026-11-25", 817.16]];
+  t("a 30-day window alone does not see a freeze older than the window", staleMarket(windowPts, lows, "2026-11-25", longRule).stale === false);
+  const missed = cardStories([card], { asOf: "2026-11-25", staleMarketRule: longRule, seriesOf: () => windowPts, lowsOf: () => lows });
+  t("a freeze older than the nightly window is still held when long history is on file", missed.length === 0);
   t("a missing private rule changes nothing", (await loadStaleMarket(join(ROOT, "scripts/tests"))) == null);
   const board = readFileSync(join(ROOT, "scripts/lib/board-mix.mjs"), "utf8");
   t("board-mix holds stale market stories", board.includes("loadStaleMarket") && board.includes("staleMarketRule") && board.includes("lowsOf"));
   const lib = readFileSync(join(ROOT, "scripts/lib/stale-market.mjs"), "utf8");
-  t("the stale market helper does not call a network API", !/\bfetch\s*\(/.test(lib) && !/api\.github\.com/.test(lib));
+  t("the stale market helper may only fetch the private config file", /catchem-data-private\/contents\/config\/read-stale-market\.json/.test(lib) && !/tcgcsv\.com|ebay\.com|pokemonpricetracker/i.test(lib));
 
   return fail;
 }
