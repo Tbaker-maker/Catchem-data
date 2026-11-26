@@ -1,15 +1,21 @@
 import { cardFacts, quietFact } from "../lib/shape-facts.mjs";
 import { readFileSync } from "node:fs";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import {
   ASK_CLAUSE,
   MIX_CLAUSE,
+  PPT_READ_MAX_AGE_DAYS,
   MOVE_CLAUSE,
   MKT_CLAUSE,
   PAIR_CLAUSE,
   SHARE_CLAUSE,
   SPREAD_CLAUSE,
   STILL_CLAUSE,
+  freshPptReads,
   gapRead,
+  loadShapeCandidates,
   marketMoveRead,
   passesSealedLead,
   pickNight,
@@ -111,6 +117,39 @@ export async function run() {
   t("a card does not repeat inside the cooldown", !overlap);
   const shares = night1.byKind.setshare.items.map((row) => row.rank);
   t("a ranked filter keeps its order", shares.every((rank, i) => i === 0 || rank <= shares[i - 1]));
+  // A frozen PPT table must not keep publishing old windows (PPT cancel, key gone).
+  const fresh = { id: "quiet-a", readKind: "quiet", asOf: "2026-11-21" };
+  const edge = { id: "quiet-b", readKind: "quiet", asOf: "2026-11-18" };
+  const old = { id: "quiet-c", readKind: "quiet", asOf: "2026-11-17" };
+  const undated = { id: "quiet-d", readKind: "quiet", asOf: "" };
+  const kept = freshPptReads([fresh, edge, old, undated], "2026-11-25").map((row) => row.id);
+  t("the PPT read age cap is 7 days", PPT_READ_MAX_AGE_DAYS === 7);
+  t("a PPT read inside the cap stays", kept.includes("quiet-a") && kept.includes("quiet-b"));
+  t("a PPT read past the cap is dropped", !kept.includes("quiet-c"));
+  t("an undated PPT read is dropped", !kept.includes("quiet-d"));
+  t("no night day keeps no PPT read", freshPptReads([fresh], "").length === 0);
+  t("a PPT read dated after the night is dropped", freshPptReads([{ id: "x", asOf: "2026-11-26" }], "2026-11-25").length === 0);
+
+  const root = await mkdtemp(join(tmpdir(), "ppt-age-"));
+  const put = async (rel, value) => {
+    await mkdir(dirname(join(root, rel)), { recursive: true });
+    await writeFile(join(root, rel), JSON.stringify(value));
+  };
+  const prevOff = process.env.PPT_OFF;
+  delete process.env.PPT_OFF;
+  try {
+    await put("data/catalog/tcgcsv-latest.json", { asOf: "2026-11-25", items: [item] });
+    await put("ppt-raw-private/shape-facts.json", { updatedOn: "2026-11-23", cards: {
+      "tcgcsv-1": { id: "tcgcsv-1", tcgplayerProductId: 1, printing: "Normal", quiet: { days: 7, price: 12.5, from: "2026-11-15", to: "2026-11-21" } },
+    } });
+    const night = await loadShapeCandidates(root, "2026-11-25");
+    t("a fresh PPT table still makes its read", night.some((row) => row.readKind === "quiet" && row.sku === "tcgcsv-1"));
+    const frozen = await loadShapeCandidates(root, "2026-12-20");
+    t("a frozen PPT table makes no read weeks later", !frozen.some((row) => row.readKind === "quiet"));
+  } finally {
+    if (prevOff === undefined) delete process.env.PPT_OFF; else process.env.PPT_OFF = prevOff;
+    await rm(root, { recursive: true, force: true });
+  }
   return fail;
 }
 

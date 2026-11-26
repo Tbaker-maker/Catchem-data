@@ -677,13 +677,27 @@ async function readJson(path, fallback = null) {
   try { return JSON.parse(await readFile(path, "utf8")); } catch { return fallback; }
 }
 
+// Quiet, mix, conditions, solddown and setshare reads come from the private PPT
+// shape and volume tables. The PPT refresh rewrites them each night. When it stops
+// (no key, plan cancelled, PPT_OFF unset) the tables freeze and these reads would
+// keep quoting the same old windows. A read whose window ended more than this many
+// days before tonight is dropped. Nothing is filled from another source.
+export const PPT_READ_MAX_AGE_DAYS = 7;
+
+export function freshPptReads(rows, asOf, maxAge = PPT_READ_MAX_AGE_DAYS) {
+  if (!DAY.test(String(asOf || ""))) return [];
+  const oldest = shiftDay(asOf, -maxAge);
+  return (rows || []).filter((row) => row && DAY.test(String(row.asOf || "")) && row.asOf >= oldest && row.asOf <= asOf);
+}
+
 /** Candidates from private facts, the private volume table, and sealed files. Missing files add nothing. */
 export async function loadShapeCandidates(root, asOf) {
   const catalog = (await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] })).items || [];
   const facts = pptOff() ? {} : ((await readJson(join(root, SHAPE_STATE_FILE), { cards: {} })).cards || {});
   const volume = pptOff() ? null : await readJson(join(root, "ppt-raw-private/tcgplayer-volume.json"), null);
-  const out = singleCandidates(facts, catalog, asOf);
-  if (volume) out.push(...setShareReads(volume, catalog));
+  const fromPpt = singleCandidates(facts, catalog, asOf);
+  if (volume) fromPpt.push(...setShareReads(volume, catalog));
+  const out = freshPptReads(fromPpt, asOf);
   const products = Object.values((await readJson(join(root, "data/sealed-prices.json"), { products: {} })).products || {});
   const heat = await readJson(join(root, "data/heat-history.json"), []);
   const mapping = (await readJson(join(root, "data/history/tcgplayer-market/mapping.json"), { entries: [] })).entries || [];
