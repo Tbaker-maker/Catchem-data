@@ -1,8 +1,8 @@
 # Catch'Em Trending — sealed floor board
 
-**asOf:** 2026-11-25T16:30:00Z
+**asOf:** 2026-11-26T16:30:00Z
 
-**source:** Markets from public TCGPlayer product pages 2026-11-25. Unopened English. Infinite-api product sold endpoints not accessible. No solds invented. Junk ignored. Carried prior solds from 2026-11-24.
+**source:** Markets from public TCGPlayer product pages 2026-11-26. Unopened English. Infinite-api product sold endpoints not accessible for full solds. No solds invented. Junk ignored. Carried prior solds from 2026-11-25 where page snapshot incomplete.
 
 ## First play
 
@@ -23,12 +23,12 @@ No SKU cleared left-play + higher-low + exhaust + within 8% + low aged 8 days. D
 
 | SKU | Name | Market | sold3m | Low3m | Call | Why |
 |-----|------|--------|--------|-------|------|-----|
-| destined-rivals-booster-box | Destined Rivals Booster Box | 386.09 | 909 | 244.99 | Wait | Still in play, ~58% above low |
-| destined-rivals-etb | Destined Rivals Elite Trainer Box | 108.45 | 3650 | 91.00 | Wait | Still in play, ~19% above low |
-| destined-rivals-bundle | Destined Rivals Booster Bundle | 60.35 | 1169 | 44.00 | Wait | Still in play, recent cut, ~37% above |
-| sv151-bundle | 151 Booster Bundle | 162.85 | 1121 | 145.00 | Wait | Far above low, copies not dried |
-| sv151-etb | 151 Elite Trainer Box | 485.14 | 174 | 452.00 | Watch | Within 8% but no confirmed higher-low 8+ days or exhaust |
-| prismatic-etb | Prismatic Evolutions Elite Trainer Box | 118.12 | 3877 | 3.01 | Wait | Junk low, still in play |
+| destined-rivals-booster-box | Destined Rivals Booster Box | 386.42 | 712 | 244.99 | Wait | Still in play, ~58% above low, page 3m sold 712 |
+| destined-rivals-etb | Destined Rivals Elite Trainer Box | 109.57 | 3223 | 91.00 | Wait | Still in play, ~20% above low, page 3m sold 3223 |
+| destined-rivals-bundle | Destined Rivals Booster Bundle | 59.40 | 1169 | 44.00 | Wait | Still in play, recent cut, ~35% above |
+| sv151-bundle | 151 Booster Bundle | 163.46 | 1121 | 145.00 | Wait | Far above low, copies not dried |
+| sv151-etb | 151 Elite Trainer Box | 484.98 | 174 | 452.00 | Watch | Within 8% but no confirmed higher-low 8+ days or exhaust |
+| prismatic-etb | Prismatic Evolutions Elite Trainer Box | 118.66 | 3877 | 3.01 | Wait | Junk low, still in play |
 | prismatic-bundle | Prismatic Evolutions Booster Bundle | 74.80 | 2521 | 54.99 | Wait | Still in play, ~36% above |
 | prismatic-pc-etb | Prismatic Evolutions Pokemon Center ETB | 334.30 | 119 | 350.00 | Wait | Market under prior low, still cutting |
 | surging-sparks-box | Surging Sparks Booster Box | 294.79 | 356 | 279.0 | Wait | Still in play, ~6% above low |
