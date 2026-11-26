@@ -14,6 +14,7 @@ import { storePrivateReceipts } from "./lib/private-receipts-store.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
+import { catalogueProductMap } from "./lib/catalogue-product-map.mjs";
 import { writeSparks } from "./build-sparks.mjs";
 import { hiddenSealedPids, isBrowseHidden } from "./lib/browse-hidden.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
@@ -825,6 +826,19 @@ try {
     if (best) redirects.sets[setId] = `/sets/${best[0]}`;
   }
 } catch { /* id map is optional */ }
+// Catalogue-only card URLs (/c/ecard2-H29) go to the nightly product, so the
+// page shows tonight's price, never the catalogue's import snapshot.
+try {
+  const singles = [];
+  for (const set of sets.values()) for (const it of set.items) if (it.kind === "single") singles.push(it);
+  let linked = 0;
+  for (const [cid, id] of Object.entries(catalogueProductMap(catalogue.cards || {}, singles))) {
+    if (redirects.products[cid]) continue;
+    redirects.products[cid] = `/c/${id}`;
+    linked += 1;
+  }
+  console.log(JSON.stringify({ catalogueRedirects: linked }));
+} catch (err) { console.error(`catalogue redirects skipped: ${String(err.message || err).slice(0, 200)}`); }
 
 // Sealed redirects are id-only (see above). The old name/subtype hint
 // fallback picked a product by name and is gone.
