@@ -373,10 +373,11 @@ export function priceRange(points, asOf, rules = {}) {
   if (!(days >= needDays)) return null;
   const today = rows.find((p) => p[0] === String(asOf).slice(0, 10));
   if (!today) return null;
+  // A tie is the first day the high or low was reached, never tonight's repeat.
   let hi = rows[0];
   let lo = rows[0];
   for (const p of rows) {
-    if (p[1] > hi[1] || (p[1] === hi[1] && p[0] > hi[0])) hi = p;
+    if (p[1] > hi[1] || (p[1] === hi[1] && p[0] < hi[0])) hi = p;
     if (p[1] < lo[1] || (p[1] === lo[1] && p[0] < lo[0])) lo = p;
   }
   if (!(hi[1] > lo[1])) return null;
