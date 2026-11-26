@@ -155,7 +155,11 @@ export function newPatterns(summary) {
   return Array.isArray(rows) ? rows : [];
 }
 
-export function listingChanges(latestRows, olderRows, { minDays = 1 } = {}) {
+// names: id to product name from tonight's bucket rows. Listing count rows carry
+// no name (live Nov 25: /weekly printed "TCGplayer-100492"), so when names are
+// given a row takes its name from them and a row with no name is left out.
+export function listingChanges(latestRows, olderRows, { minDays = 1, names = null } = {}) {
+  const nameOf = (id) => (names instanceof Map ? names.get(id) : names ? names[id] : "") || "";
   const prev = new Map();
   for (const row of olderRows || []) if (row?.id) prev.set(row.id, row);
   const out = [];
@@ -169,9 +173,11 @@ export function listingChanges(latestRows, olderRows, { minDays = 1 } = {}) {
     const pct = Math.round(((n - before.listingsCounted) / before.listingsCounted) * 1000) / 10;
     if (!pct) continue;
     const kind = String(row.kind || before.kind || "").toLowerCase() === "sealed" ? "sealed" : "single";
+    const name = String(row.name || before.name || nameOf(row.id) || "").trim();
+    if (names && !name) continue;
     out.push({
       id: row.id,
-      name: row.name || before.name || "",
+      name,
       kind,
       from: before.date,
       to: row.date,
