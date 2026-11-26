@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-23T18:29:42.758Z",
+ "generatedAt": "2026-11-26T00:01:48.835Z",
  "purpose": "Grades reasoning by its predictions, because reasoning cannot be inspected after the fact without being rewritten.",
  "total": 17,
- "dueForGrading": 8,
+ "dueForGrading": 10,
  "record": {
   "graded": 0,
   "note": "nothing has come due yet. The first grades land from October."
@@ -55,6 +55,18 @@
    "id": "2026-08-23-tools-free-forever",
    "decision": "The tools are free permanently. Monetisation is physical product — guards — sold into the community the tools build. The landing page says CLOSED BETA and FREE FOREVER, in public.",
    "predicted": "Nobody asks what it will cost. If waitlist replies contain pricing questions, the FREE FOREVER line is not landing and the page needs to say it louder rather than differently.",
+   "decidedBy": "Tyler"
+  },
+  {
+   "id": "2026-08-24-machine-sends-tyler-writes",
+   "decision": "A post QUEUE, not a posting agent. Tyler writes in batches, the machine sends at a set hour. It will not generate post text, will not post to anybody else's account, and will not send anything Tyler has not read.",
+   "predicted": "Queued posts perform in the same range as live ones. If they underperform consistently, the thing that mattered was posting in the moment rather than the words, and the queue should be scrapped rather than improved.",
+   "decidedBy": "chat, pushing back on Tyler"
+  },
+  {
+   "id": "2026-08-24-reach-tiers",
+   "decision": "Line suggestions are ORDERED by follower count, not filtered. Under 1k prefers observation and confession and lowers questions; 5k-25k is where the permission mechanic is documented working; 25k+ can carry a divisive question. Every threshold is labelled unproven on screen.",
+   "predicted": "Question-shaped posts underperform observation-shaped ones below roughly 1,000 followers. If the outcome log shows no difference once it holds twenty posts, the tiers are noise and should be deleted rather than tuned.",
    "decidedBy": "Tyler"
   }
  ]

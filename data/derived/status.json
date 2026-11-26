@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-25",
- "generatedAt": "2026-11-25T17:13:31.279Z",
+ "generatedAt": "2026-11-26T00:14:36.325Z",
  "checks": [
   {
    "id": "price-day",
@@ -34,7 +34,9 @@
  "failures": [
   "scanner"
  ],
- "alerts": [],
+ "alerts": [
+  "eBay Browse is at 101% of the 4,277 daily listing calls as of 2026-11-26."
+ ],
  "reran": [],
  "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }

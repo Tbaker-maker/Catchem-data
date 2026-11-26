@@ -7024,7 +7024,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-11-25",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "only 3 listings — too thin to headline"
+      ]
     },
     {
       "id": "xy12-booster-box",
@@ -9719,7 +9723,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-11-25",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
+      ]
     },
     {
       "id": "me2pt5-tin",
@@ -10850,7 +10858,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-11-25",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
+      ]
     },
     {
       "id": "sm1-etb",
@@ -20572,7 +20584,11 @@
       },
       "listingsSource": "eBay listings counted",
       "priceDate": "2026-11-25",
-      "priceSource": "TCGplayer market"
+      "priceSource": "TCGplayer market",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
+      ]
     },
     {
       "id": "swsh2-booster-box",
@@ -56353,7 +56369,11 @@
         }
       ],
       "priceSource": "TCGplayer market across 2 arts",
-      "priceDate": "2026-11-25"
+      "priceDate": "2026-11-25",
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
+      ]
     },
     {
       "id": "sm12-etb",

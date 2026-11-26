@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-23T18:29:42.354Z",
- "date": "2026-11-23",
+ "generatedAt": "2026-11-26T00:01:48.435Z",
+ "date": "2026-11-26",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 37 finding(s)",
+  "correction-hunter: 38 finding(s)",
   "review-agents: 0 finding(s)",
-  "decision-audit: 4 finding(s)",
+  "decision-audit: 8 finding(s)",
   "designer: 19 finding(s)",
   "theme-scout: 25 finding(s)",
   "teacher: 10 finding(s)",
@@ -27,9 +27,10 @@
   "security: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 37 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 38 across four runs with nothing resolved. Volume is not work.",
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "correction-hunter: OVER-BUDGET — 37 findings against a ceiling of 30. An unreadable list is an unread list.",
+  "correction-hunter: OVER-BUDGET — 38 findings against a ceiling of 30. An unreadable list is an unread list.",
+  "decision-audit: FARMING — findings climbed 0 → 0 → 0 → 8 across four runs with nothing resolved. Volume is not work.",
   "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: FARMING — findings climbed 22 → 22 → 22 → 25 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
@@ -121,7 +122,7 @@
   {
    "from": "anomaly",
    "owner": "tyler",
-   "what": "Dragon Majesty Elite Trainer Box moved 9.1% — about 14.1× its own typical daily swing.",
+   "what": "Ascended Heroes Booster Bundle moved -15.1% — about 3.8× its own typical daily swing.",
    "do": "worth a look — the market did something unusual, which is where stories start",
    "score": 76,
    "band": "ACT NOW",
@@ -445,7 +446,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Paldea Evolved listings moved 18.2% while its print window closes.\"",
+   "what": "[X] \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -477,7 +478,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Shining Fates Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 136 listings counted.\"",
+   "what": "[YouTube] Fusion Strike Elite Trainer Box — \"Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -493,7 +494,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.4.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.3.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -765,6 +766,38 @@
   {
    "from": "decision-audit",
    "owner": "tyler",
+   "what": "a prediction has come due: Withdraw every graded price until the provider exposes a date range on sold aggregates.",
+   "do": "Predicted: No graded claim will be publishable until a windowed source exists. If we find a defensible way to publish one WITHOUT a window, the withdrawal was over-cautious. — did it hold?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "decision-audit",
+   "owner": "tyler",
+   "what": "a prediction has come due: Agents advise and never block; only guards block, plus security as the single exception.",
+   "do": "Predicted: No agent false-positive will ever cost us a publication day. If a run is lost to an agent's mistake, the exception list is wrong. — did it hold?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "decision-audit",
+   "owner": "tyler",
    "what": "a prediction has come due: Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
    "do": "Predicted: The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong. — did it hold?",
    "score": 30,
@@ -845,7 +878,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 92 days.",
+   "what": "PENDING-AUTO-RECOVERY.md has sat untouched for 93 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -861,7 +894,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BACKUP.md has sat untouched for 93 days.",
+   "what": "PENDING-BACKUP.md has sat untouched for 94 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -877,7 +910,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-BOX.md has sat untouched for 92 days.",
+   "what": "PENDING-BLIND-BOX.md has sat untouched for 93 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -893,7 +926,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-BLIND-PACKS.md has sat untouched for 92 days.",
+   "what": "PENDING-BLIND-PACKS.md has sat untouched for 93 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -909,7 +942,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 93 days.",
+   "what": "PENDING-CATALOGUE-INGEST.md has sat untouched for 94 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -925,7 +958,7 @@
   {
    "from": "steward",
    "owner": "tyler",
-   "what": "PENDING-CC-BREAKER.md has sat untouched for 93 days.",
+   "what": "PENDING-CC-BREAKER.md has sat untouched for 94 days.",
    "do": "Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1236,7 +1269,7 @@
    {
     "from": "anomaly",
     "owner": "tyler",
-    "what": "Dragon Majesty Elite Trainer Box moved 9.1% — about 14.1× its own typical daily swing.",
+    "what": "Ascended Heroes Booster Bundle moved -15.1% — about 3.8× its own typical daily swing.",
     "do": "worth a look — the market did something unusual, which is where stories start",
     "score": 76,
     "band": "ACT NOW",
@@ -1288,6 +1321,6 @@
   "actNow": 1,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 33
+  "noteOnly": 35
  }
 }
