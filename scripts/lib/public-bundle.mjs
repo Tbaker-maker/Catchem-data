@@ -1554,6 +1554,29 @@ export function moverRow(row) {
   };
 }
 
+// A launch or preorder price is not a fall. The launch day is the later of the
+// set release day and the product's first own price, when that first price came
+// at least a week after our daily files began (a card missing from the first
+// few files is not new). A falling move whose window starts before
+// launch + 30 days compares against launch prices, so it stays off Falling.
+export const LAUNCH_DAYS = 30;
+const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+export function launchDay(release, raw, historyStart) {
+  const rel = String(release || "").slice(0, 10);
+  const first = String((raw && raw[0] && raw[0][0]) || "").slice(0, 10);
+  const start = String(historyStart || "").slice(0, 10);
+  const newAfter = DAY_RE.test(start) ? new Date(Date.parse(`${start}T00:00:00Z`) + 7 * 86400000).toISOString().slice(0, 10) : "";
+  const seen = DAY_RE.test(first) && newAfter && first > newAfter ? first : "";
+  const days = [DAY_RE.test(rel) ? rel : "", seen].filter(Boolean).sort();
+  return days.length ? days[days.length - 1] : "";
+}
+export function inLaunchWindow(fromDate, launch, days = LAUNCH_DAYS) {
+  const from = String(fromDate || "").slice(0, 10);
+  if (!DAY_RE.test(from) || !DAY_RE.test(String(launch || ""))) return false;
+  const settled = new Date(Date.parse(`${launch}T00:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
+  return from < settled;
+}
+
 export function bestMove(points, kind) {
   const need = kind === "sealed" ? 5 : 8;
   const hits = [30, 7].map((days) => moveOver(points, days)).filter((row) => row && Math.abs(row.pct) >= need);
