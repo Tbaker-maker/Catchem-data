@@ -1,4 +1,7 @@
 import { useTestSpec } from "./use-test-spec.mjs";
+import { liveHoldDoc, loadCheckIds } from "../lib/price-hold-live.mjs";
+import { mkdtemp, writeFile as writeFileT, rm as rmT } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -123,5 +126,21 @@ export async function run() {
     t("no supply factor", !("supply" in RATING_WEIGHTS));
     t("no weights or band cutoffs are published", !("weights" in doc) && !("bands" in doc));
   } catch { t("committed file readable", false); }
+  {
+    const dir = await mkdtemp(join(tmpdir(), "rating-"));
+    await writeFileT(join(dir, "00.json"), JSON.stringify({ rows: [{ id: "tcgcsv-2", check: true }, { id: "tcgcsv-3" }] }));
+    const hold = { asOf: "2026-11-25", ids: { "tcgcsv-1": "vintage", "tcgcsv-2": "unverified", "tcgcsv-3": "unverified", "tcgcsv-4": "unverified" } };
+    const modern = (id) => id !== "tcgcsv-4";
+    const live = liveHoldDoc(hold, await loadCheckIds(dir), modern);
+    t("a card the rating no longer flags is released from the hold", !live.doc.ids["tcgcsv-3"] && live.released.join() === "tcgcsv-3");
+    t("a card the rating still flags stays held", live.doc.ids["tcgcsv-2"] === "unverified");
+    t("a vintage hold is never released by the rating", live.doc.ids["tcgcsv-1"] === "vintage");
+    t("an unverified card from a vintage or undated set stays held", live.doc.ids["tcgcsv-4"] === "unverified");
+    const none = liveHoldDoc(hold, await loadCheckIds(join(dir, "missing")), modern);
+    t("no rating files means nothing is released", none.released.length === 0 && Object.keys(none.doc.ids).length === 4);
+    await rmT(dir, { recursive: true, force: true });
+    const bundle = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../build-public-bundle.mjs"), "utf8");
+    t("set pages read the live hold, not the frozen file", /liveHoldDoc\(holdDoc, await loadCheckIds\(.*modernIds\.has/.test(bundle));
+  }
   return fail;
 }
