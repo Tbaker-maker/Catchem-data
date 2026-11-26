@@ -166,25 +166,36 @@ export function groupIdForRelease(release, items) {
   return gid;
 }
 
+// The product is the lowest id with a price on the first day any candidate
+// was priced, so the pick does not change night to night. The price shown is
+// that product's newest price in the daily files, with its own date. The first
+// price was shown before, so a release read said "listed at $89.36 (Sep 26)"
+// two months later while the Nov 25 price was on file.
 function firstMarket(items, days) {
   const ids = new Map();
   for (const item of items || []) {
     const pid = productPid(item);
     if (pid) ids.set(pid, item);
   }
+  let pick = null;
   for (const day of days || []) {
     if (!datedDay(day.date)) continue;
-    let best = null;
     for (const price of day.prices || []) {
       const item = ids.get(Number(price.id));
       if (!item || !(Number(price.market) > 0)) continue;
-      if (!best || Number(price.id) < best.pid) {
-        best = { pid: Number(price.id), item, price: Number(price.market), date: datedDay(day.date) };
-      }
+      if (!pick || Number(price.id) < pick.pid) pick = { pid: Number(price.id), item };
     }
-    if (best) return best;
+    if (pick) break;
   }
-  return null;
+  if (!pick) return null;
+  let latest = null;
+  for (const day of days || []) {
+    const date = datedDay(day.date);
+    if (!date) continue;
+    const row = (day.prices || []).find((price) => Number(price.id) === pick.pid && Number(price.market) > 0);
+    if (row && (!latest || date > latest.date)) latest = { price: Number(row.market), date };
+  }
+  return latest ? { pid: pick.pid, item: pick.item, price: latest.price, date: latest.date } : null;
 }
 
 export function releaseMarketItem(release, items, days) {
