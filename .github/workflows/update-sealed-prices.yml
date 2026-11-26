@@ -486,6 +486,30 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-feature-data.mjs
 
+      - name: Release holds tonight's rating no longer flags
+        # Set pages were built before the rating above, against last night's
+        # rating. Apply tonight's flags now so a steady chase card is priced tonight.
+        id: holdsafter
+        if: steps.setpages.outcome == 'success'
+        continue-on-error: true
+        run: node scripts/release-holds-after-rating.mjs
+
+      - name: Rebuild set pages and feature data with the released holds
+        # Only when a hold was released. A failed rebuild restores the first build.
+        if: steps.setpages.outcome == 'success' && steps.holdsafter.outputs.released != '' && steps.holdsafter.outputs.released != '0'
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: |
+          snap="$RUNNER_TEMP/public-before-hold-rebuild"
+          cp -a research/assets/public "$snap"
+          if node scripts/build-public-bundle.mjs && node scripts/write-feature-data.mjs; then
+            echo "Rebuilt set pages with ${{ steps.holdsafter.outputs.released }} released holds."
+          else
+            echo "::warning::Rebuild after the hold release failed; keeping the first build."
+            rsync -a --delete "$snap/" research/assets/public/
+          fi
+
       - name: Listings-led tracker (private)
         # Scores listing-count trends with price and heat state; picks and backtest go to the
         # private repo only. No public output.

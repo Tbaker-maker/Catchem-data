@@ -142,5 +142,30 @@ export async function run() {
     const bundle = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../build-public-bundle.mjs"), "utf8");
     t("set pages read the live hold, not the frozen file", /liveHoldDoc\(holdDoc, await loadCheckIds\(.*modernIds\.has/.test(bundle));
   }
+  // Live sweep Nov 25: the nightly built set pages before the rating, so a card
+  // tonight's rating cleared stayed held until the next night.
+  {
+    const { releaseAfterRating } = await import("../lib/price-hold-live.mjs");
+    const pub = await mkdtemp(join(tmpdir(), "hold-after-"));
+    const { mkdir: mkdirT } = await import("node:fs/promises");
+    await mkdirT(join(pub, "feed/rating"), { recursive: true });
+    await mkdirT(join(pub, "sets"), { recursive: true });
+    await writeFileT(join(pub, "feed/rating/00.json"), JSON.stringify({ rows: [{ id: "tcgcsv-12", check: true }, { id: "tcgcsv-11" }] }));
+    await writeFileT(join(pub, "sets.json"), JSON.stringify({ sets: [{ slug: "new-set", release: "2025-03-28" }, { slug: "old-set", release: "1999-01-09" }] }));
+    await writeFileT(join(pub, "sets/new-set.json"), JSON.stringify({ release: "2025-03-28", items: [{ id: "tcgcsv-11", kind: "single" }, { id: "tcgcsv-12", kind: "single" }] }));
+    await writeFileT(join(pub, "sets/old-set.json"), JSON.stringify({ release: "1999-01-09", items: [{ id: "tcgcsv-13", kind: "single" }] }));
+    await writeFileT(join(pub, "price-hold.json"), JSON.stringify({ asOf: "2026-11-25", ids: { "tcgcsv-11": "unverified", "tcgcsv-12": "unverified", "tcgcsv-13": "unverified" } }));
+    const vintage = (rel) => rel < "2003-01-01";
+    const released = await releaseAfterRating(pub, vintage);
+    const after = JSON.parse(await readFile(join(pub, "price-hold.json"), "utf8"));
+    t("tonight's rating releases a cleared card the same night", released.join() === "tcgcsv-11" && !after.ids["tcgcsv-11"]);
+    t("tonight's rating keeps a flagged card and a vintage set card held", after.ids["tcgcsv-12"] === "unverified" && after.ids["tcgcsv-13"] === "unverified");
+    await rmT(join(pub, "feed/rating"), { recursive: true, force: true });
+    t("no rating files after the rating step releases nothing", (await releaseAfterRating(pub, vintage)).length === 0);
+    await rmT(pub, { recursive: true, force: true });
+    const wf = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../../.github/workflows/update-sealed-prices.yml"), "utf8");
+    const at = (s) => wf.indexOf(s);
+    t("the nightly releases holds after the rating and rebuilds set pages before the commit", at("run: node scripts/write-feature-data.mjs") > 0 && at("node scripts/release-holds-after-rating.mjs") > at("run: node scripts/write-feature-data.mjs") && at("steps.holdsafter.outputs.released != '0'") > at("node scripts/release-holds-after-rating.mjs") && at("- name: Commit the rebuilt feed") > at("steps.holdsafter.outputs.released != '0'"));
+  }
   return fail;
 }
