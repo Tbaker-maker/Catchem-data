@@ -34,6 +34,12 @@ function pickMovers(priced) {
   return picked;
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function spokenDay(day) {
+  const [y, m, d] = String(day).split("-").map(Number);
+  return `${MONTHS[m - 1]} ${d}, ${y}`;
+}
+
 export function pickMorning({ reads = [], news = [], asOf = "", supplyOn = false } = {}) {
   const priced = (reads || []).filter((read) => Number(read?.price) > 0 && Number.isFinite(Number(read?.changePct)) && read.headline);
   priced.sort(moveRank);
@@ -54,7 +60,10 @@ export function pickMorning({ reads = [], news = [], asOf = "", supplyOn = false
   if (setFact) lines.push({ slot: "fact", text: setFact.headline, href: setFact.href || "", id: setFact.id });
   else if (species) lines.push({ slot: "fact", text: species.headline, href: species.href || "", id: species.id, note: "Species fact on the short list. No set move was shipped." });
   else lines.push({ slot: "fact", text: "No set fact on tonight's short list.", href: "" });
-  if (item) lines.push({ slot: "news", text: `${item.title} (${item.source}, ${item.date}).`, href: item.url, source: item.source, date: item.date });
+  // The upcoming item is a release, so its date is the release date, not the day
+  // a story ran. Say so and store it as releaseDate (live Nov 25: "(PokeGuardian,
+  // 2027-02-06)" read as a news date).
+  if (item) lines.push({ slot: "news", kind: "release", text: `${item.title}: release date ${spokenDay(item.date)}, per ${item.source}.`, href: item.url, source: item.source, releaseDate: item.date });
   const doc = {
     asOf,
     supplyOn: supplyOn === true,

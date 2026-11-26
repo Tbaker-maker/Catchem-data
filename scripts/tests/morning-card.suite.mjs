@@ -23,6 +23,10 @@ t("the biggest priced move leads", doc.lines[0].text.includes("74.2%"));
 t("the 6-month high is its own line", doc.lines.some((line) => line.slot === "high" && line.text.includes("6-month high")));
 t("the species fact is not called a set move", doc.lines.find((line) => line.slot === "fact").note.includes("No set move"));
 t("news is the longer release, not a regional signup", doc.lines.find((line) => line.slot === "news").text.startsWith("Mega Evolution - Delta Reign") && !JSON.stringify(doc).includes("Puebla"));
+{
+  const line = doc.lines.find((row) => row.slot === "news");
+  t("an upcoming release line says release date and is not dated like a story", /: release date [A-Z][a-z]{2} \d{1,2}, \d{4}, per /.test(line.text) && !/\(\w[^)]*, \d{4}-\d{2}-\d{2}\)/.test(line.text) && !("date" in line) && /^\d{4}-\d{2}-\d{2}$/.test(line.releaseDate) && line.kind === "release");
+}
 
 const year = { id: "ray", price: 40, changePct: 300, windowDays: 365, headline: "Rayquaza is up 300% over the year: $10 to $40.", href: "/c/ray", readKind: "price" };
 const weekUp = { id: "resh", price: 20, changePct: 113.4, windowDays: 7, signal: "mover", headline: "Reshiram is up 113.4% over 7 days: $9.37 to $20.", href: "/c/resh", readKind: "price" };
