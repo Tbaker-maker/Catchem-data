@@ -126,8 +126,9 @@ export async function run() {
   t("topic weight fed into creatorWeights", cw2.z.byTopic?.print_run?.weight === 1.32 && cw2.z.byType?.set?.weight === 1.32);
   t("topic lead uses the topic weight", (() => { const tn = combinedTones({}, { z: { weight: 1, byTopic: { print_run: { weight: 0.5 } } } }); const L = buildLeads([{ id: "a", channel: "z", date: "2026-01-10", title: "", mentions: { sets: [], cards: [], sealed: [] }, topics: ["print_run"] }, { id: "b", channel: "z", date: "2026-01-10", title: "", mentions: { sets: [], cards: [], sealed: [] }, topics: ["print_run"] }], { today: "2026-01-10", idx, tones: tn, seenTopics: ["print_run"] }); return !L.some((l) => l.kind === "print_run"); })());
 
-  // Self-check: band + market-relative column next to the absolute one
-  const led = Array.from({ length: 20 }, (_, i) => ({ t: "read", kind: "up", pid: 1, date: "2026-01-01", price: 100, dir: 1 }));
+  // Self-check: band + market-relative column next to the absolute one.
+  // Distinct products: onePerWeek keeps one row per pid, kind and direction inside 7 days.
+  const led = Array.from({ length: 20 }, (_, i) => ({ t: "read", kind: "up", pid: i + 1, date: "2026-01-01", price: 100, dir: 1 }));
   scoreLedger(led, (pid, d) => (d === "2026-01-08" ? 104 : 100), "2026-01-10", () => 0.1);
   const sm = summarize(led)[0];
   t("self-check: absolute held 100%, band market-relative 0%", sm.heldPct7 === 100 && sm.bandHeldPct7 === 0 && led[0].h7.bandHeld === false);

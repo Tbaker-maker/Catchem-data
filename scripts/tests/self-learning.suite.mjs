@@ -71,6 +71,13 @@ export async function run() {
     { t: "read", kind: "high", pid: 9, dir: 1, date: "2030-03-04" },
     { t: "read", kind: "high", pid: 9, dir: 1, date: "2030-03-10" },
   ]).length === 2);
+  t("same product 3 days apart counts once and 8 days apart counts twice", onePerWeek([
+    { t: "read", kind: "high", pid: 4, dir: 1, date: "2030-05-01" },
+    { t: "read", kind: "high", pid: 4, dir: 1, date: "2030-05-04" },
+  ]).length === 1 && onePerWeek([
+    { t: "read", kind: "high", pid: 4, dir: 1, date: "2030-05-01" },
+    { t: "read", kind: "high", pid: 4, dir: 1, date: "2030-05-09" },
+  ]).length === 2);
   t("cooldown holds the next night", tuneNight(a.state, ledger, "2026-10-13").state.weights.demand === 16);
   let s = a.state;
   for (let d = 0; d < 200; d += 7) s = tuneNight(s, ledger, addDays("2026-10-20", d)).state;
