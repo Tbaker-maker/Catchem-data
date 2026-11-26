@@ -2,7 +2,7 @@ import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { valueOn, rarityTierReports, diveCoversNamed, deepReadId, setDeepDives, anniversaryReads } from "../lib/deep-reads.mjs";
+import { valueOn, rarityTierReports, diveCoversNamed, deepReadId, setDeepDives, anniversaryReads, ordinal } from "../lib/deep-reads.mjs";
 import { realLabel, chaseLists } from "../lib/deep-reads-2.mjs";
 import { rotationSetReads } from "../lib/board-mix.mjs";
 
@@ -64,6 +64,10 @@ export async function run() {
   const chase = chaseLists(fakeCards, () => [], { asOf, max: 3 })[0];
   const birthday = anniversaryReads(fakeCards, { asOf, sets: { sets: [{ slug: "sample-set", name: "Sample Set", release: "2020-11-18" }] } })[0];
   const rotation = rotationSetReads({ asOf, sets: [{ name: "Sample Set", slug: "sample-set", status: "Standard", mark: "Z" }] }, asOf)[0];
+  t("ordinals read 1st 2nd 3rd 4th 11th 12th 13th 21st 22nd 23rd 101st 111th", [1, 2, 3, 4, 11, 12, 13, 21, 22, 23, 101, 111].map(ordinal).join(" ") === "1st 2nd 3rd 4th 11th 12th 13th 21st 22nd 23rd 101st 111th");
+  const releaseDay = `${String(Number(asOf.slice(0, 4)) - 23)}${asOf.slice(4)}`;
+  const old23 = anniversaryReads(fakeCards.map((c) => ({ ...c, release: releaseDay })), { asOf, sets: { sets: [{ slug: "sample-set", name: "Sample Set", release: releaseDay }] } })[0];
+  t("a 23 year birthday says 23rd, never 23th", Boolean(old23 && /Happy 23rd birthday/.test(old23.headline) && !/\d(st|nd|rd|th)\b/.test(old23.headline.replace(/Happy 23rd/, ""))));
   const made = [dive, chase, birthday, rotation];
   const madeIds = made.map((r) => r && r.id);
   const madeLinks = made.map((r) => r && r.href);

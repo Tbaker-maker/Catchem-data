@@ -1,4 +1,4 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, rotationSetReads, rotationPhrase, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay, loadRawProducts, buildCardLag, breadthReads } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, rotationSetReads, rotationPhrase, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay, loadRawProducts, buildCardLag, breadthReads, setBreadthReads } from "../lib/board-mix.mjs";
 import { gzipSync } from "node:zlib";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -170,6 +170,15 @@ export async function run() {
     t("a night with no productGroups map reads its full products file", legacy && legacy.products.size === 2);
     await rm(root, { recursive: true, force: true });
     await rm(old, { recursive: true, force: true });
+  }
+  {
+    // Fake set and prices: one card up 8% or more.
+    const rows = Array.from({ length: 16 }, (_, i) => ({ id: i, group: "SV01: Fake Set", from: 10, to: i === 0 ? 12 : 10, kind: "Ultra Rare", era: "SV" }));
+    const one = setBreadthReads(rows, { start: "2026-01-01", end: "2026-01-08" })[0];
+    t("one riser reads 1 chase card, not 1 chase cards", Boolean(one && one.headline.includes("1 chase card up 8% or more") && !one.headline.includes("1 chase cards")));
+    rows[1].to = 12;
+    const two = setBreadthReads(rows, { start: "2026-01-01", end: "2026-01-08" })[0];
+    t("two risers read 2 chase cards", Boolean(two && two.headline.includes("2 chase cards up 8% or more")));
   }
   return fail;
 }

@@ -472,6 +472,15 @@ export function rarityTierReports(cards, { asOf, sets }) {
   return out;
 }
 
+// 1st, 2nd, 3rd, 4th, 11th, 12th, 13th, 21st, 22nd, 23rd.
+export function ordinal(n) {
+  const v = Math.abs(Math.trunc(Number(n)));
+  const teen = v % 100;
+  if (teen >= 11 && teen <= 13) return `${v}th`;
+  const last = v % 10;
+  return `${v}${last === 1 ? "st" : last === 2 ? "nd" : last === 3 ? "rd" : "th"}`;
+}
+
 export function anniversaryReads(cards, { asOf, sets, window = 7 }) {
   const out = [];
   for (const s of sets?.sets || []) {
@@ -487,7 +496,7 @@ export function anniversaryReads(cards, { asOf, sets, window = 7 }) {
     if (b.n < 8) continue;
     const ch = pctOf(b.total[0], b.total[1]);
     const top = pool.filter((c) => c.pts.at(-1)?.[0] === asOf).sort((x, y) => y.pts.at(-1)[1] - x.pts.at(-1)[1])[0];
-    const rr = row("anniversary", s.slug, s.name, `Happy ${years}${years === 1 ? "st" : years === 2 ? "nd" : years === 3 ? "rd" : "th"} birthday, ${s.name} (out ${dateLabel(s.release, asOf)}). Its chase cards are ${sgn(ch)} since ${dateLabel(since, asOf)}.`, [
+    const rr = row("anniversary", s.slug, s.name, `Happy ${ordinal(years)} birthday, ${s.name} (out ${dateLabel(s.release, asOf)}). Its chase cards are ${sgn(ch)} since ${dateLabel(since, asOf)}.`, [
       `${b.n} chase cards: ${usd(b.total[0])} (${dateLabel(since, asOf)}) to ${usd(b.total[1])} (${monthDay(asOf)}), TCGplayer market.`,
       top ? `Top card tonight: ${cardTitle(top)} at ${usd(top.pts.at(-1)[1])}.` : "",
       `Released ${dateLabel(s.release, asOf)} (sets.json).`,
