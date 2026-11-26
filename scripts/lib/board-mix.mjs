@@ -482,6 +482,13 @@ export function listingLevelReads(doc, { min = 10, max = 30, asOf = "" } = {}) {
   return out.sort((a, b) => b.receipt.n - a.receipt.n).slice(0, max);
 }
 
+
+function breadthRestLine(priced, up, down, flat) {
+  const rest = Number(priced) - Number(up) - Number(down) - Number(flat);
+  if (!(rest > 0)) return "";
+  return " The rest moved 3% to 8%, or less than $1.";
+}
+
 // Breadth for one set: up, down and barely moved among priced chase cards.
 export function setBreadthReads(pool, { start, end, minPriced = 15, max = 40 } = {}) {
   const bySet = new Map();
@@ -496,7 +503,7 @@ export function setBreadthReads(pool, { start, end, minPriced = 15, max = 40 } =
     const up = rows.filter((p) => p.to - p.from >= 1 && pct(p.from, p.to) >= 8).length;
     const down = rows.filter((p) => p.from - p.to >= 1 && pct(p.from, p.to) <= -8).length;
     const flat = rows.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
-    const headline = `${shortSet(set)} this week: ${up} chase ${up === 1 ? "card" : "cards"} up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).`;
+    const headline = `${shortSet(set)} this week: ${up} chase ${up === 1 ? "card" : "cards"} up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).${breadthRestLine(rows.length, up, down, flat)}`;
     if (!cleanCopy(headline)) continue;
     out.push({ id: `breadth-set-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: set, set, headline, path: headline, asOf: end, startDate: start, endDate: end, href: `/feed?f=set&set=${encodeURIComponent(set)}`, source: `TCGplayer market, ${start} and ${end}`, receipt: { set, start, end, priced: rows.length, up, down, flat }, moved: up + down });
   }
@@ -595,7 +602,7 @@ export function breadthReads(pool, { start, end } = {}) {
   const up = priced.filter((p) => p.to - p.from >= 1 && pct(p.from, p.to) >= 8).length;
   const down = priced.filter((p) => p.from - p.to >= 1 && pct(p.from, p.to) <= -8).length;
   const flat = priced.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
-  const headline = `This week in chase cards: ${up} went up 8% or more, ${down} went down 8% or more, ${flat} barely moved. ${priced.length} counted, ${monthDay(start)} to ${monthDay(end)}.`;
+  const headline = `This week in chase cards: ${up} went up 8% or more, ${down} went down 8% or more, ${flat} barely moved. ${priced.length} counted, ${monthDay(start)} to ${monthDay(end)}.${breadthRestLine(priced.length, up, down, flat)}`;
   if (!cleanCopy(headline)) return [];
   return [{
     id: `breadth-${end}`, readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: "Chase cards this week",

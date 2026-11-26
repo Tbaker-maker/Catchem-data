@@ -159,6 +159,10 @@ export async function run() {
     const big = Array.from({ length: 60 }, (_, i) => ({ id: i, from: 10, to: i < 5 ? 12 : i < 9 ? 8 : 10.5, group: "G", kind: "Ultra Rare", era: "SV" }));
     const breadth = breadthReads(big, { start: "2025-12-26", end: "2026-01-02" });
     t("breadth counts the pool it was given", breadth.length === 1 && breadth[0].receipt.priced === 60 && breadth[0].receipt.up === 5 && breadth[0].receipt.down === 4);
+    t("breadth names the middle band when counted cards are neither 8% nor barely moved", /The rest moved 3% to 8%, or less than \$1/.test(breadth[0].headline) && breadth[0].headline.includes("5 went up 8% or more") && !/51/.test(breadth[0].headline));
+    const allSharp = Array.from({ length: 60 }, (_, i) => ({ id: i, from: 10, to: i < 30 ? 12 : 8, group: "G", kind: "Ultra Rare", era: "SV" }));
+    const sharp = breadthReads(allSharp, { start: "2025-12-26", end: "2026-01-02" });
+    t("breadth omits the middle sentence when every counted card is in an 8% bucket", sharp.length === 1 && sharp[0].receipt.up === 30 && sharp[0].receipt.down === 30 && !/the rest moved/.test(sharp[0].headline));
     await writeFile(join(raw, "2026-01-02/manifest.json"), JSON.stringify({ date: "2026-01-02", productGroups: { 1: { day: "2026-01-01", count: 2 }, 2: { day: "2026-01-02", count: 2 }, 3: { day: "2025-12-31", count: 5 } } }));
     t("a group the manifest names but no file holds fails the pool closed", (await loadRawProducts(root)) === null);
     const old = await mkdtemp(join(tmpdir(), "board-raw-old-"));
