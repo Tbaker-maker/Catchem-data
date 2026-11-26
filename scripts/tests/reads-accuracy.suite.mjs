@@ -44,7 +44,7 @@ export async function run() {
   const shared = priceRange(joined, AS_OF, { minDays: 1, slackDays: 1 });
   const stale = priceRange(older, AS_OF, { minDays: 1, slackDays: 1 });
   t("a September series is not called today", stale == null && older.at(-1)[0] !== AS_OF);
-  t("joined series reaches today and its high is today's price", joined.at(-1)[0] === AS_OF && shared && shared.high === 80 && shared.place === "upper part" && shared.highOn === AS_OF);
+  t("joined series reaches today and its high is today's price, dated to the first day", joined.at(-1)[0] === AS_OF && shared && shared.high === 80 && shared.place === "upper part" && shared.highOn === "2026-10-23");
   const chip = readSignals(
     { id: "fake-high", name: "Alakazam", kind: "single", href: "/c/tcgcsv-1", asOf: AS_OF, price: 80 },
     { asOf: AS_OF, points: joined },

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { isClean } from "../lib/copy-rules.mjs";
-import { depthBars, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
+import { depthBars, priceRange, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
 import { isVintageSet } from "../lib/extra-reads.mjs";
 import { FEED_PARTS, stampSkipped } from "../stamp-signal-chips.mjs";
 
@@ -283,5 +283,21 @@ export async function run() {
     RULES,
   ).find((chip) => chip.kind === "gone");
   t("the listings chip counts listings and never says gone or sold", counted && counted.label === "Listings counted down, 100 to 40" && !/gone|\bsold\b/i.test(counted.label));
+
+  const tiedHigh = [
+    ["2026-08-27", 700],
+    ["2026-10-09", 817.16],
+    ["2026-10-20", 817.16],
+    ["2026-11-22", 817.16],
+    ["2026-11-25", 817.16],
+  ];
+  const tiedRange = priceRange(tiedHigh, "2026-11-25", { minDays: 7, windowDays: 90 });
+  t("a tied 90-day high is dated to the first day it was reached", tiedRange && tiedRange.high === 817.16 && tiedRange.highOn === "2026-10-09" && tiedRange.lowOn === "2026-08-27");
+  const tiedChip = qualifyChips(
+    { id: "deep-card-tcgcsv-90137", name: "Umbreon", kind: "single", asOf: "2026-11-25", price: 817.16, windowDays: 90 },
+    { asOf: "2026-11-25", points: tiedHigh },
+    { ...RULES, range: { minDays: 7, windowDays: 90 } },
+  ).find((chip) => chip.kind === "range");
+  t("the range chip names the first high day, not tonight", tiedChip && /High \$817.16 on Oct 9/.test(tiedChip.label) && !/High \$817.16 on Nov 25/.test(tiedChip.label));
   return fail;
 }
