@@ -261,7 +261,8 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability
     const thin = assessThin(series, asOf, { market: now[1], low: listed });
     if (thin.thin && !thin.canLead) continue;
     const lows = typeof lowsOf === "function" ? lowsOf(c) : null;
-    if (staleMarket(series, lows, asOf, staleMarketRule).stale) continue;
+    const marketHist = Array.isArray(c.pts) && c.pts.length ? c.pts : series;
+    if (staleMarket(marketHist, lows, asOf, staleMarketRule).stale) continue;
     const peak = c.pts.reduce((m, p) => (p[1] > m[1] ? p : m));
     const low = c.pts.reduce((m, p) => (p[1] < m[1] ? p : m));
     if (storyUnstable(c.pts.length, peak[1], low[1], stability)) continue;
