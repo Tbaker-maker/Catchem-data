@@ -145,14 +145,20 @@ export async function run() {
   const releases = JSON.parse(await readFile(join(PUB, "releases.json"), "utf8"));
   const verified = (radar.upcoming || []).filter((row) => row.confidence === "verified");
   const blob = JSON.stringify(releases);
-  t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === publicReleaseName(row.name) && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
+  t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === publicReleaseName(row) && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
   const dashed = buildReleases({
     updated: "2026-11-20",
     upcoming: [{ name: "30th Celebration \u2014 Binder Collection", date: "2026-12-04", type: "product", confidence: "verified", note: "pokemon.com/us/pokemon-tcg/product-gallery/30th-celebration-binder-collection" }],
   }, [], []);
   t("a radar em dash is published as a colon", dashed.releases.length === 1 && dashed.releases[0].name === "30th Celebration: Binder Collection" && publicReleaseName("Mega Lucario Z ex \u2014 EN") === "Mega Lucario Z ex: EN" && !/[\u2014\u2013]/.test(JSON.stringify(dashed)));
+  const flowingNote = "Flowing Fists (ME07 / FLO, Mega Lucario Z ex: EN of JP Aura Seeker)";
+  t("an internal research note is stripped from a public release name", publicReleaseName(flowingNote) === "Flowing Fists" && publicReleaseName({ name: flowingNote }) === "Flowing Fists");
+  t("a publicName field is used when present", publicReleaseName({ name: flowingNote, publicName: "Flowing Fists" }) === "Flowing Fists");
+  t("ordinary product parentheticals stay on the public name", publicReleaseName("Wonderful Waters Mini Tins (5 designs)") === "Wonderful Waters Mini Tins (5 designs)" && publicReleaseName("JP: Aura Seeker (Mega Lucario Z ex)") === "JP: Aura Seeker (Mega Lucario Z ex)");
+  const noteRe = /\bEN of JP\b|ME\d{2}\s*\/\s*[A-Z]{2,5}/;
+  t("published release names have no internal research notes", releases.releases.every((row) => row.name && !noteRe.test(row.name)) && verified.every((row) => !noteRe.test(publicReleaseName(row))));
   t("release links are copied from the radar file", releases.releases.every((row) => {
-    const src = verified.find((item) => item.name === row.name);
+    const src = verified.find((item) => publicReleaseName(item) === row.name);
     return Boolean(src && row.source && src.note.includes(row.source) && officialSource(src.note) === row.source);
   }));
   t("release checked dates match the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated));
@@ -181,7 +187,7 @@ export async function run() {
   t("daily research copies the radar date into public releases", researchSrc.includes("writePublicReleases") && researchSrc.includes("stampPublicReleases"));
   let marketBad = 0;
   for (const row of releases.releases) {
-    const src = verified.find((item) => item.name === row.name);
+    const src = verified.find((item) => publicReleaseName(item) === row.name);
     const hit = releaseMarketItem(src, catalog.items || [], priceDays);
     if (!hit && row.market) marketBad += 1;
     if (hit && (!row.market || row.market.id !== hit.item.id || row.market.price !== hit.price || row.market.date !== hit.date)) marketBad += 1;
