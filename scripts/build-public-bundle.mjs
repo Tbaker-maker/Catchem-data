@@ -24,6 +24,7 @@ import { registerMissingSets } from "./lib/set-logo-register.mjs";
 import { liveHoldDoc, loadCheckIds } from "./lib/price-hold-live.mjs";
 import { isVintageRelease } from "./lib/price-trust.mjs";
 import { QUARANTINE_REASON, quarantineEntry, resolveSetLogo, shouldQuarantine } from "./lib/set-quarantine.mjs";
+import { etbPacks } from "./lib/rip-roi.mjs";
 
 assertFolds();
 
@@ -38,12 +39,11 @@ const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").tr
 
 function packsFor(p) {
   if (p.packs != null) return p.packs;
-  const era = /^me/.test(p.setId || "") ? "me" : /^sv/.test(p.setId || "") ? "sv" : /^swsh/.test(p.setId || "") ? "swsh" : null;
   if ((p.setId || "") === "cel25") return null;
   if (p.subtype === "booster-pack") return 1;
   if (p.subtype === "booster-box") return 36;
   if (p.subtype === "booster-bundle") return 6;
-  if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
+  if (p.subtype === "etb" || p.subtype === "pc-etb") return etbPacks(p.subtype, p.setId);
   return null;
 }
 

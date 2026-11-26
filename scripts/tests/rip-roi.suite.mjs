@@ -18,6 +18,18 @@ export async function run() {
   t("SWSH ETB is 8 packs", packsFor({ subtype: "etb", setId: "swsh7" }) === 8);
   t("bundle is 6", packsFor({ subtype: "booster-bundle", setId: "sv8" }) === 6);
   t("tin has no fixed count", packsFor({ subtype: "tin", setId: "sv8" }) == null);
+  t("Pokemon Center ETB from Scarlet & Violet on is 11 packs", packsFor({ subtype: "pc-etb", setId: "sv8" }) === 11 && packsFor({ subtype: "pc-etb", setId: "me1" }) === 11 && packsFor({ subtype: "pc-etb", setId: "sv3pt5" }) === 11);
+  t("Pokemon Center ETB from Evolving Skies to Silver Tempest is 10 packs", packsFor({ subtype: "pc-etb", setId: "swsh7" }) === 10 && packsFor({ subtype: "pc-etb", setId: "swsh12" }) === 10);
+  t("Pokemon Center Chilling Reign ETB is 8 packs", packsFor({ subtype: "pc-etb", setId: "swsh6" }) === 8);
+  t("Crown Zenith ETB is 10 packs and its Pokemon Center ETB is 12", packsFor({ subtype: "etb", setId: "swsh12pt5" }) === 10 && packsFor({ subtype: "pc-etb", setId: "swsh12pt5" }) === 12);
+  t("special set ETBs are 10 packs", ["swsh35", "swsh45", "pgo"].every((setId) => packsFor({ subtype: "etb", setId }) === 10));
+  t("White Flare and Black Bolt ETBs are 9 packs, Pokemon Center 11", ["rsv10pt5", "zsv10pt5"].every((setId) => packsFor({ subtype: "etb", setId }) === 9 && packsFor({ subtype: "pc-etb", setId }) === 11));
+  t("a Pokemon Center ETB with no sourced count has none", packsFor({ subtype: "pc-etb", setId: "swsh5" }) == null && packsFor({ subtype: "etb", setId: "cel25" }) == null);
+  {
+    const copies = ["scripts/build-public-bundle.mjs", "scripts/compute-derived.mjs", "scripts/generate-pulse.mjs"];
+    const texts = await Promise.all(copies.map((f) => readFile(join(ROOT, f), "utf8")));
+    t("every pack count copy uses the same ETB counts", texts.every((x) => /return etbPacks\(p\.subtype, p\.setId\)/.test(x) && !/era === "swsh" \? 8/.test(x)));
+  }
   t("half box and display skipped", productPacksOk({ name: "Twilight Masquerade Half Booster Box" }) === false && productPacksOk({ name: "Prismatic Evolutions Booster Bundle Display" }) === false);
   t("plain box ok", productPacksOk({ name: "Journey Together Booster Box" }) === true);
 

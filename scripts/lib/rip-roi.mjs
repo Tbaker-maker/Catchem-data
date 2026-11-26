@@ -35,16 +35,43 @@ export function productPacksOk(product) {
   return true;
 }
 
+// Packs in an Elite Trainer Box, from Bulbapedia's Elite Trainer Box (TCG) page:
+// 8 in Sword & Shield main sets, 10 in the special sets Champion's Path, Shining
+// Fates, Pokemon GO and Crown Zenith, 9 from Scarlet & Violet on. Pokemon Center
+// boxes: 8 in Chilling Reign (a factory error), 10 from Evolving Skies to Silver
+// Tempest, 12 in Crown Zenith and Pokemon GO, 11 from Scarlet & Violet on.
+// A set not listed here has no count. Celebrations is left out.
+const ETB_SPECIAL = new Set(["swsh35", "swsh45", "pgo", "swsh12pt5"]);
+const PC_ETB_TWELVE = new Set(["pgo", "swsh12pt5"]);
+const SV_ON_EXTRA = new Set(["rsv10pt5", "zsv10pt5"]);
+export function etbPacks(subtype, setIdRaw) {
+  const setId = String(setIdRaw || "");
+  if (subtype !== "etb" && subtype !== "pc-etb") return null;
+  if (setId === "cel25") return null;
+  const svOn = /^(sv|me)\d/.test(setId) || SV_ON_EXTRA.has(setId);
+  const swsh = setId.match(/^swsh(\d+)$/);
+  if (subtype === "etb") {
+    if (ETB_SPECIAL.has(setId)) return 10;
+    if (svOn) return 9;
+    if (swsh) return 8;
+    return null;
+  }
+  if (PC_ETB_TWELVE.has(setId)) return 12;
+  if (svOn) return 11;
+  if (setId === "swsh6") return 8;
+  if (swsh && Number(swsh[1]) >= 7 && Number(swsh[1]) <= 12) return 10;
+  return null;
+}
+
 export function packsFor(product) {
   if (!productPacksOk(product)) return null;
 
   const setId = String(product.setId || "");
-  const era = /^me/.test(setId) ? "me" : /^sv/.test(setId) ? "sv" : /^swsh/.test(setId) ? "swsh" : null;
   if (setId === "cel25") return null;
   if (product.subtype === "booster-pack") return 1;
   if (product.subtype === "booster-box") return 36;
   if (product.subtype === "booster-bundle") return 6;
-  if (product.subtype === "etb" || product.subtype === "pc-etb") return era === "swsh" ? 8 : era ? 9 : null;
+  if (product.subtype === "etb" || product.subtype === "pc-etb") return etbPacks(product.subtype, setId);
   if (Number(product.packs) > 0) return Number(product.packs);
   return null;
 }

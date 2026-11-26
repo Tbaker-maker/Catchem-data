@@ -56,6 +56,7 @@ import { rotate } from "./rotate.mjs";
 import { upcomingRadar } from "./lib/research-reads.mjs";
 import { chaseInMorningFile } from "./lib/read-quality.mjs";
 import { capPost, eraFeed } from "./lib/second-library.mjs";
+import { etbPacks } from "./lib/rip-roi.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
@@ -491,12 +492,11 @@ const eraHistory = await eraFeed(ROOT);
 // without the full tape). eBay-native numbers only — PPT stays gated.
 // Pack counts mirror packsFor() in compute-derived.mjs exactly.
 const packsForFeed = (p) => {
-  const era = /^me/.test(p.setId || "") ? "me" : /^sv/.test(p.setId || "") ? "sv" : /^swsh/.test(p.setId || "") ? "swsh" : null;
   if ((p.setId || "") === "cel25") return null;
   if (p.subtype === "booster-pack") return 1;
   if (p.subtype === "booster-box") return 36;
   if (p.subtype === "booster-bundle") return 6;
-  if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
+  if (p.subtype === "etb" || p.subtype === "pc-etb") return etbPacks(p.subtype, p.setId);
   return null;
 };
 // Same venue rule the derived engine uses — one module, one truth.
