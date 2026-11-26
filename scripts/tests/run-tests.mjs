@@ -24,6 +24,7 @@ import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import "./collector-search.test.mjs";
 import "./costco-exclusives.test.mjs";
+import "./listing-count-git-backfill.test.mjs";
 import "./premium-ratio.test.mjs";
 import "./premium-history.test.mjs";
 import "./publish-checks.test.mjs";
