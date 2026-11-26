@@ -398,8 +398,23 @@ export function buildListings(products, parents) {
   return { skipped: [...skip].sort(), products: rows };
 }
 
-export function publicReleaseName(name) {
-  return String(name || "").replace(/\s*[\u2014\u2013]\s*/g, ": ").replace(/ {2,}/g, " ").trim();
+function looksInternalReleaseNote(text) {
+  const s = String(text || "");
+  if (/\bEN of JP\b/i.test(s)) return true;
+  if (/\bME\d{2}\b/.test(s)) return true;
+  if (/\b[A-Z]{2,5}\s*\/\s*[A-Z]{2,5}\b/.test(s)) return true;
+  return false;
+}
+
+// Public names keep ordinary product parentheticals. An internal research
+// note (set codes, "EN of JP" mappings) is stripped. A publicName field, if
+// present on a radar row, is preferred.
+export function publicReleaseName(nameOrRow) {
+  const row = nameOrRow && typeof nameOrRow === "object" ? nameOrRow : null;
+  const raw = row ? (row.publicName || row.name) : nameOrRow;
+  let name = String(raw || "").replace(/\s*[\u2014\u2013]\s*/g, ": ").replace(/ {2,}/g, " ").trim();
+  name = name.replace(/\s*\(([^)]*)\)/g, (full, inner) => (looksInternalReleaseNote(inner) ? "" : full));
+  return name.replace(/ {2,}/g, " ").trim();
 }
 
 export function buildReleases(radar, items, days) {
@@ -409,7 +424,7 @@ export function buildReleases(radar, items, days) {
     if (row?.confidence !== "verified") continue;
     const source = officialSource(row.note);
     const entry = {
-      name: publicReleaseName(row.name),
+      name: publicReleaseName(row),
       date: row.date,
       type: row.type,
       source,
