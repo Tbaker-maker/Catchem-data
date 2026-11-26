@@ -37,7 +37,8 @@ if (days.length >= 2) {
   older = (doc.rows || []).filter((row) => row.date && latest?.asOf && row.date < latest.asOf);
 }
 const summary = await read("data/private/scanner/summary.json");
-const listings = listingChanges(latest?.rows || {}, older);
+const names = new Map(cards.filter((row) => row.id && row.name).map((row) => [row.id, String(row.name)]));
+const listings = listingChanges(latest?.rows || {}, older, { names });
 const split = splitMovers(biggestMovers(cards, { asOf, limit: 400, floor: 5 }));
 const movers = [...split.risers, ...split.fallers, ...split.sealedRisers, ...split.sealedFallers];
 const doc = weeklyDoc({

@@ -1,4 +1,7 @@
 // Weekly movers use a 7-day window ending near asOf. Stale last prints stay off.
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { biggestMovers, windowMove, listingChanges, newPatterns, weeklyDoc, patternLine } from "../lib/weekly-changes.mjs";
 
 export async function run() {
@@ -33,6 +36,12 @@ export async function run() {
 
   const listed = listingChanges({ a: { id: "a", date: "2026-10-13", listingsCounted: 80, kind: "sealed" } }, [{ id: "a", date: "2026-10-01", listingsCounted: 100 }]);
   t("listings counted emit both field shapes", listed.length === 1 && listed[0].fromN === 100 && listed[0].toN === 80 && listed[0].prev === 100 && listed[0].n === 80 && listed[0].prevDate === "2026-10-01" && listed[0].date === "2026-10-13" && listed[0].kind === "sealed");
+
+  // Live sweep Nov 25: weekly listings rows had no name and the page printed the raw id.
+  const named = listingChanges({ a: { id: "a", date: "2026-11-25", listingsCounted: 2, kind: "sealed" }, b: { id: "b", date: "2026-11-25", listingsCounted: 4, kind: "sealed" } }, [{ id: "a", date: "2026-11-24", listingsCounted: 1 }, { id: "b", date: "2026-11-24", listingsCounted: 2 }], { names: new Map([["a", "Surging Sparks Booster Box"]]) });
+  t("weekly listings rows take the product name and a nameless row is left out", named.length === 1 && named[0].id === "a" && named[0].name === "Surging Sparks Booster Box");
+  const wk = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../build-weekly.mjs"), "utf8");
+  t("the weekly build passes product names to the listings changes", /listingChanges\(latest\?\.rows \|\| \{\}, older, \{ names \}\)/.test(wk));
 
   const obj = newPatterns({ passed: [{ pattern: "breakaway", stage: "confirmed", kind: "single", dir: "up", horizon: 7, n: 692, rate: 38.5, base: 30.4 }] });
   t("patterns keep object fields and a pipe line the site already parses", obj[0].pattern === "breakaway" && obj[0].base === 30.4 && patternLine(obj[0]) === "breakaway|confirmed|single|up|7d|n=692|rate=38.5|base=30.4");
