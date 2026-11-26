@@ -30,6 +30,8 @@ import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapD
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
 import { loadStaleMarket } from "./stale-market.mjs";
+import { loadPathways, loadSealedLong, pathwayReads } from "./read-pathways.mjs";
+import { loadSealedPathwayItems } from "./pathway-inputs.mjs";
 import { loadWindowSeries } from "./thin-trading.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
 import { buildListings } from "./feature-data.mjs";
@@ -877,6 +879,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   let deepRating = [];
   let deepSealed = [];
   let deepSlump = [];
+  let deepPath = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
     let nights = { points: new Map(), low: new Map(), lows: new Map() };
@@ -930,6 +933,16 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const sealedRating = await readJson(join(pub, "feed/sealed-rating.json"), {});
     if (sealedRating?.asOf === end) deepSealed = (sealedRating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
     const stability = await loadReadStability(root);
+    // Read pathways (private config, fail closed): before card stories, so a
+    // story never repeats a card a pathway already covers tonight.
+    const pathCfg = await loadPathways(root);
+    if (pathCfg) {
+      const sealedLong = pathCfg.pathways.some((p) => p.kind === "sealed") ? await loadSealedLong(root) : new Map();
+      const sealedItems = await loadSealedPathwayItems(root, sealedLong);
+      deepPath = pathwayReads({ singles: histCards, sealed: sealedItems, asOf: end, cfg: pathCfg, seriesOf, lowOf, lowsOf, staleMarketRule, skip: usedHist });
+      for (const r of deepPath) usedHist.add(r.sku);
+      console.log(`pathway reads: ${deepPath.length} (config ${pathCfg.hash.slice(0, 12)})`);
+    } else console.log("pathway reads: no valid private config, none written");
     const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability, seriesOf, lowOf, lowsOf, staleMarketRule });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
@@ -1020,7 +1033,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
-  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepGap, deepRecovery, deepSlump, deepSealed, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPath, deepPrice, deepRating, deepGap, deepRecovery, deepSlump, deepSealed, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
   const priceRows = [];
   for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
   const seenSku = new Set(fresh.filter((r) => ["listings", "sealedchase"].includes(r.readKind)).map((r) => r.sku));

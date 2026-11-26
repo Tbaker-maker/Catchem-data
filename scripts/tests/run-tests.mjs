@@ -228,6 +228,13 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── read pathways: fail closed, varied words, never back to back ──");
+{
+  const { run } = await import("./read-pathways.suite.mjs");
+  const n = await run();
+  t("read pathways suite", n === 0, `${n} failed`);
+}
+
 console.log("── stale data never blocks the refresh ──");
 {
   const { run } = await import("./stale-never-blocks.suite.mjs");
