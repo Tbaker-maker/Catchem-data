@@ -5,10 +5,30 @@ on:
   pull_request:
   push:
     branches: [main]
+  # A commit that uses GITHUB_TOKEN does not fire push, so bot data commits
+  # would leave main's last pr-tests result in place (often red) after the
+  # data is already fixed. workflow_run does fire. Check out current main,
+  # not the SHA that started the data workflow.
+  workflow_run:
+    workflows:
+      - "Update sealed prices"
+      - "Listing counts"
+      - "BUILD1 hooks"
+      - "eBay link check"
+      - "Vintage listing sample"
+      - "PkmnPrices enrichment (sold comps, pop, EUR)"
+      - "daily-research"
+      - "Founder brief"
+    types: [completed]
 permissions:
   contents: read
+concurrency:
+  group: pr-tests-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
+  cancel-in-progress: true
 jobs:
   tests:
+    # A cancelled or skipped data workflow did not leave a new tip to test.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion != 'cancelled' && github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.head_branch == 'main') }}
     runs-on: ubuntu-latest
     # One suite run took about 19 minutes on PR #501 (run 43129428719: 00:45 to
     # 01:04 UTC, base run 01:04 to 01:22). A red PR runs it a second time on the
@@ -16,8 +36,16 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        if: github.event_name != 'workflow_run'
         with:
           fetch-depth: 0 # artifact-freshness reads git log
+      # The triggering workflow's head SHA is the tip from when that run started,
+      # not the data commits it pushed. Always test current main.
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_run'
+        with:
+          fetch-depth: 0
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
