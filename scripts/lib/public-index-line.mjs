@@ -7,6 +7,7 @@
 // Every calendar day from the first to the last price day gets a point.
 // A day with no file, or fewer than MIN_LINKS cards priced on it and on the
 // last day on the line, is a gap: v is null and nothing is carried forward.
+// So is a thin day, with under 60% of a usual day's priced members.
 // The level is kept unrounded between days; only the published value is rounded.
 // A small group (a set with only 4 sealed products) needs links from most of its
 // members, not a flat 8: the bar is 60% of the priced members, at least 2, at most 8.
@@ -26,7 +27,14 @@ export function indexLine(list) {
   const minLinks = Math.max(2, Math.min(MIN_LINKS, Math.ceil(members * 0.6)));
   // The line starts on the first day enough members are priced to link from.
   // A day where only one or two members have a price cannot anchor the chain.
-  const first = priced.find((d) => maps.filter((m) => Number(m.get(d)) >= MIN_PRICE).length >= minLinks) || priced[0];
+  // A thin day is a partial file: under the same 60% share of a usual day's
+  // priced members. It is a gap, so a few hundred cards cannot move a basket of
+  // thousands and carry that level forward.
+  const dayCount = new Map(priced.map((d) => [d, maps.filter((m) => Number(m.get(d)) > 0).length]));
+  const counts = [...dayCount.values()].sort((a, b) => a - b);
+  const usual = counts[Math.floor(counts.length / 2)] || 0;
+  const thin = (d) => (dayCount.get(d) || 0) < usual * 0.6;
+  const first = priced.find((d) => !thin(d) && maps.filter((m) => Number(m.get(d)) >= MIN_PRICE).length >= minLinks) || priced[0];
   const start = Date.parse(`${first}T00:00:00Z`);
   const end = Date.parse(`${priced[priced.length - 1]}T00:00:00Z`);
   const used = new Set();
@@ -45,7 +53,7 @@ export function indexLine(list) {
       const b = Number(m.get(day));
       if (a >= MIN_PRICE && b > 0) { sumA += a; sumB += b; ids.push(i); }
     });
-    if (ids.length < minLinks || !(sumA > 0)) {
+    if (ids.length < minLinks || !(sumA > 0) || thin(day)) {
       points.push({ d: day, v: null, n: ids.length });
       gaps += 1;
       continue;

@@ -18,6 +18,16 @@ const ten = (rows) => Array.from({ length: 10 }, () => card(rows));
   t("card count is stated", r.cards === 10 && r.gaps === 1 && r.links === 2);
 }
 {
+  // Live sweep Nov 25: singles linked through Sep 29 and Oct 3 with n 1,414 of a usual 25,935.
+  // A thin day is a gap, not a link that moves the level and carries it forward.
+  const full = Array.from({ length: 95 }, () => card([["2026-09-26", 10], ["2026-09-27", 10], ["2026-09-29", 10], ["2026-09-30", 10]]));
+  const few = Array.from({ length: 20 }, () => card([["2026-09-26", 10], ["2026-09-27", 10], ["2026-09-28", 5], ["2026-09-29", 10], ["2026-09-30", 10]]));
+  const r = indexLine([...full, ...few]);
+  const by = Object.fromEntries(r.points.map((p) => [p.d, p]));
+  t("a thin day is a gap", by["2026-09-28"] && by["2026-09-28"].v === null, JSON.stringify(by["2026-09-28"]));
+  t("a thin day does not move the level", by["2026-09-30"] && by["2026-09-30"].v === 100, JSON.stringify(by["2026-09-30"]));
+}
+{
   // Under 60% of the group linked is a gap too, not the old level repeated.
   const r = indexLine([...Array.from({ length: 5 }, () => card([["2026-01-01", 10], ["2026-01-02", 20]])), ...Array.from({ length: 5 }, () => card([["2026-01-01", 10]]))]);
   t("too few cards is a gap", r.points[1].v === null && r.points[1].n === 5 && r.cards === 0);
