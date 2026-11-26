@@ -1,4 +1,7 @@
 import { useTestSpec } from "./use-test-spec.mjs";
+import { liveHoldDoc, loadCheckIds } from "../lib/price-hold-live.mjs";
+import { mkdtemp, writeFile as writeFileT, rm as rmT } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,6 +53,21 @@ export async function run() {
   t("price carries date and source", a.price.date === today && a.price.source === "TCGplayer market");
   t("10x outlier held for a check", list.find((r) => r.id === "tcgcsv-20").check === true && list.find((r) => r.id === "tcgcsv-20").verdict === null);
   t("common is not rated", !list.find((r) => r.id === "tcgcsv-30"));
+  {
+    // A chase card sits far above its rarity peers by design (151 Charizard ex 199/165 was held this way).
+    const nights = (p, last) => Array.from({ length: 10 }, (_, i) => [`2026-10-${String(3 + i).padStart(2, "0")}`, i === 9 ? last : p]);
+    const steady = mk(21, 2000, { hist: nights(1980, 2000) });
+    const jump = mk(22, 2000, { hist: nights(200, 2000) });
+    const cheap = mk(23, 0.5, { hist: nights(0.5, 0.5) });
+    const l2 = buildRatings({ rows: [...rows, steady, jump, cheap], today, pullRates: pr });
+    const s2 = l2.find((r) => r.id === "tcgcsv-21"), j2 = l2.find((r) => r.id === "tcgcsv-22");
+    t("a chase card far above peers with steady nightly prices is not held", !!s2 && !s2.check && s2.peers.ratio > 10);
+    t("a peer outlier with a one-night jump is still held", !!j2 && j2.check === true && j2.verdict === null);
+    t("a steady price far below peers is still held", l2.find((r) => r.id === "tcgcsv-23")?.check === true);
+    const art = [...Array.from({ length: 10 }, (_, i) => mk(60 + i, 30, { artist: "Z" })), ...Array.from({ length: 10 }, (_, i) => mk(80 + i, 20, { artist: "Y" }))];
+    const facts = buildRatings({ rows: art, today, pullRates: pr }).flatMap((r) => Object.values(r.factors || {}).map((f) => f.fact));
+    t("rating facts never say sell or sold", facts.length > 0 && facts.every((f) => !/\b(sell|sells|sold|selling)\b/i.test(f)) && facts.some((f) => /TCGplayer market price [0-9.]+x/.test(f)));
+  }
   t("every factor is 0 to 1", list.every((r) => Object.values(r.factors).every((f) => f.v >= 0 && f.v <= 1)));
   const reads = ratingReads(list, { asOf: today });
   t("group read path", reads.some((r) => /^Priced below similar Special Illustration Rares: Mon1/.test(r.headline)));
@@ -108,5 +126,21 @@ export async function run() {
     t("no supply factor", !("supply" in RATING_WEIGHTS));
     t("no weights or band cutoffs are published", !("weights" in doc) && !("bands" in doc));
   } catch { t("committed file readable", false); }
+  {
+    const dir = await mkdtemp(join(tmpdir(), "rating-"));
+    await writeFileT(join(dir, "00.json"), JSON.stringify({ rows: [{ id: "tcgcsv-2", check: true }, { id: "tcgcsv-3" }] }));
+    const hold = { asOf: "2026-11-25", ids: { "tcgcsv-1": "vintage", "tcgcsv-2": "unverified", "tcgcsv-3": "unverified", "tcgcsv-4": "unverified" } };
+    const modern = (id) => id !== "tcgcsv-4";
+    const live = liveHoldDoc(hold, await loadCheckIds(dir), modern);
+    t("a card the rating no longer flags is released from the hold", !live.doc.ids["tcgcsv-3"] && live.released.join() === "tcgcsv-3");
+    t("a card the rating still flags stays held", live.doc.ids["tcgcsv-2"] === "unverified");
+    t("a vintage hold is never released by the rating", live.doc.ids["tcgcsv-1"] === "vintage");
+    t("an unverified card from a vintage or undated set stays held", live.doc.ids["tcgcsv-4"] === "unverified");
+    const none = liveHoldDoc(hold, await loadCheckIds(join(dir, "missing")), modern);
+    t("no rating files means nothing is released", none.released.length === 0 && Object.keys(none.doc.ids).length === 4);
+    await rmT(dir, { recursive: true, force: true });
+    const bundle = await readFile(join(dirname(fileURLToPath(import.meta.url)), "../build-public-bundle.mjs"), "utf8");
+    t("set pages read the live hold, not the frozen file", /liveHoldDoc\(holdDoc, await loadCheckIds\(.*modernIds\.has/.test(bundle));
+  }
   return fail;
 }

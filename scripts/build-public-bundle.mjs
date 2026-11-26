@@ -21,6 +21,8 @@ import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 import { loadFillMap, withFill } from "./lib/fill-history.mjs";
 import { pickSealedLine } from "./lib/sealed-line.mjs";
 import { registerMissingSets } from "./lib/set-logo-register.mjs";
+import { liveHoldDoc, loadCheckIds } from "./lib/price-hold-live.mjs";
+import { isVintageRelease } from "./lib/price-trust.mjs";
 import { QUARANTINE_REASON, quarantineEntry, resolveSetLogo, shouldQuarantine } from "./lib/set-quarantine.mjs";
 
 assertFolds();
@@ -503,8 +505,20 @@ let pricedSingles = 0;
 let pricedSealed = 0;
 let heldIds = new Set();
 try {
-  const holdDoc = JSON.parse(await readFile(join(ROOT, "research/assets/public/price-hold.json"), "utf8"));
-  heldIds = new Set(Object.keys(holdDoc.ids || {}));
+  const holdPath = join(ROOT, "research/assets/public/price-hold.json");
+  const holdDoc = JSON.parse(await readFile(holdPath, "utf8"));
+  const modernIds = new Set();
+  for (const set of sets.values()) {
+    const rel = String(set.release || "").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(rel) || isVintageRelease(rel)) continue;
+    for (const it of set.items) if (it.kind === "single" && it.id) modernIds.add(it.id);
+  }
+  const live = liveHoldDoc(holdDoc, await loadCheckIds(join(ROOT, "research/assets/public/feed/rating")), (id) => modernIds.has(id));
+  if (live.released.length) {
+    await writeFile(holdPath, JSON.stringify(live.doc));
+    console.log(JSON.stringify({ priceHold: { released: live.released.length } }));
+  }
+  heldIds = new Set(Object.keys(live.doc.ids || {}));
 } catch { heldIds = new Set(); }
 try {
   const registered = await registerMissingSets({

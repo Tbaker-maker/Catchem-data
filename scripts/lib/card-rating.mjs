@@ -33,9 +33,29 @@ export const ratingSpecReady = () => validRatingWeights(RATING_WEIGHTS) && RATIN
 export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", pull: "Pull rate", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
 
 export const MIN_PEERS = 5;
-// A price more than 10x away from its peer median is held back for a check,
+// A price more than 10x away from its peer median, with its own recent history
+// not backing it (ownHistoryBacks), is held back for a check,
 // never shown as a verdict or used in a read.
 export const CHECK = 10;
+
+// A chase card sits far above its rarity peers by design, so a high peer gap
+// alone never holds a price. It is held only when its own recent history does
+// not back it: too few nightly prices in the last OWN_DAYS days, or the latest
+// price far from the median of the nights before it.
+export const OWN_DAYS = 30;
+export const OWN_MIN = 7;
+export const OWN_BAND = 2;
+export function ownHistoryBacks(pts, today) {
+  if (!Array.isArray(pts) || !today) return false;
+  const from = addDaysIso(today, -OWN_DAYS);
+  const recent = pts.filter((p) => p && p[0] >= from && p[0] <= today && Number(p[1]) > 0);
+  if (recent.length < OWN_MIN) return false;
+  const last = Number(recent[recent.length - 1][1]);
+  const med = median(recent.slice(0, -1).map((p) => Number(p[1])));
+  if (!(med > 0)) return false;
+  const r = last / med;
+  return r <= OWN_BAND && r >= 1 / OWN_BAND;
+}
 export const NOT_FAIR = "Not enough similar cards for a fair comparison";
 
 const LOWR = new Set(["Common", "Uncommon", "Promo", ""]);
@@ -291,7 +311,9 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const fe1 = c.printings.find((p) => p.name === "1st Edition Holofoil")?.price;
     const un1 = c.printings.find((p) => /^(Unlimited Holofoil|Unlimited)$/.test(p.name))?.price;
     const printOdd = !!x.firstEd && c.release < WOTC_END && fe1 > 0 && un1 > 0 && fe1 < un1;
-    const check = printOdd || (ratio != null && (ratio < 1 / CHECK || ratio > CHECK));
+    // Far above peers is how a chase card looks, so its own steady history clears it.
+    // Far below peers is how a mismatched product looks, so it stays held.
+    const check = printOdd || (ratio != null && (ratio < 1 / CHECK || (ratio > CHECK && !ownHistoryBacks(x.pts, today))));
     const f = {};
     const pv = peerValue(x.price, med);
     if (pv != null && !check && matched) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
@@ -301,7 +323,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const sc = scarcity(c, byMon);
     if (sc) f.scarcity = { v: sc.v, fact: `${sc.total} ${title(c.mon)} cards in the catalogue, ${sc.same} in this group, ${sc.commons} commons or uncommons${sc.first ? `. The first ${g.one} of ${title(c.mon)} on file` : ""}` };
     const ar = artists.get(c.artist);
-    if (ar) f.artist = { v: ar.v, fact: `Cards by ${c.artist} typically sell for ${ar.premium.toFixed(2)}x similar cards from the same set and rarity (${ar.n} cards)` };
+    if (ar) f.artist = { v: ar.v, fact: `Cards by ${c.artist} have a TCGplayer market price ${ar.premium.toFixed(2)}x that of similar cards from the same set and rarity (${ar.n} cards)` };
     const age = days(c.release, today);
     if (PRINT_WINDOW.has(g.key)) {
       const status = (rot?.sets || []).find((s) => s.slug === c.setSlug)?.status || "";
