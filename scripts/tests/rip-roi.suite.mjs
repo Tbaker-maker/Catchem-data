@@ -41,6 +41,16 @@ export async function run() {
   ];
   const bulk = bulkFloorForSet(singles, "sv08-surging-sparks");
   t("bulk floor from Common and Uncommon", bulk.perCard > 0 && bulk.n === 18 && bulk.cardsPerPack === 9);
+  {
+    const bb = [
+      ...Array.from({ length: 30 }, (_, i) => ({ setSlug: "sv-black-bolt", rarity: "Common", price: 0.3 + (i % 5) * 0.05, name: `Card ${i}` })),
+      ...Array.from({ length: 20 }, (_, i) => ({ setSlug: "sv-black-bolt", rarity: "Common", price: 15 + i, name: `Card ${i} (Master Ball Pattern)` })),
+      ...Array.from({ length: 20 }, (_, i) => ({ setSlug: "sv-black-bolt", rarity: "Uncommon", price: 2 + i * 0.1, name: `Card ${i} (Poke Ball Pattern)` })),
+      ...Array.from({ length: 10 }, (_, i) => ({ setSlug: "sv-black-bolt", rarity: "Common", price: 1.5, name: `Card ${i} (Energy Symbol Pattern)` })),
+    ];
+    const floor = bulkFloorForSet(bb, "sv-black-bolt");
+    t("ball and energy pattern parallels stay out of the bulk floor", floor.n === 30 && floor.perCard < 0.5 && !floor.raised);
+  }
 
   const pullRows = [{
     setSlug: "sv08-surging-sparks", rarity: "Illustration Rare", tag: null, pct: 10,
