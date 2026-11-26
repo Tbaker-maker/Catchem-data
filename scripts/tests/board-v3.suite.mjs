@@ -1,4 +1,5 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, rotationSetReads, rotationPhrase, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, rotationSetReads, rotationPhrase, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead, keepReleaseRead, priceBoardDay, loadRawProducts, buildCardLag, breadthReads } from "../lib/board-mix.mjs";
+import { gzipSync } from "node:zlib";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -133,6 +134,42 @@ export async function run() {
     await rm(matched, { recursive: true, force: true });
     await rm(older, { recursive: true, force: true });
     await rm(ahead, { recursive: true, force: true });
+  }
+  {
+    // Raw products store only the groups that changed. The board pool must
+    // read every group from the day the manifest names. Fake ids and prices.
+    const root = await mkdtemp(join(tmpdir(), "board-raw-"));
+    const raw = join(root, "data/history/tcgcsv-daily/raw");
+    const gz = (rows) => gzipSync(rows.map((r) => JSON.stringify(r)).join("\n") + (rows.length ? "\n" : ""));
+    const card = (id, gid, rarity) => ({ _groupId: gid, productId: id, groupId: gid, name: `Card ${id}`, extendedData: [{ name: "Rarity", value: rarity }, { name: "Number", value: `${id}/99` }] });
+    const groups = [{ groupId: 1, name: "SV01: Fake Set One" }, { groupId: 2, name: "SV02: Fake Set Two" }];
+    await mkdir(join(raw, "2026-01-01"), { recursive: true });
+    await mkdir(join(raw, "2026-01-02"), { recursive: true });
+    await writeFile(join(raw, "2026-01-01/groups.ndjson.gz"), gz(groups));
+    await writeFile(join(raw, "2026-01-01/products.ndjson.gz"), gz([card(11, 1, "Ultra Rare"), card(12, 1, "Ultra Rare"), card(21, 2, "Ultra Rare")]));
+    await writeFile(join(raw, "2026-01-01/manifest.json"), JSON.stringify({ date: "2026-01-01", productGroups: { 1: { day: "2026-01-01", count: 2 }, 2: { day: "2026-01-01", count: 1 } } }));
+    await writeFile(join(raw, "2026-01-02/groups.ndjson.gz"), gz(groups));
+    await writeFile(join(raw, "2026-01-02/products.ndjson.gz"), gz([card(21, 2, "Ultra Rare"), card(22, 2, "Ultra Rare")]));
+    await writeFile(join(raw, "2026-01-02/manifest.json"), JSON.stringify({ date: "2026-01-02", productGroups: { 1: { day: "2026-01-01", count: 2 }, 2: { day: "2026-01-02", count: 2 } } }));
+    const got = await loadRawProducts(root);
+    t("raw products read every group from the day its manifest names", got && got.day === "2026-01-02" && got.products.size === 4 && got.products.get(11)?.group === "SV01: Fake Set One" && got.products.get(22)?.group === "SV02: Fake Set Two");
+    const day = (date, rows) => ({ date, prices: rows.map(([id, market]) => ({ id, market })) });
+    const pool = buildCardLag({ startDoc: day("2025-12-26", [[11, 10], [12, 10], [21, 10], [22, 10]]), endDoc: day("2026-01-02", [[11, 12], [12, 10], [21, 10], [22, 10]]), products: got.products, start: "2025-12-26", end: "2026-01-02" }).pool;
+    t("the board pool counts both sets, not only the set that changed tonight", pool.length === 4 && new Set(pool.map((p) => p.group)).size === 2);
+    const big = Array.from({ length: 60 }, (_, i) => ({ id: i, from: 10, to: i < 5 ? 12 : i < 9 ? 8 : 10.5, group: "G", kind: "Ultra Rare", era: "SV" }));
+    const breadth = breadthReads(big, { start: "2025-12-26", end: "2026-01-02" });
+    t("breadth counts the pool it was given", breadth.length === 1 && breadth[0].receipt.priced === 60 && breadth[0].receipt.up === 5 && breadth[0].receipt.down === 4);
+    await writeFile(join(raw, "2026-01-02/manifest.json"), JSON.stringify({ date: "2026-01-02", productGroups: { 1: { day: "2026-01-01", count: 2 }, 2: { day: "2026-01-02", count: 2 }, 3: { day: "2025-12-31", count: 5 } } }));
+    t("a group the manifest names but no file holds fails the pool closed", (await loadRawProducts(root)) === null);
+    const old = await mkdtemp(join(tmpdir(), "board-raw-old-"));
+    const oldRaw = join(old, "data/history/tcgcsv-daily/raw/2025-10-01");
+    await mkdir(oldRaw, { recursive: true });
+    await writeFile(join(oldRaw, "groups.ndjson.gz"), gz(groups));
+    await writeFile(join(oldRaw, "products.ndjson.gz"), gz([card(11, 1, "Ultra Rare"), card(21, 2, "Ultra Rare")]));
+    const legacy = await loadRawProducts(old);
+    t("a night with no productGroups map reads its full products file", legacy && legacy.products.size === 2);
+    await rm(root, { recursive: true, force: true });
+    await rm(old, { recursive: true, force: true });
   }
   return fail;
 }

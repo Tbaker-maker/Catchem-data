@@ -120,35 +120,75 @@ async function readJson(path, fallback = null) {
   try { return JSON.parse(await readFile(path, "utf8")); } catch { return fallback; }
 }
 
-async function latestRawProducts(root) {
+function ndjson(buf) {
+  const out = [];
+  for (const line of gunzipSync(buf).toString("utf8").split("\n")) {
+    if (line.trim()) out.push(JSON.parse(line));
+  }
+  return out;
+}
+
+function productMeta(row, groups) {
+  const ext = Object.fromEntries((row.extendedData || []).map((e) => [e.name, e.value]));
+  return {
+    group: groups.get(row.groupId ?? row._groupId) || "",
+    rarity: String(ext.Rarity || ""),
+    number: String(ext.Number || ""),
+    name: String(row.name || ""),
+  };
+}
+
+// products.ndjson.gz stores only the groups that changed that night. The
+// manifest's productGroups maps every group to the day that holds its current
+// copy (scripts/fetch-tcgcsv-catalog.mjs writeRawDay). Reading one night's
+// file alone gave the board a pool of whatever groups changed that night, so a
+// market-wide read could count a single set. Every group is read from its own
+// day. A group the manifest lists that cannot be found fails the whole pool
+// closed: a partial catalogue is never published as the market.
+export async function loadRawProducts(root) {
   const dir = join(root, "data/history/tcgcsv-daily/raw");
   let days = [];
   try { days = (await readdir(dir)).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().reverse(); } catch { return null; }
   for (const day of days) {
-    const p = join(dir, day, "products.ndjson.gz");
     const g = join(dir, day, "groups.ndjson.gz");
-    if (!existsSync(p) || !existsSync(g)) continue;
-    const text = gunzipSync(await readFile(p)).toString("utf8");
-    if (!text.trim()) continue;
+    if (!existsSync(g)) continue;
+    let manifest = null;
+    try { manifest = JSON.parse(await readFile(join(dir, day, "manifest.json"), "utf8")); } catch { manifest = null; }
     const groups = new Map();
-    for (const line of gunzipSync(await readFile(g)).toString("utf8").split("\n")) {
-      if (!line.trim()) continue;
-      const row = JSON.parse(line);
-      groups.set(row.groupId, row.name);
-    }
+    for (const row of ndjson(await readFile(g))) groups.set(row.groupId, row.name);
     const products = new Map();
-    for (const line of text.split("\n")) {
-      if (!line.trim()) continue;
-      const row = JSON.parse(line);
-      const ext = Object.fromEntries((row.extendedData || []).map((e) => [e.name, e.value]));
-      products.set(row.productId, {
-        group: groups.get(row.groupId) || "",
-        rarity: String(ext.Rarity || ""),
-        number: String(ext.Number || ""),
-        name: String(row.name || ""),
-      });
+    const map = manifest && manifest.productGroups && typeof manifest.productGroups === "object" ? manifest.productGroups : null;
+    if (!map) {
+      // Older nights stored every group in full and have no productGroups map.
+      const p = join(dir, day, "products.ndjson.gz");
+      if (!existsSync(p)) continue;
+      const rows = ndjson(await readFile(p));
+      if (!rows.length) continue;
+      for (const row of rows) products.set(row.productId, productMeta(row, groups));
+      return { day, products, groups: groups.size, missing: [] };
     }
-    return { day, products };
+    const byDay = new Map();
+    for (const [gid, ref] of Object.entries(map)) {
+      if (!(Number(ref?.count) > 0)) continue;
+      const from = String(ref?.day || "");
+      if (!byDay.has(from)) byDay.set(from, new Set());
+      byDay.get(from).add(Number(gid));
+    }
+    const missing = [];
+    for (const [from, want] of byDay) {
+      const p = join(dir, from, "products.ndjson.gz");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !existsSync(p)) { missing.push(...want); continue; }
+      const seen = new Set();
+      for (const row of ndjson(await readFile(p))) {
+        const gid = Number(row._groupId ?? row.groupId);
+        if (!want.has(gid)) continue;
+        seen.add(gid);
+        products.set(row.productId, productMeta(row, groups));
+      }
+      for (const gid of want) if (!seen.has(gid)) missing.push(gid);
+    }
+    if (missing.length) return null;
+    return { day, products, groups: groups.size, missing };
   }
   return null;
 }
@@ -751,7 +791,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const dailyDir = join(root, "data/history/tcgcsv-daily");
   const startDoc = await readJson(join(dailyDir, `${start}.json`));
   const endDoc = await readJson(join(dailyDir, `${end}.json`));
-  const raw = await latestRawProducts(root);
+  const raw = await loadRawProducts(root);
   const catalogue = await readJson(join(pub, "feed/catalogue.json"), {});
   let card = { pool: [], risers: {} };
   if (startDoc && endDoc && raw) card = buildCardLag({ startDoc, endDoc, products: raw.products, start, end, catalogueCards: catalogue.cards || {} });
