@@ -507,9 +507,11 @@ jobs:
 
       - name: Write feature data
         # The IR cycle order reads its weights from catchem-data-private (read only).
+        # Not wrapped in run-last-good. A failed rating must stop here so the
+        # hold release below does not run against a restored older file.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/run-last-good.mjs --step "Write feature data" -- node scripts/write-feature-data.mjs
+        run: node scripts/write-feature-data.mjs
 
       - name: Release holds tonight's rating no longer flags
         # Set pages were built before the rating above, against last night's
@@ -984,14 +986,6 @@ jobs:
         # the run red without stopping tonight's data. Same check, no warn mode.
         run: node scripts/write-health.mjs > /tmp/health-after.json
 
-      - name: Deduped nightly alerts
-        # One catchem-alert issue per skipped step, updated not duplicated.
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/report-nightly-alerts.mjs
-
       - name: Failure summary
         if: failure()
         env:
@@ -1007,6 +1001,17 @@ jobs:
           STEP=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
             --jq '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(", ")' || true)
           NIGHTLY_FAILED_STEP="${STEP:-unknown step}" node scripts/nightly-issue.mjs --failed-step
+
+      - name: Deduped nightly alerts
+        # One catchem-alert issue per skipped step, updated not duplicated.
+        # After the failure summary so the strict freshness check stays the
+        # step immediately before that summary. if: always so a red strict
+        # check still reports the skips.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/report-nightly-alerts.mjs
 
       - name: Open or update the prices stale issue
         # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
