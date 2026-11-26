@@ -29,6 +29,7 @@ import { speakDates, publicBoardKindOk, withholdNewReadKinds } from "./read-qual
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle, scopedHref } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { loadJumpy } from "./jumpy-price.mjs";
+import { loadStaleMarket } from "./stale-market.mjs";
 import { loadWindowSeries } from "./thin-trading.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
 import { buildListings } from "./feature-data.mjs";
@@ -871,7 +872,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   let deepSlump = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
-    let nights = { points: new Map(), low: new Map() };
+    let nights = { points: new Map(), low: new Map(), lows: new Map() };
     try { nights = await loadWindowSeries(root, end); } catch { /* no low on file: a thin card cannot lead */ }
     const idOf = (c) => Number(String(c?.id || "").replace(/\D/g, ""));
     const seriesOf = (c) => {
@@ -883,6 +884,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       const n = nights.low.get(idOf(c));
       return n > 0 ? n : null;
     };
+    const lowsOf = (c) => nights.lows?.get(idOf(c)) || [];
+    const staleMarketRule = await loadStaleMarket(root);
     const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
     fresh.push(
       ...setDeepDives(histCards, { asOf: end, sets: setsDoc, rotation, seriesOf, lowOf }),
@@ -920,7 +923,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const sealedRating = await readJson(join(pub, "feed/sealed-rating.json"), {});
     if (sealedRating?.asOf === end) deepSealed = (sealedRating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
     const stability = await loadReadStability(root);
-    const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability, seriesOf, lowOf });
+    const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability, seriesOf, lowOf, lowsOf, staleMarketRule });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));

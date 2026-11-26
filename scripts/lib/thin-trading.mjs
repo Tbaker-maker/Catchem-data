@@ -113,9 +113,10 @@ export function assessThin(points, asOf, { market = null, low = null, windowDays
 export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS) {
   const points = new Map();
   const low = new Map();
+  const lows = new Map();
   const printing = new Map();
   const dailyById = new Map();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return { points, low, printing, days: [] };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return { points, low, lows, printing, days: [] };
   const start = addDays(asOf, -windowDays);
   const dir = join(root, "data/history/tcgcsv-daily");
   let names = [];
@@ -141,6 +142,10 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
       if (named && market > 0 && !prices.has(named)) prices.set(named, Math.round(market * 100) / 100);
       if (!dailyById.has(id)) dailyById.set(id, new Map());
       dailyById.get(id).set(day, { printing: named, prices });
+      if (Number(row.low) > 0) {
+        if (!lows.has(id)) lows.set(id, []);
+        lows.get(id).push([day, Math.round(Number(row.low) * 100) / 100]);
+      }
       if (day === asOf && Number(row.low) > 0) low.set(id, Math.round(Number(row.low) * 100) / 100);
     }
   }
@@ -151,7 +156,7 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
     if (endRow?.printing) printing.set(id, String(endRow.printing));
   }
   if (days.includes(asOf)) await fillRawLows(dir, asOf, printing, low);
-  return { points, low, printing, days };
+  return { points, low, lows, printing, days };
 }
 
 async function fillRawLows(dir, asOf, printing, low) {
