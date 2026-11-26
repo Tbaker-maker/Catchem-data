@@ -210,6 +210,15 @@ export async function run() {
   // wave left on 2026-11-07), so a live row is checked only while the radar still has it.
   // The fixtures below cover the same rule with rows that cannot expire.
   t("Delta Reign never returns a blister", Boolean((!delta || (delta.market && delta.market.id === "tcgcsv-712094" && !/blister/i.test(delta.market.name))) && picked && picked.item.id === "tcgcsv-50" && picked.date === "2026-09-02" && releaseMarketItem(fixtureRelease, [fixtureItems[0]], fixtureDays) == null));
+  const laterDays = [
+    { date: "2026-09-01", prices: [{ id: 50, market: 40 }] },
+    { date: "2026-09-02", prices: [{ id: 50, market: 41 }, { id: 51, market: 5 }] },
+    { date: "2026-09-03", prices: [{ id: 51, market: 6 }] },
+    { date: "2026-09-04", prices: [{ id: 50, market: 37.5 }] },
+  ];
+  const laterItems = [fixtureItems[1], { id: "tcgcsv-51", tcgplayerProductId: 51, groupId: 9, name: "Delta Reign Booster Box Case", kind: "sealed", subtype: "booster-box", set: "ME06: Delta Reign" }];
+  const later = releaseMarketItem(fixtureRelease, laterItems, laterDays);
+  t("a release market shows the product's newest price and its own date, not its first", Boolean(later && later.item.id === "tcgcsv-50" && later.price === 37.5 && later.date === "2026-09-04"));
   t("an unmatched row returns no market", releaseMarketItem({ name: "Nothing In The Catalogue", type: "product" }, fixtureItems, fixtureDays) == null);
   const upcItems = [
     { id: "tcgcsv-10", tcgplayerProductId: 10, groupId: 7, name: "30th Celebration Ditto Collection", kind: "sealed", subtype: null, set: "CEL: 30th Celebration" },
