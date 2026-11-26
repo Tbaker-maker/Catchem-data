@@ -2,7 +2,7 @@
 // raise one deduped alert, and exit 0 so later steps still publish.
 import { appendFileSync, existsSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { lastGoodResult, skipRecord } from "./lib/never-block.mjs";
+import { lastGoodResult, recordPath, skipRecord } from "./lib/never-block.mjs";
 import { applyAlertFromEnv } from "./lib/alert-apply.mjs";
 
 function arg(flag, fallback) {
@@ -12,7 +12,7 @@ function arg(flag, fallback) {
 }
 
 const step = arg("--step", "unknown step");
-const record = arg("--record", process.env.CATCHEM_NEVER_BLOCK_RECORD || "");
+const record = arg("--record", recordPath());
 const dash = process.argv.indexOf("--");
 const cmd = dash === -1 ? [] : process.argv.slice(dash + 1);
 if (!cmd.length) {

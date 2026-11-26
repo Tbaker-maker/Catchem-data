@@ -6,7 +6,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { lastGoodResult, parsePorcelain, restorePlan } from "../lib/never-block.mjs";
+import { lastGoodResult, parsePorcelain, recordPath, restorePlan } from "../lib/never-block.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -20,6 +20,12 @@ export async function run() {
     if (cond) console.log(`  ok  ${name}`);
     else { fail += 1; console.error(`  FAIL ${name}${detail ? ` (${detail})` : ""}`); }
   };
+
+  t("the default skip record is named consistently", recordPath({}).endsWith("catchem-never-block.jsonl"));
+  t("an env override is honored", recordPath({ NEVER_BLOCK_RECORD: "/var/tmp/x.jsonl" }) === "/var/tmp/x.jsonl");
+  const runSrc = await readFile(join(ROOT, "scripts/run-last-good.mjs"), "utf8");
+  const reportSrc = await readFile(join(ROOT, "scripts/report-nightly-alerts.mjs"), "utf8");
+  t("top-level scripts do not hardcode /tmp or read CATCHEM_ env directly", !/"\/tmp\//.test(runSrc + reportSrc) && !/process\.env\.CATCHEM_/.test(runSrc + reportSrc));
 
   t("an unmodified path is not a restore target", parsePorcelain("").length === 0);
   t("parses a modified file", parsePorcelain(" M pulse.json\n").some((r) => r.path === "pulse.json" && r.untracked === false));

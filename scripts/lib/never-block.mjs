@@ -1,5 +1,14 @@
 // When a price-run feature step fails, keep last-good files and continue.
 // Pure decisions. The wrapper in scripts/run-last-good.mjs applies them.
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+
+export function recordPath(env = process.env) {
+  const fromEnv = env.CATCHEM_NEVER_BLOCK_RECORD || env.NEVER_BLOCK_RECORD || "";
+  if (fromEnv) return fromEnv;
+  return join(tmpdir(), "catchem-never-block.jsonl");
+}
+
 
 export function parsePorcelain(text) {
   const rows = [];

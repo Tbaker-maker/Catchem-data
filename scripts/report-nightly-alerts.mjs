@@ -2,8 +2,9 @@
 // Also writes a rollup when any step was skipped. Exits 0 always.
 import { readFile } from "node:fs/promises";
 import { applyAlertFromEnv } from "./lib/alert-apply.mjs";
+import { recordPath } from "./lib/never-block.mjs";
 
-const path = process.argv[2] || process.env.CATCHEM_NEVER_BLOCK_RECORD || "/tmp/catchem-never-block.jsonl";
+const path = process.argv[2] || recordPath();
 let lines = [];
 try {
   lines = (await readFile(path, "utf8")).split("\n").filter(Boolean);
