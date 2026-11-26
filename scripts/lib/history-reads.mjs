@@ -235,6 +235,18 @@ export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4, re
 }
 
 // One set, about 30 days: how many priced chase cards went up or down 10% and $1.
+// A set read is about the set, so it links to the set page. The lead card stays the sku.
+// With no set slug on file it falls back to the lead card, as before.
+export function setHref(rows, lead) {
+  const counts = new Map();
+  for (const r of rows || []) {
+    const slug = String(r?.c?.setSlug || "");
+    if (/^[a-z0-9-]+$/.test(slug)) counts.set(slug, (counts.get(slug) || 0) + 1);
+  }
+  const best = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+  return best ? `/sets/${best[0]}` : `/c/${lead.c.id}`;
+}
+
 export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, minMoved = 5 } = {}) {
   const bySet = new Map();
   for (const c of cards) {
@@ -259,7 +271,7 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
     const headline = `${shortSet(set)}, about 30 days: ${up.length} of ${rows.length} priced cards up 10% or more, ${down.length} down 10% or more. Start prices ${startText}, end ${monthDay(asOf)}, TCGplayer market.`;
     if (!ok(headline)) continue;
     out.push({
-      id: `set30-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), sku: lead.c.id, href: `/c/${lead.c.id}`, readKind: "set", kind: "set", board: HIST_TAG, family: "price",
+      id: `set30-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), sku: lead.c.id, href: setHref(rows, lead), readKind: "set", kind: "set", board: HIST_TAG, family: "price",
       name: set, set, headline, path: headline, asOf, startDate: a, endDate: asOf,
       source: `TCGplayer market, start points ${dateLabel(a, asOf)} to ${dateLabel(b, asOf)}, end ${monthDay(asOf)}`,
       why: "TCGplayer market price on the two dates shown.",
