@@ -2,6 +2,7 @@
 // Runs FIRST in the daily workflow (before any fetch): pure-math tests import
 // the same lib the engines ship, contract tests validate yesterday's committed
 // artifacts. Any failure kills the run before API quota burns.
+import "./hermetic-env.mjs";
 import { readFile, stat } from "node:fs/promises";
 import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { fileURLToPath } from "node:url";

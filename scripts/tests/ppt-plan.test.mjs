@@ -93,6 +93,29 @@ export async function runPptPlanTests() {
   t("raw file is not the public log", raw.data[0].unopenedPrice === 50);
   t("error text would redact the key", !JSON.stringify(ran).includes(secret));
 
+  {
+    const saved = process.env.PPT_OFF;
+    process.env.PPT_OFF = "1";
+    let offCalled = false;
+    let off;
+    try {
+      off = await executePlan({
+        key: secret,
+        calls: [{ bucket: "sealed", id: "sealed-10", estimated: 2, units: 1, items: 1, url: "https://example.test/sealed" }],
+        fetchImpl: async () => { offCalled = true; return { metadata: { apiCallsConsumed: { total: 2 } }, data: [] }; },
+        reserve: async () => {},
+        rawDir: dir,
+        budget: 16000,
+        secrets: [secret],
+      });
+    } catch (err) {
+      off = { refused: err.code === "PPT_OFF", used: { total: 0 } };
+    } finally {
+      if (saved === undefined) delete process.env.PPT_OFF;
+      else process.env.PPT_OFF = saved;
+    }
+    t("PPT_OFF=1 sends nothing and spends nothing", !offCalled && off.used.total === 0);
+  }
   t("execute without a key sends nothing", (await executePlan({ key: "", calls, fetchImpl: () => { throw new Error("called"); }, reserve: async () => {} })).used.total === 0);
 
   const packed = packCalls([
