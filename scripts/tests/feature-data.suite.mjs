@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  assignMarks, buildReleases, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
+  assignMarks, buildReleases, buildSetValueDoc, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
   publicReleaseName, readOptionalJson, releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 import { loadHeldIds } from "../lib/price-hold-skip.mjs";
@@ -252,6 +252,19 @@ export async function run() {
   const builtCount = (sealed.products || []).filter((product) => !parentIds.has(product.id) && (product.priceHistory || []).some((point) => Number.isInteger(point.filteredTotal))).length;
   t("listing counts match filteredTotal and skip empty nights", listBad === 0 && listed.products.length === builtCount);
 
+  {
+    // Live sweep Nov 25: Charizard ex 199/165 was held and silently missing from the 151 Top 10 and total.
+    const fakeSet = { slug: "fake-set", name: "Fake", items: [
+      { id: "tcgcsv-1", name: "Charizard ex - 199/165", num: "199/165", kind: "single" },
+      ...Array.from({ length: 12 }, (_, i) => ({ id: `tcgcsv-${10 + i}`, name: `Card ${i}`, num: String(i), kind: "single" })),
+      { id: "tcgcsv-2", name: "Mew ex", num: "2", kind: "single" },
+    ] };
+    const prices = new Map([[1, 279.99], [2, 0.5], ...Array.from({ length: 12 }, (_, i) => [10 + i, 100 - i])]);
+    const heldDoc = buildSetValueDoc(fakeSet, prices, "2026-11-25", { skipIds: new Set(["tcgcsv-1", "tcgcsv-2"]) });
+    t("a held card that would rank is named in the set value", Array.isArray(heldDoc.heldTop) && heldDoc.heldTop.length === 1 && heldDoc.heldTop[0].id === "tcgcsv-1" && heldDoc.heldTop[0].name === "Charizard ex - 199/165");
+    t("the set value names held cards without a price", heldDoc.heldTop.every((row) => !("price" in row) && !("market" in row)) && !JSON.stringify(heldDoc).includes("279.99"));
+    t("the set value counts every held card", heldDoc.master.held === 2 && heldDoc.top.every((row) => row.id !== "tcgcsv-1"));
+  }
   return fail;
 }
 

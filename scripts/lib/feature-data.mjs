@@ -231,6 +231,7 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
     return true;
   });
   const priced = [];
+  const heldRows = [];
   let unpriced = 0;
   let totalCents = 0;
   for (const item of singles) {
@@ -239,6 +240,8 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
     const id = raw || (pid ? `tcgcsv-${pid}` : "");
     if (opts.skipIds && opts.skipIds.has(id)) {
       unpriced += 1;
+      // Held: no price is published. The market is used only to say whether it would rank.
+      heldRows.push({ id, name: item.name || "", number: item.num || "", market: Number(priceMap.get(pid)) || 0 });
       continue;
     }
     const market = priceMap.get(pid);
@@ -256,6 +259,12 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
     });
   }
   priced.sort((a, b) => b.price - a.price || String(a.id).localeCompare(String(b.id)));
+  // A held card is named, never priced, so the Top 10 and the total say what they leave out.
+  const tenth = priced.length >= 10 ? priced[9].price : 0;
+  const heldTop = heldRows
+    .filter((row) => row.market > 0 && row.market > tenth)
+    .sort((a, b) => b.market - a.market || String(a.id).localeCompare(String(b.id)))
+    .map((row) => ({ id: row.id, name: row.name, number: row.number }));
   const doc = {
     slug: opts.slug || setDoc.slug,
     name: opts.name || setDoc.name || "",
@@ -267,7 +276,9 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
       priced: priced.length,
       unpriced,
       inSet: singles.length,
+      held: heldRows.length,
     },
+    heldTop,
   };
   if (!opts.catalogSet) return doc;
   return {
@@ -278,6 +289,7 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
     source: doc.source,
     top: doc.top,
     master: doc.master,
+    heldTop: doc.heldTop,
   };
 }
 
