@@ -6,7 +6,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/p
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, illustratorCredit, money, moverRow, pretty, samePrintingPoints, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, illustratorCredit, inLaunchWindow, launchDay, money, moverRow, pretty, samePrintingPoints, slug,
   MOVERS_NOTE,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
@@ -95,10 +95,12 @@ try {
     }
   }
 } catch { /* watchlist history is optional */ }
+let dailyStart = "";
 try {
   for (const file of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).sort()) {
     if (!file.endsWith(".json")) continue;
     const day = file.slice(0, 10);
+    if (!dailyStart) dailyStart = day;
     const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
     for (const row of doc.prices || []) {
       addPoint(series, row.id, day, row.market);
@@ -714,6 +716,7 @@ for (const set of sets.values()) {
 let hist30 = 0;
 let hist90 = 0;
 const qualified = [];
+const launchFalls = new Set();
 for (const [item, set] of flat) {
   const raw = rawById.get(item.id) || item.hist || [];
   if (raw.length >= 30) hist30 += 1;
@@ -753,6 +756,7 @@ for (const [item, set] of flat) {
     score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
   };
   if (/ebayimg|i\.ebayimg/i.test(read.image || "")) read.image = "";
+  if (move.pct < 0 && inLaunchWindow(move.fromDate, launchDay(set.release, raw, dailyStart))) launchFalls.add(read.id);
   qualified.push(read);
 }
 qualified.sort((a, b) => b.score - a.score || String(a.name).localeCompare(String(b.name)));
@@ -907,7 +911,7 @@ const splitMovers = (kind) => {
   const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""))).map(moverRow);
   return {
     rising: rows.filter((row) => row.changePct > 0).slice(0, 40),
-    falling: rows.filter((row) => row.changePct < 0).slice(0, 40),
+    falling: rows.filter((row) => row.changePct < 0 && !launchFalls.has(`move-${row.id}`)).slice(0, 40),
   };
 };
 const singleMove = splitMovers("single");
