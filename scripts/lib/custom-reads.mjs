@@ -1,7 +1,15 @@
 // Per-follow slices for one day. A day with no matching reads is quiet and is not written.
+// Letter section order. breadth is the market breadth data point. The other ids are slots.
 
 import { attachAddons } from "./custom-reads-addons.mjs";
 import { flagForItem } from "./premium-ratio.mjs";
+
+export const PLAN_POINTS = ["top", "group", "up", "down", "listings", "breadth", "sets", "vintage", "pattern", "rotation", "news"];
+
+export function cleanPoints(points) {
+  const asked = new Set((Array.isArray(points) ? points : []).map(String));
+  return PLAN_POINTS.filter((id) => asked.has(id));
+}
 
 export function followsFromDocs(primary, fallback) {
   if (primary && Array.isArray(primary.follows)) return primary.follows;

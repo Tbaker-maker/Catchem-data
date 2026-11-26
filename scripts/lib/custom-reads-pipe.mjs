@@ -6,6 +6,8 @@ import { isClean } from "./copy-rules.mjs";
 import { artType } from "./art-type.mjs";
 import { eraOf } from "./public-bundle.mjs";
 import { flagForItem } from "./premium-ratio.mjs";
+import { cleanPoints } from "./custom-reads.mjs";
+import { attachLetterPoints } from "./mood-gap.mjs";
 
 const money = (n) => `$${Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const shortDay = (day) => {
@@ -182,7 +184,7 @@ function outboxRead(read) {
   return row;
 }
 
-export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6, premium = null } = {}) {
+export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6, premium = null, moodGap = null } = {}) {
   const day = pool.day || new Date(now).toISOString().slice(0, 10);
   const members = [];
   let notDue = 0;
@@ -215,7 +217,13 @@ export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news 
       const rows = games.filter((row) => isClean(row?.headline) && isClean(row?.line)).slice(0, 3);
       if (rows.length) row.games = rows;
     }
-    if (!reads.length && !row.news && !row.games) { quiet++; continue; }
+    const points = cleanPoints(follow.points);
+    if (points.includes("breadth")) {
+      const sections = attachLetterPoints({ points }, moodGap);
+      if (sections.length) row.sections = sections;
+      row.points = points;
+    }
+    if (!reads.length && !row.news && !row.games && !row.sections) { quiet++; continue; }
     members.push(row);
   }
   return { day, builtAt: new Date(now).toISOString(), members, counts: { follows: follows.length, members: members.length, notDue, quiet } };

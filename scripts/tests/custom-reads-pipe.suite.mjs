@@ -154,6 +154,29 @@ export async function run() {
   t("held and price being checked stay out of the pool", !heldPool.reads.some((row) => row.cardId === "tcgcsv-2" || row.cardId === "tcgcsv-3" || row.cardId === "tcgcsv-56") && !/price being checked/i.test(heldBlob) && !heldPool.reads.some((row) => row.kind === "sealed" && /\bNM\b/.test(row.line)));
   const heldOut = buildOutbox({ follows: [{ discordId: "123456789012345678", cards: ["tcgcsv-1"], kinds: ["single"], frequency: "daily" }], pool: heldPool, now });
   t("the outbox keeps a public card id and never an email", heldOut.members[0].reads[0].cardId === "tcgcsv-1" && heldOut.members[0].reads[0].name === "Pikachu" && !JSON.stringify(heldOut).includes("@") && !JSON.stringify(heldOut).includes("email"));
+  const breadth = {
+    asOf: "2026-11-25",
+    sections: [{
+      id: "breadth",
+      title: "Market breadth",
+      facts: [
+        { text: "7 day product breadth: 4 up, 1 down, 1 flat, of 6 products on both days, 2026-11-18 to 2026-11-25.", source: "TCGCSV daily", date: "2026-11-25" },
+        { text: "Modern sets: 4 of 52 up over 7 days. All products on both days: 4 of 6 up. As of 2026-11-25.", source: "market-meter.json and TCGCSV daily", date: "2026-11-25" },
+        { text: "Singles index up 1% from 100 on 2026-11-18 to 101 on 2026-11-25.", source: "indexes.json", date: "2026-11-25" },
+      ],
+      sinceLastWeek: "No prior week on file.",
+      plain: "Talk is held. These lines are prices and listings counted only.",
+      asOf: "2026-11-25",
+    }],
+  };
+  const pointed = buildOutbox({
+    follows: [{ discordId: "123456789012345678", points: ["breadth"], frequency: "weekly", sets: [], cards: [] }],
+    pool: { day: "2026-11-22", reads: [] },
+    moodGap: breadth,
+    now: Date.parse("2026-11-22T12:00:00Z"),
+  });
+  t("a breadth point is one letter section with fake facts", pointed.members.length === 1 && pointed.members[0].sections.length === 1 && pointed.members[0].sections[0].id === "breadth" && pointed.members[0].sections[0].facts.length === 3 && pointed.members[0].sections[0].facts.every((row) => row.source && row.date));
+  t("the breadth section stays clean", JSON.stringify(pointed).includes("listings counted") && !JSON.stringify(pointed).includes("@") && !/[\u2013\u2014]/.test(JSON.stringify(pointed)));
   return fail;
 }
 
