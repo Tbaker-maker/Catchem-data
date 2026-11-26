@@ -171,12 +171,19 @@ export function trimmedMean(xs, trim = 0.1) {
   return mid.reduce((sum, n) => sum + n, 0) / mid.length;
 }
 
+export function isPatternParallel(name) {
+  return /\bpattern\)/i.test(String(name || ""));
+}
+
 export function bulkFloorForSet(singles, setSlug) {
   const prices = [];
   for (const c of singles) {
     if (c.setSlug !== setSlug) continue;
     if (c.rarity !== "Common" && c.rarity !== "Uncommon") continue;
     // Reverse Holofoil printings of C/UC count toward the bulk floor.
+    // A pattern parallel (Poke Ball, Master Ball, Energy Symbol) is a rare
+    // reverse slot, not one of the 9 bulk cards. With no published rate it is left out.
+    if (isPatternParallel(c.name)) continue;
     if (!(c.price > 0)) continue;
     prices.push(c.price);
   }
