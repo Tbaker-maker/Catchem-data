@@ -217,6 +217,12 @@ export function packSlice(parts, spec) {
   };
 }
 
+// A set page's breadth line says "priced cards". That is singles only.
+// Sealed products are counted in the set's sealed index, not as cards.
+export function breadthItems(items) {
+  return (items || []).filter((item) => item && item.kind !== "sealed");
+}
+
 export function factLine(key, info, noun) {
   const name = noun || "sets";
   const pct = (n) => `${Math.round(n)}%`;
@@ -226,7 +232,8 @@ export function factLine(key, info, noun) {
   if (key === "momentum" && info && Number.isFinite(info.pct)) {
     const pace = info.score >= 50 ? "above its usual pace" : "below its usual pace";
     const signed = `${info.pct > 0 ? "+" : ""}${(Math.round(info.pct * 10) / 10).toFixed(1)}%`;
-    const label = name === "sets" ? "set" : name.replace(/ sets$/, "");
+    // One basket is one set's singles index or its sealed index, so the unit is a set index.
+    const label = name === "sets" ? "set" : name === "set indexes" ? "set index" : name.replace(/ set indexes$/, "").replace(/ sets$/, "");
     return `The median ${label} move is ${signed} over 7 days, ${pace}`;
   }
   if (key === "supply" && info && Number.isFinite(info.chg)) {

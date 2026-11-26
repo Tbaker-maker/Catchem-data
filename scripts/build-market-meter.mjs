@@ -6,7 +6,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { open } from "node:fs/promises";
 import {
-  addDays, median, windowPct, percentileScore, shareScore, breadthFrom,
+  addDays, median, windowPct, percentileScore, shareScore, breadthFrom, breadthItems,
   scoreCalls, packSlice, factLine, COMPONENT_METER,
 } from "./lib/market-meter.mjs";
 import { applyModelSpec } from "./lib/model-spec.mjs";
@@ -287,11 +287,11 @@ async function main() {
     if (set.sealed.series.length) baskets.push({ ...set, prep: set.sealed, side: "sealed", vintage, modern });
   }
   const groups = {
-    market: { noun: "sets", members: baskets.map((b) => b.prep), listings: listingByDay },
+    market: { noun: "set indexes", members: baskets.map((b) => b.prep), listings: listingByDay },
     singles: { noun: "singles", members: baskets.filter((b) => b.side === "singles").map((b) => b.prep), listings: null },
     sealed: { noun: "sealed", members: baskets.filter((b) => b.side === "sealed").map((b) => b.prep), listings: listingByDay },
-    vintage: { noun: "Vintage sets", members: baskets.filter((b) => b.vintage).map((b) => b.prep), listings: null },
-    modern: { noun: "Modern sets", members: baskets.filter((b) => b.modern).map((b) => b.prep), listings: null },
+    vintage: { noun: "Vintage set indexes", members: baskets.filter((b) => b.vintage).map((b) => b.prep), listings: null },
+    modern: { noun: "Modern set indexes", members: baskets.filter((b) => b.modern).map((b) => b.prep), listings: null },
   };
   const eras = {};
   for (const era of new Set(sets.map((set) => set.era).filter(Boolean))) {
@@ -366,7 +366,7 @@ async function main() {
     const full = await readJson(join(SETS, `${set.slug}.json`));
     const items = Array.isArray(full?.items) ? full.items : [];
     const pcts = [];
-    for (const item of items) {
+    for (const item of breadthItems(items)) {
       const hist = Array.isArray(item?.hist) ? item.hist : [];
       const series = cleanSeries(hist.map((p) => (Array.isArray(p) ? { d: p[0], v: p[1] } : p)));
       const pct = windowPct(series, latest, 7);

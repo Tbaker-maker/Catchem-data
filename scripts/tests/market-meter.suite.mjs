@@ -1,5 +1,6 @@
 // Heat and fear/greed meter. Made up numbers only, plus the committed public file.
 import { readFile } from "node:fs/promises";
+import * as meterLib from "../lib/market-meter.mjs";
 import {
   clampScore, bandFor, DEFAULT_BANDS, meterSpecOf, packSlice, factLine, adviceFree, shareScore,
 } from "../lib/market-meter.mjs";
@@ -71,6 +72,17 @@ export async function run() {
     t("component bars have scores", Array.isArray(pub.market.inputs) && pub.market.inputs.length >= 2 && pub.market.inputs.every((row) => row.score >= 0 && row.score <= 100 && row.fact));
   } catch {
     t("public market meter file is present", false);
+  }
+  {
+    const breadthItems = typeof meterLib.breadthItems === "function" ? meterLib.breadthItems : (xs) => xs;
+    const set = [
+      ...Array.from({ length: 252 }, (_, i) => ({ id: `s${i}`, kind: "single" })),
+      ...Array.from({ length: 19 }, (_, i) => ({ id: `p${i}`, kind: "sealed" })),
+    ];
+    t("a set page's priced cards count leaves sealed out", breadthItems(set).length === 252);
+    t("the market meter names its unit as set indexes", factLine("newHighs", { score: 33, yes: 88, n: 269 }, "set indexes") === "33% of set indexes at a 90 day high (88 of 269)" && factLine("momentum", { score: 40, pct: 0.1 }, "set indexes") === "The median set index move is +0.1% over 7 days, below its usual pace");
+    const meterSrc = await readFile(new URL("../build-market-meter.mjs", import.meta.url), "utf8");
+    t("market, vintage and modern meters count set indexes, not sets", /market: \{ noun: "set indexes"/.test(meterSrc) && /noun: "Vintage set indexes"/.test(meterSrc) && /noun: "Modern set indexes"/.test(meterSrc) && /breadthItems\(items\)/.test(meterSrc));
   }
   return fail;
 }
