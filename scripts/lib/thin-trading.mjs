@@ -76,6 +76,62 @@ export function priceSteps(points, asOf, windowDays = THIN_WINDOW_DAYS) {
   };
 }
 
+export const STUCK_MARKET_DAYS = 14;
+
+function datedPrice(points, asOf) {
+  const rows = [];
+  for (const p of points || []) {
+    if (!Array.isArray(p)) continue;
+    const day = String(p[0] || "").slice(0, 10);
+    const price = Number(p[1]);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !(price > 0)) continue;
+    if (asOf && day > asOf) continue;
+    if (rows.length && rows[rows.length - 1][0] === day) rows[rows.length - 1] = [day, price];
+    else rows.push([day, price]);
+  }
+  rows.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  return rows;
+}
+
+// First day of the current market print ending on asOf. A later day that
+// reprints the same cents is not a new price.
+export function lastMarketChange(points, asOf) {
+  const rows = datedPrice(points, asOf);
+  if (!rows.length) return null;
+  if (asOf && rows[rows.length - 1][0] !== asOf) return null;
+  const end = rows[rows.length - 1];
+  const want = cents(end[1]);
+  let first = end[0];
+  for (let i = rows.length - 2; i >= 0; i -= 1) {
+    if (cents(rows[i][1]) !== want) break;
+    first = rows[i][0];
+  }
+  return { date: first, price: end[1] };
+}
+
+function daySpan(from, to) {
+  const a = Date.parse(`${from}T00:00:00Z`);
+  const b = Date.parse(`${to}T00:00:00Z`);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+  return Math.round((b - a) / 86400000);
+}
+
+// A stuck market is a print that has not changed for minDays ending on asOf
+// while the lowest listing in that same window did change. A flat market
+// with a flat low is left alone. Missing lows fail closed to not-stuck, so
+// a quiet card is not held without evidence.
+export function stuckMarket(marketPoints, lowPoints, asOf, { minDays = STUCK_MARKET_DAYS } = {}) {
+  const last = lastMarketChange(marketPoints, asOf);
+  const need = Number(minDays);
+  if (!last || !asOf || !(need > 0)) return { stuck: false, lastChange: last?.date || null };
+  const days = daySpan(last.date, asOf);
+  if (!(days >= need)) return { stuck: false, lastChange: last.date, days };
+  const lows = datedPrice(lowPoints, asOf).filter((p) => p[0] >= last.date && p[0] <= asOf);
+  const values = new Set(lows.map((p) => cents(p[1])).filter((n) => n != null));
+  if (values.size < 2) return { stuck: false, lastChange: last.date, days };
+  return { stuck: true, lastChange: last.date, days, price: last.price };
+}
+
 export function listingBacks(market, low, band = BACK_BAND_PCT) {
   const m = Number(market);
   const l = Number(low);
@@ -113,9 +169,10 @@ export function assessThin(points, asOf, { market = null, low = null, windowDays
 export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS) {
   const points = new Map();
   const low = new Map();
+  const lowSeries = new Map();
   const printing = new Map();
   const dailyById = new Map();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return { points, low, printing, days: [] };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return { points, low, lowSeries, printing, days: [] };
   const start = addDays(asOf, -windowDays);
   const dir = join(root, "data/history/tcgcsv-daily");
   let names = [];
@@ -141,7 +198,12 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
       if (named && market > 0 && !prices.has(named)) prices.set(named, Math.round(market * 100) / 100);
       if (!dailyById.has(id)) dailyById.set(id, new Map());
       dailyById.get(id).set(day, { printing: named, prices });
-      if (day === asOf && Number(row.low) > 0) low.set(id, Math.round(Number(row.low) * 100) / 100);
+      if (Number(row.low) > 0) {
+        const listed = Math.round(Number(row.low) * 100) / 100;
+        if (!lowSeries.has(id)) lowSeries.set(id, []);
+        lowSeries.get(id).push([day, listed]);
+        if (day === asOf) low.set(id, listed);
+      }
     }
   }
   for (const [id, daily] of dailyById) {
@@ -151,7 +213,7 @@ export async function loadWindowSeries(root, asOf, windowDays = THIN_WINDOW_DAYS
     if (endRow?.printing) printing.set(id, String(endRow.printing));
   }
   if (days.includes(asOf)) await fillRawLows(dir, asOf, printing, low);
-  return { points, low, printing, days };
+  return { points, low, lowSeries, printing, days };
 }
 
 async function fillRawLows(dir, asOf, printing, low) {

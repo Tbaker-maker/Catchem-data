@@ -871,7 +871,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   let deepSlump = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
-    let nights = { points: new Map(), low: new Map() };
+    let nights = { points: new Map(), low: new Map(), lowSeries: new Map() };
     try { nights = await loadWindowSeries(root, end); } catch { /* no low on file: a thin card cannot lead */ }
     const idOf = (c) => Number(String(c?.id || "").replace(/\D/g, ""));
     const seriesOf = (c) => {
@@ -883,6 +883,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       const n = nights.low.get(idOf(c));
       return n > 0 ? n : null;
     };
+    const lowsOf = (c) => nights.lowSeries?.get(idOf(c)) || null;
     const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
     fresh.push(
       ...setDeepDives(histCards, { asOf: end, sets: setsDoc, rotation, seriesOf, lowOf }),
@@ -920,7 +921,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const sealedRating = await readJson(join(pub, "feed/sealed-rating.json"), {});
     if (sealedRating?.asOf === end) deepSealed = (sealedRating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
     const stability = await loadReadStability(root);
-    const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability, seriesOf, lowOf });
+    const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability, seriesOf, lowOf, lowsOf });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));

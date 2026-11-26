@@ -7,7 +7,7 @@ import { whyPlain } from "../lib/read-quality.mjs";
 import { buildGroup } from "../lib/tcgcsv-catalog.mjs";
 import { chaseLists } from "../lib/deep-reads-2.mjs";
 import { cardStories } from "../lib/deep-reads.mjs";
-import { assessThin, listingBacks, loadWindowSeries, priceSteps, thinLine } from "../lib/thin-trading.mjs";
+import { assessThin, listingBacks, loadWindowSeries, lastMarketChange, priceSteps, stuckMarket, thinLine } from "../lib/thin-trading.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ASOF = "2026-10-26";
@@ -109,6 +109,42 @@ export async function run() {
   });
   const bundle = sealed.prices[0];
   t("a sealed low is stored with no condition label", bundle && bundle.low === 52.5 && bundle.printing === "Normal" && !("condition" in bundle) && sealed.items[0].kind === "sealed");
+
+  const asOfStuck = "2026-11-25";
+  const marketStuck = [];
+  const lowsStuck = [];
+  for (let i = 400; i >= 0; i -= 1) {
+    const ms = Date.parse(`${asOfStuck}T00:00:00Z`) - i * 86400000;
+    const day = new Date(ms).toISOString().slice(0, 10);
+    marketStuck.push([day, day < "2026-10-09" ? 700 : 817.16]);
+    if (day >= "2026-10-09") {
+      let listed = 825;
+      if (day === "2026-10-09") listed = 849.50;
+      else if (day < "2026-11-10") listed = 700.09;
+      lowsStuck.push([day, listed]);
+    }
+  }
+  const stuck = stuckMarket(marketStuck, lowsStuck, asOfStuck);
+  const last = lastMarketChange(marketStuck, asOfStuck);
+  t("a market unchanged 48 days while the low moves is stuck", stuck && stuck.stuck === true && last && last.date === "2026-10-09");
+  const flatLow = lowsStuck.map(([day]) => [day, 825]);
+  t("a flat market with a flat low is not treated as a stuck feed", stuckMarket(marketStuck, flatLow, asOfStuck).stuck !== true);
+  const moved = marketStuck.map(([day, price]) => [day, day === asOfStuck ? 900 : price]);
+  t("a market that moved on asOf is not stuck", stuckMarket(moved, lowsStuck, asOfStuck).stuck !== true);
+  const umbreon = {
+    id: "tcgcsv-90137",
+    name: "Umbreon",
+    number: "13/75",
+    set: "N3: Neo Discovery",
+    setSlug: "neo-discovery",
+    rarity: "Rare Holo",
+    printing: "Unlimited Holofoil",
+    pts: marketStuck,
+  };
+  const tonight = cardStories([umbreon], { asOf: asOfStuck, lowsOf: () => lowsStuck });
+  t("a stuck market is kept out of tonight stories", tonight.length === 0);
+  const live = cardStories([{ ...umbreon, pts: moved }], { asOf: asOfStuck, lowsOf: () => lowsStuck });
+  t("a market that moved tonight can still headline", live.length === 1 && /tonight/.test(live[0].headline) && !String(live[0].headline).includes("817.16"));
 
   return fail;
 }

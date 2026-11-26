@@ -15,7 +15,7 @@ import { speakDates } from "./read-quality.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
 import { storyUnstable } from "./read-stability.mjs";
-import { assessThin } from "./thin-trading.mjs";
+import { assessThin, stuckMarket } from "./thin-trading.mjs";
 
 const usd = (n) => tcgAmount(n, money);
 
@@ -245,7 +245,7 @@ export function scrubCutoff(text) {
     .replace(/no bigger than 3% either way/g, "near the earlier price");
 }
 
-export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability = null, seriesOf = null, lowOf = null } = {}) {
+export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability = null, seriesOf = null, lowOf = null, lowsOf = null } = {}) {
   const live = cards.filter((c) => c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] >= 50 && !LOW.has(c.rarity) && dayNum(asOf) - dayNum(c.pts[0][0]) >= 365 && !skip.has(c.id));
   const bySpecies = new Map();
   for (const c of cards) { const t = speciesToken(c.name); if (!t || c.pts.at(-1)?.[0] !== asOf) continue; if (!bySpecies.has(t)) bySpecies.set(t, []); bySpecies.get(t).push(c); }
@@ -259,6 +259,8 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability
     const listed = typeof lowOf === "function" ? lowOf(c) : c.low;
     const thin = assessThin(series, asOf, { market: now[1], low: listed });
     if (thin.thin && !thin.canLead) continue;
+    const lows = typeof lowsOf === "function" ? lowsOf(c) : c.lows;
+    if (stuckMarket(series, lows, asOf).stuck) continue;
     const peak = c.pts.reduce((m, p) => (p[1] > m[1] ? p : m));
     const low = c.pts.reduce((m, p) => (p[1] < m[1] ? p : m));
     if (storyUnstable(c.pts.length, peak[1], low[1], stability)) continue;
