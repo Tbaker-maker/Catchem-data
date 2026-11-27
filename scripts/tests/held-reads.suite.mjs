@@ -12,6 +12,13 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
+// Run 45943761592: the earlier refused publish left this folder off main, and
+// the test runner crashed in readdir before it could finish the suite.
+async function listJson(dir) {
+  try { return (await readdir(dir)).filter((n) => n.endsWith(".json")); }
+  catch (err) { if (err?.code === "ENOENT") return []; throw err; }
+}
+
 export async function run() {
   let fail = 0;
   const t = (name, cond) => {
@@ -26,6 +33,11 @@ export async function run() {
     t("a held card's chip is left out after stamping", r.dropped === 1 && !r.doc.byId["move-tcgcsv-85289-7"] && r.doc.byId["move-tcgcsv-1-7"] && !r.doc.bySku.a && r.doc.samples.length === 0);
   }
   t("the hold file has cards", held.size > 1000);
+  {
+    const yml = await readFile(join(ROOT, ".github/workflows/update-sealed-prices.yml"), "utf8");
+    const pre = yml.split("Rebuild outputs on today's day")[1]?.split("- name:")[0] || "";
+    t("the pre-test rebuild writes item-reads", /step write-item-reads\.mjs/.test(pre));
+  }
   {
     // A card the rating flags "check" after build-feed ran must still leave the
     // reads, chips and item reads when the scrub runs again (2026-11-16 nightly).
@@ -49,6 +61,8 @@ export async function run() {
     const writer = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
     t("reads are scrubbed again after the rating build", writer.lastIndexOf("scrubHeldOutputs(ROOT)") > writer.indexOf("build-card-rating.mjs"));
   }
+  t("a missing item-reads folder is scanned as empty, not a crash", (await listJson(join(tmpdir(), `no-item-reads-${Date.now()}`))).length === 0);
+
   const leaked = [];
   const note = (where, row) => {
     if (mentionsHeld(row, held)) leaked.push(`${where}:${row?.id || row?.sku || ""}`);
@@ -76,7 +90,7 @@ export async function run() {
   }
 
   const itemDir = join(PUB, "feed/item-reads");
-  for (const name of (await readdir(itemDir)).filter((n) => n.endsWith(".json"))) {
+  for (const name of await listJson(itemDir)) {
     const doc = await readJson(join(itemDir, name));
     for (const [id, rows] of Object.entries(doc.items || {})) {
       if (held.has(id)) leaked.push(`item:${id}`);
@@ -85,7 +99,7 @@ export async function run() {
   }
 
   const factDir = join(PUB, "feed/facts");
-  for (const name of (await readdir(factDir)).filter((n) => n.endsWith(".json"))) {
+  for (const name of await listJson(factDir)) {
     if (mentionsHeld(name, held)) leaked.push(`fact:${name}`);
     else {
       const doc = await readJson(join(factDir, name));
@@ -95,7 +109,7 @@ export async function run() {
 
   const valueDir = join(PUB, "set-value");
   let heldTops = 0;
-  for (const name of (await readdir(valueDir)).filter((n) => n.endsWith(".json"))) {
+  for (const name of await listJson(valueDir)) {
     const doc = await readJson(join(valueDir, name));
     for (const row of doc.top || []) if (held.has(row.id)) heldTops += 1;
   }

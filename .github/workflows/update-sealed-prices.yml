@@ -147,6 +147,9 @@ jobs:
           # The first feed after a new price day still carries the previous board.
           # A second pass settles it, which is what the determinism test rebuilds.
           step build-feed.mjs
+          # write-item-reads creates feed/item-reads. A refused publish can leave
+          # that folder off main (run 45943761592), and held-reads.suite used to crash.
+          step write-item-reads.mjs
           step check-board-sync.mjs
           step write-morning-card.mjs
           step write-feature-data.mjs
