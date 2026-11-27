@@ -503,7 +503,9 @@ jobs:
         run: |
           snap="$RUNNER_TEMP/public-before-hold-rebuild"
           cp -a research/assets/public "$snap"
-          if node scripts/build-public-bundle.mjs && node scripts/write-feature-data.mjs; then
+          # BUNDLE_KEEP_FEED=1: build-feed.mjs already wrote reads.json and feed/.
+          # Without it the bundle put back the bare price lead (run 45902396201: 374 reads -> 3 -> 0).
+          if BUNDLE_KEEP_FEED=1 node scripts/build-public-bundle.mjs && node scripts/write-feature-data.mjs; then
             echo "Rebuilt set pages with ${{ steps.holdsafter.outputs.released }} released holds."
           else
             echo "::warning::Rebuild after the hold release failed; keeping the first build."

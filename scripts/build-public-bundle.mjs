@@ -26,6 +26,7 @@ import { liveHoldDoc, loadCheckIds } from "./lib/price-hold-live.mjs";
 import { isVintageRelease } from "./lib/price-trust.mjs";
 import { QUARANTINE_REASON, quarantineEntry, resolveSetLogo, shouldQuarantine } from "./lib/set-quarantine.mjs";
 import { etbPacks } from "./lib/rip-roi.mjs";
+import { bundleKeepsFeed } from "./lib/feed-owner.mjs";
 
 assertFolds();
 
@@ -918,22 +919,29 @@ for (const [item, set] of flat) {
     image: stockImage(item),
   });
 }
-const logFile = process.env.LEARNING_LOG || "";
-const priorCalls = logFile ? await readCallLog(logFile) : [];
-const feedResult = await publishFeed({
-  items: feedItems,
-  prior: priorCalls,
-  prices: new Map(items.filter((item) => Number(item.price) > 0 && item.id).map((item) => [item.id, Number(item.price)])),
-  asOf: catalog.asOf,
-  updatedAt,
-  outDir: OUT,
-  logFile: logFile || null,
-  shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
-  gapPids: [...GAP_IMAGE],
-  rewriteDir: join(ROOT, "data/learning/path-rewrites"),
-  root: ROOT,
-});
-console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
+// After build-feed.mjs has run (the released-holds rebuild), reads.json and feed/
+// are build-feed's. publishFeed here would put back the bare price lead.
+const keepFeed = bundleKeepsFeed(process.env);
+if (!keepFeed) {
+  const logFile = process.env.LEARNING_LOG || "";
+  const priorCalls = logFile ? await readCallLog(logFile) : [];
+  const feedResult = await publishFeed({
+    items: feedItems,
+    prior: priorCalls,
+    prices: new Map(items.filter((item) => Number(item.price) > 0 && item.id).map((item) => [item.id, Number(item.price)])),
+    asOf: catalog.asOf,
+    updatedAt,
+    outDir: OUT,
+    logFile: logFile || null,
+    shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
+    gapPids: [...GAP_IMAGE],
+    rewriteDir: join(ROOT, "data/learning/path-rewrites"),
+    root: ROOT,
+  });
+  console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
+} else {
+  console.log("feed catalogue kept: build-feed.mjs already wrote reads.json and feed/");
+}
 
 const splitMovers = (kind) => {
   const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""))).map(moverRow);
