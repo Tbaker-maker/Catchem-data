@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-27",
- "generatedAt": "2026-11-27T12:33:53.675Z",
+ "generatedAt": "2026-11-27T01:59:30.527Z",
  "checks": [
   {
    "id": "price-day",
@@ -12,9 +12,9 @@
   {
    "id": "listings-counted",
    "path": "data/derived/listing-counts/latest.json",
-   "date": "2026-11-27",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-11-26",
+   "ok": false,
+   "detail": "dated 2026-11-26"
   },
   {
    "id": "reads",
@@ -32,11 +32,10 @@
   }
  ],
  "failures": [
+  "listings-counted",
   "scanner"
  ],
- "alerts": [
-  "eBay Browse is at 104% of the 4,277 daily listing calls as of 2026-11-27."
- ],
+ "alerts": [],
  "reran": [],
  "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }
