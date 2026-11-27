@@ -1,31 +1,18 @@
 {
- "generatedAt": "2026-11-26T00:00:52.022Z",
- "date": "2026-11-26",
- "checked": 154,
+ "generatedAt": "2026-11-27T12:20:32.470Z",
+ "date": "2026-11-27",
+ "checked": 175,
  "warned": 0,
- "blocked": 5,
+ "blocked": 6,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
   {
-   "id": "sm75-etb",
-   "name": "Dragon Majesty Elite Trainer Box",
-   "median": 1288.98,
-   "high": null,
-   "floor": 1999.99,
-   "listings": 3,
-   "reasons": [
-    "only 3 listings — too thin to headline"
-   ],
-   "warns": [],
-   "topPricedTitles": null
-  },
-  {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
-   "median": 170.66,
+   "median": 171.48,
    "high": null,
-   "floor": 169.45,
-   "listings": 67,
+   "floor": 170,
+   "listings": 62,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -38,7 +25,7 @@
    "median": 1032.84,
    "high": null,
    "floor": 1100,
-   "listings": 14,
+   "listings": 12,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
    ],
@@ -48,7 +35,7 @@
   {
    "id": "swsh1-booster-box",
    "name": "Sword & Shield Base Booster Box",
-   "median": 707.56,
+   "median": 708.99,
    "high": null,
    "floor": 695,
    "listings": 10,
@@ -61,12 +48,38 @@
   {
    "id": "swsh1-etb",
    "name": "Sword & Shield Base Elite Trainer Box",
-   "median": 179.1,
+   "median": 180.9,
    "high": null,
-   "floor": 164.98,
-   "listings": 11,
+   "floor": 165.99,
+   "listings": 10,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
+   ],
+   "warns": [],
+   "topPricedTitles": null
+  },
+  {
+   "id": "sv1-bundle",
+   "name": "Scarlet & Violet Booster Bundle",
+   "median": 100.4,
+   "high": null,
+   "floor": 90,
+   "listings": 8,
+   "reasons": [
+    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Listings for later Scarlet & Violet sets carry the words Scarlet & Violet too, so bundles from 151 and Paldean Fates were being counted as this product and pushed it to about $72, against a real price nearer $25. Held until we confirm this bundle still trades."
+   ],
+   "warns": [],
+   "topPricedTitles": null
+  },
+  {
+   "id": "swsh1-pack",
+   "name": "Sword & Shield Booster Pack",
+   "median": 11.4,
+   "high": null,
+   "floor": 10.92,
+   "listings": 9,
+   "reasons": [
+    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5."
    ],
    "warns": [],
    "topPricedTitles": null

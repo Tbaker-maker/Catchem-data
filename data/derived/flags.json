@@ -1,6 +1,6 @@
 {
  "asOf": "2026-11-27",
- "generatedAt": "2026-11-27T10:02:20.332Z",
+ "generatedAt": "2026-11-27T11:29:47.190Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -26,17 +26,17 @@
    "NEWS_SOURCE_FAILING": 5,
    "NEWS_LEAD": 1,
    "DATA_GAP": 1,
-   "ODD_PRICE": 78,
-   "READ_TYPE_EMPTY": 3,
+   "ODD_PRICE": 91,
+   "READ_TYPE_EMPTY": 2,
    "YOUTUBE_LEAD": 16
   },
   "bySeverity": {
    "high": 1,
    "medium": 23,
-   "low": 86
+   "low": 98
   }
  },
- "newTonight": 0,
+ "newTonight": 17,
  "flags": [
   {
    "type": "RELEASE_DATE_CHANGE",
@@ -267,10 +267,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:swsh11-pack",
-   "line": "Floor left off for Lost Origin Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Lost Origin Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "swsh11-pack",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -279,10 +279,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv4-pack",
-   "line": "Floor left off for Paradox Rift Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Paradox Rift Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv4-pack",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -303,10 +303,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv9-pack",
-   "line": "Floor left off for Journey Together Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Journey Together Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv9-pack",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -315,10 +315,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv10-pack",
-   "line": "Floor left off for Destined Rivals Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Destined Rivals Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv10-pack",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -327,10 +327,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me2-pack",
-   "line": "Floor left off for Phantasmal Flames Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Phantasmal Flames Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me2-pack",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -339,10 +339,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me3-pack",
-   "line": "Floor left off for Perfect Order Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Perfect Order Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me3-pack",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -362,14 +362,14 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "floor-dropped:rsv10pt5-bundle",
-   "line": "Floor left off for White Flare Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "key": "floor-dropped:me2pt5-tin",
+   "line": "Floor left off for Ascended Heroes Tin: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
-    "id": "rsv10pt5-bundle",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "id": "me2pt5-tin",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -555,10 +555,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:rsv10pt5-wf-pc-etb",
-   "line": "Floor left off for White Flare Pokemon Center Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for White Flare Pokemon Center Elite Trainer Box: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "rsv10pt5-wf-pc-etb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -591,10 +591,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me5-bb",
-   "line": "Floor left off for Pitch Black Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Pitch Black Booster Bundle: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me5-bb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -603,13 +603,25 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me4-etb",
-   "line": "Floor left off for Chaos Rising Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Chaos Rising Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me4-etb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:me4-bb",
+   "line": "Floor left off for Chaos Rising Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "me4-bb",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -622,6 +634,18 @@
     "source": "data/sealed-prices.json"
    },
    "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:me3-etb",
+   "line": "Floor left off for Perfect Order Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "me3-etb",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -639,10 +663,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me2pt5-bb",
-   "line": "Floor left off for Ascended Heroes Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Ascended Heroes Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me2pt5-bb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -699,10 +723,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:me1-etb",
-   "line": "Floor left off for Mega Evolution Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Mega Evolution Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "me1-etb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -711,10 +735,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv8pt5-etb",
-   "line": "Floor left off for Prismatic Evolutions Elite Trainer Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Prismatic Evolutions Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv8pt5-etb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -723,10 +747,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv8pt5-bb",
-   "line": "Floor left off for Prismatic Evolutions Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Prismatic Evolutions Booster Bundle: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv8pt5-bb",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -759,10 +783,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv10-booster-box",
-   "line": "Floor left off for Destined Rivals Booster Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Destined Rivals Booster Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv10-booster-box",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -771,10 +795,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv8-booster-box",
-   "line": "Floor left off for Surging Sparks Booster Box: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Surging Sparks Booster Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv8-booster-box",
-    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -834,18 +858,6 @@
    "line": "Floor left off for 151 Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv3pt5-etb",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
-    "source": "data/sealed-prices.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "floor-dropped:swsh12pt5-etb",
-   "line": "Floor left off for Crown Zenith Elite Trainer Box: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
-   "data": {
-    "id": "swsh12pt5-etb",
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
@@ -963,10 +975,10 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:sv6pt5-bb",
-   "line": "Floor left off for Shrouded Fable Booster Bundle: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Shrouded Fable Booster Bundle: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv6pt5-bb",
-    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -986,11 +998,23 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
+   "key": "floor-dropped:me5-pack",
+   "line": "Floor left off for Pitch Black Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "me5-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
    "key": "floor-dropped:sv2-pack",
-   "line": "Floor left off for Paldea Evolved Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "line": "Floor left off for Paldea Evolved Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
    "data": {
     "id": "sv2-pack",
-    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
    "new": false
@@ -998,8 +1022,164 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
+   "key": "floor-dropped:sv3-pack",
+   "line": "Floor left off for Obsidian Flames Booster Pack: floor from 4 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv3-pack",
+    "reason": "floor from 4 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:sv4-bundle",
+   "line": "Floor left off for Paradox Rift Booster Bundle: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv4-bundle",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:sv4pt5-pack",
+   "line": "Floor left off for Paldean Fates Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv4pt5-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:sv5-pack",
+   "line": "Floor left off for Temporal Forces Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv5-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:sv6-pack",
+   "line": "Floor left off for Twilight Masquerade Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "sv6-pack",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh10-pack",
+   "line": "Floor left off for Astral Radiance Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh10-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh12-pack",
+   "line": "Floor left off for Silver Tempest Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh12-pack",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh12pt5-pack",
+   "line": "Floor left off for Crown Zenith Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh12pt5-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh3-pack",
+   "line": "Floor left off for Darkness Ablaze Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh3-pack",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh35-pack",
+   "line": "Floor left off for Champion's Path Booster Pack: floor from 3 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh35-pack",
+    "reason": "floor from 3 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh4-pack",
+   "line": "Floor left off for Vivid Voltage Booster Pack: floor from 1 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh4-pack",
+    "reason": "floor from 1 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh45-pack",
+   "line": "Floor left off for Shining Fates Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh45-pack",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "floor-dropped:swsh9-pack",
+   "line": "Floor left off for Brilliant Stars Booster Pack: floor from 2 listing(s), under the proven minimum of 5. The median still publishes.",
+   "data": {
+    "id": "swsh9-pack",
+    "reason": "floor from 2 listing(s), under the proven minimum of 5",
+    "source": "data/sealed-prices.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
    "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.27, more than 10x from peer median.",
+   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.24, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-277004",
     "group": "swsh-alt",
@@ -1011,21 +1191,8 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-179007",
-   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.61, 1st Edition price below its own unlimited price.",
-   "data": {
-    "id": "tcgcsv-179007",
-    "group": "prism",
-    "ratio": 0.1,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
    "key": "held:tcgcsv-87409",
-   "line": "Held for a check: Mew ex (EX Legend Maker) at $1.38, more than 10x from peer median.",
+   "line": "Held for a check: Mew ex (EX Legend Maker) at $1.40, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-87409",
     "group": "ex-era-ex",
@@ -1051,7 +1218,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179028",
-   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.42, more than 10x from peer median.",
+   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.43, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179028",
     "group": "prism",
@@ -1064,7 +1231,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $5.32, more than 10x from peer median.",
+   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $5.39, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253149",
     "group": "swsh-alt",
@@ -1116,7 +1283,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $25.78, more than 10x from peer median.",
+   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $25.71, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253171",
     "group": "swsh-alt",
@@ -1165,19 +1332,6 @@
    "new": false
   },
   {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-88796",
-   "line": "Held for a check: Rocket's Snorlax ex (EX Team Rocket Returns) at $2999.99, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-88796",
-    "group": "ex-era-ex",
-    "ratio": 14.51,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
    "key": "empty:spread",
@@ -1195,17 +1349,6 @@
    "line": "Read type \"askmove\" produced nothing tonight.",
    "data": {
     "kind": "askmove",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:listings",
-   "line": "Read type \"listings\" produced nothing tonight.",
-   "data": {
-    "kind": "listings",
     "lastNight": 0
    },
    "new": false
