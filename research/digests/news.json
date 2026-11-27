@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-27T12:53:46.201Z",
+  "updated": "2026-11-27T14:34:28.626Z",
   "timezone": "America/Vancouver",
   "asOf": "2026-11-27",
   "defaultWindowDays": 14,
@@ -23045,6 +23045,11 @@
       "skipped": "HTTP 403: page blocked the fetch"
     },
     {
+      "source": "Siliconera",
+      "url": "https://www.siliconera.com/tag/pokemon/feed/",
+      "items": 15
+    },
+    {
       "source": "Pokémon Card (Japan)",
       "url": "https://www.pokemon-card.com/info/",
       "items": 430
@@ -23060,14 +23065,30 @@
       "items": 25
     },
     {
-      "source": "Siliconera",
-      "url": "https://www.siliconera.com/tag/pokemon/feed/",
-      "items": 15
+      "source": "ICv2",
+      "url": "https://icv2.com/rss",
+      "items": 0,
+      "skipped": "page had no titled items"
     },
     {
       "source": "Pokémon Center Support",
       "url": "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json",
       "items": 13
+    },
+    {
+      "source": "Gematsu",
+      "url": "https://www.gematsu.com/companies/the-pokemon-company",
+      "items": 29
+    },
+    {
+      "source": "Serebii",
+      "url": "https://www.serebii.net/card/english.shtml",
+      "items": 129
+    },
+    {
+      "source": "PokeGuardian",
+      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
+      "items": 2
     },
     {
       "source": "Pokémon Card (Asia)",
@@ -23076,30 +23097,9 @@
       "note": "The list stated titles and links. It did not state a publication date."
     },
     {
-      "source": "Serebii",
-      "url": "https://www.serebii.net/card/english.shtml",
-      "items": 129
-    },
-    {
-      "source": "ICv2",
-      "url": "https://icv2.com/rss",
-      "items": 0,
-      "skipped": "page had no titled items"
-    },
-    {
       "source": "Victory Road",
       "url": "https://victoryroad.pro/feed/",
       "items": 5
-    },
-    {
-      "source": "Gematsu",
-      "url": "https://www.gematsu.com/companies/the-pokemon-company",
-      "items": 29
-    },
-    {
-      "source": "PokeGuardian",
-      "url": "https://www.pokeguardian.com/sets/upcoming-sets",
-      "items": 2
     },
     {
       "source": "PokeGuardian",
@@ -23143,7 +23143,7 @@
     {
       "day": "2026-11-27",
       "slot": "nightly",
-      "at": "2026-11-27T12:53:46.201Z",
+      "at": "2026-11-27T14:34:28.626Z",
       "path": "research/digests/news.json"
     }
   ]
