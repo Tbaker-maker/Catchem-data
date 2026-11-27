@@ -8,12 +8,12 @@
     "reserve": 1000,
     "used": {
       "sealed": 0,
-      "singles": 22,
-      "total": 22
+      "singles": 0,
+      "total": 0
     },
-    "remaining": 19978,
-    "usedToday": 22,
-    "usedThisRun": 22,
+    "remaining": 13655,
+    "usedToday": 6345,
+    "usedThisRun": 0,
     "labels": {
       "used": "this run only, from x-credits-charged",
       "usedThisRun": "this run only, from x-credits-charged",
@@ -21,26 +21,31 @@
       "remaining": "daily budget minus usedToday; not the lagging x-credits-remaining header"
     },
     "lanes": {
-      "current": 22
+      "current": 22,
+      "map": 0,
+      "comps": 3495,
+      "volume": 1328,
+      "pop": 1000,
+      "history": 500
     }
   },
   "items": {
     "sealed": 0,
-    "singles": 11
+    "singles": 0
   },
   "errors": [],
   "estimate": {
     "budget": 10000,
     "reserve": 1000,
     "daily": 20000,
-    "sealedCredits": 3013,
-    "singlesCredits": 6987,
+    "sealedCredits": 3023,
+    "singlesCredits": 6977,
     "total": 10000,
-    "sealedCount": 2964,
+    "sealedCount": 2969,
     "singlesCount": 28848,
     "mappedSealed": 2915,
-    "mappedSingles": 28735,
-    "singlesThisNight": 6987,
+    "mappedSingles": 28746,
+    "singlesThisNight": 6977,
     "notes": [
       "Current-price lane is 10,000 of 20,000 daily credits; 1,000 stays in the shared reserve.",
       "Current prices only. History is 1 credit per row and is not in the nightly refresh.",
@@ -50,22 +55,22 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 22,
-    "itemsDone": 11,
+    "creditsUsed": 0,
+    "itemsDone": 0,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 159,
-    "itemsSkipped": 159,
-    "callsSent": 42,
+    "itemsBudgetSkipped": 164,
+    "itemsSkipped": 164,
+    "callsSent": 5,
     "callsFailed": 0,
-    "callsNotSent": 159,
+    "callsNotSent": 164,
     "rateLimitCount": 0,
     "retries": 0
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppp-raw-private and pushed to the private repo. It is not committed here.",
   "emptyIds": {
-    "skippedToday": 135,
-    "foundEmptyToday": 20,
-    "marked": 169,
+    "skippedToday": 155,
+    "foundEmptyToday": 5,
+    "marked": 174,
     "recheckDays": 7,
     "note": "Lookups PPP answered with no unique product. Skipped until a week has passed, then asked once more."
   },
@@ -82,7 +87,7 @@
     "windowDays": 7,
     "counts": {
       "pppSealed": 0,
-      "pppCards": 11,
+      "pppCards": 0,
       "pptSealed": 0,
       "pptCards": 0,
       "pptSealedOnly": 0,
@@ -114,15 +119,15 @@
     },
     "singles": {
       "vsTcgcsv": {
-        "nCompared": 11,
-        "nExact": 3,
-        "exactShare": 0.2727272727272727,
-        "medianAbsPct": 1.6666666666666683,
-        "within5": 9,
-        "within5Share": 0.8181818181818182,
-        "within10": 10,
-        "within10Share": 0.9090909090909091,
-        "nOutliersOver10": 1
+        "nCompared": 0,
+        "nExact": 0,
+        "exactShare": null,
+        "medianAbsPct": null,
+        "within5": 0,
+        "within5Share": null,
+        "within10": 0,
+        "within10Share": null,
+        "nOutliersOver10": 0
       },
       "vsPpt": {
         "nCompared": 0,

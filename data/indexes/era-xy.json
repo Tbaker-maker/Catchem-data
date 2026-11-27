@@ -1,7 +1,7 @@
 {
   "id": "era-xy",
   "name": "XY",
-  "asOf": "2026-11-25",
+  "asOf": "2026-11-27",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -456,6 +456,16 @@
           "entered": 0,
           "equalMovePct": -0.4209,
           "valueMovePct": -0.4209
+        },
+        {
+          "date": "2026-11-27",
+          "from": "2026-11-25",
+          "equal": 110.1,
+          "value": 110.1,
+          "matched": 1,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": 0
         }
       ],
       "gaps": [
@@ -492,6 +502,12 @@
           "from": "2026-10-30",
           "to": "2026-11-11",
           "missingDays": 11,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-11-25",
+          "to": "2026-11-27",
+          "missingDays": 1,
           "note": "No price was invented for the days in between."
         }
       ]
@@ -535,6 +551,12 @@
           "from": "2026-10-30",
           "to": "2026-11-11",
           "missingDays": 11,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-11-25",
+          "to": "2026-11-27",
+          "missingDays": 1,
           "note": "No price was invented for the days in between."
         }
       ]
