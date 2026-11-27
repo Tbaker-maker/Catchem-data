@@ -1,0 +1,24 @@
+{
+  "enabled": false,
+  "flag": "set.valueReads",
+  "asOf": "2026-10-09",
+  "windowDays": 30,
+  "minPct": 8,
+  "exactStart": "2026-09-09",
+  "exactStartOnFile": false,
+  "sets": 205,
+  "wouldQualify": 0,
+  "rule": "The sum uses only singles with a TCGplayer market price on both exact days. A missing day drops the set. The card count is the number of those singles.",
+  "reads": [],
+  "priceDaysOnFile": [
+    "2026-09-26",
+    "2026-09-27",
+    "2026-09-29",
+    "2026-10-03",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09"
+  ]
+}
