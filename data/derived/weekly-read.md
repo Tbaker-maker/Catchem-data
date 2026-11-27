@@ -1,4 +1,4 @@
-# Weekly Read, 2026-11-25
+# Weekly Read, 2026-11-27
 
 Video outline. Same parts every week. Do not say a name is a move to make.
 
@@ -14,11 +14,11 @@ Video outline. Same parts every week. Do not say a name is a move to make.
 Status: building history
 
 Sealed
-- Ascended Heroes Booster Bundle: 6 in 7 days, 12 in 30, streak 5
-- Prismatic Evolutions Booster Bundle: 5 in 7 days, 9 in 30, streak 0
+- Ascended Heroes Booster Bundle: 5 in 7 days, 11 in 30, streak 5
+- Prismatic Evolutions Booster Bundle: 4 in 7 days, 9 in 30, streak 0
 - Chaos Rising Booster Bundle: 5 in 7 days, 8 in 30, streak 5
-- Prismatic Evolutions Elite Trainer Box: 2 in 7 days, 8 in 30, streak 0
-- Pitch Black Elite Trainer Box: 4 in 7 days, 6 in 30, streak 0
+- Prismatic Evolutions Elite Trainer Box: 1 in 7 days, 8 in 30, streak 0
+- Pitch Black Elite Trainer Box: 3 in 7 days, 6 in 30, streak 0
 
 ## Sealed line and chase line
 These are two lines. They are not one number.
