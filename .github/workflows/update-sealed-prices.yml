@@ -668,6 +668,17 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-public-data.mjs --push
 
+      - name: Check the live data version
+        # After a publish that pushed. The homepage x-data-version header
+        # should be the sealed-prices day (data/sealed-prices.json updatedAt).
+        # A few tries across about 10 minutes, then one alert.
+        # A lag does not roll back git and does not fail the nightly.
+        # This step does not publish again. The script exits 0.
+        if: steps.publish.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/check-live-data-version.mjs
+
       - name: Open an issue when the publish was refused or rolled back
         if: failure() && steps.publish.outcome == 'failure'
         env:
