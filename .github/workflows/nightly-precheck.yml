@@ -39,8 +39,8 @@ jobs:
           node scripts/artifact-freshness.mjs >> /tmp/precheck.log 2>&1 || echo "::notice::main's artifacts are stale; tonight's nightly refreshes them."
           node scripts/tests/run-tests.mjs > /tmp/tests.log 2>&1
           node scripts/triage-tests.mjs /tmp/tests.log --mode nightly --out data/derived/test-triage.json
+          node scripts/precheck-decision.mjs data/derived/test-triage.json --guard "$guard"
           code=$?
-          [ "$guard" != 0 ] && code=1
           echo "exit=$code" >> "$GITHUB_OUTPUT"
           tail -50 /tmp/tests.log
           exit 0
