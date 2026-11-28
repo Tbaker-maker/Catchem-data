@@ -8,8 +8,8 @@ Each input is compared with that same product's own last 90 days. The comparison
 
 - **Listings (40%)**. The change in how many eBay listings are up. Fewer listings scores hotter. More listings scores colder. This is a count of listings, not a count of copies that changed hands.
 - **TCGplayer market price (30%)**. The last 7 days of TCGplayer market price, compared with the last 30. This is only used when we have 30 days of that price. We do not fill in days we do not have.
-- **Google Trends (20%)**. Interest in the set or the Pokémon. If the lookup fails, this input is left empty.
-- **YouTube (10%)**. How many new videos mention the set. This needs its own 90-day trail before it can be a z-score. We do not have that trail, and no API key is set, so this input is left empty.
+- **Google Trends (20%)**. There is no official Google Trends API. Automated explore is disallowed, checked 2026-11-25. This input stays empty. Wikipedia pageviews do not fill this slot.
+- **YouTube (10%)**. New videos that uniquely name the product. A video counts only when the mention reason is a product link or one sealed product of a named set. A rundown that tags many products counts for none. The z-score stays empty until that product has 30 days of those counts.
 
 A product gets a score when at least one input has 30 days behind it: 30 one-day changes in listings, or 30 days of TCGplayer market price (with 30 momentum readings to compare against). An input that is short is left empty and the score is marked partial. A product with neither is left out.
 

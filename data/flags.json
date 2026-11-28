@@ -104,6 +104,27 @@
       "trigger": "Private backtest passes and Tyler turns this on.",
       "env": "CATCHEM_MOOD_GAP"
     },
+    "reads.gemWatch": {
+      "value": false,
+      "owner": "scripts/lib/gem-watch.mjs",
+      "why": "Quiet new high and quiet climber stay off until the private limits file is present and this key is turned on. A missing limits file returns no row.",
+      "trigger": "Private gem watch backtest passes and Tyler turns this on.",
+      "env": "CATCHEM_GEM_WATCH"
+    },
+    "reads.supplyWatch": {
+      "value": false,
+      "owner": "scripts/lib/supply-watch-line.mjs",
+      "why": "Listings counted lines stay off until a private supply watch family is confirmed forward and this key is turned on.",
+      "trigger": "A private supply watch family confirms forward and Tyler turns this on.",
+      "env": "CATCHEM_SUPPLY_WATCH"
+    },
+    "reads.wikiHeat": {
+      "value": false,
+      "owner": "scripts/lib/wiki-heat.mjs",
+      "why": "Wikipedia pageview heat stays off until a mapped title has 30 days and this key is turned on. It does not fill the Google Trends slot.",
+      "trigger": "A mapped title has 30 days of pageviews and Tyler turns this on.",
+      "env": "CATCHEM_WIKI_HEAT"
+    },
     "reads.library": {
       "value": true,
       "owner": "scripts/lib/second-library.mjs",

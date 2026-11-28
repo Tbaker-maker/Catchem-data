@@ -60,17 +60,30 @@ export const RETAILERS = [
   ["eb_games", /\beb ?games\b/i],
 ];
 const LIVE = /\b(live|restock(?:ed)?|in stock|back in stock|available now|dropping now|dropped|is up|now available|loaded)\b/i;
+const SOLD_OUT = /\b(sold out|gone|out of stock)\b/i;
 const NOT_EVENT = /\b(preorders? (?:soon|expected)|expected at|queue at|no (?:set )?date|tonight'?s drop is expected|watchlist|might|potential|rumou?r)\b/i;
-const normProduct = (t) => String(t || "").toLowerCase().replace(/https?:\/\/\S+/g, "").replace(/#\w+/g, "").split(/\b(?:live|restock|in stock|back in stock|available|dropping|dropped|is up|at)\b/)[0].replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+const normProduct = (t) => String(t || "").toLowerCase().replace(/https?:\/\/\S+/g, "").replace(/#\w+/g, "").split(/\b(?:live|restock|in stock|back in stock|available|dropping|dropped|is up|sold out|gone|out of stock|at)\b/)[0].replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+export const ALERT_GAP_WINDOW_MIN = 7 * 24 * 60;
+export const ALERT_GAP_NOTE = "Gap between X alerts we have read, not a shelf clock.";
+
+function verifiedSealed(m) {
+  if (!m || !Array.isArray(m.sealed) || m.sealed.length !== 1) return null;
+  const id = m.sealed[0];
+  const reason = m.reasons && m.reasons[`sealed:${id}`];
+  if (reason === "product_link" || reason === "set_sealed_kind") return id;
+  return null;
+}
 
 export function parseRestock(post, handle, idx, region = "US") {
   const text = String(post.text || "");
-  if (!LIVE.test(text) || NOT_EVENT.test(text)) return null;
+  if (NOT_EVENT.test(text)) return null;
+  const sold = SOLD_OUT.test(text);
+  if (!sold && !LIVE.test(text)) return null;
   const hit = RETAILERS.find(([, re]) => re.test(text));
   if (!hit) return null;
   const m = idx ? extractMentions(text, idx) : { sealed: [] };
   const reg = /\b(uk|united kingdom)\b|🇬🇧/i.test(text) ? "UK" : /\b(canada|\.ca\b)\b|🇨🇦/i.test(text) ? "CA" : region;
-  return { timestamp: post.created_at, retailer: hit[0], product: m.sealed.length === 1 ? m.sealed[0] : null, productText: normProduct(text), region: reg, handle, postId: String(post.id) };
+  return { timestamp: post.created_at, retailer: hit[0], product: verifiedSealed(m), productText: normProduct(text), region: reg, handle, postId: String(post.id), kind: sold ? "sold_out" : "in_stock" };
 }
 
 // Same retailer + same product (id, else normalized text) + region inside 3 hours = one restock.
@@ -78,11 +91,11 @@ export function dedupeRestocks(rows, windowMin = 180) {
   const sorted = [...rows].filter(Boolean).sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1));
   const events = [];
   for (const r of sorted) {
-    const key = `${r.retailer}|${r.region}|${r.product ?? (r.productText.length >= 8 ? r.productText : `post:${r.postId}`)}`;
+    const key = `${r.retailer}|${r.region}|${r.kind || "in_stock"}|${r.product ?? (r.productText.length >= 8 ? r.productText : `post:${r.postId}`)}`;
     const t = Date.parse(r.timestamp);
     const e = events.find((x) => x.key === key && t - Date.parse(x.timestamp) <= windowMin * 60000);
     if (e) { if (!e.seenBy.some((s) => s.postId === r.postId)) e.seenBy.push({ handle: r.handle, postId: r.postId, timestamp: r.timestamp }); continue; }
-    events.push({ key, timestamp: r.timestamp, retailer: r.retailer, product: r.product, productText: r.productText, region: r.region, handle: r.handle, postId: r.postId, seenBy: [{ handle: r.handle, postId: r.postId, timestamp: r.timestamp }] });
+    events.push({ key, timestamp: r.timestamp, retailer: r.retailer, product: r.product, productText: r.productText, region: r.region, handle: r.handle, postId: r.postId, kind: r.kind || "in_stock", seenBy: [{ handle: r.handle, postId: r.postId, timestamp: r.timestamp }] });
   }
   return events;
 }
@@ -95,6 +108,53 @@ const ptParts = (iso) => {
 const addDays = (d, n) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
 const med = (xs) => { if (!xs.length) return null; const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 
+function marketOn(priceOn, product, day) {
+  if (typeof priceOn !== "function" || product == null) return null;
+  const keys = [product, String(product)];
+  const n = Number(product);
+  if (Number.isFinite(n)) keys.push(n);
+  const s = String(product);
+  if (!s.startsWith("tcgcsv-")) keys.push(`tcgcsv-${s}`);
+  const seen = new Set();
+  for (const k of keys) {
+    const mark = typeof k === "string" ? `s:${k}` : `n:${k}`;
+    if (seen.has(mark)) continue;
+    seen.add(mark);
+    const v = priceOn(k, day);
+    if (v > 0) return v;
+  }
+  return null;
+}
+
+export function pairAlertGaps(events, windowMin = ALERT_GAP_WINDOW_MIN) {
+  const sorted = [...events].sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1));
+  const out = sorted.map((e) => ({ ...e }));
+  for (const e of out) {
+    if (e.kind !== "sold_out") continue;
+    const productKey = e.product ?? e.productText;
+    let prior = null;
+    for (const p of out) {
+      if ((p.kind || "in_stock") === "sold_out") continue;
+      if (p.retailer !== e.retailer || p.region !== e.region) continue;
+      if ((p.product ?? p.productText) !== productKey) continue;
+      const gap = (Date.parse(e.timestamp) - Date.parse(p.timestamp)) / 60000;
+      if (!(gap >= 0 && gap <= windowMin)) continue;
+      if (!prior || Date.parse(p.timestamp) > Date.parse(prior.timestamp)) prior = p;
+    }
+    if (!prior) continue;
+    e.alertGapMinutes = Math.round((Date.parse(e.timestamp) - Date.parse(prior.timestamp)) / 60000);
+    e.alertGapNote = ALERT_GAP_NOTE;
+  }
+  return out;
+}
+
+export function publicRestockLine(event, gateOn = false) {
+  if (gateOn !== true || !event) return null;
+  const n = Number(event.postsRead);
+  if (!(n > 0)) return null;
+  return `Among the ${n} X posts we have read, a post named this product.`;
+}
+
 export function restockStudy(events, priceOn = null) {
   const count = (f) => { const o = {}; for (const e of events) { const k = f(e); o[k] = (o[k] || 0) + 1; } return Object.fromEntries(Object.entries(o).sort((a, b) => b[1] - a[1])); };
   const byDow = count((e) => ptParts(e.timestamp).dow), byHour = count((e) => ptParts(e.timestamp).hour);
@@ -105,10 +165,14 @@ export function restockStudy(events, priceOn = null) {
   const moves = [];
   if (priceOn) for (const e of events) {
     if (!e.product) continue;
-    const d = e.timestamp.slice(0, 10), a = priceOn(e.product, addDays(d, -1)) ?? priceOn(e.product, d), b = priceOn(e.product, addDays(d, 7));
-    if (a > 0 && b > 0) moves.push({ product: e.product, date: d, retailer: e.retailer, chg7: Math.round((b / a - 1) * 10000) / 10000 });
+    const d = e.timestamp.slice(0, 10);
+    const a = marketOn(priceOn, e.product, addDays(d, -1)) ?? marketOn(priceOn, e.product, d);
+    const b = marketOn(priceOn, e.product, addDays(d, 7));
+    if (a > 0 && b > 0) moves.push({ product: e.product, date: d, retailer: e.retailer, chg7: Math.round((b / a - 1) * 10000) / 10000, source: "TCGplayer market" });
   }
-  return { events: events.length, first: events[0]?.timestamp || null, last: events.at(-1)?.timestamp || null, byRetailer: count((e) => e.retailer), byRegion: count((e) => e.region), byProduct: Object.fromEntries(Object.entries(count((e) => e.product ? `id:${e.product}` : e.productText)).slice(0, 40)), byDowPT: byDow, byHourPT: byHour, gaps, priceAfter: { n: moves.length, median7: med(moves.map((m) => m.chg7)), rows: moves } };
+  const paired = pairAlertGaps(events);
+  const alertGaps = paired.filter((e) => e.alertGapMinutes != null).map((e) => ({ product: e.product, retailer: e.retailer, region: e.region, alertGapMinutes: e.alertGapMinutes, alertGapNote: e.alertGapNote }));
+  return { events: events.length, first: events[0]?.timestamp || null, last: events.at(-1)?.timestamp || null, byRetailer: count((e) => e.retailer), byRegion: count((e) => e.region), byProduct: Object.fromEntries(Object.entries(count((e) => e.product ? `id:${e.product}` : e.productText)).slice(0, 40)), byDowPT: byDow, byHourPT: byHour, gaps, alertGaps, priceAfter: { n: moves.length, median7: med(moves.map((m) => m.chg7)), rows: moves } };
 }
 
 // Restock account ranking: accuracy (event confirmed by another account, or by a later

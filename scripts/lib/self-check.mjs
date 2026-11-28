@@ -133,20 +133,46 @@ export function scoreLedger(ledger, priceOn, today, marketChange = null) {
       const base = e.t === "rating" ? median(group.get(`${e.date}|${e.group}`)) : (marketChange ? marketChange(e.date, at.day) : median(market.get(e.date)));
       const excess = base == null ? null : c - base;
       let held = null;
-      if (e.t === "read") held = e.dir > 0 ? at.price >= e.price : at.price <= e.price;
-      else if (e.kind === "below" && excess != null) held = excess > 0;
-      else if (e.kind === "above" && excess != null) held = excess < 0;
-      // Band + market-relative (secondary column; the tuner still reads held).
+      let heldStrict = null;
+      if (e.t === "read") {
+        held = e.dir > 0 ? at.price >= e.price : at.price <= e.price;
+        heldStrict = e.dir > 0 ? at.price > e.price : at.price < e.price;
+      } else if (e.kind === "below" && excess != null) {
+        held = excess > 0;
+        heldStrict = held;
+      } else if (e.kind === "above" && excess != null) {
+        held = excess < 0;
+        heldStrict = held;
+      }
+      // Band + market-relative. Decisions read heldStrict or bandHeld, not a flat held.
       const bandHeld = e.t === "read" && excess != null ? Math.abs(c) >= BAND && Math.sign(c) === e.dir && Math.sign(excess) === e.dir : null;
-      e[`h${h}`] = { day: at.day, chg: Math.round(c * 10000) / 10000, excess: excess == null ? null : Math.round(excess * 10000) / 10000, held, bandHeld };
+      e[`h${h}`] = { day: at.day, chg: Math.round(c * 10000) / 10000, excess: excess == null ? null : Math.round(excess * 10000) / 10000, held, heldStrict, bandHeld };
     }
   }
   return ledger;
 }
 
+export function onePerWeek(ledger) {
+  const sorted = [...ledger].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  const last = new Map();
+  const out = [];
+  for (const e of sorted) {
+    const key = `${e.pid}|${e.kind}|${e.dir ?? ""}`;
+    const prev = last.get(key);
+    if (prev) {
+      const gap = Math.round((Date.parse(`${e.date}T00:00:00Z`) - Date.parse(`${prev}T00:00:00Z`)) / 86400000);
+      if (gap < 7) continue;
+    }
+    last.set(key, e.date);
+    out.push(e);
+  }
+  return out;
+}
+
 export function summarize(ledger) {
+  const rowsIn = onePerWeek(ledger);
   const buckets = new Map();
-  for (const e of ledger) {
+  for (const e of rowsIn) {
     const key = `${e.t}:${e.kind}`;
     if (!buckets.has(key)) buckets.set(key, { type: e.t, kind: e.kind, logged: 0 });
     const b = buckets.get(key);
@@ -156,6 +182,7 @@ export function summarize(ledger) {
       if (!s || s.held == null) continue;
       b[`n${h}`] = (b[`n${h}`] || 0) + 1;
       b[`held${h}`] = (b[`held${h}`] || 0) + (s.held ? 1 : 0);
+      if (s.heldStrict != null) { b[`ns${h}`] = (b[`ns${h}`] || 0) + 1; b[`hs${h}`] = (b[`hs${h}`] || 0) + (s.heldStrict ? 1 : 0); }
       if (s.bandHeld != null) { b[`nb${h}`] = (b[`nb${h}`] || 0) + 1; b[`bh${h}`] = (b[`bh${h}`] || 0) + (s.bandHeld ? 1 : 0); }
       if (s.excess != null) (b[`_ex${h}`] ||= []).push(s.excess);
     }
@@ -167,6 +194,8 @@ export function summarize(ledger) {
       const n = b[`n${h}`] || 0;
       row[`scored${h}`] = n;
       row[`heldPct${h}`] = n >= MIN_SCORED ? Math.round((100 * (b[`held${h}`] || 0)) / n) : null;
+      const ns = b[`ns${h}`] || 0;
+      row[`heldStrictPct${h}`] = ns >= MIN_SCORED ? Math.round((100 * (b[`hs${h}`] || 0)) / ns) : null;
       const nb = b[`nb${h}`] || 0;
       row[`bandHeldPct${h}`] = nb >= MIN_SCORED ? Math.round((100 * (b[`bh${h}`] || 0)) / nb) : null;
       const ex = b[`_ex${h}`] || [];
