@@ -1,28 +1,84 @@
-# DISABLED. Do not re-enable. Do not add a schedule.
-# Workflow is left disabled_manually. Schedule removed so a switch
-# flip cannot spend Anthropic credit. workflow_dispatch only.
-# Do not set PPT_INTRADAY_ENABLED.
+# Research digest. Replaces the disabled daily-research workflow that used a
+# paid chat API and had no weekday schedule.
+# Primary trigger: Update sealed prices finishes (any conclusion), so this
+# does not start inside the 5:50 to 9:30 AM PT price window.
+# Fallback: weekdays at 18:30 UTC (10:30 AM PST / 11:30 AM PDT), after that
+# window.
+# schedule and workflow_run both skip when today's digest is already on disk.
+# workflow_dispatch is the only force.
+# A price run still in progress exits 0 and does not push. There is no wait
+# loop and no push after a timeout.
+# Key: repo secret XAI_API_KEY. Model: XAI_MODEL, or grok-4.7 when unset
+# (https://docs.x.ai/developers/models).
 name: daily-research
 on:
+  workflow_run:
+    workflows: ["Update sealed prices"]
+    types: [completed]
+  schedule:
+    - cron: "30 18 * * 1-5"
   workflow_dispatch: {}
 permissions:
   contents: write
+  actions: read
+concurrency:
+  group: daily-research
+  cancel-in-progress: false
 jobs:
   research:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - name: Run research agent
+        with:
+          node-version: "22"
+      - name: Skip when the fallback is redundant or prices are still running
+        id: gate
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          skip=0
+          day=$(date -u +%F)
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ -f "research/digests/${day}.md" ]; then
+            echo "digest for ${day} already exists; skipping"
+            skip=1
+          fi
+          n=$(gh run list --workflow "Update sealed prices" --status in_progress --json databaseId --jq 'length' || echo "unknown")
+          if [ "$n" != "0" ]; then
+            echo "sealed prices in progress or the check failed ($n); exiting without a push"
+            skip=1
+          fi
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+      - name: Check artifact freshness before the paid call
+        # A stale main cannot be committed. Run this before the paid script
+        # so that call never starts. schema-guard and reply-line-guard stay
+        # after the script, because they read what the script wrote.
+        id: fresh
+        if: steps.gate.outputs.skip != '1'
+        run: node scripts/artifact-freshness.mjs
+      - name: Run research script
+        if: success() && steps.gate.outputs.skip != '1'
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          XAI_MODEL: ${{ vars.XAI_MODEL }}
         run: node scripts/daily-research.mjs
-      - name: Commit findings
+      - name: schema-guard
+        if: success() && steps.gate.outputs.skip != '1'
+        run: node scripts/schema-guard.mjs
+      - name: reply-line-guard
+        if: success() && steps.gate.outputs.skip != '1'
+        run: node scripts/reply-line-guard.mjs
+      - name: Commit and push
+        if: success() && steps.gate.outputs.skip != '1'
         run: |
           git config user.name "catchem-research-bot"
           git config user.email "bot@catchemtcg.com"
-          git add research/ data/release-radar.json
-          git diff --cached --quiet || git commit -m "research: daily digest $(date -u +%F)"
+          day=$(date -u +%F)
+          git add "research/digests/${day}.md" data/release-radar.json research/assets/public/releases.json
+          git diff --cached --quiet && echo "nothing to commit" && exit 0
+          git commit -m "research: daily digest ${day}"
+          git pull --rebase origin main
           git push
