@@ -6,9 +6,12 @@ import { oneNightMove } from "./history-reads.mjs";
 import { mentionsHeld } from "./price-hold-skip.mjs";
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { bannedWord, money, pretty } from "./public-bundle.mjs";
 import { flag } from "../flags.mjs";
+import { mapReadImage, settleReadImages, allowedCatalogueUrl, isSetLogoUrl } from "./read-images.mjs";
 import { takeCode } from "./takes.mjs";
 import {
   FOOTER,
@@ -594,6 +597,9 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     plain: { qualified: plainRows.length, boarded: boarded.plain, droppedNoExactDay: plainPool.dropped },
   };
 
+  withBuiltPictures(board);
+  withBuiltPictures(signals);
+
   return {
     asOf,
     source: catalogue?.source || "TCGplayer market",
@@ -609,6 +615,37 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     conditionNote: CONDITION_NOTE,
     quietNight: quietNight(asOf, board.length),
   };
+}
+
+const MODULE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
+let cachedImageFiles = null;
+
+function repoImageInputs() {
+  if (!cachedImageFiles) {
+    let images = {};
+    try { images = JSON.parse(readFileSync(join(MODULE_ROOT, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }
+    const sealedPid = new Map();
+    const sealedImageIds = new Set();
+    try {
+      const doc = JSON.parse(readFileSync(join(MODULE_ROOT, "data/sealed-products.json"), "utf8"));
+      for (const p of Array.isArray(doc) ? doc : doc.products || []) {
+        if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
+        const img = String(p?.image || p?.representativeImage || "");
+        if (p?.id && img && !isSetLogoUrl(img)) sealedImageIds.add(String(p.id));
+      }
+    } catch { /* no sealed map */ }
+    cachedImageFiles = { images, sealedPid, sealedImageIds };
+  }
+  return { ...cachedImageFiles, tcgOn: flag("images.tcgplayer") !== false };
+}
+
+// The picture is part of the built row. A later stamp must not rewrite the library file.
+function withBuiltPictures(rows) {
+  const inputs = repoImageInputs();
+  for (const row of rows || []) {
+    const pick = mapReadImage(row, inputs);
+    if (pick.url) row.image = pick.url;
+  }
 }
 
 export async function dailyFileSet(root) {
@@ -643,29 +680,15 @@ async function readJson(path) {
 }
 
 
-// Board picture order: Post Office catalogue by id, then the TCGplayer photo by productId
-// (only while flags images.tcgplayer is on), then the branded tile. Never empty.
+// Board picture order: catalogue path on images.pokemontcg.io, then the
+// TCGplayer photo by product id (only while flags images.tcgplayer is on),
+// then the branded tile. The tile is not an allowed picture host. The
+// publisher drops it and moves a top slot down.
 export const SITE_ORIGIN = "https://catchemtcg.com";
 export const BRAND_TILE = `${SITE_ORIGIN}/og.png`;
 export function boardImage(row, images = {}, tcgOn = true, sealedPid = new Map()) {
-  const ids = [row?.sku, row?.id, row?.sourceLine].map((v) => String(v || "").replace(/^(move|mover|streak|plain|high|low|set|spread|askmove|mktmove)-/, "")).filter(Boolean);
-  for (const id of [...ids]) { const pid = sealedPid.get(id); if (pid) ids.push(`tcgcsv-${pid}`); }
-  for (const id of ids) {
-    const raw = typeof images[id] === "string" ? images[id].trim().split(/[?#]/)[0] : "";
-    if (!raw || raw.includes("..") || raw.includes("//")) continue;
-    const m = raw.match(/^\/(?:img|thumb)\/([A-Za-z0-9]+)\/([A-Za-z0-9._-]+)$/);
-    if (m) return `${SITE_ORIGIN}/data/editor/tcg/${m[1]}/${/\.[A-Za-z0-9]+$/.test(m[2]) ? m[2] : m[2] + "_hires.png"}`;
-    if (/^\/cards\/[A-Za-z0-9._/-]+$/.test(raw)) return SITE_ORIGIN + raw;
-  }
-  const existing = String(row?.image || "");
-  if (/^https:\/\/catchemtcg\.com\//.test(existing)) return existing;
-  if (tcgOn) {
-    for (const id of ids) {
-      const pid = id.match(/^tcgcsv-(\d+)$/);
-      if (pid) return `https://tcgplayer-cdn.tcgplayer.com/product/${pid[1]}_in_400x400.jpg`;
-    }
-  }
-  return BRAND_TILE;
+  const pick = mapReadImage(row, { images, tcgOn, sealedPid });
+  return pick.url || BRAND_TILE;
 }
 
 export function setSlugOf(row) {
@@ -683,17 +706,20 @@ export function logoUrl(logos, slug) {
   if (!slug || !logos) return "";
   const row = logos[slug] || logos[slug.toLowerCase()];
   const path = String(row?.logo || "");
-  if (!/^\/img\/[A-Za-z0-9]+\/logo\.png$/.test(path)) return "";
-  return `${SITE_ORIGIN}${path}`;
+  const m = path.match(/^\/img\/([A-Za-z0-9]+)\/logo\.png$/);
+  if (!m) return "";
+  return `https://images.pokemontcg.io/${m[1]}/logo.png`;
 }
 
 // A deep dive that would otherwise get the site tile uses the set logo, then a
 // real product picture from the receipt or the line cards. Other reads keep boardImage.
 function productShot(url) {
   const s = String(url || "").trim();
-  if (!s || s === BRAND_TILE || s.endsWith("/og.png") || s.includes("..")) return "";
+  if (!s || s === BRAND_TILE || s.endsWith("/og.png") || s.includes("..") || isSetLogoUrl(s)) return "";
   if (/^https:\/\/tcgplayer-cdn\.tcgplayer\.com\/product\/\d+_in_400x400\.jpg$/.test(s)) return s;
-  if (/^https:\/\/catchemtcg\.com\/(?:data\/editor\/tcg|cards|img)\/[A-Za-z0-9._/-]+$/.test(s)) return s;
+  if (/^https:\/\/images\.pokemontcg\.io\/[A-Za-z0-9]+\/[A-Za-z0-9._-]+$/.test(s)) return s;
+  const fromPath = allowedCatalogueUrl(s);
+  if (fromPath && !isSetLogoUrl(fromPath)) return fromPath;
   return "";
 }
 
@@ -733,11 +759,16 @@ export async function loadBoardImageInputs(root) {
   let logos = {};
   try { logos = JSON.parse(await readFile(join(root, "research/assets/public/set-logos.json"), "utf8")).logos || {}; } catch { logos = {}; }
   const sealedPid = new Map();
+  const sealedImageIds = new Set();
   try {
     const doc = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
-    for (const p of Array.isArray(doc) ? doc : doc.products || []) if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
+    for (const p of Array.isArray(doc) ? doc : doc.products || []) {
+      if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
+      const img = String(p?.image || p?.representativeImage || "");
+      if (p?.id && img && !isSetLogoUrl(img)) sealedImageIds.add(String(p.id));
+    }
   } catch { /* no sealed map */ }
-  return { images, tcgOn, sealedPid, logos };
+  return { images, tcgOn, sealedPid, logos, sealedImageIds };
 }
 
 export async function writeReadLibrary({ root, catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = null, pptPublic = null, volumeReads = null }) {
@@ -771,11 +802,20 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   const readsPath = join(root, READS_FILE);
   await mkdir(dirname(readsPath), { recursive: true });
   const published = publishReads(lib);
-  const { images: boardImages, tcgOn, sealedPid, logos } = await loadBoardImageInputs(root);
-  // publishReads returns the same row objects as lib.board. Stamp the picture
-  // on copies so the library object stays the one written to read-library.json.
+  const { images: boardImages, tcgOn, sealedPid, logos, sealedImageIds } = await loadBoardImageInputs(root);
+  // publishReads returns the same row objects as lib.board. Stamp pictures
+  // on copies so the library file keeps the picture it was built with.
   const stamped = (published.reads || []).map((row) => ({ ...row }));
-  for (const row of stamped) row.image = pictureForRead(row, boardImages, tcgOn, sealedPid, logos);
-  await writeFile(readsPath, JSON.stringify({ ...published, reads: stamped }));
+  const settled = settleReadImages(stamped, {
+    images: boardImages,
+    tcgOn,
+    sealedPid,
+    logos,
+    sealedImageIds,
+    boardMax: BOARD_MAX,
+    logLines: false,
+    picture: (row) => pictureForRead(row, boardImages, tcgOn, sealedPid, logos),
+  });
+  await writeFile(readsPath, JSON.stringify({ ...published, reads: settled.reads, count: settled.reads.length }));
   return lib;
 }

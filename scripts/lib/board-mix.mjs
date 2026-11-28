@@ -3,14 +3,15 @@
 // Turned on and off by the one kill switch, reads.library.
 
 import { banGuard } from "./copy-rules.mjs";
-import { readFile, writeFile, readdir } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { money, pretty, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { nameWithTags } from "./card-face.mjs";
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
-import { pictureForRead, loadBoardImageInputs } from "./read-library.mjs";
+import { pictureForRead, loadBoardImageInputs, BOARD_MAX as LEAD_MAX } from "./read-library.mjs";
+import { settleReadImages, headReachable } from "./read-images.mjs";
 import { monthDay } from "./takes.mjs";
 import { rotationPhrase } from "./rotation-phrase.mjs";
 export { rotationPhrase };
@@ -1018,7 +1019,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     fresh.push(...keep);
   }
   attachListingsFacts(fresh, listings);
-  const { images, tcgOn, sealedPid, logos } = await loadBoardImageInputs(root);
+  const { images, tcgOn, sealedPid, logos, sealedImageIds } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = pictureForRead(r, images, tcgOn, sealedPid, logos);
   for (const r of fresh) {
     if (r.headline) r.headline = speakDates(r.headline, r.asOf);
@@ -1092,7 +1093,34 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const split = withholdNewReadKinds(gated.map(stampHistReceipt));
   if (split.dropped.length) console.log(`withheld new read kind: ${split.dropped.map((r) => `${r.id} ${r.kind}/${r.readKind}`).join("; ")}`);
   const stamped = withoutBareReleases(split.kept);
-  await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: stamped, count: stamped.length }, null, 1) + "\n");
+  const dead = new Set();
+  const probed = new Set();
+  let settled = settleReadImages(stamped, { images, tcgOn, sealedPid, logos, sealedImageIds, boardMax: LEAD_MAX, logLines: false, picture: (row) => pictureForRead(row, images, tcgOn, sealedPid, logos) });
+  for (let round = 0; round < 3; round += 1) {
+    const top = settled.reads.slice(0, LEAD_MAX).map((row) => row.image).filter(Boolean);
+    const unseen = top.filter((url) => !probed.has(url));
+    if (!unseen.length) break;
+    for (const url of unseen) {
+      probed.add(url);
+      if (!(await headReachable(url))) dead.add(url);
+    }
+    settled = settleReadImages(stamped, {
+      images,
+      tcgOn,
+      sealedPid,
+      logos,
+      sealedImageIds,
+      boardMax: LEAD_MAX,
+      logLines: false,
+      reachable: (url) => !dead.has(url),
+      picture: (row) => pictureForRead(row, images, tcgOn, sealedPid, logos),
+    });
+  }
+  for (const line of settled.log) console.log(`read-image ${line.id} ${line.reason}`);
+  const demoPath = join(root, "data/derived/read-image-demotions.json");
+  await mkdir(dirname(demoPath), { recursive: true });
+  await writeFile(demoPath, JSON.stringify({ asOf: end, log: settled.log }) + "\n");
+  await writeFile(readsPath, JSON.stringify({ ...doc, asOf: end, reads: settled.reads, count: settled.reads.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of stamped) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
   return { on, history: hist.counts, price: gated.filter(isPriceRead).length, fresh: gated.length - gated.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
