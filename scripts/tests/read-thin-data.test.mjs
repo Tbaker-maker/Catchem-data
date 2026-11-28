@@ -296,44 +296,59 @@ const shortMap = putDays(new Map(outside), [
   [WINDOW_START, 40],
   [DAY_ASOF, 48],
 ]);
-const midMap = putDays(new Map(outside), [
-  [WINDOW_START, 40],
-  [dayShift(WINDOW_START, 2), 43],
-  [dayShift(WINDOW_START, 4), 45],
-  [DAY_ASOF, 48],
-]);
 const fullRows = [];
-for (let i = 0; i <= 7; i += 1) fullRows.push([dayShift(WINDOW_START, i), 40 + i]);
+for (let d = WINDOW_START; ; d = dayShift(d, 1)) {
+  fullRows.push([d, 40 + fullRows.length]);
+  if (d === DAY_ASOF) break;
+}
 const fullMap = putDays(new Map(outside), fullRows);
 
 const shortCount = 2;
-const midCount = 4;
-const fullCount = 8;
-t("fixture windows sit on each side of the fake band", shortCount < DAYS.minPriceDays && midCount >= DAYS.minPriceDays && midCount < DAYS.cautionPriceDays && fullCount >= DAYS.cautionPriceDays && DAYS.aboveWindowCautionPriceDays > fullCount && DAYS.aboveWindowMinPriceDays > fullCount);
+const midCount = 12;
+const fullCount = 18;
+const bandStart = "2026-10-01";
+const bandEnd = "2026-11-27";
+t("fixture windows sit on each side of the fake band", shortCount < DAYS.minPriceDays && midCount >= DAYS.minPriceDays && midCount < DAYS.cautionPriceDays && fullCount >= DAYS.cautionPriceDays && DAYS.aboveWindowCautionPriceDays > fullCount && DAYS.aboveWindowMinPriceDays > fullCount && DAYS.minPriceDays === 11 && DAYS.cautionPriceDays === 17);
 const thinBuilt = sealedCall(shortMap, DAYS);
 const thinBare = sealedCall(shortMap);
 t("a short window is held", thinBuilt.length === 0);
 t("days before the window do not fill a short window", thinBare.length === 1 && thinBare[0].priceDays === shortCount);
 t("without the gate the same short window is a read with no caution", thinBare.length === 1 && !/Price history for this read is/.test(thinBare[0].headline));
-const midBuilt = sealedCall(midMap, DAYS);
-const midLine = `Price history for this read is ${midCount} days.`;
-t("a window inside the caution band names its day count", midBuilt.length === 1 && midBuilt[0].priceDays === midCount && midBuilt[0].headline.endsWith(midLine) && !/[\u2013\u2014]/.test(midBuilt[0].headline) && !/\b(NM|Near Mint|sold|buy|sell)\b/i.test(midLine));
 const fullBare = sealedCall(fullMap);
 const fullBuilt = sealedCall(fullMap, DAYS);
-t("a complete window keeps the same headline", fullBuilt.length === 1 && fullBare.length === 1 && fullBuilt[0].priceDays === fullCount && fullBuilt[0].headline === fullBare[0].headline && !/Price history for this read is/.test(fullBuilt[0].headline));
+t("a complete window keeps the same headline", fullBuilt.length === 1 && fullBare.length === 1 && fullBuilt[0].priceDays === fullRows.length && fullBuilt[0].headline === fullBare[0].headline && !/Price history for this read is/.test(fullBuilt[0].headline));
 const polishedBare = polishPriceRead(fullBare[0]);
 const polishedFull = polishPriceRead(fullBuilt[0]);
 t("polish leaves a complete window headline unchanged", polishedFull.headline === polishedBare.headline && !/Price history for this read is/.test(polishedFull.headline));
-const polishedMid = applyPriceDayCaution(polishPriceRead(midBuilt[0]), DAYS);
-t("a caution sentence comes back after the market line is rewritten", /on TCGplayer market/.test(polishedMid.headline) && polishedMid.headline.endsWith(midLine) && polishedMid.path.endsWith(midLine));
+const bandHead = "Fixture Tin. TCGplayer market: $48.00 (Nov 27), from $40.00 (Oct 1). Up $8.00.";
+const bandRead = (id, n) => ({
+  id,
+  readKind: "sealed",
+  kind: "sealed",
+  name: "Fixture Tin",
+  headline: bandHead,
+  path: bandHead,
+  priceDays: n,
+  price: 48,
+  startDate: bandStart,
+  endDate: bandEnd,
+  windowDays: 57,
+});
+const midLine = `Price history for this read is ${midCount} days.`;
+const polishedMid = applyPriceDayCaution(polishPriceRead(bandRead("fixture-mid", midCount)), DAYS);
+t("a window inside the caution band names its day count", /on TCGplayer market/.test(polishedMid.headline) && polishedMid.headline.endsWith(midLine) && polishedMid.path.endsWith(midLine) && !/[\u2013\u2014]/.test(polishedMid.headline) && !/\b(NM|Near Mint|sold|buy|sell)\b/i.test(midLine));
+t("a caution sentence comes back after the market line is rewritten", polishedMid.headline !== bandHead && polishedMid.headline.endsWith(midLine));
+const polishedFullBand = applyPriceDayCaution(polishPriceRead(bandRead("fixture-full", fullCount)), DAYS);
+t("a count past the caution floor keeps the rewritten headline", polishedFullBand.headline === polishPriceRead(bandRead("fixture-full", fullCount)).headline && !/Price history for this read is/.test(polishedFullBand.headline));
 const missingCfg = sealedCall(shortMap, null);
 t("a missing price day minimum holds the short window", missingCfg.length === 0);
 const thinRow = { ...thinBare[0], readKind: "sealed", kind: "sealed" };
 t("a loaded config with no price day key holds the short window", thinReadBlock(thinRow, FIX)?.rule === "thin-days");
 const bandCfg = { ...FIX, minPriceDays: DAYS.minPriceDays, cautionPriceDays: DAYS.cautionPriceDays };
-const midRow = { id: "fixture-mid", readKind: "sealed", kind: "sealed", name: "Fixture Tin", headline: "Fixture Tin: $40.00 (Nov 20) to $48.00 (Nov 27) on TCGplayer market. Up 20%.", priceDays: midCount, price: 48, startDate: WINDOW_START, endDate: DAY_ASOF };
+const midRow = bandRead("fixture-mid", midCount);
 t("a caution band read is not held", thinReadBlock(midRow, bandCfg) == null);
-t("a complete window is not held", thinReadBlock({ ...midRow, id: "fixture-full", priceDays: fullCount }, bandCfg) == null);
+t("a count past the caution floor is not held", thinReadBlock(bandRead("fixture-full", fullCount), bandCfg) == null);
+t("a count under the fake minimum is held", thinReadBlock(bandRead("fixture-short", shortCount), bandCfg)?.rule === "thin-days");
 const above = { minPriceDays: DAYS.aboveWindowMinPriceDays, cautionPriceDays: DAYS.aboveWindowCautionPriceDays };
 const aboveFull = sealedCall(fullMap, above);
 const aboveShort = sealedCall(shortMap, above);
