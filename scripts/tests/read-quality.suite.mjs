@@ -399,7 +399,7 @@ export async function run() {
 
   {
     const imgs = { "tcgcsv-1": "/img/sv1/12" };
-    t("board image: catalogue picture by id first", boardImage({ sku: "tcgcsv-1" }, imgs, true) === "https://catchemtcg.com/data/editor/tcg/sv1/12_hires.png");
+    t("board image: catalogue picture by id first", boardImage({ sku: "tcgcsv-1" }, imgs, true) === "https://images.pokemontcg.io/sv1/12_hires.png");
     t("board image: TCGplayer photo by productId when the flag is on", boardImage({ sku: "tcgcsv-704180" }, {}, true) === "https://tcgplayer-cdn.tcgplayer.com/product/704180_in_400x400.jpg");
     t("board image: branded tile when the flag is off and no catalogue hit", boardImage({ sku: "tcgcsv-704180" }, {}, false) === BRAND_TILE);
     t("board image: a sealed slug maps to its TCGplayer id", boardImage({ id: "askmove-sv7-etb", sku: "sv7-etb" }, {}, true, new Map([["sv7-etb", "557350"]])) === "https://tcgplayer-cdn.tcgplayer.com/product/557350_in_400x400.jpg");
@@ -408,7 +408,7 @@ export async function run() {
     const stellar = { id: "deep-set-sv07-stellar-crown", readKind: "deep", deep: "set", image: BRAND_TILE, receipt: { slug: "sv07-stellar-crown" }, href: "" };
     t("a set deep dive uses the set logo instead of the site tile", pictureForRead(stellar, {}, false, new Map(), logos) === "https://catchemtcg.com/img/sv7/logo.png");
     const noLogo = { id: "deep-set-custom", readKind: "deep", deep: "set", receipt: { slug: "custom", cards: [{ id: "tcgcsv-42" }] } };
-    t("a set deep dive with no logo uses a product picture", pictureForRead(noLogo, { "tcgcsv-42": "/cards/sv7/1.png" }, false, new Map(), {}) === "https://catchemtcg.com/cards/sv7/1.png");
+    t("a set deep dive with no logo uses a product picture", pictureForRead(noLogo, { "tcgcsv-42": "/cards/sv7/1.png" }, false, new Map(), {}) === "https://images.pokemontcg.io/sv7/1.png");
     const poke = { id: "deep-pokemon-unown", readKind: "deep", deep: "pokemon", lineCards: [{ cards: [{ id: "tcgcsv-90189", image: "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg" }] }] };
     t("a deep dive with no set logo uses a line card product image", pictureForRead(poke, {}, false, new Map(), {}) === "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg");
     t("a deep dive with no set and no product keeps the site tile", pictureForRead({ id: "deep-era-x", readKind: "deep", deep: "era" }, {}, false, new Map(), logos) === BRAND_TILE);

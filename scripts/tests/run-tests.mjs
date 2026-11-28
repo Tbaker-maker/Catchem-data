@@ -488,6 +488,13 @@ console.log("── sealed cutouts ──");
   t("sealed cutouts suite", n === 0, `${n} failed`);
 }
 
+console.log("── read images ──");
+{
+  const { run } = await import("./read-images.suite.mjs");
+  const n = await run();
+  t("read images suite", n === 0, `${n} failed`);
+}
+
 console.log("── feature suites ──");
 {
   const { readdir } = await import("node:fs/promises");
