@@ -56,6 +56,12 @@ export function validReadThin(cfg) {
   }
   if (!cfg.eraTags || typeof cfg.eraTags !== "object" || Array.isArray(cfg.eraTags)) return null;
   out.eraTags = cfg.eraTags;
+  // Price-day limits are optional. An older file still loads. A sealed read
+  // that carries a day count is left out when the minimum is missing.
+  for (const key of ["minPriceDays", "cautionPriceDays"]) {
+    const n = limitNum(cfg[key]);
+    if (n != null) out[key] = n;
+  }
   return out;
 }
 
@@ -302,6 +308,104 @@ function bareLevelHit(read) {
   return hit("thin-level");
 }
 
+// Distinct dated days with a positive price inside the read window.
+// start through end, inclusive. Days outside that window do not count.
+// With no start, days after end are still ignored.
+export function datedPriceDays(daysMap, end, start) {
+  if (!daysMap || typeof daysMap.entries !== "function") return null;
+  const last = String(end || "").slice(0, 10);
+  const first = String(start || "").slice(0, 10);
+  const hasStart = DAY.test(first);
+  const seen = new Set();
+  for (const [day, price] of daysMap) {
+    const d = String(day || "").slice(0, 10);
+    if (!DAY.test(d)) continue;
+    if (DAY.test(last) && d > last) continue;
+    if (hasStart && d < first) continue;
+    if (!(Number(price) > 0)) continue;
+    seen.add(d);
+  }
+  return seen.size;
+}
+
+// Inclusive calendar days from start through end. Null when either date is missing.
+export function windowDaySpan(start, end) {
+  const a = String(start || "").slice(0, 10);
+  const b = String(end || "").slice(0, 10);
+  if (!DAY.test(a) || !DAY.test(b) || b < a) return null;
+  const da = Date.parse(`${a}T00:00:00Z`);
+  const db = Date.parse(`${b}T00:00:00Z`);
+  if (!Number.isFinite(da) || !Number.isFinite(db)) return null;
+  return Math.round((db - da) / 86400000) + 1;
+}
+
+export function priceDayCaution(n) {
+  const unit = n === 1 ? "day" : "days";
+  return `Price history for this read is ${n} ${unit}.`;
+}
+
+export function priceDayCountOf(read) {
+  const n = read?.priceDays;
+  if (!Number.isInteger(n) || n < 0) return null;
+  return n;
+}
+
+// undefined is not passed here. null, or a loaded file with no minimum, leaves the read out.
+// span is the inclusive length of this read's window. A full window is not cautioned.
+// A caution floor above that span is not a lifetime bar: a short window is still named.
+export function priceDayAction(count, cfg, span = null) {
+  if (!Number.isInteger(count)) return "ok";
+  if (cfg == null || typeof cfg !== "object") return "hold";
+  const min = limitNum(cfg.minPriceDays);
+  if (min == null) return "hold";
+  const windowSpan = Number.isInteger(span) && span > 0 ? span : null;
+  if (windowSpan != null && count >= windowSpan) return "ok";
+  if (count < min) return "hold";
+  const caution = limitNum(cfg.cautionPriceDays);
+  if (caution == null || !(caution > min)) return "ok";
+  if (windowSpan != null && caution > windowSpan) return "caution";
+  if (count < caution) return "caution";
+  return "ok";
+}
+
+function joinPriceDayLine(text, line) {
+  const s = String(text || "");
+  if (!line || s.includes(line)) return s;
+  if (!s) return line;
+  return `${s}${s.endsWith(" ") ? "" : " "}${line}`;
+}
+
+// Adds the day-count sentence after a later rewrite of the headline. Does not drop the read.
+export function applyPriceDayCaution(read, cfg) {
+  if (!read || typeof read !== "object") return read;
+  const kind = String(read.readKind || read.kind || "");
+  if (kind !== "sealed") return read;
+  const n = priceDayCountOf(read);
+  const span = windowDaySpan(read.startDate, read.endDate);
+  if (priceDayAction(n, cfg, span) !== "caution") return read;
+  const line = priceDayCaution(n);
+  const headline = joinPriceDayLine(read.headline, line);
+  const path = read.path == null ? headline : joinPriceDayLine(read.path, line);
+  const variants = Array.isArray(read.variants)
+    ? read.variants.map((item) => (typeof item === "string" ? joinPriceDayLine(item, line) : item))
+    : read.variants;
+  if (headline === read.headline && path === read.path && variants === read.variants) return read;
+  const next = { ...read, headline, path };
+  if (variants !== undefined) next.variants = variants;
+  return next;
+}
+
+function priceDayHold(read, rules) {
+  const kind = String(read?.readKind || read?.kind || "");
+  if (kind !== "sealed") return null;
+  const n = priceDayCountOf(read);
+  if (n == null) return null;
+  const span = windowDaySpan(read?.startDate, read?.endDate);
+  if (priceDayAction(n, rules, span) !== "hold") return null;
+  if (limitNum(rules?.minPriceDays) == null) return { rule: "thin-days", reason: "Dated price day minimum was not loaded." };
+  return { rule: "thin-days", reason: "This sealed price read rests on too few dated price days." };
+}
+
 export function thinReadHits(read, cfg) {
   if (!read) return [];
   const rules = validReadThin(cfg);
@@ -309,7 +413,7 @@ export function thinReadHits(read, cfg) {
   const row = prepareThin(read);
   const hits = [];
   const seen = new Set();
-  for (const item of [...seriesHits(row, rules), bigMoveHit(row, rules), dipHit(row, rules), dateHit(row, rules), eraHit(row, rules), bareLevelHit(row)]) {
+  for (const item of [...seriesHits(row, rules), bigMoveHit(row, rules), dipHit(row, rules), dateHit(row, rules), eraHit(row, rules), bareLevelHit(row), priceDayHold(row, rules)]) {
     if (!item || seen.has(item.rule)) continue;
     seen.add(item.rule);
     hits.push(item);

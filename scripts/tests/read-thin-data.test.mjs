@@ -4,10 +4,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
 import { flagLine } from "../lib/copy-rules.mjs";
-import { eraOf } from "../lib/board-mix.mjs";
+import { eraOf, polishPriceRead } from "../lib/board-mix.mjs";
+import { sealedWeekReads } from "../lib/read-quality.mjs";
 import { eraOfSet } from "../lib/extra-reads.mjs";
 import {
-  clearReadThinCache, dropThinReads, gateReads, loadReadFlags, releaseEra, thinReadBlock, thinReadHits, withoutFlaggedReads, writeReadFlags,
+  clearReadThinCache, dropThinReads, gateReads, loadReadFlags, releaseEra, thinReadBlock, thinReadHits, withoutFlaggedReads, writeReadFlags, applyPriceDayCaution,
 } from "../lib/read-thin-data.mjs";
 
 let fail = 0;
@@ -265,6 +266,95 @@ try {
   clearReadThinCache();
   await rm(outer, { recursive: true, force: true });
 }
+
+const DAYS = JSON.parse(readFileSync(new URL("./fixtures/read-price-days.json", import.meta.url), "utf8"));
+const DAY_ASOF = "2026-11-27";
+const dayShift = (iso, n) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+const WINDOW_START = dayShift(DAY_ASOF, -7);
+
+function putDays(map, rows) {
+  for (const [day, price] of rows) map.set(day, price);
+  return map;
+}
+
+function sealedCall(days, priceDaysCfg) {
+  const args = {
+    products: [{ id: "fixture-tin", name: "Fixture Tin", combinedArts: false, tcgPlayerId: "424242", set: "Fixture Set", browse: true }],
+    series: new Map([[424242, days]]),
+    asOf: DAY_ASOF,
+    dailyFiles: new Set([WINDOW_START, DAY_ASOF]),
+  };
+  if (priceDaysCfg !== undefined) args.priceDaysCfg = priceDaysCfg;
+  return sealedWeekReads(args);
+}
+
+// Fake prices. Days before the window must not count as coverage.
+const outside = [];
+for (let i = 1; i <= 20; i += 1) outside.push([dayShift(WINDOW_START, -i), 40]);
+
+const shortMap = putDays(new Map(outside), [
+  [WINDOW_START, 40],
+  [DAY_ASOF, 48],
+]);
+const fullRows = [];
+for (let d = WINDOW_START; ; d = dayShift(d, 1)) {
+  fullRows.push([d, 40 + fullRows.length]);
+  if (d === DAY_ASOF) break;
+}
+const fullMap = putDays(new Map(outside), fullRows);
+
+const shortCount = 2;
+const midCount = 12;
+const fullCount = 18;
+const bandStart = "2026-10-01";
+const bandEnd = "2026-11-27";
+t("fixture windows sit on each side of the fake band", shortCount < DAYS.minPriceDays && midCount >= DAYS.minPriceDays && midCount < DAYS.cautionPriceDays && fullCount >= DAYS.cautionPriceDays && DAYS.aboveWindowCautionPriceDays > fullCount && DAYS.aboveWindowMinPriceDays > fullCount && DAYS.minPriceDays === 11 && DAYS.cautionPriceDays === 17);
+const thinBuilt = sealedCall(shortMap, DAYS);
+const thinBare = sealedCall(shortMap);
+t("a short window is held", thinBuilt.length === 0);
+t("days before the window do not fill a short window", thinBare.length === 1 && thinBare[0].priceDays === shortCount);
+t("without the gate the same short window is a read with no caution", thinBare.length === 1 && !/Price history for this read is/.test(thinBare[0].headline));
+const fullBare = sealedCall(fullMap);
+const fullBuilt = sealedCall(fullMap, DAYS);
+t("a complete window keeps the same headline", fullBuilt.length === 1 && fullBare.length === 1 && fullBuilt[0].priceDays === fullRows.length && fullBuilt[0].headline === fullBare[0].headline && !/Price history for this read is/.test(fullBuilt[0].headline));
+const polishedBare = polishPriceRead(fullBare[0]);
+const polishedFull = polishPriceRead(fullBuilt[0]);
+t("polish leaves a complete window headline unchanged", polishedFull.headline === polishedBare.headline && !/Price history for this read is/.test(polishedFull.headline));
+const bandHead = "Fixture Tin. TCGplayer market: $48.00 (Nov 27), from $40.00 (Oct 1). Up $8.00.";
+const bandRead = (id, n) => ({
+  id,
+  readKind: "sealed",
+  kind: "sealed",
+  name: "Fixture Tin",
+  headline: bandHead,
+  path: bandHead,
+  priceDays: n,
+  price: 48,
+  startDate: bandStart,
+  endDate: bandEnd,
+  windowDays: 57,
+});
+const midLine = `Price history for this read is ${midCount} days.`;
+const polishedMid = applyPriceDayCaution(polishPriceRead(bandRead("fixture-mid", midCount)), DAYS);
+t("a window inside the caution band names its day count", /on TCGplayer market/.test(polishedMid.headline) && polishedMid.headline.endsWith(midLine) && polishedMid.path.endsWith(midLine) && !/[\u2013\u2014]/.test(polishedMid.headline) && !/\b(NM|Near Mint|sold|buy|sell)\b/i.test(midLine));
+t("a caution sentence comes back after the market line is rewritten", polishedMid.headline !== bandHead && polishedMid.headline.endsWith(midLine));
+const polishedFullBand = applyPriceDayCaution(polishPriceRead(bandRead("fixture-full", fullCount)), DAYS);
+t("a count past the caution floor keeps the rewritten headline", polishedFullBand.headline === polishPriceRead(bandRead("fixture-full", fullCount)).headline && !/Price history for this read is/.test(polishedFullBand.headline));
+const missingCfg = sealedCall(shortMap, null);
+t("a missing price day minimum holds the short window", missingCfg.length === 0);
+const thinRow = { ...thinBare[0], readKind: "sealed", kind: "sealed" };
+t("a loaded config with no price day key holds the short window", thinReadBlock(thinRow, FIX)?.rule === "thin-days");
+const bandCfg = { ...FIX, minPriceDays: DAYS.minPriceDays, cautionPriceDays: DAYS.cautionPriceDays };
+const midRow = bandRead("fixture-mid", midCount);
+t("a caution band read is not held", thinReadBlock(midRow, bandCfg) == null);
+t("a count past the caution floor is not held", thinReadBlock(bandRead("fixture-full", fullCount), bandCfg) == null);
+t("a count under the fake minimum is held", thinReadBlock(bandRead("fixture-short", shortCount), bandCfg)?.rule === "thin-days");
+const above = { minPriceDays: DAYS.aboveWindowMinPriceDays, cautionPriceDays: DAYS.aboveWindowCautionPriceDays };
+const aboveFull = sealedCall(fullMap, above);
+const aboveShort = sealedCall(shortMap, above);
+t("a floor above the window does not change a complete headline", aboveFull.length === 1 && aboveFull[0].headline === fullBare[0].headline && !/Price history for this read is/.test(aboveFull[0].headline));
+t("a floor above the window still holds a short window", aboveShort.length === 0);
+t("the builder window is seven days back", WINDOW_START === "2026-11-20");
 
 if (fail) { console.log(fail + " failed"); process.exit(1); }
 console.log("read thin data ok");
