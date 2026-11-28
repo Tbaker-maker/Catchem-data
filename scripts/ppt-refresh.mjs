@@ -19,13 +19,23 @@ import { nextEmptySealed, nextFailedIds, orderRefreshCalls, sanitizeDates, sanit
 import { updateVolumeFile } from "./compute-tcgplayer-volume.mjs";
 import { updateShapeFile } from "./compute-shape-reads.mjs";
 import { assertPptCallAllowed, pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
-
-if (pptOff() && process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  console.log(pptOffBanner("scripts/ppt-refresh.mjs"));
-  process.exit(0);
-}
+import { pptOffCursor, pptOffUsage } from "./lib/ppt-skip-log.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+async function writePptOffSkip() {
+  const meta = join(ROOT, "data/meta");
+  await mkdir(meta, { recursive: true });
+  let priorUsage = null;
+  let priorCursor = null;
+  try { priorUsage = JSON.parse(await readFile(join(meta, "ppt-usage.json"), "utf8")); } catch { priorUsage = null; }
+  try { priorCursor = JSON.parse(await readFile(join(meta, "ppt-cursor.json"), "utf8")); } catch { priorCursor = null; }
+  const now = new Date();
+  await writeFile(join(meta, "ppt-usage.json"), `${JSON.stringify(pptOffUsage(priorUsage, now), null, 2)}\n`);
+  await writeFile(join(meta, "ppt-cursor.json"), `${JSON.stringify(pptOffCursor(priorCursor, now), null, 2)}\n`);
+  console.log(pptOffBanner("scripts/ppt-refresh.mjs"));
+  console.log("ppt-refresh skipped. Wrote a zero-credit log. Resume ids were kept. No request was sent.");
+}
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
 
 function redact(text, secrets) {
@@ -254,7 +264,7 @@ async function defaultFetch(url, key, stats) {
 
 export async function main() {
   if (pptOff()) {
-    console.log(pptOffBanner("scripts/ppt-refresh.mjs"));
+    await writePptOffSkip();
     return { status: "skipped", reason: "PPT_OFF is set. No request was sent. No PPT file was read.", raw: "not fetched" };
   }
   const today = new Date().toISOString().slice(0, 10);
@@ -394,9 +404,16 @@ export async function main() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((err) => {
-    const key = process.env.POKEMONPRICETRACKER_API_KEY || "";
-    console.error(`ppt-refresh failed: ${redact(err.message, [key, process.env.PRIVATE_DATA_TOKEN || ""])}`);
-    process.exitCode = 1;
-  });
+  if (pptOff()) {
+    writePptOffSkip().then(() => process.exit(0)).catch((err) => {
+      console.error(`ppt-refresh failed: ${err.message}`);
+      process.exit(1);
+    });
+  } else {
+    main().catch((err) => {
+      const key = process.env.POKEMONPRICETRACKER_API_KEY || "";
+      console.error(`ppt-refresh failed: ${redact(err.message, [key, process.env.PRIVATE_DATA_TOKEN || ""])}`);
+      process.exitCode = 1;
+    });
+  }
 }

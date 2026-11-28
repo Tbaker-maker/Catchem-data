@@ -34,7 +34,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pulseFreshnessFails } from "./lib/sealed-market-pulse.mjs";
-import { collectGitAddPaths } from "./lib/git-add-paths.mjs";
+import { collectPromisedEntries } from "./lib/git-add-paths.mjs";
 import { staticAssetExcuse } from "./lib/static-asset-freshness.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -67,26 +67,6 @@ function cadenceHours(cron) {
   return null;
 }
 
-function lineNo(src, index) {
-  return src.slice(0, index).split("\n").length;
-}
-
-function newestTracked(pattern) {
-  let out = "";
-  try { out = execFileSync("git", ["ls-files", "--", pattern], { cwd: ROOT, encoding: "utf8" }); }
-  catch { return ""; }
-  const files = out.split("\n").map((s) => s.trim()).filter(Boolean);
-  let best = "";
-  let bestIso = "";
-  for (const file of files) {
-    let iso = "";
-    try { iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], { cwd: ROOT, encoding: "utf8" }).trim(); }
-    catch { iso = ""; }
-    if (!best || iso > bestIso) { best = file; bestIso = iso; }
-  }
-  return best;
-}
-
 function invokedText(src) {
   const names = [...src.matchAll(/\bnode\s+(scripts\/[\w./-]+\.mjs)/g)].map((m) => m[1])
     .filter((rel) => !rel.includes("/tests/") && rel !== "scripts/tests/run-tests.mjs");
@@ -115,6 +95,12 @@ function isProduced(path, scripts, workflowSrc) {
   const base = bare.split("/").pop() || "";
   if (base && scripts.includes(base)) return true;
   if (/^grades-\d{4}-\d{2}-\d{2}\.json$/.test(base) && scripts.includes("grades-") && scripts.includes("learning")) return true;
+  // A glob is not one expanded file. `sitemap-*.xml` stays the glob. It is a
+  // product when a writer in this workflow names that stem (`sitemap-`).
+  if (/[*?\[]/.test(bare)) {
+    const stem = base.split(/[*?\[]/)[0];
+    if (stem.length >= 4 && scripts.includes(stem)) return true;
+  }
   // A path written in the workflow itself (not only listed on git add) is a product.
   // Continuation lines under `git add` are arguments, not writers.
   const lines = String(workflowSrc || "").split("\n");
@@ -136,21 +122,15 @@ for (const f of wfFiles) {
   // A shell word is not a path. `git add grades-*.json; fi` used to report
   // a file named "fi". `git add research/assets/img/*/logo.png || true`
   // used to report "||" and "true" as never committed, because both strings
-  // occur inside the scripts that workflow runs.
+  // occur inside the scripts that workflow runs. `git add "$p"` is a shell
+  // variable. The promised files are the literal paths in that variable's
+  // assignment. A glob stays a glob: it is not replaced by one expanded file.
   const scripts = invokedText(src);
   const paths = [];
   const unwired = [];
-  const seen = new Set();
-  for (const match of src.matchAll(/git add ([^\n]+)/g)) {
-    const line = lineNo(src, match.index);
-    for (const cleaned of collectGitAddPaths(match[1])) {
-      if (seen.has(cleaned)) continue;
-      seen.add(cleaned);
-      const expanded = /[*?\[]/.test(cleaned) ? (newestTracked(cleaned) || cleaned) : cleaned;
-      const entry = { path: expanded, line, from: cleaned };
-      if (isProduced(expanded, scripts, src) || isProduced(cleaned, scripts, src)) paths.push(entry);
-      else unwired.push(entry);
-    }
+  for (const entry of collectPromisedEntries(src)) {
+    if (isProduced(entry.path, scripts, src)) paths.push(entry);
+    else unwired.push(entry);
   }
 
   const hours = Math.min(...crons.map(c => cadenceHours(c) ?? 24 * 365));
@@ -234,6 +214,10 @@ const SLOW = {
     "written when a vintage listing sample publishes a price. The daily check is the vintage-sample line in the listing-counts log. A quiet file means nothing new was published.",
   "research/assets/public/condition-prices.json":
     "written when a vintage listing sample publishes a condition price. A quiet file means nothing new was published. The sample log is the daily check.",
+  "research/assets/public/sitemap.xml":
+    "rebuilt every night by build-public-bundle.mjs. The index lists shard file names only, so the bytes stay the same until the shard count changes.",
+  "research/assets/public/search-rank.mjs":
+    "copied every night by build-public-bundle.mjs from scripts/lib/collector-search.mjs. The bytes stay the same until that script changes.",
 };
 
 // A path the job writes, but that has never been committed because git add

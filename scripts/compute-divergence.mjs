@@ -23,10 +23,21 @@ import { readCrosscheck } from "./lib/ppt-paths.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { heldReportIfSpreadHeld } from "./lib/spread-held.mjs";
 const DATA = join(dirname(dirname(fileURLToPath(import.meta.url))), "data");
 const SIGNAL_PCT = 0.15;
 
 const ebay = JSON.parse(await readFile(join(DATA, "sealed-prices.json"), "utf-8"));
+// Sealed prices are TCGplayer market. eBay is listings counted only.
+// The held report does not read the PPT crosscheck. A missing crosscheck
+// (PPT_OFF, or the private file is absent) must still rewrite the report,
+// or the file sits still while the nightly stays green.
+const heldNow = heldReportIfSpreadHeld(ebay);
+if (heldNow) {
+  await writeFile(join(DATA, "divergence-report.json"), JSON.stringify(heldNow, null, 2) + "\n");
+  console.log(`· The Spread: held (TCGplayer market prices; eBay is listings counted). ${heldNow.skipped.length} products noted, 0 compared.`);
+  process.exit(0);
+}
 const tcg = await readCrosscheck(dirname(DATA), "sealed-crosscheck.json");
 if (!tcg?.products) process.exit(0);
 
@@ -37,7 +48,6 @@ import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 // qa-gate hasn't run yet at this point in the pipeline — read the durable
 // file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
 import { loadBlocked } from "./lib/publish-guard.mjs";
-import { isSpreadHeld, heldDivergenceReport } from "./lib/spread-held.mjs";
 
 // THE SPREAD IS HELD FROM PUBLICATION (2026-08-23). Two independent reasons,
 // either sufficient on its own:
@@ -81,14 +91,9 @@ const q = await loadBlocked();
 const rows = [], skipped = [];
 // Sealed prices are TCGplayer market (2026-10-27, Tyler). eBay is listings
 // counted only. The Spread compared eBay asks to TCGplayer market. With no
-// eBay price left, that instrument is held: write an empty held report, do
-// not keep yesterday's ask-based rows, and do not pretend a comparison ran.
-if (isSpreadHeld(ebay)) {
-  const held = heldDivergenceReport(ebay);
-  await writeFile(join(DATA, "divergence-report.json"), JSON.stringify(held, null, 2) + "\n");
-  console.log(`· The Spread: held (TCGplayer market prices; eBay is listings counted). ${held.skipped.length} products noted, 0 compared.`);
-  process.exit(0);
-}
+// eBay price left, that instrument is held above, before the crosscheck read:
+// write an empty held report, do not keep yesterday's ask-based rows, and do
+// not pretend a comparison ran.
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);
   if (!t || t.dataStatus !== "live" || p.dataStatus !== "live" || !p.priceMedian || !t.tcgMarket) {
