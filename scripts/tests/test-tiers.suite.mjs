@@ -1,6 +1,6 @@
 // The nightly degrades instead of dying: a reads failure withholds reads and
 // prices still publish; a price safety failure still stops the run.
-import { triage, parseLog, describe } from "../lib/test-tiers.mjs";
+import { triage, parseLog, describe, precheckWouldBlock } from "../lib/test-tiers.mjs";
 import { readFile } from "node:fs/promises";
 
 const log = (...body) => ["── price trust ──", "  ✓ price trust suite", ...body, "", "200 passed · 1 failed"].join("\n");
@@ -105,6 +105,56 @@ export async function run() {
   const pre = await readFile(new URL("../../.github/workflows/nightly-precheck.yml", import.meta.url), "utf8");
   t("the pre-check uses the same tiers", /triage-tests\.mjs[^\n]*--mode nightly/.test(pre));
   t("the pre-check warns on stale feed freshness, like the nightly test step", /FEED_FRESHNESS_WARN_ONLY:\s*"1"/.test(pre));
+  const decideAt = pre.indexOf("scripts/precheck-decision.mjs");
+  const exitAt = pre.indexOf('echo "exit=$code"');
+  const failAt = pre.indexOf("steps.tests.outputs.exit != '0'");
+  t("the pre-check fail step keys off the decision exit", decideAt > 0 && decideAt < exitAt && exitAt < failAt && !pre.includes('[ "$guard" != 0 ] && code=1'));
+
+  // Run 45983980128. Names are the inner FAIL lines from that dry-run summary.
+  // Guard audit on that commit exits 0 (its log was redirected, not printed).
+  const sep = "\u2014";
+  const nov27 = [
+    "── feature suites ──",
+    "  FAIL the listing sentence is the footer, not every card",
+    "  FAIL every price lead read has a price, a window, and a clean headline",
+    "  FAIL the lead is not only small 7-day moves",
+    `  ✗ public-bundle.suite.mjs ${sep} 3 failed`,
+    "  FAIL current reads, search, and index wrote",
+    `  ✗ publish-writes.suite.mjs ${sep} 1 failed`,
+    "  FAIL board is 200 to 400 reads",
+    "  FAIL deep reads exist",
+    "  FAIL every set dive total covers the cards it names",
+    "  FAIL the published Mega Evolution rarity line does not say did best on a down year",
+    "  FAIL new deep types are on the board",
+    "  FAIL year-range, year-ago, and season reads are on the board",
+    `  ✗ deep-reads.suite.mjs ${sep} 6 failed`,
+    "",
+    "294 passed · 3 failed",
+  ].join("\n");
+  const nov = triage(nov27, "nightly");
+  const novDecision = precheckWouldBlock(nov, 0);
+  t("the Nov 27 dry run does not block tonight's prices", novDecision.block === false && nov.blocked.length === 0, JSON.stringify(nov.blocked.map((f) => f.name)));
+  t("the Nov 27 dry run still withholds reads", nov.withheld.length === 1 && nov.withheld[0].key === "reads" && nov.withheld[0].tests.length === 3);
+  t("a red guard audit still blocks the pre-check", precheckWouldBlock(nov, 1).block === true);
+
+  const safety = triage(log("── feature suites ──", "  FAIL sealed never shows a condition label", `  ✗ public-bundle.suite.mjs ${sep} 1 failed`));
+  t("a sealed condition label inside the same suite still blocks", safety.blocked.length === 1 && precheckWouldBlock(safety, 0).block === true);
+  const sold = triage(log("── feature suites ──", "  FAIL the public line says sold", `  ✗ publish-writes.suite.mjs ${sep} 1 failed`));
+  t("sold wording still blocks", sold.blocked.length === 1 && precheckWouldBlock(sold, 0).block === true);
+  const leak = triage(log("── feature suites ──", "  FAIL a private value is on the page", `  ✗ public-bundle.suite.mjs ${sep} 1 failed`));
+  t("a private leak still blocks", leak.blocked.length === 1 && precheckWouldBlock(leak, 0).block === true);
+  const copyStill = triage(log("── feature suites ──", "  FAIL published reads have no em dash and no banned word", `  ✗ rd6.suite.mjs ${sep} 1 failed`));
+  t("a copy rule still blocks beside the Nov 27 names", copyStill.blocked.length === 1);
+  const mixedBoard = triage([
+    "── feature suites ──",
+    "  FAIL the listing sentence is the footer, not every card",
+    "  FAIL counts add up and slabs stay at zero",
+    `  ✗ public-bundle.suite.mjs ${sep} 2 failed`,
+    "",
+    "10 passed · 1 failed",
+  ].join("\n"));
+  t("a real counts failure next to a board check still blocks", mixedBoard.blocked.length === 1 && mixedBoard.withheld.length === 0);
+
   const pr = await readFile(new URL("../../.github/workflows/pr-tests.yml", import.meta.url), "utf8");
   t("PR CI triages in pr mode", /triage-tests\.mjs[^\n]*--mode pr/.test(pr));
   t("main's artifact freshness runs only on main, not on PRs", /Artifact freshness[\s\S]{0,500}github\.event_name != 'pull_request'/.test(pr));

@@ -37,6 +37,21 @@ export const WARNING_TESTS = [
   /no logo or tile/i,
 ];
 
+// Committed reads board checks. On 2026-11-27 the pre-check (run 45983980128)
+// tested main's reads.json while it was an empty board (count 0 since the
+// 01:29 public feed commit). The nightly rebuilds that board before the same
+// tests, and the empty-write gate after the price commit is the red X when
+// reads, search, or the index wrote nothing. These names withhold reads.
+// They are not price safety. Copy rules, sold wording, private leaks, and
+// condition labels still block via SAFETY_WORDS, including when they sit in
+// the same suite.
+export const READS_BOARD_TESTS = [
+  /^the listing sentence is the footer, not every card$/i,
+  /^every price lead read has a price, a window, and a clean headline$/i,
+  /^the lead is not only small 7-day moves$/i,
+  /^current reads, search, and index wrote$/i,
+];
+
 // Group order matters: the first match wins.
 export const GROUPS = [
   {
@@ -140,6 +155,10 @@ export function tierOf(failure) {
   const leaves = failure.inner && failure.inner.length ? failure.inner : [failure.name];
   if (leaves.every((n) => MONITOR_TESTS.some((re) => re.test(n)))) return { tier: "monitor" };
   if (leaves.every((n) => WARNING_TESTS.some((re) => re.test(n)))) return { tier: "warning" };
+  if (leaves.every((n) => READS_BOARD_TESTS.some((re) => re.test(n)))) {
+    const reads = GROUPS.find((g) => g.key === "reads");
+    return { tier: "withhold", group: reads };
+  }
   const g = groupOf(failure.name);
   if (g) return { tier: "withhold", group: g };
   return { tier: "block" };
@@ -194,6 +213,17 @@ export function describe(result) {
   for (const f of result.warning || []) lines.push(`Warning only, not blocking: ${names(f)}`);
   if (!result.blocked.length && !result.withheld.length && !result.monitor.length && !(result.warning || []).length) lines.push("Every test passed. Nothing withheld.");
   return lines.join("\n");
+}
+
+/**
+ * Pre-check pass/fail. Same blocked list as the nightly test step.
+ * A red guard audit stops the nightly before the fetch, so it stops this check too.
+ * guardExit 0 is a green audit. Anything else is red.
+ */
+export function precheckWouldBlock(result, guardExit = 0) {
+  const guard = Number(guardExit);
+  const guardRed = Number.isFinite(guard) && guard !== 0;
+  return { block: result.blocked.length > 0 || guardRed, guardRed, blocked: result.blocked.length };
 }
 
 function mergeTriage(parts, mode) {
