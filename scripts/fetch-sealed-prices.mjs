@@ -436,6 +436,7 @@ const SEARCH_PAGES = 3;
 async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) {
   const all = [];
   let lastTotal = null;      // what eBay says the full result set is
+  let complete = false;
   for (let page = 0; page < SEARCH_PAGES; page++) {
     const params = new URLSearchParams({
       q: query,
@@ -458,6 +459,7 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
     });
     if (!res.ok) {
       console.warn(`  search failed (${res.status}) page ${page + 1} for: ${query}`);
+      complete = false;
       break;
     }
     const data = await res.json();
@@ -474,7 +476,7 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
     // choice. Making it VISIBLE is the fix, so a thin or skewed median can be
     // traced to a cap rather than to the market.
     if (typeof data.total === "number") lastTotal = data.total;
-    if (batch.length < 50) break; // last page
+    if (batch.length < 50) { complete = true; break; } // last page, not the cap
     await new Promise(r => setTimeout(r, QUERY_DELAY_MS));
   }
   if (lastTotal != null && lastTotal > all.length) {
@@ -482,7 +484,8 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
   }
   // `total` is the Browse response field (result-set size). It is not the
   // filtered page count stored as listingCount. Caller saves it once per day.
-  return { items: all, total: lastTotal };
+  // `complete` is true only when a short page ended the search. A full 150 is a cap.
+  return { items: all, total: lastTotal, complete };
 }
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
@@ -673,7 +676,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const updated = await mapConcurrent(products, async (product) => {
     try {
       const [floor, ceiling] = priceBoundsFor(product);
-      const { items, total: browseTotal } = await searchEbay(token, product.searchQuery, floor, ceiling);
+      const { items, total: browseTotal, complete } = await searchEbay(token, product.searchQuery, floor, ceiling);
       const { kept, report, samples } = filterItemsForProduct(product, items);
       console.log(
         `   ${product.id}: fetched=${report.fetched} kept=${report.kept} ` +
@@ -770,6 +773,8 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
           browseTotal,
           fetched: items.length,
           kept: kept.length,
+          complete,
+          pageCap: SEARCH_PAGES * 50,
         });
         if (filteredTotal != null) {
           point.filteredTotal = filteredTotal;

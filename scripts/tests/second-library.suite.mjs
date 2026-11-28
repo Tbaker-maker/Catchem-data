@@ -23,6 +23,9 @@ export async function run() {
   t("filteredTotal is absent when the result was capped", filteredTotalForNight({ browseTotal: 400, fetched: 150, kept: 40 }) == null);
   t("filteredTotal is absent when the total is unknown", filteredTotalForNight({ browseTotal: null, fetched: 12, kept: 4 }) == null);
   t("filteredTotal is the kept count only when every row was fetched", filteredTotalForNight({ browseTotal: 12, fetched: 12, kept: 4 }) === 4);
+  t("a short page keeps the filtered count when eBay's total is a few rows low", filteredTotalForNight({ browseTotal: 83, fetched: 84, kept: 37, complete: true, pageCap: 150 }) === 37);
+  t("a short page stays off when eBay reported more rows than we fetched", filteredTotalForNight({ browseTotal: 200, fetched: 40, kept: 10, complete: true, pageCap: 150 }) == null);
+  t("a capped page does not become listings counted history", filteredTotalForNight({ browseTotal: 400, fetched: 150, kept: 40, complete: false, pageCap: 150 }) == null && filteredTotalForNight({ browseTotal: 44, fetched: 150, kept: 20, complete: true, pageCap: 150 }) == null);
   t("facts panel keeps market, low, date, and source", JSON.stringify(factsLines({ market: 10, low: 8, date: "2026-10-10", source: "TCGplayer market price", listings: 40, sold: 3 })) === JSON.stringify([
     { label: "Market", value: 10 },
     { label: "Low", value: 8 },
