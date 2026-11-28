@@ -3,10 +3,12 @@
 // night. Plans to config/api-budgets.json useShare (98%) of the daily Browse allowance minus the sealed step and
 // stops at the first 429. Public wording: "listings counted", never "supply".
 //
-// A private per-day call budget (catchem-data-private, ebay-browse/limits.json)
-// is an earlier stop so the run does not spend the public ceiling. If that
-// file or key is missing, no listing calls are made and last-good rows keep
-// their date. The reserve number is not stored here.
+// A private per-day reserve (catchem-data-private, ebay-browse/limits.json)
+// stops the run earlier than the public ceiling by that reserve. The reserve
+// number is not stored here and is not logged. If that file or key is missing,
+// the public ceilings stay the hard stop: LISTING_CALL_BUDGET and
+// EBAY_BROWSE_DAILY_LIMIT. One alert says the reserve is not set. Listing
+// calls still run up to that ceiling. A missing key is not a zero-call freeze.
 //
 //   data/derived/listing-counts/latest.json            one row per item, last good read
 //   data/derived/listing-counts/history/<day>.json.gz  tonight's reads
@@ -20,7 +22,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps, vintageHeldBack } from "./lib/listing-counts.mjs";
 import { browseCallsLeft, countWithinBudget, loadBrowseReserve } from "./lib/ebay-browse-budget.mjs";
-import { browseBudgetAlert, mergeAlerts } from "./lib/limits-watch.mjs";
+import { LISTING_CALL_BUDGET, browseBudgetAlert, mergeAlerts } from "./lib/limits-watch.mjs";
 import { addMissingRows, sealedStepIndex, sealedStepRowsForDay } from "./lib/sealed-listing-coverage.mjs";
 import { readdir } from "node:fs/promises";
 
@@ -88,19 +90,25 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
     runsPerDay === 1 ? Math.max(0, b.safe - used - holdBack) : roleSlice({ role, safe: b.safe, used, dailyBudget: b.budget, sealedStep: b.sealedStep, sealedInWindow, topShare: cfg.topShare, holdBack }));
   const wanted = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1), role });
   // Private reserve is an earlier stop on the same rolling window. It is not logged.
+  // A missing key leaves LISTING_CALL_BUDGET and EBAY_BROWSE_DAILY_LIMIT in place.
   const reserve = await loadBrowseReserve({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
-  const privateLeft = browseCallsLeft({ reserve, used });
-  const searchBudget = reserve == null ? null : Math.min(wanted.length, Math.max(0, Math.min(slice, privateLeft) - 1));
-  const heldByReserve = reserve == null || (wanted.length > 0 && searchBudget < wanted.length);
-  const plan = { picked: heldByReserve ? [] : wanted, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
-  const runLabel = heldByReserve ? "held by the private call budget" : String(wanted.length);
-  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${runLabel}${reserve == null ? ", private call budget missing" : ""}`);
+  const reserveUnset = !(Number.isInteger(reserve) && reserve > 0);
+  const callsLeft = browseCallsLeft({
+    reserve: reserveUnset ? null : reserve,
+    used,
+    listingBudget: LISTING_CALL_BUDGET,
+    dailyLimit: EBAY_BROWSE_DAILY_LIMIT,
+  });
+  // One call is the OAuth token. Search calls stay inside the public ceiling.
+  const searchBudget = Math.max(0, Math.min(wanted.length, slice, callsLeft - 1));
+  const plan = { picked: wanted.slice(0, searchBudget), poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
+  const cutByReserve = !reserveUnset && callsLeft - 1 < Math.min(slice, wanted.length);
+  const runLabel = reserveUnset
+    ? `${searchBudget}, reserve not set`
+    : (cutByReserve ? "stopped before the public ceiling" : String(searchBudget));
+  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${runLabel}`);
 
-  if (reserve == null) {
-    await addStatusAlert(browseBudgetAlert("missing"));
-    await indexSealedStep();
-    return { picked: 0, calls: 0, callBudget: "missing" };
-  }
+  if (reserveUnset) await addStatusAlert(browseBudgetAlert("unset"));
 
   if (role === "guardian" && !wanted.length) {
     console.log("count guardian: every daily-tier item has a count today, nothing to do");
@@ -175,7 +183,7 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");
   await indexSealedStep();
   const tailNote = `${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`;
-  if (counted.kind === "held") console.log(`listing counts: stopped at the private call budget, ${tailNote}`);
+  if (counted.kind === "held") console.log(`listing counts: stopped at the call ceiling, ${tailNote}`);
   else console.log(`listing counts: ${capped.length} counted, ${calls} calls, ${tailNote}`);
 }
 

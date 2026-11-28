@@ -2,8 +2,9 @@
 // No network. A missing budget fails closed: no client calls, last-good rows stay.
 import { readFile } from "node:fs/promises";
 import { pickRun } from "../lib/listing-counts.mjs";
-import { browseBudgetAlert, mergeAlerts } from "../lib/limits-watch.mjs";
-import { browseCallsLeft, countWithinBudget, loadBrowseReserve, readBrowseReserve } from "../lib/ebay-browse-budget.mjs";
+import { browseBudgetAlert, mergeAlerts, LISTING_CALL_BUDGET } from "../lib/limits-watch.mjs";
+import { EBAY_BROWSE_DAILY_LIMIT } from "../lib/listing-counts.mjs";
+import { browseCallsLeft, countWithinBudget, loadBrowseReserve, publicBrowseCeiling, readBrowseReserve } from "../lib/ebay-browse-budget.mjs";
 
 export async function run() {
   let fail = 0;
@@ -61,31 +62,52 @@ export async function run() {
   const merged = mergeAlerts(["Price day is behind."], [result.alert]);
   t("the alert joins the existing status alerts", merged.length === 2 && merged[1] === result.alert);
 
-  let blockedCalls = 0;
-  const blocked = await countWithinBudget({
+  let unsetCalls = 0;
+  const unsetRun = await countWithinBudget({
     ordered,
     budget: null,
-    client: async () => { blockedCalls += 1; return { listingsCounted: 1 }; },
+    client: async () => { unsetCalls += 1; return { listingsCounted: 1 }; },
     rows,
     today,
     previousAsOf: oldDate,
   });
-  const untouched = ordered.every((it) => blocked.rows[it.id].date === oldDate && blocked.rows[it.id].listingsCounted === rows[it.id].listingsCounted);
-  t("a missing budget makes no calls and keeps last-good rows", blockedCalls === 0 && blocked.calls === 0 && untouched && blocked.asOf === oldDate);
-  t("a missing budget raises one alert line", blocked.alert === browseBudgetAlert("missing") && blocked.alert !== result.alert);
+  const unsetTouched = ordered.every((it) => unsetRun.rows[it.id].date === today && unsetRun.rows[it.id].listingsCounted === 1);
+  t("a missing budget uses the public ceiling instead of a zero-call freeze", unsetCalls === ordered.length && unsetRun.calls === ordered.length && unsetTouched && unsetRun.asOf === today);
+  t("a missing budget raises one alert that the reserve is not set", unsetRun.alert === browseBudgetAlert("unset") && unsetRun.alert === browseBudgetAlert("missing") && !/\d/.test(unsetRun.alert) && unsetRun.alert !== result.alert);
+
+  const ceiling = publicBrowseCeiling();
+  t("the public ceiling is the listing budget and the daily limit, unchanged", LISTING_CALL_BUDGET === 4277 && EBAY_BROWSE_DAILY_LIMIT === 5000 && ceiling === 4277);
+  t("calls left stay on the public ceiling when the reserve key is absent", browseCallsLeft({ reserve: null, used: 0 }) === 4277 && browseCallsLeft({ reserve: null, used: 100 }) === 4177 && browseCallsLeft({ reserve: null, used: 4277 }) === 0 && browseCallsLeft({ reserve: null, used: 0, dailyLimit: 4000, listingBudget: 4277 }) === 4000);
+  t("a private reserve stops earlier than the public ceiling by that reserve", browseCallsLeft({ reserve: 10, used: 0 }) === 4277 - 10 && browseCallsLeft({ reserve: 10, used: 4 }) === 4277 - 10 - 4 && browseCallsLeft({ reserve: 10, used: 0, listingBudget: 100, dailyLimit: 5000 }) === 90 && browseCallsLeft({ reserve: 5000, used: 0 }) === 0);
+  const reserveAlert = [browseBudgetAlert("unset"), browseBudgetAlert("held")].join(" ");
+  t("the reserve number is not in the alert", !reserveAlert.includes("10") && !reserveAlert.includes("4277") && !reserveAlert.includes("5000"));
+
+  let tightCalls = 0;
+  const tight = await countWithinBudget({
+    ordered,
+    budget: null,
+    listingBudget: 10,
+    dailyLimit: 5000,
+    client: async () => { tightCalls += 1; return { listingsCounted: 4 }; },
+    rows,
+    today,
+    previousAsOf: oldDate,
+  });
+  const tightKept = ordered.slice(10).every((it) => tight.rows[it.id].date === oldDate && tight.rows[it.id].listingsCounted === rows[it.id].listingsCounted);
+  t("a missing reserve still stops at a supplied public ceiling and keeps last-good rows", tightCalls === 10 && tight.calls === 10 && tight.rows[ordered[9].id].date === today && tightKept && tight.asOf === oldDate && tight.alert.includes(browseBudgetAlert("unset")) && tight.alert.includes(browseBudgetAlert("held")));
 
   t("the reader accepts only the fake budget of 10", readBrowseReserve({ dailyCallReserve: 10 }) === 10 && readBrowseReserve(null) == null && readBrowseReserve({}) == null && readBrowseReserve({ dailyCallReserve: 0 }) == null);
-  t("calls left fail closed without a budget", browseCallsLeft({ reserve: null, used: 0 }) === 0 && browseCallsLeft({ reserve: 10, used: 4 }) === 6 && browseCallsLeft({ reserve: 10, used: 10 }) === 0);
 
+  let spentCalls = 0;
   const spent = await countWithinBudget({
     ordered: ordered.slice(0, 4),
     budget: 0,
-    client: async () => { blockedCalls += 1; return { listingsCounted: 1 }; },
+    client: async () => { spentCalls += 1; return { listingsCounted: 1 }; },
     rows,
     today,
     previousAsOf: oldDate,
   });
-  t("a used-up budget makes no calls and keeps last-good rows", spent.calls === 0 && blockedCalls === 0 && spent.rows[ordered[0].id].date === oldDate && spent.rows[ordered[0].id].listingsCounted === rows[ordered[0].id].listingsCounted && spent.alert === browseBudgetAlert("held") && spent.asOf === oldDate);
+  t("a used-up budget makes no calls and keeps last-good rows", spent.calls === 0 && spentCalls === 0 && spent.rows[ordered[0].id].date === oldDate && spent.rows[ordered[0].id].listingsCounted === rows[ordered[0].id].listingsCounted && spent.alert === browseBudgetAlert("held") && spent.asOf === oldDate);
 
   const loaded = await loadBrowseReserve({
     root: "/tmp/ops011-ebay-budget-test",
@@ -103,9 +125,9 @@ export async function run() {
 
   const src = await readFile(new URL("../fetch-listing-counts.mjs", import.meta.url), "utf8");
   const lib = await readFile(new URL("../lib/ebay-browse-budget.mjs", import.meta.url), "utf8");
-  t("listing counts load the private budget and stop inside countWithinBudget", src.includes("loadBrowseReserve") && src.includes("countWithinBudget") && src.includes('browseBudgetAlert("missing")') && src.includes("ebay-browse/limits.json"));
+  t("listing counts load the private budget and stop inside countWithinBudget", src.includes("loadBrowseReserve") && src.includes("countWithinBudget") && src.includes('browseBudgetAlert("unset")') && src.includes("LISTING_CALL_BUDGET") && src.includes("EBAY_BROWSE_DAILY_LIMIT") && src.includes("ebay-browse/limits.json") && !src.includes('callBudget: "missing"'));
   t("the private path and key live in the budget module", lib.includes("ebay-browse/limits.json") && lib.includes("dailyCallReserve"));
-  const copy = [lib, result.alert, blocked.alert, spent.alert].join("\n");
+  const copy = [lib, result.alert, unsetRun.alert, spent.alert, tight.alert].join("\n");
   t("new budget copy has no banned dash and does not say sold", !copy.includes("\u2014") && !copy.includes("\u2013") && !/sold/i.test(copy));
   return fail;
 }
