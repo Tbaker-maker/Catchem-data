@@ -38,6 +38,7 @@ import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
 import { spaceFamilies } from "./reads-guard.mjs";
+import { spaceSimilar } from "./read-variety.mjs";
 import { dropThinReads, listingAnnotate, loadListingIndex, loadReadFlags, releaseEra, withoutFlaggedReads } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
@@ -1113,7 +1114,8 @@ export async function freshListings(root, pubDoc) {
 // Last pass on the published board, after every step that can drop a read.
 // Price reads (isPriceRead) stay at most one third of the board: price rows are
 // trimmed from the back, history rows first and deep dives last, never invented.
-// Then no two of a family sit side by side.
+// Then no two of a family sit side by side, and a boilerplate 4-word phrase
+// is not repeated on the next read. Wording swaps use that read's own facts.
 export function finishBoard(rows, { maxShare = PRICE_SHARE_MAX } = {}) {
   const list = (rows || []).slice();
   const nFresh = list.filter((r) => !isPriceRead(r)).length;
@@ -1128,5 +1130,5 @@ export function finishBoard(rows, { maxShare = PRICE_SHARE_MAX } = {}) {
       if (!drop.has(i) && rank(list[i]) === tier) { drop.add(i); extra -= 1; }
     }
   }
-  return spaceFamilies(list.filter((_, i) => !drop.has(i)));
+  return spaceSimilar(spaceFamilies(list.filter((_, i) => !drop.has(i))));
 }

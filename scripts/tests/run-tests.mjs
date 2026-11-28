@@ -297,6 +297,13 @@ console.log("── reads wording: history span, dated prices, one ratio directi
   t("reads wording suite", n === 0, `${n} failed`);
 }
 
+console.log("── read variety: boilerplate 4-word phrases do not sit together ──");
+{
+  const { run } = await import("./read-variety.suite.mjs");
+  const n = await run();
+  t("read variety suite", n === 0, `${n} failed`);
+}
+
 console.log("── publish gate ──");
 {
   const { run } = await import("./publish-gate.suite.mjs");
