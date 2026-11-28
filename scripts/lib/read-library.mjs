@@ -381,7 +381,9 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
-export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null, root = null } = {}) {
+export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null } = {}) {
+  const passed = arguments[0] || {};
+  const root = typeof passed.root === "string" && passed.root ? passed.root : null;
   const held = heldIds instanceof Set ? heldIds : new Set();
   const heldRow = (row) => mentionsHeld(row, held);
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
@@ -779,6 +781,7 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   const { loadHeldIds } = await import("./price-hold-skip.mjs");
   const heldIds = await loadHeldIds(root);
   const lib = buildReadLibrary({
+    root,
     catalogue,
     extra,
     series,
@@ -789,7 +792,6 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
     pptPublic,
     volumeReads,
     heldIds,
-    root,
   });
   const path = join(root, LIBRARY_FILE);
   await mkdir(dirname(path), { recursive: true });
