@@ -4,6 +4,9 @@ on:
   schedule:
     # Daily at 4:00 AM UTC (midnight EST, 9 PM PST previous day)
     - cron: "0 4 * * *"
+    # Backup at 06:00 UTC. Runs the price job only when today's sealed prices
+    # are not already committed on main.
+    - cron: "0 6 * * *"
   workflow_dispatch: # Allows manual runs from the Actions tab
 
 # One price run at a time. Two runs at once raced each other's pushes on
@@ -13,7 +16,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  backup-guard:
+    # Only the later cron checks. The 04:00 cron and workflow_dispatch do not wait on it.
+    if: ${{ github.event.schedule == '0 6 * * *' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      skip: ${{ steps.guard.outputs.skip }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Backup cron guard
+        id: guard
+        env:
+          GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: node scripts/backup-cron-guard.mjs
+
   update:
+    needs: backup-guard
+    if: ${{ !cancelled() && (github.event.schedule != '0 6 * * *' || needs.backup-guard.outputs.skip != 'true') }}
     # Shared eBay key: queue behind Listing counts and Vintage sample, never overlap.
     concurrency:
       group: ebay
