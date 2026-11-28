@@ -700,7 +700,9 @@ jobs:
         # nothing is pushed. After the push: the live site is checked and the
         # backup is put back if it fails. Limits stay in catchem-data-private.
         id: publish
-        if: success() && steps.staleguard.outputs.skip != 'true'
+        # Not success(). An earlier hard failure must not skip publish.
+        # The Oct 20 ebay guard forbids gating this step on success().
+        if: steps.staleguard.outputs.skip != 'true'
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-public-data.mjs --push
