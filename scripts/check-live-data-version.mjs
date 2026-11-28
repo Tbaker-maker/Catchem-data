@@ -229,7 +229,7 @@ async function main() {
     fetchImpl: globalThis.fetch,
     sleepImpl: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
     alertImpl: async (info) => {
-      if (process.env.GITHUB_ACTIONS !== "true" && process.env.CATCHEM_ALERT_LIVE !== "true") {
+      if (process.env.GITHUB_ACTIONS !== "true" && process.env.LIVE_DATA_ALERT !== "true") {
         console.log("live data version: alert not sent (not in Actions)");
         return;
       }
