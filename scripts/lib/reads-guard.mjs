@@ -6,6 +6,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { eraTagOf, eraLabel } from "./signal-chips.mjs";
+import { revaryPhrasing } from "./read-phrasing.mjs";
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const KEYS = ["spikeRatio", "neighborBand", "maxSpikeRun", "flipRatio", "flatMinPoints", "stepRatio", "minListingsChange"];
@@ -374,25 +375,61 @@ export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf,
 // close as it was. When one family holds more than half of what is left it
 // must go now, or it would run out of others to sit between. That keeps the
 // board free of neighbours whenever any such order exists.
+// Similar reads never sit back to back where the list allows it: not two of
+// one family, and not two with the same explicit similar key (a pathway).
+// When the list holds only similar reads (a filter left one pathway, set or
+// kind), they may sit together, and revaryPhrasing still gives each one a
+// different template and angle from its neighbour.
 export function spaceFamilies(reads) {
   const fam = (r) => String(r?.family || r?.readKind || "");
+  const sim = (r) => (typeof r?.similar === "string" ? r.similar : "");
   const left = (reads || []).slice();
   const counts = new Map();
-  for (const r of left) counts.set(fam(r), (counts.get(fam(r)) || 0) + 1);
+  const simLeft = new Map();
+  for (const r of left) {
+    counts.set(fam(r), (counts.get(fam(r)) || 0) + 1);
+    if (sim(r)) simLeft.set(sim(r), (simLeft.get(sim(r)) || 0) + 1);
+  }
   const out = [];
   while (left.length) {
-    const last = out.length ? fam(out[out.length - 1]) : null;
+    const prev = out.length ? out[out.length - 1] : null;
+    const last = prev ? fam(prev) : null;
+    const lastSim = prev ? sim(prev) : "";
+    const apart = (r) => fam(r) !== last && (!lastSim || sim(r) !== lastSim);
     let must = null;
     for (const [f, n] of counts) if (f !== last && n * 2 > left.length) must = f;
-    let i = must !== null ? left.findIndex((r) => fam(r) === must) : left.findIndex((r) => fam(r) !== last);
+    let i = must !== null ? left.findIndex((r) => fam(r) === must && (!lastSim || sim(r) !== lastSim)) : -1;
+    if (i < 0 && must !== null) i = left.findIndex((r) => fam(r) === must);
+    if (i < 0) i = left.findIndex(apart);
+    if (i < 0) i = left.findIndex((r) => fam(r) !== last);
+    if (i < 0 && lastSim) i = left.findIndex((r) => sim(r) !== lastSim);
     if (i < 0) i = 0;
+    // Inside one family, the similar key with the most rows left goes first,
+    // so a large group is not left at the end with nothing to sit between.
+    if (sim(left[i])) {
+      const f0 = fam(left[i]);
+      let best = i;
+      for (let k = 0; k < left.length; k += 1) {
+        const r = left[k];
+        if (fam(r) !== f0 || !sim(r) || (lastSim && sim(r) === lastSim)) continue;
+        if ((simLeft.get(sim(r)) || 0) > (simLeft.get(sim(left[best])) || 0)) best = k;
+      }
+      i = best;
+    }
     const row = left.splice(i, 1)[0];
     const f = fam(row);
     counts.set(f, counts.get(f) - 1);
     if (!counts.get(f)) counts.delete(f);
+    if (sim(row)) simLeft.set(sim(row), simLeft.get(sim(row)) - 1);
     out.push(row);
   }
-  return out;
+  return revaryPhrasing(out);
+}
+
+// A filtered view (one pathway, set or kind): keep only matching reads, keep
+// them apart where possible, and vary the words of any that must touch.
+export function orderFiltered(reads, keep) {
+  return spaceFamilies((reads || []).filter((r) => keep(r)));
 }
 
 function flagRow(read, rule) {

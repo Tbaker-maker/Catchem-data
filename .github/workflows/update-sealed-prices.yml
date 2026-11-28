@@ -591,6 +591,14 @@ jobs:
           node scripts/build-ir-sir-watch.mjs
           node scripts/log-stage-calls.mjs
 
+      - name: Pathway forward ledger
+        # Each pathway read on tonight's board, with its version id and config
+        # hash, goes to catchem-data-private pathway-ledger/. Never blocks.
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/log-pathway-reads.mjs
+
       - name: Market meter
         # After sealed prices and the call ledger, before the publish gate.
         # Premium ratio has no dated history in this workflow, so it is not an

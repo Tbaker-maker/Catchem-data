@@ -61,7 +61,8 @@ export async function run() {
   // 40-41: Release holds after the rating and the set-page rebuild that follows
   //     (live sweep Nov 25). Soft so a failed release or rebuild keeps the first
   //     build; the rebuild restores research/assets/public from its snapshot.
-  t("the price workflow still has 41 continue-on-error flags", flags.length === 41, String(flags.length));
+  // 42: Pathway forward ledger is soft so a private ledger miss cannot drop the price commit.
+  t("the price workflow still has 42 continue-on-error flags", flags.length === 42, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");
