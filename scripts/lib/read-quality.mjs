@@ -2,7 +2,7 @@
 // file passed in. A missing day is not filled. Listings are not sales.
 import { bannedWord, money, pretty } from "./public-bundle.mjs";
 import { nameWithTags, tcgAmount } from "./card-face.mjs";
-import { datedPriceDays, priceDayAction, priceDayCaution } from "./read-thin-data.mjs";
+import { datedPriceDays, priceDayAction, priceDayCaution, windowDaySpan } from "./read-thin-data.mjs";
 
 export const FOOTER = "An ask is a listing price. A listing is not a sale.";
 export const CONDITION_NOTE = "A condition is shown only when the price is for that condition. Graded and played copies can differ.";
@@ -409,10 +409,11 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles, priceDaysC
     const pct = Math.round(((to - from) / from) * 1000) / 10;
     if (Math.abs(moved) < SEALED_MIN_CENTS || Math.abs(pct) < 8 || Math.abs(pct) >= MOVER_MAX_PCT) continue;
     if (staleOneStep(days, start, asOf) || lastNightOnly(days, start, asOf)) continue;
-    const dayCount = datedPriceDays(days, asOf);
+    const dayCount = datedPriceDays(days, asOf, start);
+    const span = windowDaySpan(start, asOf);
     const dayAction = priceDaysCfg === undefined
       ? "ok"
-      : (Number.isInteger(dayCount) ? priceDayAction(dayCount, priceDaysCfg) : "hold");
+      : (Number.isInteger(dayCount) ? priceDayAction(dayCount, priceDaysCfg, span) : "hold");
     if (dayAction === "hold") continue;
     const dir = moved >= 0 ? "Up" : "Down";
     const name = pretty(product.name || "");

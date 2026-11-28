@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { readFileSync } from "node:fs";
 import { flagLine } from "../lib/copy-rules.mjs";
 import { eraOf, polishPriceRead } from "../lib/board-mix.mjs";
-import { sealedWeekReads, shiftDay } from "../lib/read-quality.mjs";
+import { sealedWeekReads } from "../lib/read-quality.mjs";
 import { eraOfSet } from "../lib/extra-reads.mjs";
 import {
   clearReadThinCache, dropThinReads, gateReads, loadReadFlags, releaseEra, thinReadBlock, thinReadHits, withoutFlaggedReads, writeReadFlags, applyPriceDayCaution,
@@ -270,30 +270,10 @@ try {
 const DAYS = JSON.parse(readFileSync(new URL("./fixtures/read-price-days.json", import.meta.url), "utf8"));
 const DAY_ASOF = "2026-11-27";
 const dayShift = (iso, n) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+const WINDOW_START = dayShift(DAY_ASOF, -7);
 
-function priceMap(n, asOf) {
-  const start = dayShift(asOf, -7);
-  const map = new Map();
-  const put = (day, price) => map.set(day, Math.round(price * 100) / 100);
-  if (n <= 8) {
-    const span = [];
-    for (let d = start; d <= asOf; d = dayShift(d, 1)) span.push(d);
-    const mid = span.slice(1, -1);
-    const picked = [span[0]];
-    const need = Math.max(0, n - 2);
-    for (let i = 0; i < need; i += 1) picked.push(mid[Math.min(mid.length - 1, Math.floor((i * mid.length) / need))]);
-    picked.push(span[span.length - 1]);
-    const uniq = [...new Set(picked)].sort();
-    uniq.forEach((day, i) => {
-      if (i === 0) put(day, 40);
-      else if (i === uniq.length - 1) put(day, 48);
-      else put(day, 40 + (8 * i) / (uniq.length - 1));
-    });
-    return map;
-  }
-  for (let i = 0; i < n; i += 1) put(dayShift(asOf, -(n - 1 - i)), 40 + (8 * i) / (n - 1));
-  put(start, 40);
-  put(asOf, 48);
+function putDays(map, rows) {
+  for (const [day, price] of rows) map.set(day, price);
   return map;
 }
 
@@ -302,39 +282,64 @@ function sealedCall(days, priceDaysCfg) {
     products: [{ id: "fixture-tin", name: "Fixture Tin", combinedArts: false, tcgPlayerId: "424242", set: "Fixture Set", browse: true }],
     series: new Map([[424242, days]]),
     asOf: DAY_ASOF,
-    dailyFiles: new Set([dayShift(DAY_ASOF, -7), DAY_ASOF]),
+    dailyFiles: new Set([WINDOW_START, DAY_ASOF]),
   };
   if (priceDaysCfg !== undefined) args.priceDaysCfg = priceDaysCfg;
   return sealedWeekReads(args);
 }
 
-const thinDays = priceMap(DAYS.minPriceDays - 1, DAY_ASOF);
-const midDays = priceMap(DAYS.minPriceDays + 2, DAY_ASOF);
-const fullDays = priceMap(DAYS.cautionPriceDays + 8, DAY_ASOF);
-t("fixture day counts sit on each side of the fake band", thinDays.size < DAYS.minPriceDays && midDays.size >= DAYS.minPriceDays && midDays.size < DAYS.cautionPriceDays && fullDays.size >= DAYS.cautionPriceDays);
-const thinBuilt = sealedCall(thinDays, DAYS);
-const thinBare = sealedCall(thinDays);
-t("a thin sealed series is held or cautioned", thinBuilt.length === 0 || new RegExp(`Price history for this read is ${thinDays.size} days\\.`).test(thinBuilt[0]?.headline || ""));
-t("without the gate the same thin series is a read with no caution", thinBare.length === 1 && !/Price history for this read is/.test(thinBare[0].headline));
-const midBuilt = sealedCall(midDays, DAYS);
-const midLine = `Price history for this read is ${midDays.size} days.`;
-t("a series inside the caution band names its day count", midBuilt.length === 1 && midBuilt[0].headline.endsWith(midLine) && !/[\u2013\u2014]/.test(midBuilt[0].headline) && !/\b(NM|Near Mint|sold|buy|sell)\b/i.test(midLine));
-const fullBare = sealedCall(fullDays);
-const fullBuilt = sealedCall(fullDays, DAYS);
-t("a well covered sealed series keeps the same headline", fullBuilt.length === 1 && fullBare.length === 1 && fullBuilt[0].headline === fullBare[0].headline && !/Price history for this read is/.test(fullBuilt[0].headline));
+// Fake prices. Days before the window must not count as coverage.
+const outside = [];
+for (let i = 1; i <= 20; i += 1) outside.push([dayShift(WINDOW_START, -i), 40]);
+
+const shortMap = putDays(new Map(outside), [
+  [WINDOW_START, 40],
+  [DAY_ASOF, 48],
+]);
+const midMap = putDays(new Map(outside), [
+  [WINDOW_START, 40],
+  [dayShift(WINDOW_START, 2), 43],
+  [dayShift(WINDOW_START, 4), 45],
+  [DAY_ASOF, 48],
+]);
+const fullRows = [];
+for (let i = 0; i <= 7; i += 1) fullRows.push([dayShift(WINDOW_START, i), 40 + i]);
+const fullMap = putDays(new Map(outside), fullRows);
+
+const shortCount = 2;
+const midCount = 4;
+const fullCount = 8;
+t("fixture windows sit on each side of the fake band", shortCount < DAYS.minPriceDays && midCount >= DAYS.minPriceDays && midCount < DAYS.cautionPriceDays && fullCount >= DAYS.cautionPriceDays && DAYS.aboveWindowCautionPriceDays > fullCount && DAYS.aboveWindowMinPriceDays > fullCount);
+const thinBuilt = sealedCall(shortMap, DAYS);
+const thinBare = sealedCall(shortMap);
+t("a short window is held", thinBuilt.length === 0);
+t("days before the window do not fill a short window", thinBare.length === 1 && thinBare[0].priceDays === shortCount);
+t("without the gate the same short window is a read with no caution", thinBare.length === 1 && !/Price history for this read is/.test(thinBare[0].headline));
+const midBuilt = sealedCall(midMap, DAYS);
+const midLine = `Price history for this read is ${midCount} days.`;
+t("a window inside the caution band names its day count", midBuilt.length === 1 && midBuilt[0].priceDays === midCount && midBuilt[0].headline.endsWith(midLine) && !/[\u2013\u2014]/.test(midBuilt[0].headline) && !/\b(NM|Near Mint|sold|buy|sell)\b/i.test(midLine));
+const fullBare = sealedCall(fullMap);
+const fullBuilt = sealedCall(fullMap, DAYS);
+t("a complete window keeps the same headline", fullBuilt.length === 1 && fullBare.length === 1 && fullBuilt[0].priceDays === fullCount && fullBuilt[0].headline === fullBare[0].headline && !/Price history for this read is/.test(fullBuilt[0].headline));
 const polishedBare = polishPriceRead(fullBare[0]);
 const polishedFull = polishPriceRead(fullBuilt[0]);
-t("polish leaves a well covered headline unchanged", polishedFull.headline === polishedBare.headline && !/Price history for this read is/.test(polishedFull.headline));
+t("polish leaves a complete window headline unchanged", polishedFull.headline === polishedBare.headline && !/Price history for this read is/.test(polishedFull.headline));
 const polishedMid = applyPriceDayCaution(polishPriceRead(midBuilt[0]), DAYS);
 t("a caution sentence comes back after the market line is rewritten", /on TCGplayer market/.test(polishedMid.headline) && polishedMid.headline.endsWith(midLine) && polishedMid.path.endsWith(midLine));
-const missingCfg = sealedCall(thinDays, null);
-t("a missing price day minimum holds the thin read", missingCfg.length === 0);
-const thinRow = { ...thinBare[0], readKind: "sealed", kind: "sealed", priceDays: thinDays.size };
-t("a loaded config with no price day key holds the thin read", thinReadBlock(thinRow, FIX)?.rule === "thin-days");
-const midRow = { id: "fixture-mid", readKind: "sealed", kind: "sealed", name: "Fixture Tin", headline: "Fixture Tin: $40.00 (Nov 20) to $48.00 (Nov 27) on TCGplayer market. Up 20%.", priceDays: midDays.size, price: 48 };
-t("a caution band read is not held", thinReadBlock(midRow, { ...FIX, ...DAYS }) == null);
-t("a well covered read is not held", thinReadBlock({ ...midRow, id: "fixture-full", priceDays: fullDays.size }, { ...FIX, ...DAYS }) == null);
-t("the builder window is seven days back", shiftDay(DAY_ASOF, -7) === "2026-11-20");
+const missingCfg = sealedCall(shortMap, null);
+t("a missing price day minimum holds the short window", missingCfg.length === 0);
+const thinRow = { ...thinBare[0], readKind: "sealed", kind: "sealed" };
+t("a loaded config with no price day key holds the short window", thinReadBlock(thinRow, FIX)?.rule === "thin-days");
+const bandCfg = { ...FIX, minPriceDays: DAYS.minPriceDays, cautionPriceDays: DAYS.cautionPriceDays };
+const midRow = { id: "fixture-mid", readKind: "sealed", kind: "sealed", name: "Fixture Tin", headline: "Fixture Tin: $40.00 (Nov 20) to $48.00 (Nov 27) on TCGplayer market. Up 20%.", priceDays: midCount, price: 48, startDate: WINDOW_START, endDate: DAY_ASOF };
+t("a caution band read is not held", thinReadBlock(midRow, bandCfg) == null);
+t("a complete window is not held", thinReadBlock({ ...midRow, id: "fixture-full", priceDays: fullCount }, bandCfg) == null);
+const above = { minPriceDays: DAYS.aboveWindowMinPriceDays, cautionPriceDays: DAYS.aboveWindowCautionPriceDays };
+const aboveFull = sealedCall(fullMap, above);
+const aboveShort = sealedCall(shortMap, above);
+t("a floor above the window does not change a complete headline", aboveFull.length === 1 && aboveFull[0].headline === fullBare[0].headline && !/Price history for this read is/.test(aboveFull[0].headline));
+t("a floor above the window still holds a short window", aboveShort.length === 0);
+t("the builder window is seven days back", WINDOW_START === "2026-11-20");
 
 if (fail) { console.log(fail + " failed"); process.exit(1); }
 console.log("read thin data ok");

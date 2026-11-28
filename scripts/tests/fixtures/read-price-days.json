@@ -1,5 +1,7 @@
 {
-  "note": "Fixture only. These are not the live limits.",
-  "minPriceDays": 4,
-  "cautionPriceDays": 12
+  "note": "Fixture only. These are not the live limits. Counts are dated prices inside the read window, not a lifetime total.",
+  "minPriceDays": 3,
+  "cautionPriceDays": 6,
+  "aboveWindowMinPriceDays": 30,
+  "aboveWindowCautionPriceDays": 90
 }
