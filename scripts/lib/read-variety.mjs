@@ -126,7 +126,7 @@ function specificAlts(text) {
   return out;
 }
 
-function genericPass(text) {
+export function genericPass(text) {
   let s = text;
   s = s.replace(new RegExp(`\\bas of (${MD})\\b`, "g"), "dated $1");
   s = s.replace(/\bover (\d+) days\b/g, "across $1 days");
@@ -139,7 +139,7 @@ function genericPass(text) {
   s = s.replace(new RegExp(`\\bon (${MDY})\\b`, "g"), "dated $1");
   s = s.replace(new RegExp(`\\((${MD})\\) on TCGplayer market`, "g"), "TCGplayer market for $1");
   s = s.replace(/, (\d{4}) and\b/g, ", $1 then");
-  s = s.replace(/\band ([A-Z][a-z]{2,9} \d{1,2})\b/g, "then $1");
+  s = s.replace(new RegExp(`\\band (${MD})\\b`, "g"), "then $1");
   return s.replace(/\s+/g, " ").trim();
 }
 

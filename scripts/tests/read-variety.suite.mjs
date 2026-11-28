@@ -2,6 +2,7 @@
 // The live lines repeated boilerplate 4-word phrases on neighboring reads.
 // Fixtures below use fake names and fake prices. The shape is the real one.
 import { finishBoard } from "../lib/board-mix.mjs";
+import { genericPass } from "../lib/read-variety.mjs";
 
 const GLUE = new Set(`a an the of in on to from for and or its it is still under over about
 more less than with against by as at vs last this that those two date dates week weeks days
@@ -231,6 +232,14 @@ export async function run() {
   t("a list that is entirely the same sentence still changes the next template", onlyYears.length === 3 && !yearSame && onlyYears.every((r, i) => i === 0 || sharedGlue(onlyYears[i - 1], r).length === 0));
   const alone = finishBoard([blurbA])[0];
   t("a read with no neighbor keeps the generator sentence", alone && alone.headline === blurbA.headline && alone.blurb === blurbA.blurb && alone.why === blurbA.why);
+
+  const cardLine = "Up 10% on the year: Sample and Pikachu 25/102 went from $9.00 on Nov 1, 2025 to $9.90 on Nov 27.";
+  const cardPass = genericPass(cardLine);
+  t("a card number stays a card number", cardPass.includes("and Pikachu 25/102") && !cardPass.includes("then Pikachu"));
+  const monthAnd = genericPass("The pair is Aug 1 and Nov 27.");
+  t("and before a month day still moves", monthAnd.includes("then Nov 27") && !monthAnd.includes("and Nov 27"));
+  const monthTo = genericPass("median -11.4%, Oct 30 to Nov 27.");
+  t("month day to month day keeps both dates", monthTo.includes("ends Nov 27, after Oct 30") && monthTo.includes("Oct 30") && monthTo.includes("Nov 27"));
 
   return fail;
 }

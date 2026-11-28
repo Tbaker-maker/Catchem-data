@@ -31,6 +31,7 @@ import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./de
 import { loadJumpy } from "./jumpy-price.mjs";
 import { loadStaleMarket } from "./stale-market.mjs";
 import { loadPathways, loadSealedLong, pathwayReads } from "./read-pathways.mjs";
+import { spaceSimilar } from "./read-variety.mjs";
 import { loadSealedPathwayItems } from "./pathway-inputs.mjs";
 import { loadWindowSeries } from "./thin-trading.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
@@ -38,7 +39,6 @@ import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
 import { spaceFamilies } from "./reads-guard.mjs";
-import { spaceSimilar } from "./read-variety.mjs";
 import { dropThinReads, listingAnnotate, loadListingIndex, loadReadFlags, releaseEra, withoutFlaggedReads } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
