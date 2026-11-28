@@ -700,10 +700,11 @@ jobs:
         # nothing is pushed. After the push: the live site is checked and the
         # backup is put back if it fails. Limits stay in catchem-data-private.
         id: publish
-        # Not success(). That token would gate publish on the eBay fetch.
-        # Publish only when this run's guard set skip=false. No output means
-        # the guard did not run, so publish does not run either.
-        if: steps.staleguard.outputs.skip == 'false'
+        # GitHub wraps an if that names no status function in success().
+        # This if names success() so the gate is visible. Publish still
+        # requires success(). It does not run after a failed step.
+        # skip=false is the guard.
+        if: ${{ success() && steps.staleguard.outputs.skip == 'false' }}
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-public-data.mjs --push
