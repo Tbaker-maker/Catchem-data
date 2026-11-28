@@ -28,6 +28,15 @@ jobs:
       # Unset keeps every PPT call on. Set repository variable PPT_OFF to 1 to skip them.
       PPT_OFF: ${{ vars.PPT_OFF }}
     steps:
+      - name: Stamp this price run start
+        # UTC instant before any price commit this run creates. The publish
+        # guard compares it with Update sealed prices commits already on main.
+        id: pricestart
+        run: |
+          stamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "started_at=$stamp" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$stamp" > "$RUNNER_TEMP/price-run-started-at"
+
       - name: Checkout
         # The branch tip at checkout time, not the commit the run was queued on.
         # A queued or rerun nightly used to test the code from before the fix
@@ -663,6 +672,25 @@ jobs:
             fi
           fi
 
+      - name: Skip publish when a newer same-day price commit already landed
+        # Another run can land Update sealed prices for this UTC day after
+        # this one started. Skip publish then. A same-day commit from before
+        # this run started does not skip, and a different day does not skip.
+        id: staleguard
+        run: |
+          if [ ! -f "$RUNNER_TEMP/price-run-started-at" ]; then
+            echo "No price-run-started-at stamp was found."
+          fi
+          if ! git fetch origin main; then
+            echo "Could not fetch origin main. Using commits already on this checkout."
+          fi
+          if reason="$(git log origin/main --format='%cI%x1f%s' | node scripts/lib/stale-sha-guard.mjs)"; then
+            echo "$reason"
+          else
+            echo "Stale sha guard failed open. Publishing as today."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish the public-data branch
         # One orphan commit of research/assets/public, same paths, no history.
         # This branch is overwritten every night. Only refs/heads/public-data is force-pushed.
@@ -672,6 +700,7 @@ jobs:
         # nothing is pushed. After the push: the live site is checked and the
         # backup is put back if it fails. Limits stay in catchem-data-private.
         id: publish
+        if: success() && steps.staleguard.outputs.skip != 'true'
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-public-data.mjs --push
