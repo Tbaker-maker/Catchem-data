@@ -382,8 +382,6 @@ function cents(n) {
 }
 
 export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null } = {}) {
-  const passed = arguments[0] || {};
-  const root = typeof passed.root === "string" && passed.root ? passed.root : null;
   const held = heldIds instanceof Set ? heldIds : new Set();
   const heldRow = (row) => mentionsHeld(row, held);
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
@@ -598,6 +596,8 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     plain: { qualified: plainRows.length, boarded: boarded.plain, droppedNoExactDay: plainPool.dropped },
   };
 
+  const passed = arguments[0] || {};
+  const root = typeof passed.root === "string" && passed.root ? passed.root : null;
   withBuiltPictures(board, root);
   withBuiltPictures(signals, root);
 
