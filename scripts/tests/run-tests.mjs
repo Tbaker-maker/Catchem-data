@@ -29,6 +29,7 @@ import "./listing-count-git-backfill.test.mjs";
 import "./premium-ratio.test.mjs";
 import "./premium-history.test.mjs";
 import "./publish-checks.test.mjs";
+import "./review-guards.test.mjs";
 import "./ebay-nonblocking.test.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
