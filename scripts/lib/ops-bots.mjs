@@ -28,6 +28,17 @@ export function priceDayStale(priceDay, today) {
   };
 }
 
+const PRICE_STALE_LINE = /^price day \d{4}-\d{2}-\d{2} is \d+ days behind \d{4}-\d{2}-\d{2}$/;
+
+// Keep alert lines freshness did not write. Replace only the price-day line.
+export function statusAlerts(prior, stale) {
+  const kept = (Array.isArray(prior) ? prior : []).filter((line) => typeof line === "string" && line && !PRICE_STALE_LINE.test(line));
+  if (!stale) return kept;
+  const line = typeof stale === "string" ? stale : String(stale.alert || "");
+  if (!line || kept.includes(line)) return kept;
+  return [...kept, line];
+}
+
 export function freshnessReport({ today, priceDay, countsDay, readsDay, scannerDay }) {
   const board = dayOf(today);
   const checks = [

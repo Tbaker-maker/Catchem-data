@@ -1,10 +1,15 @@
 // Per-day eBay Browse call budget. The reserve is private; tests use a fake budget of 10.
-// No network. A missing budget fails closed: no client calls, last-good rows stay.
-import { readFile } from "node:fs/promises";
+// No network. A missing reserve keeps the public call ceiling. It does not mean zero client calls.
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { pickRun } from "../lib/listing-counts.mjs";
-import { browseBudgetAlert, mergeAlerts, LISTING_CALL_BUDGET } from "../lib/limits-watch.mjs";
+import { browseBudgetAlert, mergeAlerts, warningLine, LISTING_CALL_BUDGET } from "../lib/limits-watch.mjs";
 import { EBAY_BROWSE_DAILY_LIMIT } from "../lib/listing-counts.mjs";
 import { browseCallsLeft, countWithinBudget, loadBrowseReserve, publicBrowseCeiling, readBrowseReserve } from "../lib/ebay-browse-budget.mjs";
+import { statusAlerts } from "../lib/ops-bots.mjs";
 
 export async function run() {
   let fail = 0;
@@ -122,6 +127,51 @@ export async function run() {
     readFile: async () => { throw new Error("missing"); },
   });
   t("load reads a fake budget of 10 and fails closed when the file is missing", loaded === 10 && missing == null);
+
+  const budgetLine = browseBudgetAlert("unset");
+  const shareLine = warningLine({ id: "ebay-browse", share: 0.9, limit: LISTING_CALL_BUDGET, asOf: "2026-11-27" });
+  const oldPrice = "price day 2020-01-01 is 9 days behind 2020-01-10";
+  const lateLine = "price day 2026-11-26 is 2 days behind 2026-11-28";
+  const keptAlerts = statusAlerts([budgetLine, shareLine, oldPrice, { id: "old-object" }], { alert: lateLine });
+  t("statusAlerts keeps the budget line and replaces only the price-day line", keptAlerts.length === 3 && keptAlerts[0] === budgetLine && keptAlerts[1] === shareLine && keptAlerts[2] === lateLine);
+  t("a resolved price day drops the old price line and keeps the budget line", statusAlerts([budgetLine, oldPrice], null).join("|") === budgetLine);
+
+  const clock = new Date();
+  const calendar = clock.toISOString().slice(0, 10);
+  const late = new Date(clock.getTime());
+  late.setUTCHours(12, 0, 0, 0);
+  late.setUTCDate(late.getUTCDate() - 2);
+  const lateDay = late.toISOString().slice(0, 10);
+  const root = await mkdtemp(join(tmpdir(), "fresh-budget-"));
+  try {
+    await mkdir(join(root, "data/history/tcgcsv-daily"), { recursive: true });
+    await mkdir(join(root, "data/derived"), { recursive: true });
+    await writeFile(join(root, "data/history/tcgcsv-daily", `${lateDay}.json`), "{}\n");
+    await writeFile(join(root, "data/derived/status.json"), JSON.stringify({
+      alerts: [budgetLine, shareLine, oldPrice],
+    }, null, 1) + "\n");
+    const bot = join(dirname(fileURLToPath(import.meta.url)), "../freshness-bot.mjs");
+    const ran = await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, [bot], {
+        env: { ...process.env, FRESHNESS_ROOT: root },
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      let err = "";
+      child.stderr.on("data", (buf) => { err += buf; });
+      child.on("error", reject);
+      child.on("close", (code) => resolve({ code, err }));
+    });
+    const written = JSON.parse(await readFile(join(root, "data/derived/status.json"), "utf8"));
+    const expectedLate = `price day ${lateDay} is 2 days behind ${calendar}`;
+    t("freshness-bot exits 0", ran.code === 0);
+    t("the budget alert is still in status.json after freshness-bot runs", Array.isArray(written.alerts) && written.alerts.includes(budgetLine) && written.alerts.includes(shareLine) && !written.alerts.includes(oldPrice) && written.alerts.includes(expectedLate));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+
+  const yml = await readFile(new URL("../../.github/workflows/listing-counts.yml", import.meta.url), "utf8");
+  const slice = (yml.split("- name: Listing counts (eBay slice)")[1] || "").split("\n      - name:")[0];
+  t("the eBay slice names PRIVATE_DATA_TOKEN and waits for Tyler", /PRIVATE_DATA_TOKEN: \$\{\{ secrets\.PRIVATE_DATA_TOKEN \}\}/.test(slice) && /Tyler must say yes/.test(slice) && /LISTING_RUN_ROLE:/.test(slice));
 
   const src = await readFile(new URL("../fetch-listing-counts.mjs", import.meta.url), "utf8");
   const lib = await readFile(new URL("../lib/ebay-browse-budget.mjs", import.meta.url), "utf8");
