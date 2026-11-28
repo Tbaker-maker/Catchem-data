@@ -27,6 +27,7 @@ jobs:
     env:
       # Unset keeps every PPT call on. Set repository variable PPT_OFF to 1 to skip them.
       PPT_OFF: ${{ vars.PPT_OFF }}
+      CATCHEM_NEVER_BLOCK_RECORD: /tmp/catchem-never-block.jsonl
     steps:
       - name: Checkout
         # The branch tip at checkout time, not the commit the run was queued on.
@@ -52,6 +53,30 @@ jobs:
         # package.json declares @resvg/resvg-js; without this install the
         # rasterizer skips gracefully and the daily cards stay SVG-only.
         run: npm install --no-audit --no-fund
+
+      - name: Secret preflight
+        # Names only. A missing secret warns, raises one needs-yes alert, and
+        # never fails the run. Last-good public data stays with its real asOf.
+        id: secrets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+          PKMNPRICES_API_KEY: ${{ secrets.PKMNPRICES_API_KEY }}
+          POKEMONTCG_API_KEY: ${{ secrets.POKEMONTCG_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CF_DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+          MIRROR_REMOTE_URL: ${{ secrets.MIRROR_REMOTE_URL }}
+          DRIFT_BOT_TOKEN: ${{ secrets.DRIFT_BOT_TOKEN }}
+          CUSTOM_READS_TOKEN: ${{ secrets.CUSTOM_READS_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          READS_EMAIL_KEY: ${{ secrets.READS_EMAIL_KEY }}
+          READS_EMAIL_WEBHOOK_SECRET: ${{ secrets.READS_EMAIL_WEBHOOK_SECRET }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: node scripts/secret-preflight.mjs
 
       - name: Write today's TCGCSV catalog day
         # Before the guard audit and the unit tests, so a fail-fast step above
@@ -478,13 +503,15 @@ jobs:
         run: node scripts/reads-day-alert.mjs
 
       - name: Run the read registry
-        run: node scripts/run-read-registry.mjs
+        run: node scripts/run-last-good.mjs --step "Run the read registry" -- node scripts/run-read-registry.mjs
 
       - name: Write the private detector report
-        run: node scripts/write-detector-report.mjs
+        run: node scripts/run-last-good.mjs --step "Write the private detector report" -- node scripts/write-detector-report.mjs
 
       - name: Write feature data
         # The IR cycle order reads its weights from catchem-data-private (read only).
+        # Not wrapped in run-last-good. A failed rating must stop here so the
+        # hold release below does not run against a restored older file.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-feature-data.mjs
@@ -518,28 +545,28 @@ jobs:
       - name: Listings-led tracker (private)
         # Scores listing-count trends with price and heat state; picks and backtest go to the
         # private repo only. No public output.
-        run: node scripts/run-tracker.mjs
+        run: node scripts/run-last-good.mjs --step "Listings-led tracker (private)" -- node scripts/run-tracker.mjs
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
 
       - name: Refresh the morning card (today.json)
         # Built from tonight's reads.json. Nothing else writes it, and build-feed's
         # health check fails once it is 3 days behind.
-        run: node scripts/write-morning-card.mjs
+        run: node scripts/run-last-good.mjs --step "Refresh the morning card (today.json)" -- node scripts/write-morning-card.mjs
 
       - name: Per-item read lookups (feed/item-reads)
         # Small bucket files so item pages never load all of reads.json.
-        run: node scripts/write-item-reads.mjs
+        run: node scripts/run-last-good.mjs --step "Per-item read lookups (feed/item-reads)" -- node scripts/write-item-reads.mjs
 
       - name: Per-item card lookups (feed/card)
         # Images, IR rows and the condition note split small for card pages.
-        run: node scripts/write-card-lookups.mjs
+        run: node scripts/run-last-good.mjs --step "Per-item card lookups (feed/card)" -- node scripts/write-card-lookups.mjs
 
       - name: Stamp the Updated line from the price file
         # Site pages read counts.json for the Updated line. That clock is the
         # timestamp already on sealed-prices.json, not the last public bundle.
         # A price file with no updatedAt leaves the line as it is.
-        run: node scripts/stamp-public-updated.mjs
+        run: node scripts/run-last-good.mjs --step "Stamp the Updated line from the price file" -- node scripts/stamp-public-updated.mjs
 
       - name: Score the track record
         # Takes are scored from the daily TCGplayer market on exact days 14, 28,
@@ -548,14 +575,14 @@ jobs:
         # The public file written here is the stub only.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/write-track-record.mjs
+        run: node scripts/run-last-good.mjs --step "Score the track record" -- node scripts/write-track-record.mjs
 
       - name: Stamp signal chips
         # Chip words only. The cutoffs stay in catchem-data-private.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           SIGNAL_STAMP_READS: "1"
-        run: node scripts/stamp-signal-chips.mjs
+        run: node scripts/run-last-good.mjs --step "Stamp signal chips" -- node scripts/stamp-signal-chips.mjs
 
       - name: Synthesize item reads
         # Each read about one product becomes a 2 to 3 sentence summary of every
@@ -564,7 +591,7 @@ jobs:
         # catchem-data-private. Without them the reads are left as they were.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/synthesize-reads.mjs
+        run: node scripts/run-last-good.mjs --step "Synthesize item reads" -- node scripts/synthesize-reads.mjs
 
       - name: Guard the public reads
         # Leaves out reads built on a one night jump, a there and back flip, or a
@@ -574,10 +601,7 @@ jobs:
         # lookups are written again from the guarded reads.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: |
-          node scripts/guard-public-reads.mjs
-          node scripts/write-morning-card.mjs
-          node scripts/write-item-reads.mjs
+        run: node scripts/run-last-good.mjs --step "Guard the public reads" -- sh -c "node scripts/guard-public-reads.mjs && node scripts/write-morning-card.mjs && node scripts/write-item-reads.mjs"
 
       - name: IR and SIR watch and run stage call ledger
         # Every Illustration Rare and Special Illustration Rare: baselines, set peers,
@@ -597,7 +621,7 @@ jobs:
         # input. A missing private spec writes nothing new. Do not add data/private/.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/build-market-meter.mjs --publish
+        run: node scripts/run-last-good.mjs --step "Market meter" -- node scripts/build-market-meter.mjs --publish
 
       - name: Publish gate
         # Drops single bad reads with a logged reason; fails only on systemic breakage.
@@ -605,7 +629,7 @@ jobs:
         # The meter rule needs the private minimum, so the spec is loaded here too.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/publish-gate.mjs
+        run: node scripts/run-last-good.mjs --step "Publish gate" -- node scripts/publish-gate.mjs
 
       - name: Withhold files whose tests failed tonight
         # Puts each withheld group's public files back to the last committed copy
@@ -688,20 +712,22 @@ jobs:
 
       - name: Fail if reads, search, or the index wrote nothing
         # Reads, search, and the public index may fail without dropping the
-        # price commit. This step is the red X when one of them wrote nothing.
-        # The five missing days stay null. Unpriced rows stay unpriced.
+        # price commit. If this check fails, last-good files stay, one alert
+        # is written, and Pulse and Board still run. The five missing days
+        # stay null. Unpriced rows stay unpriced.
         if: always()
         env:
           READS_OUTCOME: ${{ steps.reads.outcome }}
           SEARCH_OUTCOME: ${{ steps.search.outcome }}
           INDEX_OUTCOME: ${{ steps.setpages.outcome }}
-        run: node scripts/check-publish-writes.mjs
+        run: node scripts/run-last-good.mjs --step "Fail if reads, search, or the index wrote nothing" -- node scripts/check-publish-writes.mjs
 
       - name: Fetch TCG news
-        # After the price commit and the feed rebuild. A failed fetch fails the job.
+        # After the price commit and the feed rebuild. A failed fetch keeps
+        # last-good news, writes one alert, and lets later steps run.
         # The four research checks stay on the earlier continue-on-error step.
         # This step does not call eBay.
-        run: node scripts/fetch-tcg-news.mjs
+        run: node scripts/run-last-good.mjs --step "Fetch TCG news" -- node scripts/fetch-tcg-news.mjs
         env:
           # Japan-only items left out are logged to catchem-data-private only.
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
@@ -721,20 +747,17 @@ jobs:
         run: node scripts/append-shelf.mjs
 
       - name: Generate Morning Pulse
-        run: node scripts/generate-pulse.mjs
+        run: node scripts/run-last-good.mjs --step "Generate Morning Pulse" -- node scripts/generate-pulse.mjs
       - name: Generate The Board
-        run: node scripts/generate-board.mjs
+        run: node scripts/run-last-good.mjs --step "Generate The Board" -- node scripts/generate-board.mjs
       - name: Build creator pages
-        run: |
-          node scripts/build-creators-page.mjs
-          node scripts/build-editor.mjs
-          node scripts/build-faq.mjs
+        run: node scripts/run-last-good.mjs --step "Build creator pages" -- sh -c "node scripts/build-creators-page.mjs && node scripts/build-editor.mjs && node scripts/build-faq.mjs"
       # mint-cards.mjs was in NO workflow, while run-tests.mjs asserted the
       # cards it produces. So the tests were checking committed fossils, and
       # when one was deleted the fail-fast gate killed the whole daily run.
       # A test may assert an artifact only if something in the pipeline makes it.
       - name: Mint the share cards
-        run: node scripts/mint-cards.mjs
+        run: node scripts/run-last-good.mjs --step "Mint the share cards" -- node scripts/mint-cards.mjs
       # Cards are MINTED as SVG above and were never rasterised, because this
       # step existed in no workflow at all. The committed PNGs were therefore
       # stale, and the current one shipped with an empty box where the product
@@ -742,7 +765,7 @@ jobs:
       # fetch over the network, so the image has to be embedded first. That is
       # exactly what this script does, and nothing was calling it.
       - name: Rasterize cards to PNG (embeds images first)
-        run: node scripts/rasterize-cards.mjs
+        run: node scripts/run-last-good.mjs --step "Rasterize cards to PNG (embeds images first)" -- node scripts/rasterize-cards.mjs
       - name: Discord alerts
         continue-on-error: true
         env:
@@ -983,6 +1006,17 @@ jobs:
           STEP=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
             --jq '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(", ")' || true)
           NIGHTLY_FAILED_STEP="${STEP:-unknown step}" node scripts/nightly-issue.mjs --failed-step
+
+      - name: Deduped nightly alerts
+        # One catchem-alert issue per skipped step, updated not duplicated.
+        # After the failure summary so the strict freshness check stays the
+        # step immediately before that summary. if: always so a red strict
+        # check still reports the skips.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/report-nightly-alerts.mjs
 
       - name: Open or update the prices stale issue
         # sealed-prices.json older than 36 hours. One issue, updated, never duplicated.
