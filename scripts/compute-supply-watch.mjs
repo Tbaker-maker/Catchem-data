@@ -8,6 +8,7 @@ import { readCrosscheck } from "./lib/ppt-paths.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { heldSupplyWatch } from "./lib/supply-held.mjs";
 const DATA = join(dirname(dirname(fileURLToPath(import.meta.url))), "data");
 const TH = 0.12, MIN_DAYS = 8;
 
@@ -27,9 +28,15 @@ const state = (e, t) => {
   return ["balanced","supply steady both markets"];
 };
 
-const ebayH = JSON.parse(await readFile(join(DATA,"heat-history.json"),"utf-8").catch?.()||await readFile(join(DATA,"heat-history.json"),"utf-8"));
 const tcgH = await readCrosscheck(dirname(DATA), "crosscheck-history.json");
-if (!Array.isArray(tcgH)) process.exit(0);
+if (!Array.isArray(tcgH)) {
+  const held = heldSupplyWatch();
+  await writeFile(join(DATA, "supply-watch.json"), JSON.stringify(held, null, 2) + "\n");
+  console.log("· Supply Watch: held. TCG listing history was not read. No row was invented.");
+  process.exit(0);
+}
+
+const ebayH = JSON.parse(await readFile(join(DATA,"heat-history.json"),"utf-8").catch?.()||await readFile(join(DATA,"heat-history.json"),"utf-8"));
 
 const ids = [...new Set(ebayH.map(r=>r.id))];
 const rows=[], maturing=[];

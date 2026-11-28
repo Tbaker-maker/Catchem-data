@@ -1,6 +1,8 @@
 // Dress rehearsal for PPT_OFF. No publish. No price API.
 // Spawns the PPT entry points with the switch on, and blocks any PPT host
-// if a guard is missing. Does not rewrite committed price files.
+// if a guard is missing. Does not rewrite sealed prices. A held spread report,
+// a held supply report, and the PPT skip logs may be rewritten, because those
+// jobs record that they ran.
 import { spawn } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -76,7 +78,7 @@ const report = {
   steps,
   coverage: cov,
   notRun: [
-    "Price writers, the public bundle, and publish-public-data.mjs were not run. This rehearsal does not publish and does not rewrite committed prices.",
+    "Price writers, the public bundle, and publish-public-data.mjs were not run. This rehearsal does not publish. Sealed prices are not rewritten. Held reports and PPT skip logs may be.",
     "Steps that call TCGCSV, eBay, or pokemontcg.io were not run. No extra paid call was made.",
   ],
 };

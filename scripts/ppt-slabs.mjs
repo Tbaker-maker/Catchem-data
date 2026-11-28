@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { slabCandidates, slabStatus } from "./lib/ppt-slabs.mjs";
 import { pptOff, pptOffBanner } from "./lib/ppt-off.mjs";
+import { skippedSlabStatus } from "./lib/ppt-skip-log.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -13,8 +14,13 @@ function enabledFlag() {
 
 export async function writeSlabStatus(root = ROOT) {
   if (pptOff()) {
+    const status = skippedSlabStatus(new Date().toISOString().slice(0, 10));
+    const dir = join(root, "data/history/slabs");
+    await mkdir(dir, { recursive: true });
+    await writeFile(join(dir, "status.json"), `${JSON.stringify(status, null, 2)}\n`);
     console.log(pptOffBanner("scripts/ppt-slabs.mjs"));
-    return { status: "skipped", creditsUsed: 0, reason: "PPT_OFF" };
+    console.log(`ppt-slabs ${status.status} credits=${status.creditsUsed} candidates=${status.candidates}`);
+    return status;
   }
   // singles-enrichment.json is PPT-valued and private; it is only here when mounted.
   let enrich = { cards: [] };

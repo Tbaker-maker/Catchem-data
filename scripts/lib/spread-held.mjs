@@ -27,3 +27,8 @@ export function heldDivergenceReport(sealed, nowIso = new Date().toISOString()) 
     skipped,
   };
 }
+
+export function heldReportIfSpreadHeld(sealed, nowIso = new Date().toISOString()) {
+  if (!isSpreadHeld(sealed)) return null;
+  return heldDivergenceReport(sealed, nowIso);
+}
