@@ -1,15 +1,15 @@
-# What the machines noticed — 2026-11-27
+# What the machines noticed — 2026-11-28
 
-Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
+Read it with coffee. Anything urgent says so in capitals.
 
 ## Our own claims
-Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
+A lot of honest shrugs on this run. The tape is young; the tests are patient.
 2 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
+We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
 
-41 product(s) we featured and can no longer price:
+42 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -74,21 +74,20 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Pitch Black Booster Bundle moved -11.2% — about 3.5× its own typical daily swing. *Measured against its own 41 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Chaos Rising Booster Bundle moved -10.1% — about 3.0× its own typical daily swing. *Measured against its own 41 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Perfect Order Booster Bundle moved 14.3% — about 7.1× its own typical daily swing. *Measured against its own 42 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted."
-- **YouTube** — Twilight Masquerade Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 127 listings counted."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99."
+- **X** — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 129 listings counted."
+- **YouTube** — Temporal Forces Elite Trainer Box — "Deepest eBay listing shelf among live sealed products with a TCGplayer market price - 129 listings counted."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 97 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BACKUP.md has sat untouched for 98 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 97 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
-- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 97 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-AUTO-RECOVERY.md has sat untouched for 98 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BACKUP.md has sat untouched for 99 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-BOX.md has sat untouched for 98 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
+- **stale commitment** — PENDING-BLIND-PACKS.md has sat untouched for 98 days. *Either it still matters and somebody should do it, or it stopped mattering and it should be deleted. A pending file nobody closes teaches everyone to ignore pending files.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.

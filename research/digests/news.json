@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-28T13:52:56.521Z",
+  "updated": "2026-11-28T16:01:43.465Z",
   "timezone": "America/Vancouver",
   "asOf": "2026-11-28",
   "defaultWindowDays": 14,
@@ -23082,6 +23082,11 @@
       "skipped": "HTTP 403: page blocked the fetch"
     },
     {
+      "source": "Siliconera",
+      "url": "https://www.siliconera.com/tag/pokemon/feed/",
+      "items": 15
+    },
+    {
       "source": "Pokémon Card (Japan)",
       "url": "https://www.pokemon-card.com/info/",
       "items": 430
@@ -23102,20 +23107,21 @@
       "items": 25
     },
     {
-      "source": "Siliconera",
-      "url": "https://www.siliconera.com/tag/pokemon/feed/",
-      "items": 15
+      "source": "ICv2",
+      "url": "https://icv2.com/rss",
+      "items": 0,
+      "skipped": "page had no titled items"
+    },
+    {
+      "source": "Gematsu",
+      "url": "https://www.gematsu.com/companies/the-pokemon-company",
+      "items": 29
     },
     {
       "source": "Pokémon Card (Asia)",
       "url": "https://asia.pokemon-card.com/sg/",
       "items": 24,
       "note": "The list stated titles and links. It did not state a publication date."
-    },
-    {
-      "source": "Gematsu",
-      "url": "https://www.gematsu.com/companies/the-pokemon-company",
-      "items": 29
     },
     {
       "source": "Serebii",
@@ -23126,12 +23132,6 @@
       "source": "Victory Road",
       "url": "https://victoryroad.pro/feed/",
       "items": 5
-    },
-    {
-      "source": "ICv2",
-      "url": "https://icv2.com/rss",
-      "items": 0,
-      "skipped": "page had no titled items"
     },
     {
       "source": "PokeGuardian",
@@ -23180,7 +23180,7 @@
     {
       "day": "2026-11-28",
       "slot": "nightly",
-      "at": "2026-11-28T13:52:56.521Z",
+      "at": "2026-11-28T16:01:43.465Z",
       "path": "research/digests/news.json"
     }
   ]

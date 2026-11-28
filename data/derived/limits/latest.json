@@ -1,17 +1,19 @@
 {
- "asOf": "2026-11-27",
- "generatedAt": "2026-11-27T16:27:40.715Z",
+ "asOf": "2026-11-28",
+ "generatedAt": "2026-11-28T16:19:40.729Z",
  "warnAt": 0.85,
  "sources": [
   {
    "id": "ebay-browse",
    "label": "eBay Browse listing calls",
-   "asOf": "2026-11-27",
-   "used": 2975,
+   "asOf": "2026-11-28",
+   "used": 4433,
    "limit": 4277,
-   "share": 0.696,
+   "share": 1.036,
    "window": "rolling 24 hours"
   }
  ],
- "warnings": []
+ "warnings": [
+  "eBay Browse is at 104% of the 4,277 daily listing calls as of 2026-11-28."
+ ]
 }
