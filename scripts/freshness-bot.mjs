@@ -4,9 +4,9 @@ import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dayOf, freshnessReport, priceDayStale } from "./lib/ops-bots.mjs";
+import { dayOf, freshnessReport, priceDayStale, statusAlerts } from "./lib/ops-bots.mjs";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = process.env.FRESHNESS_ROOT || join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = "data/derived/status.json";
 
 function runNode(script) {
@@ -60,12 +60,13 @@ if (process.argv.includes("--rerun")) {
 }
 const calendar = new Date().toISOString().slice(0, 10);
 const stale = priceDayStale(seenPriceDay, calendar);
+const prior = await readJson(join(ROOT, OUT));
 const doc = {
   asOf: report.asOf,
   generatedAt: new Date().toISOString(),
   checks: report.checks,
   failures: report.failures,
-  alerts: stale ? [stale] : [],
+  alerts: statusAlerts(prior?.alerts, stale),
   reran,
   note: report.failures.includes("reads") ? "Reads rebuild is not rerun here. It belongs to the nightly feed, which has to fit the 20 minute test job." : "Checked the dated files. A missing light step can be rerun once with --rerun.",
 };

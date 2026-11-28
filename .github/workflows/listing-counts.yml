@@ -50,10 +50,14 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/fetch-vintage-sample.mjs
       - name: Listing counts (eBay slice)
+        # PRIVATE_DATA_TOKEN is the same repo secret the vintage sample step
+        # already uses. Tyler must say yes before this reference is merged.
+        # Without it the private Browse reserve never loads.
         continue-on-error: true
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           LISTING_RUN_ROLE: ${{ github.event.schedule == '0 19 * * *' && 'top' || (github.event.schedule == '30 2 * * *' || github.event.schedule == '0 5 * * *') && 'guardian' || inputs.role || 'full' }}
         run: node scripts/fetch-listing-counts.mjs
       - name: Status file

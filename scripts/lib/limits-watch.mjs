@@ -17,6 +17,19 @@ function pct(share) {
   return Math.round(share * 100);
 }
 
+// One line for the private Browse reserve. No reserve count in the line.
+// A missing key is not a zero-call freeze: the public ceiling stays the hard stop.
+// Rows this run did not refresh keep their date.
+export function browseBudgetAlert(kind) {
+  if (kind === "missing" || kind === "unset") {
+    return "eBay Browse reserve is not set, so the public call ceiling stays the hard stop for listings counted.";
+  }
+  if (kind === "held") {
+    return "eBay Browse used up the day's call budget, so listings counted stay on the last real morning for items this run did not refresh, instead of a half-finished today.";
+  }
+  return "";
+}
+
 export function listingSource(log, now = new Date(), limit = LISTING_CALL_BUDGET) {
   if (!Array.isArray(log)) return null;
   const used = used24(log, now);
