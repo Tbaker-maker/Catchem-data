@@ -4,6 +4,7 @@
 // streaks, then plain price. Nothing else is boarded.
 import { oneNightMove } from "./history-reads.mjs";
 import { mentionsHeld } from "./price-hold-skip.mjs";
+import { loadReadThinData } from "./read-thin-data.mjs";
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -379,7 +380,7 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
-export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null } = {}) {
+export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null, priceDaysCfg } = {}) {
   const held = heldIds instanceof Set ? heldIds : new Set();
   const heldRow = (row) => mentionsHeld(row, held);
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
@@ -547,7 +548,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
   if (library === true) {
     const extras = [
       ...turnedReads({ series, asOf, names: nameBySku, dailyFiles }),
-      ...sealedWeekReads({ products: sealed, series, asOf, dailyFiles }),
+      ...sealedWeekReads({ products: sealed, series, asOf, dailyFiles, priceDaysCfg }),
       ...releaseReads({ radar, asOf }),
     ];
     for (const row of extras) {
@@ -753,6 +754,7 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   if (open && radarDoc == null) radarDoc = await readJson(join(root, "data/release-radar.json"));
   const { loadHeldIds } = await import("./price-hold-skip.mjs");
   const heldIds = await loadHeldIds(root);
+  const priceDaysCfg = await loadReadThinData(root);
   const lib = buildReadLibrary({
     catalogue,
     extra,
@@ -764,6 +766,7 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
     pptPublic,
     volumeReads,
     heldIds,
+    priceDaysCfg,
   });
   const path = join(root, LIBRARY_FILE);
   await mkdir(dirname(path), { recursive: true });

@@ -335,6 +335,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       signals: made.built?.signals || [],
       tiles: made.built?.tiles || null,
     };
+    if (Number.isInteger(read.priceDays) && read.priceDays >= 0) view.priceDays = read.priceDays;
     if (claim && Array.isArray(made.points) && made.points.length) view.chart = { points: made.points };
     if (count != null) view.thin = { listingsCounted: count };
     return view;

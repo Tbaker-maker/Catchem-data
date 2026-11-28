@@ -38,7 +38,7 @@ import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 import { loadReadStability } from "./read-stability.mjs";
 import { spaceFamilies } from "./reads-guard.mjs";
-import { dropThinReads, listingAnnotate, loadListingIndex, loadReadFlags, releaseEra, withoutFlaggedReads } from "./read-thin-data.mjs";
+import { applyPriceDayCaution, dropThinReads, listingAnnotate, loadListingIndex, loadReadFlags, loadReadThinData, releaseEra, withoutFlaggedReads } from "./read-thin-data.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
@@ -794,7 +794,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
   if (!doc || !Array.isArray(doc.reads)) return { skipped: "no reads.json" };
-  const base = doc.reads.filter(isPriceRead).filter((r) => r.board !== "hist").filter(keepPriceRead).map(polishPriceRead);
+  const priceDaysCfg = await loadReadThinData(root);
+  const base = doc.reads.filter(isPriceRead).filter((r) => r.board !== "hist").filter(keepPriceRead).map(polishPriceRead).map((row) => applyPriceDayCaution(row, priceDaysCfg));
   const end = await priceBoardDay(root, doc.asOf);
   if (!end) return { skipped: "no price day" };
   const start = addDays(end, -7);
