@@ -1,11 +1,8 @@
 {
-  "asOf": "2026-11-25",
-  "status": "ran",
-  "reason": "Key was present. credits.used is this run only, as the provider reported it. credits.usedToday adds earlier runs on the same UTC day. credits.remaining is the daily budget minus usedToday, worked out here.",
+  "asOf": "2026-11-28",
+  "status": "skipped",
+  "reason": "PPT_OFF is set. No request was sent. No PPT file was read.",
   "credits": {
-    "budget": 20000,
-    "main": 16000,
-    "reserve": 4000,
     "used": {
       "sealed": 0,
       "singles": 0,
@@ -14,15 +11,9 @@
       "crosscheck": 0,
       "total": 0
     },
-    "remaining": 19872,
-    "usedToday": 128,
+    "usedToday": 0,
     "usedThisRun": 0,
-    "labels": {
-      "used": "this run only",
-      "usedThisRun": "this run only",
-      "usedToday": "all runs this UTC day",
-      "remaining": "daily budget minus usedToday"
-    }
+    "remaining": null
   },
   "items": {
     "sealed": 0,
@@ -30,86 +21,6 @@
     "slabs": 0
   },
   "errors": [],
-  "estimate": {
-    "sealedQueued": 389,
-    "sealedTarget": 1000,
-    "sealedShortfall": 611,
-    "singlesItems": 17829,
-    "slabsExecutable": 0,
-    "days": 3,
-    "singlesByTier": {
-      "sir": 216,
-      "ir": 481,
-      "gallery": 190,
-      "hyper": 76,
-      "alt": 966,
-      "rare-over-5": 2119,
-      "other": 12424
-    },
-    "blockedNoSetId": 4478,
-    "sealedNote": "Only 389 sealed products have a TCGplayer id on file. The other 611 toward the 1,000 target are not queued, because an id was not invented.",
-    "slabNote": "Top chase cards are counted, but none have a TCGplayer id on this branch, so no slab call is queued.",
-    "schedule": [
-      {
-        "tier": "sealed",
-        "items": 389,
-        "credits": 610,
-        "startDay": 1,
-        "endDay": 1,
-        "days": 1
-      },
-      {
-        "tier": "singles",
-        "items": 17829,
-        "credits": 35658,
-        "startDay": 1,
-        "endDay": 3,
-        "days": 3
-      },
-      {
-        "tier": "slabs",
-        "items": 0,
-        "credits": 0,
-        "startDay": null,
-        "endDay": null,
-        "days": 0
-      }
-    ]
-  },
-  "intraday": {
-    "tested": false,
-    "pricesChanged": null,
-    "mode": "untested",
-    "runsUtc": [],
-    "note": "No same-day sample yet. The reserve is not spent on a 4-hour loop."
-  },
-  "note": "Public log only. No API key and no raw prices.",
-  "raw": "private repo catchem-data-private",
-  "run": {
-    "creditsUsed": 0,
-    "itemsDone": 0,
-    "itemsFailed": 0,
-    "itemsBudgetSkipped": 0,
-    "itemsSkipped": 0,
-    "callsSent": 0,
-    "callsFailed": 0,
-    "callsNotSent": 0,
-    "rateLimitCount": 0,
-    "retries": 0
-  },
-  "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here.",
-  "emptySealed": {
-    "skippedToday": 64,
-    "foundEmptyToday": 0,
-    "marked": 64,
-    "recheckDays": 7,
-    "note": "Sealed ids PPT answered with no product. Skipped until a week has passed, then asked once more."
-  },
-  "failedIds": {
-    "skippedToday": 0,
-    "foundToday": 0,
-    "marked": 0,
-    "recheckDays": 7,
-    "note": "Ids PPT rejected with a 4xx. Skipped for a week, then asked once more. Rate limits are not cached. Successes stay on the cursor."
-  }
+  "raw": "not fetched",
+  "note": "Public log only. No API key and no raw prices. This run did not call PPT."
 }

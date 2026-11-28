@@ -1,4 +1,4 @@
-# Script research scan — 2026-11-27
+# Script research scan — 2026-11-28
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
@@ -7,11 +7,8 @@ Leads from files the nightly already fetched. No web search, no AI. Verify befor
 - DATE_CHANGE: 30th Celebration: Sylveon ex & Greninja ex Tins (radar 2026-12-04, seen 2026-09-16) — TCGCSV group https://tcgcsv.com/tcgplayer/3/groups
 - DATE_CHANGE: 30th Celebration: Binder Collection (radar 2026-12-04, seen 2026-09-16) — Serebii https://www.serebii.net/card/30thcelebration
 - DATE_CHANGE: 30th Celebration: Binder Collection (radar 2026-12-04, seen 2026-09-16) — TCGCSV group https://tcgcsv.com/tcgplayer/3/groups
-- NEW_SET: Regulation Set M-D has been announced! — Victory Road https://victoryroad.pro/champions-regulations/
 
 ## Radar check
-- 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
-- 2026-11-27 JP: Card Illustration Figure Collection 30th CELEBRATION (Pikachu figure + card) — no second source in tonight's files
 - 2026-12-04 30th Celebration: Sylveon ex & Greninja ex Tins — possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group) (https://www.serebii.net/card/30thcelebration ; https://tcgcsv.com/tcgplayer/3/groups)
 - 2026-12-04 30th Celebration: Binder Collection — possible move: 2026-09-16 (Serebii), 2026-09-16 (TCGCSV group) (https://www.serebii.net/card/30thcelebration ; https://tcgcsv.com/tcgplayer/3/groups)
 
