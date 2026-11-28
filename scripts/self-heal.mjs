@@ -1,7 +1,7 @@
 // If main's tests go red after a data commit, restore that commit's data files
 // from the parent and open a PR. Does not push to main.
 import { spawn } from "node:child_process";
-import { healPlan } from "./lib/ops-bots.mjs";
+import { healPlan, healRewindPlan } from "./lib/ops-bots.mjs";
 
 function run(cmd, args) {
   return new Promise((resolve) => {
@@ -33,6 +33,14 @@ async function priorFailLog(sha) {
   return log.out;
 }
 
+async function blobAt(rev, file) {
+  const shown = await run("git", ["show", `${rev}:${file}`]);
+  if (shown.code === 0) return { text: shown.out, unknown: false };
+  const err = `${shown.err}\n${shown.out}`;
+  if (/fatal: path |exists on disk|does not exist in|not in '/i.test(err)) return { text: null, unknown: false };
+  return { text: null, unknown: true };
+}
+
 const sha = process.env.HEAL_SHA || process.argv[2] || "HEAD";
 if (!process.argv.includes("--live") && !process.env.HEAL_SHA && process.argv.length <= 2) {
   console.log(JSON.stringify({ selfHeal: { action: "skipped", reason: "pass a commit sha or --live" } }));
@@ -47,7 +55,22 @@ if (process.env.HEAL_RUN_ID) failLog = (await run("gh", ["run", "view", process.
 // The parent commit's failed pr-tests log, when one exists. A failure that
 // was already red on main is not this commit's fault.
 const priorLog = process.env.HEAL_RUN_ID ? await priorFailLog(sha) : null;
-const plan = healPlan(files, failLog, priorLog);
+let plan = healPlan(files, failLog, priorLog);
+// Parent blob versus the file on main. Do this before checkout or gh pr create.
+// A rewind of generatedAt or any date is noise. A lost or emptied file still restores.
+if (plan.action === "restore") {
+  const blobs = {};
+  for (const file of plan.files) {
+    const parent = await blobAt(`${sha}^`, file);
+    const current = await blobAt("main", file);
+    blobs[file] = {
+      parent: parent.text,
+      main: current.text,
+      unknown: parent.unknown || current.unknown,
+    };
+  }
+  plan = healRewindPlan(plan, blobs);
+}
 console.log(JSON.stringify({ selfHeal: plan }));
 if (plan.action !== "restore" || !process.argv.includes("--live")) process.exit(0);
 // A merged PR (subject ends "(#123)") is a reviewed change, not a bad nightly data

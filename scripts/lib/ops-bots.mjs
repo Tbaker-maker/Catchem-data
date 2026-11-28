@@ -122,6 +122,159 @@ export function healPlan(files, failLog = null, priorLog = null) {
   return { action: "restore", files: data, reason: "restore the last copy of the data files this commit rewrote" };
 }
 
+const CLOCK_KEYS = new Set([
+  "generatedAt",
+  "updatedAt",
+  "finishedAt",
+  "createdAt",
+  "stampedAt",
+  "ranAt",
+  "checkedAt",
+  "timestamp",
+  "generated_at",
+  "updated_at",
+]);
+
+const DATE_TOKEN = /\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?/g;
+const ISO_TS = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g;
+
+function isEmptyBlob(text) {
+  if (text == null) return true;
+  const raw = String(text).replace(/^\uFEFF/, "").trim();
+  if (!raw) return true;
+  try {
+    const value = JSON.parse(raw);
+    if (value == null) return true;
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === "object") return Object.keys(value).length === 0;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+function parseJsonBlob(text) {
+  try {
+    return { ok: true, value: JSON.parse(String(text)) };
+  } catch {
+    return { ok: false, value: null };
+  }
+}
+
+function dateMs(token) {
+  if (!/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?$/.test(token)) return null;
+  const iso = token.includes("T") ? token : `${token}T00:00:00Z`;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+function dateTokens(text) {
+  return [...String(text).matchAll(DATE_TOKEN)].map((hit) => hit[0]);
+}
+
+// Parent string is earlier than main when a whole value is a date, or when
+// the same number of dates inside the two strings all line up and one is earlier.
+function stringMovesBackward(parent, main) {
+  const parentMs = dateMs(parent);
+  const mainMs = dateMs(main);
+  if (parentMs != null && mainMs != null) return parentMs < mainMs;
+  const parentDates = dateTokens(parent);
+  const mainDates = dateTokens(main);
+  if (!parentDates.length || parentDates.length !== mainDates.length) return false;
+  for (let i = 0; i < parentDates.length; i++) {
+    const from = dateMs(parentDates[i]);
+    const to = dateMs(mainDates[i]);
+    if (from != null && to != null && from < to) return true;
+  }
+  return false;
+}
+
+function anyDateBackward(parent, main) {
+  if (parent === main) return false;
+  if (typeof parent === "string" && typeof main === "string") return stringMovesBackward(parent, main);
+  if (parent == null || main == null || typeof parent !== "object" || typeof main !== "object") return false;
+  if (Array.isArray(parent) || Array.isArray(main)) {
+    if (!Array.isArray(parent) || !Array.isArray(main)) return false;
+    const n = Math.min(parent.length, main.length);
+    for (let i = 0; i < n; i++) if (anyDateBackward(parent[i], main[i])) return true;
+    return false;
+  }
+  for (const key of Object.keys(parent)) {
+    if (!Object.prototype.hasOwnProperty.call(main, key)) continue;
+    if (anyDateBackward(parent[key], main[key])) return true;
+  }
+  return false;
+}
+
+function stripClocks(value) {
+  if (Array.isArray(value)) return value.map(stripClocks);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [key, child] of Object.entries(value)) {
+      if (CLOCK_KEYS.has(key)) continue;
+      out[key] = stripClocks(child);
+    }
+    return out;
+  }
+  return value;
+}
+
+function canon(value) {
+  if (Array.isArray(value)) return `[${value.map(canon).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canon(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function clocksOnly(parent, main) {
+  return canon(stripClocks(parent)) === canon(stripClocks(main));
+}
+
+function textClocksOnly(parent, main) {
+  const strip = (text) => String(text).replace(ISO_TS, "TIME");
+  return strip(parent) === strip(main);
+}
+
+// "restore" or "none". Parent is the blob a heal would put back. Main is the
+// file on main now. Rolling any date or generatedAt backward is noise, and so
+// is a diff that only moves clock fields. A missing or empty main file is a
+// real restore when the parent still has the content.
+export function healRewind(parentText, mainText, unknown = false) {
+  if (unknown) return "restore";
+  if (isEmptyBlob(parentText)) return "none";
+  if (isEmptyBlob(mainText)) return "restore";
+  const parentJson = parseJsonBlob(parentText);
+  const mainJson = parseJsonBlob(mainText);
+  if (parentJson.ok && mainJson.ok) {
+    if (anyDateBackward(parentJson.value, mainJson.value)) return "none";
+    if (clocksOnly(parentJson.value, mainJson.value)) return "none";
+    return "restore";
+  }
+  if (stringMovesBackward(String(parentText), String(mainText))) return "none";
+  if (textClocksOnly(parentText, mainText)) return "none";
+  return "restore";
+}
+
+// Drop files whose restore would rewind the morning. Keep a lost-file restore.
+export function healRewindPlan(plan, blobs = {}) {
+  if (!plan || plan.action !== "restore") return plan;
+  const files = [];
+  for (const file of plan.files || []) {
+    const blob = blobs[file] || {};
+    if (healRewind(blob.parent, blob.main, Boolean(blob.unknown)) === "restore") files.push(file);
+  }
+  if (!files.length) {
+    return {
+      action: "none",
+      files: [],
+      reason: "the restore only moves a timestamp or rolls a date backward",
+    };
+  }
+  if (files.length === (plan.files || []).length) return plan;
+  return { action: "restore", files, reason: plan.reason };
+}
+
 export function janitorRows(prs, now = new Date()) {
   const ms = now instanceof Date ? now.getTime() : Date.parse(now);
   const out = [];

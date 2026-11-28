@@ -10,7 +10,7 @@ import { gradeVote, summarizeVotes } from "../lib/heading-votes.mjs";
 import { dryUp, setMomentum } from "../lib/market-signals.mjs";
 import { biggestMovers, listingChanges, weeklyDoc } from "../lib/weekly-changes.mjs";
 import { applyTotalCaps } from "../lib/ebay-total.mjs";
-import { flagCoverageDrops, freshnessReport, healPlan, janitorRows } from "../lib/ops-bots.mjs";
+import { flagCoverageDrops, freshnessReport, healPlan, healRewindPlan, janitorRows } from "../lib/ops-bots.mjs";
 import { checkSingle } from "../lib/price-sanity.mjs";
 import { scannerWeekly } from "../lib/scanner-report.mjs";
 import { bulkFloorForSet } from "../lib/rip-roi.mjs";
@@ -94,6 +94,83 @@ export async function run() {
     pulsePrior,
   );
   t("self-heal restores only the file a new failure names", mixed.action === "restore" && mixed.files.join() === "research/assets/public/reads.json");
+
+  // Shape of heal #619: parent is an older morning than the file on main.
+  // generatedAt and the listings-counted date both move backward, and an alert line is dropped.
+  const statusMain = JSON.stringify({
+    asOf: "2026-11-27",
+    generatedAt: "2026-11-27T12:33:53.675Z",
+    checks: [
+      { id: "price-day", path: "data/history/tcgcsv-daily", date: "2026-11-27", ok: true, detail: "fresh" },
+      { id: "listings-counted", path: "data/derived/listing-counts/latest.json", date: "2026-11-27", ok: true, detail: "fresh" },
+    ],
+    failures: ["scanner"],
+    alerts: ["Browse listing calls are over the daily cap as of 2026-11-27."],
+    reran: [],
+    note: "Checked the dated files. A missing light step can be rerun once with --rerun.",
+  });
+  const statusParent = JSON.stringify({
+    asOf: "2026-11-27",
+    generatedAt: "2026-11-27T01:59:30.527Z",
+    checks: [
+      { id: "price-day", path: "data/history/tcgcsv-daily", date: "2026-11-27", ok: true, detail: "fresh" },
+      { id: "listings-counted", path: "data/derived/listing-counts/latest.json", date: "2026-11-26", ok: false, detail: "dated 2026-11-26" },
+    ],
+    failures: ["listings-counted", "scanner"],
+    alerts: [],
+    reran: [],
+    note: "Checked the dated files. A missing light step can be rerun once with --rerun.",
+  });
+  const statusPlan = healPlan(["data/derived/status.json"], "bad row in data/derived/status.json");
+  const rolled = healRewindPlan(statusPlan, { "data/derived/status.json": { parent: statusParent, main: statusMain } });
+  t("self-heal does not roll generatedAt and the listings date backward", rolled.action === "none" && rolled.files.length === 0);
+  // Shape of heal #622: the only change is generatedAt moving backward.
+  const clockMain = JSON.stringify({ asOf: "2026-11-27", generatedAt: "2026-11-27T21:45:02.769Z", note: "same morning" });
+  const clockParent = JSON.stringify({ asOf: "2026-11-27", generatedAt: "2026-11-27T16:28:58.622Z", note: "same morning" });
+  const clockOnly = healRewindPlan(statusPlan, { "data/derived/status.json": { parent: clockParent, main: clockMain } });
+  t("self-heal ignores a generatedAt-only rewind", clockOnly.action === "none");
+  const clockForward = JSON.stringify({ asOf: "2026-11-27", generatedAt: "2026-11-27T22:10:00.000Z", note: "same morning" });
+  t("self-heal ignores a clock-only rewrite that does not restore a file", healRewindPlan(statusPlan, { "data/derived/status.json": { parent: clockForward, main: clockMain } }).action === "none");
+  const updatedAtMain = JSON.stringify({ updatedAt: "2026-11-27T21:45:02.769Z", rows: [{ id: "a" }] });
+  const updatedAtParent = JSON.stringify({ updatedAt: "2026-11-27T16:28:58.622Z", rows: [{ id: "a" }] });
+  t("self-heal ignores a rewind that only moves another clock field", healRewindPlan(statusPlan, { "data/derived/status.json": { parent: updatedAtParent, main: updatedAtMain } }).action === "none");
+
+  const lostPlan = healPlan(["data/sealed-prices.json"], "bad row in data/sealed-prices.json");
+  const lostParent = JSON.stringify({ generatedAt: "2026-11-26T01:00:00.000Z", rows: [{ id: "box", listingsCounted: 3 }] });
+  const lostFile = healRewindPlan(lostPlan, { "data/sealed-prices.json": { parent: lostParent, main: null } });
+  t("self-heal still restores a file main lost", lostFile.action === "restore" && lostFile.files.join() === "data/sealed-prices.json");
+  const emptied = healRewindPlan(lostPlan, { "data/sealed-prices.json": { parent: lostParent, main: "" } });
+  const emptiedObject = healRewindPlan(lostPlan, { "data/sealed-prices.json": { parent: lostParent, main: "{}" } });
+  t("self-heal still restores a file main replaced with empty", emptied.action === "restore" && emptiedObject.action === "restore");
+  const sameClock = JSON.stringify({ generatedAt: "2026-11-27T12:00:00.000Z", rows: [] });
+  const keptRows = JSON.stringify({ generatedAt: "2026-11-27T12:00:00.000Z", rows: [{ id: "box", listingsCounted: 3 }] });
+  t("self-heal restores content when no date moves backward", healRewindPlan(lostPlan, { "data/sealed-prices.json": { parent: keptRows, main: sameClock } }).action === "restore");
+  const newerDate = JSON.stringify({
+    asOf: "2026-11-27",
+    generatedAt: "2026-11-27T12:33:53.675Z",
+    checks: [{ id: "listings-counted", date: "2026-11-27", ok: true, detail: "fresh" }],
+  });
+  const olderDate = JSON.stringify({
+    asOf: "2026-11-27",
+    generatedAt: "2026-11-27T12:33:53.675Z",
+    checks: [{ id: "listings-counted", date: "2026-11-26", ok: false, detail: "dated 2026-11-26" }],
+  });
+  t("self-heal restores a listings date that moves forward", healRewindPlan(statusPlan, { "data/derived/status.json": { parent: newerDate, main: olderDate } }).action === "restore");
+  const mixedRewind = healPlan(
+    ["data/derived/status.json", "data/sealed-prices.json"],
+    "bad row in data/derived/status.json and data/sealed-prices.json",
+  );
+  const keptLost = healRewindPlan(mixedRewind, {
+    "data/derived/status.json": { parent: statusParent, main: statusMain },
+    "data/sealed-prices.json": { parent: lostParent, main: null },
+  });
+  t("self-heal drops a backward file and keeps the lost file", keptLost.action === "restore" && keptLost.files.join() === "data/sealed-prices.json");
+  t("self-heal does not restore an empty parent over a live file", healRewindPlan(lostPlan, { "data/sealed-prices.json": { parent: "", main: lostParent } }).action === "none");
+  const healSrc = await readFile(join(ROOT, "scripts/self-heal.mjs"), "utf8");
+  const gateAt = healSrc.indexOf("healRewindPlan");
+  const checkoutAt = healSrc.indexOf('["checkout", "-B"');
+  t("self-heal checks the rewind gate before checkout", gateAt !== -1 && checkoutAt !== -1 && gateAt < checkoutAt);
+
   const old = janitorRows([{ number: 9, title: "Old", url: "https://example.com/9", createdAt: "2026-10-01T00:00:00Z", checks: [] }, { number: 10, title: "Red", url: "https://example.com/10", createdAt: "2026-10-13T00:00:00Z", checks: [{ name: "tests", conclusion: "failure" }] }], new Date("2026-10-13T00:00:00Z"));
   t("janitor lists old PRs and the failing test name", old.length === 2 && old[1].failing.join() === "tests" && old[0].old === true);
   t("coverage flags a drop in priced cards", flagCoverageDrops({ priced: 10, yearHistory: 4, listingsCounted: 3, imageGaps: 2 }, { priced: 9, yearHistory: 4, listingsCounted: 3, imageGaps: 2 }).some((row) => row.key === "priced"));
