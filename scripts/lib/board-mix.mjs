@@ -31,6 +31,7 @@ import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./de
 import { loadJumpy } from "./jumpy-price.mjs";
 import { loadStaleMarket } from "./stale-market.mjs";
 import { loadPathways, loadSealedLong, pathwayReads } from "./read-pathways.mjs";
+import { spaceSimilar } from "./read-variety.mjs";
 import { loadSealedPathwayItems } from "./pathway-inputs.mjs";
 import { loadWindowSeries } from "./thin-trading.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
@@ -1113,7 +1114,8 @@ export async function freshListings(root, pubDoc) {
 // Last pass on the published board, after every step that can drop a read.
 // Price reads (isPriceRead) stay at most one third of the board: price rows are
 // trimmed from the back, history rows first and deep dives last, never invented.
-// Then no two of a family sit side by side.
+// Then no two of a family sit side by side, and a boilerplate 4-word phrase
+// is not repeated on the next read. Wording swaps use that read's own facts.
 export function finishBoard(rows, { maxShare = PRICE_SHARE_MAX } = {}) {
   const list = (rows || []).slice();
   const nFresh = list.filter((r) => !isPriceRead(r)).length;
@@ -1128,5 +1130,5 @@ export function finishBoard(rows, { maxShare = PRICE_SHARE_MAX } = {}) {
       if (!drop.has(i) && rank(list[i]) === tier) { drop.add(i); extra -= 1; }
     }
   }
-  return spaceFamilies(list.filter((_, i) => !drop.has(i)));
+  return spaceSimilar(spaceFamilies(list.filter((_, i) => !drop.has(i))));
 }
