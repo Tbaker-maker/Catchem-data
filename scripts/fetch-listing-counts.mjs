@@ -3,6 +3,11 @@
 // night. Plans to config/api-budgets.json useShare (98%) of the daily Browse allowance minus the sealed step and
 // stops at the first 429. Public wording: "listings counted", never "supply".
 //
+// A private per-day call budget (catchem-data-private, ebay-browse/limits.json)
+// is an earlier stop so the run does not spend the public ceiling. If that
+// file or key is missing, no listing calls are made and last-good rows keep
+// their date. The reserve number is not stored here.
+//
 //   data/derived/listing-counts/latest.json            one row per item, last good read
 //   data/derived/listing-counts/history/<day>.json.gz  tonight's reads
 //   data/derived/listing-counts/state.json             last refresh day per id
@@ -14,6 +19,8 @@ import { gzipSync, gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps, vintageHeldBack } from "./lib/listing-counts.mjs";
+import { browseCallsLeft, countWithinBudget, loadBrowseReserve } from "./lib/ebay-browse-budget.mjs";
+import { browseBudgetAlert, mergeAlerts } from "./lib/limits-watch.mjs";
 import { addMissingRows, sealedStepIndex, sealedStepRowsForDay } from "./lib/sealed-listing-coverage.mjs";
 import { readdir } from "node:fs/promises";
 
@@ -26,6 +33,16 @@ const CONCURRENCY = 3;
 const DELAY_MS = 250;
 const J = async (p, d) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function addStatusAlert(line) {
+  if (!line) return;
+  console.log(line);
+  const statusPath = join(ROOT, "data/derived/status.json");
+  const status = await J(statusPath, null);
+  if (!status || typeof status !== "object" || Array.isArray(status)) return;
+  status.alerts = mergeAlerts(status.alerts, [line]);
+  await writeFile(statusPath, JSON.stringify(status, null, 1) + "\n");
+}
 
 async function token() {
   const { EBAY_APP_ID: a, EBAY_CERT_ID: c } = process.env;
@@ -69,47 +86,67 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   const holdBack = vintageHeldBack(state.log, now);
   const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity,
     runsPerDay === 1 ? Math.max(0, b.safe - used - holdBack) : roleSlice({ role, safe: b.safe, used, dailyBudget: b.budget, sealedStep: b.sealedStep, sealedInWindow, topShare: cfg.topShare, holdBack }));
-  const picked = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1), role });
-  const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
-  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${picked.length}`);
+  const wanted = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1), role });
+  // Private reserve is an earlier stop on the same rolling window. It is not logged.
+  const reserve = await loadBrowseReserve({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
+  const privateLeft = browseCallsLeft({ reserve, used });
+  const searchBudget = reserve == null ? null : Math.min(wanted.length, Math.max(0, Math.min(slice, privateLeft) - 1));
+  const heldByReserve = reserve == null || (wanted.length > 0 && searchBudget < wanted.length);
+  const plan = { picked: heldByReserve ? [] : wanted, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
+  const runLabel = heldByReserve ? "held by the private call budget" : String(wanted.length);
+  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${runLabel}${reserve == null ? ", private call budget missing" : ""}`);
 
-  if (role === "guardian" && !plan.picked.length) {
+  if (reserve == null) {
+    await addStatusAlert(browseBudgetAlert("missing"));
+    await indexSealedStep();
+    return { picked: 0, calls: 0, callBudget: "missing" };
+  }
+
+  if (role === "guardian" && !wanted.length) {
     console.log("count guardian: every daily-tier item has a count today, nothing to do");
     await indexSealedStep();
     return { picked: 0 };
   }
+
+  if (searchBudget <= 0 && wanted.length > 0) {
+    await addStatusAlert(browseBudgetAlert("held"));
+    await indexSealedStep();
+    return { picked: 0, calls: 0, callBudget: "held" };
+  }
+
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });
   const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
   const latest = await J(latestPath, { rows: {} });
-  const out = [];
-  let calls = 0, failures = 0, rateLimited = false;
-  if (tok) {
-    const queue = [...plan.picked];
-    const worker = async () => {
-      while (queue.length && !rateLimited) {
-        const it = queue.shift();
-        const kind = it.kind === "sealed" ? "sealed" : "single";
-        const params = new URLSearchParams({ q: buildQuery(it), category_ids: CAT[kind], filter: `conditionIds:{${COND[kind]}},priceCurrency:USD,itemLocationCountry:US`, limit: "50" });
-        calls += 1;
-        try {
-          const res = await fetch(`${SEARCH}?${params}`, { signal: AbortSignal.timeout(30000), headers: { Authorization: `Bearer ${tok}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" } });
-          if (res.status === 429) { rateLimited = true; failures += 1; break; }
-          if (!res.ok) { failures += 1; continue; }
-          const d = await res.json();
-          const summaries = d.itemSummaries || [];
-          const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, summaries.map((x) => x.title || ""), summaries, it) };
-          out.push(row);
-          latest.rows[it.id] = row;
-          state.last[it.id] = now.toISOString();
-        } catch { failures += 1; }
-        await sleep(DELAY_MS);
-      }
-    };
-    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  latest.rows ||= {};
+  let failures = 0;
+  const client = async (it) => {
+    const kind = it.kind === "sealed" ? "sealed" : "single";
+    const params = new URLSearchParams({ q: buildQuery(it), category_ids: CAT[kind], filter: `conditionIds:{${COND[kind]}},priceCurrency:USD,itemLocationCountry:US`, limit: "50" });
+    try {
+      const res = await fetch(`${SEARCH}?${params}`, { signal: AbortSignal.timeout(30000), headers: { Authorization: `Bearer ${tok}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" } });
+      if (res.status === 429) { failures += 1; return { stop: true, fail: true }; }
+      if (!res.ok) { failures += 1; return { fail: true }; }
+      const d = await res.json();
+      const summaries = d.itemSummaries || [];
+      const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, summaries.map((x) => x.title || ""), summaries, it) };
+      return { row };
+    } catch { failures += 1; return { fail: true }; }
+    finally { await sleep(DELAY_MS); }
+  };
+  const counted = tok && searchBudget > 0
+    ? await countWithinBudget({ ordered: wanted, budget: searchBudget, client, rows: latest.rows, today, previousAsOf: latest.asOf, concurrency: CONCURRENCY })
+    : { rows: latest.rows, calls: 0, refreshed: [], alert: "", asOf: today, rateLimited: false, kind: "ok" };
+  const calls = counted.calls;
+  const rateLimited = counted.rateLimited;
+  const capped = applyTotalCaps(counted.refreshed);
+  latest.rows = { ...counted.rows };
+  for (const row of capped) {
+    latest.rows[row.id] = row;
+    state.last[row.id] = now.toISOString();
   }
-  const capped = applyTotalCaps(out);
-  for (const row of capped) latest.rows[row.id] = row;
-  latest.asOf = today;
+  if (counted.kind === "ok") latest.asOf = today;
+  else if (counted.asOf) latest.asOf = counted.asOf;
+  if (counted.alert) await addStatusAlert(counted.alert);
   latest.note = "Listings counted: eBay US listings, same filters every night (no lots, cases or graded for raw). An estimate from eBay's total and a sampled page. Not supply.";
   await mkdir(join(ROOT, "data/derived/listing-counts/history"), { recursive: true });
   await writeFile(latestPath, JSON.stringify(latest) + "\n");
@@ -124,7 +161,7 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   await writeFile(statePath, JSON.stringify(state) + "\n");
   const usagePath = join(ROOT, "data/derived/listing-counts/api-usage.json");
   const usage = await J(usagePath, { nights: [] });
-  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, role, slice, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
+  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, role, slice, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: capped.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
   night.at = now.toISOString(); night.ebayBrowse.used24hAfter = used24(state.log, new Date());
   const missed = missingTop(tierPlan.daily, state.last, new Date());
   night.ebayBrowse.topMissingToday = missed.length;
@@ -137,7 +174,9 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   usage.nights = [...(usage.nights || []), night].slice(-120);
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");
   await indexSealedStep();
-  console.log(`listing counts: ${out.length} counted, ${calls} calls, ${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`);
+  const tailNote = `${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`;
+  if (counted.kind === "held") console.log(`listing counts: stopped at the private call budget, ${tailNote}`);
+  else console.log(`listing counts: ${capped.length} counted, ${calls} calls, ${tailNote}`);
 }
 
 // Copy filteredTotal the sealed price step already stored. Does not call eBay

@@ -17,6 +17,18 @@ function pct(share) {
   return Math.round(share * 100);
 }
 
+// One line when the private per-day Browse budget stops the run.
+// No reserve count in the line. Rows that were not refreshed keep their date.
+export function browseBudgetAlert(kind) {
+  if (kind === "missing") {
+    return "eBay Browse call budget is missing, so no listing calls were made and listings counted stay on the last real morning.";
+  }
+  if (kind === "held") {
+    return "eBay Browse used up the day's call budget, so listings counted stay on the last real morning for items this run did not refresh, instead of a half-finished today.";
+  }
+  return "";
+}
+
 export function listingSource(log, now = new Date(), limit = LISTING_CALL_BUDGET) {
   if (!Array.isArray(log)) return null;
   const used = used24(log, now);
