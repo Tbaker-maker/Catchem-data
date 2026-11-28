@@ -90,7 +90,7 @@ export async function run() {
   t("the stamp writes a UTC instant under RUNNER_TEMP", /date -u \+%Y-%m-%dT%H:%M:%SZ/.test(stamp) && /\$RUNNER_TEMP\/price-run-started-at/.test(stamp));
   t("the guard reads that stamp and origin/main before it decides", /price-run-started-at/.test(guard) && /git fetch origin main/.test(guard) && /git log origin\/main --format='%cI%x1f%s'/.test(guard) && /node scripts\/lib\/stale-sha-guard\.mjs/.test(guard));
   t("the guard logs with echo and does not fail the job", /\becho\b/.test(guard) && !/\bexit 1\b/.test(guard));
-  t("publish is skipped only when the guard says skip", /if: steps\.staleguard\.outputs\.skip != 'true'/.test(publish) && !/if: success\(\)/.test(publish));
+  t("publish is skipped only when the guard says skip", /if: steps\.staleguard\.outputs\.skip == 'false'/.test(publish) && !/if:\s*success\(\)/.test(publish));
   t("publish still carries the private data token", /PRIVATE_DATA_TOKEN: \$\{\{ secrets\.PRIVATE_DATA_TOKEN \}\}/.test(publish) && /node scripts\/publish-public-data\.mjs --push/.test(publish));
   t("the guard step id is staleguard", /\n {8}id: staleguard\n/.test(guard));
   const added = `${stamp}\n${guard}\n${readFileSync(new URL("../lib/stale-sha-guard.mjs", import.meta.url), "utf8")}`;
