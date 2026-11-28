@@ -8,7 +8,6 @@ import { mentionsHeld } from "./price-hold-skip.mjs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { bannedWord, money, pretty } from "./public-bundle.mjs";
 import { flag } from "../flags.mjs";
 import { mapReadImage, settleReadImages, allowedCatalogueUrl, isSetLogoUrl } from "./read-images.mjs";
@@ -382,7 +381,7 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
-export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null } = {}) {
+export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null, root = null } = {}) {
   const held = heldIds instanceof Set ? heldIds : new Set();
   const heldRow = (row) => mentionsHeld(row, held);
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
@@ -597,8 +596,8 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     plain: { qualified: plainRows.length, boarded: boarded.plain, droppedNoExactDay: plainPool.dropped },
   };
 
-  withBuiltPictures(board);
-  withBuiltPictures(signals);
+  withBuiltPictures(board, root);
+  withBuiltPictures(signals, root);
 
   return {
     asOf,
@@ -617,31 +616,27 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
   };
 }
 
-const MODULE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-let cachedImageFiles = null;
-
-function repoImageInputs() {
-  if (!cachedImageFiles) {
-    let images = {};
-    try { images = JSON.parse(readFileSync(join(MODULE_ROOT, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }
-    const sealedPid = new Map();
-    const sealedImageIds = new Set();
-    try {
-      const doc = JSON.parse(readFileSync(join(MODULE_ROOT, "data/sealed-products.json"), "utf8"));
-      for (const p of Array.isArray(doc) ? doc : doc.products || []) {
-        if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
-        const img = String(p?.image || p?.representativeImage || "");
-        if (p?.id && img && !isSetLogoUrl(img)) sealedImageIds.add(String(p.id));
-      }
-    } catch { /* no sealed map */ }
-    cachedImageFiles = { images, sealedPid, sealedImageIds };
-  }
-  return { ...cachedImageFiles, tcgOn: flag("images.tcgplayer") !== false };
+export function loadBuiltImageInputs(root) {
+  if (!root) return { images: {}, sealedPid: new Map(), sealedImageIds: new Set(), tcgOn: flag("images.tcgplayer") !== false };
+  let images = {};
+  try { images = JSON.parse(readFileSync(join(root, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }
+  const sealedPid = new Map();
+  const sealedImageIds = new Set();
+  try {
+    const doc = JSON.parse(readFileSync(join(root, "data/sealed-products.json"), "utf8"));
+    for (const p of Array.isArray(doc) ? doc : doc.products || []) {
+      if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
+      const img = String(p?.image || p?.representativeImage || "");
+      if (p?.id && img && !isSetLogoUrl(img)) sealedImageIds.add(String(p.id));
+    }
+  } catch { /* no sealed map */ }
+  return { images, sealedPid, sealedImageIds, tcgOn: flag("images.tcgplayer") !== false };
 }
 
 // The picture is part of the built row. A later stamp must not rewrite the library file.
-function withBuiltPictures(rows) {
-  const inputs = repoImageInputs();
+// root is the data tree for this build. The module directory is not a data root.
+function withBuiltPictures(rows, root) {
+  const inputs = loadBuiltImageInputs(root);
   for (const row of rows || []) {
     const pick = mapReadImage(row, inputs);
     if (pick.url) row.image = pick.url;
@@ -706,9 +701,8 @@ export function logoUrl(logos, slug) {
   if (!slug || !logos) return "";
   const row = logos[slug] || logos[slug.toLowerCase()];
   const path = String(row?.logo || "");
-  const m = path.match(/^\/img\/([A-Za-z0-9]+)\/logo\.png$/);
-  if (!m) return "";
-  return `https://images.pokemontcg.io/${m[1]}/logo.png`;
+  if (!/^\/img\/[A-Za-z0-9]+\/logo\.png$/.test(path)) return "";
+  return `${SITE_ORIGIN}${path}`;
 }
 
 // A deep dive that would otherwise get the site tile uses the set logo, then a
@@ -795,6 +789,7 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
     pptPublic,
     volumeReads,
     heldIds,
+    root,
   });
   const path = join(root, LIBRARY_FILE);
   await mkdir(dirname(path), { recursive: true });

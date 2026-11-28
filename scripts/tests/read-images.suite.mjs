@@ -1,10 +1,8 @@
-import { readFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { boardImage } from "../lib/read-library.mjs";
-import { mapReadImage, settleReadImages, allowedImageHost } from "../lib/read-images.mjs";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { boardImage, loadBuiltImageInputs, logoUrl } from "../lib/read-library.mjs";
+import { mapReadImage, settleReadImages, allowedImageHost, isCuratedLogoUrl, headReachable, leadDeadSet } from "../lib/read-images.mjs";
 
 export async function run() {
   let fail = 0;
@@ -12,6 +10,13 @@ export async function run() {
     if (cond) console.log(`  ok  ${name}`);
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
+  const prevFetch = globalThis.fetch;
+  let fetches = 0;
+  globalThis.fetch = async () => {
+    fetches += 1;
+    throw new Error("network");
+  };
+  try {
 
   const deadUrl = "https://tcgplayer-cdn.tcgplayer.com/product/999001_in_400x400.jpg";
   const knownUrl = "https://images.pokemontcg.io/fixset/19_hires.png";
@@ -66,34 +71,44 @@ export async function run() {
 
   t("catalogue picture by id uses the allowed host", boardImage({ sku: "tcgcsv-1" }, { "tcgcsv-1": "/img/sv1/12" }, true) === "https://images.pokemontcg.io/sv1/12_hires.png");
 
-  const cat = JSON.parse(await readFile(join(ROOT, "research/assets/public/catalogue-images.json"), "utf8")).images;
-  const joined = JSON.parse(await readFile(join(ROOT, "data/tcgcsv-to-catalogue.json"), "utf8"));
-  const productsDoc = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf8"));
-  const products = Array.isArray(productsDoc) ? productsDoc : productsDoc.products || [];
-  const skip = (joined.skipped || []).find((item) => item.id === "tcgcsv-716161");
-  const sneasel = mapReadImage({ id: "move-tcgcsv-716161-7", sku: "tcgcsv-716161" }, { images: cat, tcgOn: true, reachable: () => true });
-  t("Sneasel has no catalogue id and uses the product photo", skip?.reason === "no-unique-set-code" && !cat["tcgcsv-716161"] && sneasel.url === "https://tcgplayer-cdn.tcgplayer.com/product/716161_in_400x400.jpg");
-
-  const celebi = mapReadImage({ id: "turned-tcgcsv-178818", sku: "tcgcsv-178818" }, { images: cat, tcgOn: true, reachable: () => true });
-  t("Celebi catalogue path is copied from images.pokemontcg.io", cat["tcgcsv-178818"] === "/img/sm8/19" && celebi.url === "https://images.pokemontcg.io/sm8/19_hires.png");
-
-  const upc = products.find((item) => item.id === "sv3pt5-upc");
-  const upcPick = mapReadImage({ id: "mktmove-sv3pt5-upc", sku: "sv3pt5-upc" }, {
-    images: cat,
+  const logos = { "fixture-set": { logo: "/img/fixset/logo.png", setId: "fixset" } };
+  const curated = logoUrl(logos, "fixture-set");
+  t("a curated set logo stays on our host", curated === "https://catchemtcg.com/img/fixset/logo.png" && isCuratedLogoUrl(curated));
+  t("a curated logo is not probed", await headReachable(curated) === true && fetches === 0);
+  const deep = { id: "deep-set-fixture-set", readKind: "deep", deep: "set", href: "/sets/fixture-set", image: "" };
+  const deepSettled = settleReadImages([deep, { id: "filler", sku: "tcgcsv-424242", image: "" }], {
+    images: {},
     tcgOn: true,
-    sealedPid: new Map([["sv3pt5-upc", String(upc?.tcgPlayerId || "")]]),
+    logos,
+    boardMax: 1,
     reachable: () => true,
+    logLines: false,
+    picture: (row) => (row.id === deep.id ? curated : "https://tcgplayer-cdn.tcgplayer.com/product/424242_in_400x400.jpg"),
   });
-  t("151 UPC logo is not the picture and the product id is", /\/sv3pt5\/logo\.png$/.test(String(upc?.image || "")) && upcPick.url === `https://tcgplayer-cdn.tcgplayer.com/product/${upc.tcgPlayerId}_in_400x400.jpg`);
+  t("a curated logo can lead", deepSettled.reads[0].id === deep.id && deepSettled.reads[0].image === curated);
 
-  const tin = products.find((item) => item.id === "tcgcsv-194735");
-  const tinPick = mapReadImage({ id: "sealed-week-tcgcsv-194735", sku: "tcgcsv-194735", kind: "sealed" }, {
-    images: cat,
-    tcgOn: true,
-    sealedImageIds: new Set(),
-    reachable: () => true,
-  });
-  t("Power Partnership has no image row and uses its product id", tin && !tin.image && tinPick.url === `https://tcgplayer-cdn.tcgplayer.com/product/${tin.tcgPlayerId}_in_400x400.jpg`);
+  const root = await mkdtemp(join(tmpdir(), "read-images-"));
+  try {
+    await mkdir(join(root, "research/assets/public"), { recursive: true });
+    await mkdir(join(root, "data"), { recursive: true });
+    await writeFile(join(root, "research/assets/public/catalogue-images.json"), JSON.stringify({ images: { "fixture-only": "/img/fixset/3" } }));
+    await writeFile(join(root, "data/sealed-products.json"), JSON.stringify({ products: [{ id: "fixture-tin", tcgPlayerId: "424242", image: "/img/fixset/tin.png" }] }));
+    const fromRoot = loadBuiltImageInputs(root);
+    const fromNone = loadBuiltImageInputs(null);
+    t("image files are read from the root argument", fromRoot.images["fixture-only"] === "/img/fixset/3" && fromRoot.sealedPid.get("fixture-tin") === "424242");
+    t("a missing root does not invent a picture map", Object.keys(fromNone.images).length === 0 && fromNone.sealedPid.size === 0);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 
+  const dead = await leadDeadSet([
+    "https://tcgplayer-cdn.tcgplayer.com/product/424242_in_400x400.jpg",
+    deadUrl,
+  ], async (url) => url !== deadUrl);
+  t("a lead probe uses the stub and does not open the network", dead.size === 1 && dead.has(deadUrl) && fetches === 0);
+  t("the suite makes no network request", fetches === 0);
   return fail;
+  } finally {
+    globalThis.fetch = prevFetch;
+  }
 }

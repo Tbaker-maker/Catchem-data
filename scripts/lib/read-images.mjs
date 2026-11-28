@@ -1,5 +1,5 @@
-// Pictures on a read. Only two hosts may be written.
-// images.pokemontcg.io and tcgplayer-cdn.tcgplayer.com.
+// Product pictures use two hosts: images.pokemontcg.io and tcgplayer-cdn.tcgplayer.com.
+// A curated set logo stays at catchemtcg.com/img/{setId}/logo.png. That file is ours.
 // A catalogue path is copied onto the first host. A product id uses the second.
 // A set logo is not a product photo. A mismatched catalogue id is not used.
 // A top slot with no reachable allowed picture moves down. The reason is logged.
@@ -8,6 +8,10 @@ export const ALLOWED_IMAGE_HOSTS = ["images.pokemontcg.io", "tcgplayer-cdn.tcgpl
 export const IMAGE_REASONS = ["id-mismatch", "missing-sealed-map", "dead-host", "no-image"];
 
 const STRIP = /^(move|mover|streak|plain|high|low|set|spread|askmove|mktmove)-/;
+
+export function isCuratedLogoUrl(url) {
+  return /^https:\/\/catchemtcg\.com\/img\/[A-Za-z0-9]+\/logo\.png$/.test(String(url || ""));
+}
 
 export function allowedImageHost(url) {
   try {
@@ -86,7 +90,7 @@ function tileUrl(url) {
 }
 
 function usable(url, reachable) {
-  if (!allowedImageHost(url)) return false;
+  if (!allowedImageHost(url) && !isCuratedLogoUrl(url)) return false;
   if (typeof reachable === "function" && reachable(url) === false) return false;
   return true;
 }
@@ -148,7 +152,17 @@ export function mapReadImage(row, opts = {}) {
   return { url: "", reason: "no-image" };
 }
 
+export async function leadDeadSet(urls, reachable) {
+  const dead = new Set();
+  const check = typeof reachable === "function" ? reachable : headReachable;
+  for (const url of urls || []) {
+    if (!(await check(url))) dead.add(url);
+  }
+  return dead;
+}
+
 export async function headReachable(url) {
+  if (isCuratedLogoUrl(url)) return true;
   if (!allowedImageHost(url)) return false;
   const once = async (method) => {
     const res = await fetch(url, { method, redirect: "follow", signal: AbortSignal.timeout(8000) });

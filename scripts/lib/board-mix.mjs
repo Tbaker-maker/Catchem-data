@@ -11,7 +11,7 @@ import { money, pretty, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle
 import { nameWithTags } from "./card-face.mjs";
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { pictureForRead, loadBoardImageInputs, BOARD_MAX as LEAD_MAX } from "./read-library.mjs";
-import { settleReadImages, headReachable } from "./read-images.mjs";
+import { settleReadImages, headReachable, leadDeadSet } from "./read-images.mjs";
 import { monthDay } from "./takes.mjs";
 import { rotationPhrase } from "./rotation-phrase.mjs";
 export { rotationPhrase };
@@ -790,7 +790,7 @@ export function withoutBareReleases(rows) {
   return out;
 }
 
-export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [], pppReads = [] } = {}) {
+export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [], pppReads = [], reachable = headReachable } = {}) {
   const pub = join(root, "research/assets/public");
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
@@ -1100,10 +1100,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     const top = settled.reads.slice(0, LEAD_MAX).map((row) => row.image).filter(Boolean);
     const unseen = top.filter((url) => !probed.has(url));
     if (!unseen.length) break;
-    for (const url of unseen) {
-      probed.add(url);
-      if (!(await headReachable(url))) dead.add(url);
-    }
+    for (const url of unseen) probed.add(url);
+    for (const url of await leadDeadSet(unseen, reachable)) dead.add(url);
     settled = settleReadImages(stamped, {
       images,
       tcgOn,

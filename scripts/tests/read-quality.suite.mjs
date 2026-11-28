@@ -406,7 +406,7 @@ export async function run() {
     t("board image: a non-product read still gets the tile", boardImage({ id: "spread-x" }, {}, true) === BRAND_TILE);
     const logos = { "sv07-stellar-crown": { logo: "/img/sv7/logo.png", setId: "sv7" } };
     const stellar = { id: "deep-set-sv07-stellar-crown", readKind: "deep", deep: "set", image: BRAND_TILE, receipt: { slug: "sv07-stellar-crown" }, href: "" };
-    t("a set deep dive uses the set logo instead of the site tile", pictureForRead(stellar, {}, false, new Map(), logos) === "https://images.pokemontcg.io/sv7/logo.png");
+    t("a set deep dive uses the set logo instead of the site tile", pictureForRead(stellar, {}, false, new Map(), logos) === "https://catchemtcg.com/img/sv7/logo.png");
     const noLogo = { id: "deep-set-custom", readKind: "deep", deep: "set", receipt: { slug: "custom", cards: [{ id: "tcgcsv-42" }] } };
     t("a set deep dive with no logo uses a product picture", pictureForRead(noLogo, { "tcgcsv-42": "/cards/sv7/1.png" }, false, new Map(), {}) === "https://images.pokemontcg.io/sv7/1.png");
     const poke = { id: "deep-pokemon-unown", readKind: "deep", deep: "pokemon", lineCards: [{ cards: [{ id: "tcgcsv-90189", image: "https://tcgplayer-cdn.tcgplayer.com/product/90189_in_400x400.jpg" }] }] };
